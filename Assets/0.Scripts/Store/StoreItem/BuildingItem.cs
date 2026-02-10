@@ -1,7 +1,4 @@
-﻿using System;
-using UnityEngine;
-
-enum InteriorType
+﻿enum InteriorType
 {
     MainHouse, Floor, Fix, Free, LakeFloor, LakeFix, LakeFree
 }
@@ -9,4 +6,6 @@ enum InteriorType
 public class BuildingItem : StoreItemBase
 {
     InteriorType _buildingType;
+
+    internal InteriorType BuildingType => _buildingType;
 }
