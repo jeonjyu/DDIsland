@@ -17,8 +17,10 @@ public class CharacterDefinition
     public float BaseStamina;
     public float BaseMoveSpeed;
     public float BaseFishingSpeed;
-
     public int BaseDoongDoongStat;
+
+    public int BaseVisualGroupID;
+    public int BaseUpgradGroupID;
 }
 public static class CharacterCsvLoader
 {
@@ -60,6 +62,9 @@ public static class CharacterCsvLoader
                 BaseMoveSpeed = float.Parse(cols[4], ci),
                 BaseFishingSpeed = float.Parse(cols[5], ci),
                 BaseDoongDoongStat = int.Parse(cols[6]),
+                BaseVisualGroupID = int.Parse(cols[7]),
+                BaseUpgradGroupID = int.Parse(cols[8])
+
             };
 
             list.Add(def);

@@ -15,6 +15,9 @@ public class PlayerData
     public string CurrentResourceID;
     public string CurrentPrefabPath;
 
+    public int VisualGroupID { get; private set; }
+    public int UpgradGroupID { get; private set; }
+
     public event Action<float> OnHungerChanged;
     public event Action<float> OnStaminaChanged;
     public event Action<int> OnDoongDoongChanged;
@@ -29,6 +32,9 @@ public class PlayerData
         SetDoongDoongStat(characterDefinition.BaseDoongDoongStat);
         MoveSpeed = characterDefinition.BaseMoveSpeed;
         FishingSpeed = characterDefinition.BaseFishingSpeed;
+
+        VisualGroupID = characterDefinition.BaseVisualGroupID;
+        UpgradGroupID = characterDefinition.BaseUpgradGroupID;
     }
 
     //이렇게 쓰면 된다
