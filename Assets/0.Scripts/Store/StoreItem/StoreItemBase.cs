@@ -1,18 +1,20 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 // 상점에서 구매 가능한 아이템 베이스 클래스
+[Serializable]
 public class StoreItemBase : MonoBehaviour
 {
 //field
-    private int _itemId;
-    private bool _isGained;
-    private bool _isSaleable;
-    private int _maxCount;
-    private int _itemCount;
-    private int _purchasePrice;
-    private int _sellPrice;
-    private string _itemName;
-    private string _itemDesc;
+    [SerializeField] private int _itemId;
+    [SerializeField] private bool _isGained;
+    [SerializeField] private bool _isSaleable;
+    [SerializeField] private int _maxCount;
+    [SerializeField] private int _itemCount;
+    [SerializeField] private int _purchasePrice;
+    [SerializeField] private int _sellPrice;
+    [SerializeField] private string _itemName;
+    [SerializeField] private string _itemDesc;
 
 //property
     public int ItemId => _itemId;
