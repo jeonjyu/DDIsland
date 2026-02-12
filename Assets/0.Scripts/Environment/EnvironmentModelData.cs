@@ -33,7 +33,7 @@ public class EnvironmentModel
         if (now.Day != _lastDay) //일이 바뀔 때 마다
         {
             _lastDay = now.Day;
-            SetSeason(now);
+            CurrentSeason = SetSeason(now);
         }
         SetDay(now); //얘는 계속 해줘야하니까
     }
