@@ -3,18 +3,13 @@ using UnityEngine;
 
 public class EnvironmentPresenter : MonoBehaviour
 {
-    EnvironmentModel _model;
-    EnvironmentView _view;
+    readonly EnvironmentModel _model;
+    readonly EnvironmentView _view;
 
     Season _lastSeason;
     DayilyCycle _lastDayily;
 
-    //데이터 받아오기
-    //private void InitData()
-    //{
-    //데이터 받아오는 로직
-    //받아온 데이터를 모델에 연결해 데이터 추가
-    //}
+    
 
     private void Start()
     {
@@ -39,11 +34,17 @@ public class EnvironmentPresenter : MonoBehaviour
         }
         if (_lastSeason != _model.CurrentSeason) 
         {
-            //파티클 랜덤확률로 쏘기
+            _view.PlaySeasonParticle(_model.CurrentSeason);
             _lastSeason = _model.CurrentSeason;
         }
 
     }
+    //데이터 받아오기
+    //private void InitData()
+    //{
+    //데이터 받아오는 로직
+    //받아온 데이터를 모델에 연결해 데이터 추가
+    //}
 
 
 }

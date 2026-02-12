@@ -13,9 +13,6 @@ public enum DayilyCycle
 public class EnvironmentDataBox
 {
     public string _lastDay; //저장 일시
-   
     public int[] _calculation;
 
-
-    
 }

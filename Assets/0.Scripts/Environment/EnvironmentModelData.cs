@@ -12,6 +12,7 @@ public class EnvironmentModel
     public int[] _seasonDuration = new int[4];
     private int _lastMonth = -1;
     private int _lastDay = -1;
+    
     [SerializeField] private float _dayDuration = 1200f;
     private Dictionary<Season, float[]> _seasonWeights = new()
     {
@@ -20,7 +21,6 @@ public class EnvironmentModel
         { Season.Autumn, new float[] { 0.75f, 1.5f, 0.75f } },
         { Season.Winter, new float[] { 0.5f, 1.0f, 1.5f } }
     };
-
 
     //전체적인 시간 계산 메서드
     public void UpdateTimeSet(DateTime now)
@@ -107,6 +107,19 @@ public class EnvironmentModel
         box._lastDay = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss");
         box._calculation = (int[])_seasonDuration.Clone();
 
+        Debug.Log($"<color=yellow>저장일자: {box._lastDay},계절 마지막 일자: [{box._calculation}] 저장완료</color>");
+
         return box;
+    }
+    public void LoadData(EnvironmentDataBox box)
+    {
+        _data = box;
+        DateTime savedDate = DateTime.Parse(_data._lastDay);
+        _seasonDuration = (int[])_data._calculation.Clone();
+
+        _lastMonth = savedDate.Month;
+        _lastDay = savedDate.Day;
+
+        Debug.Log($"<color=yellow>{_lastMonth}월{_lastDay}일 로드 완료</color>");
     }
 }
