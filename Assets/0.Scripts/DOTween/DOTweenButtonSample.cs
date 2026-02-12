@@ -9,14 +9,14 @@ using DG.Tweening;
 public class DOTweenButtonSample : MonoBehaviour
 {
     [Header("버튼 연결")]
-    public Button[] btnPunchScale;    // 누르면 통통 튐
-    public Button[] btnPunchPosition; // 누르면 좌우로 흔들림
-    public Button[] btnFade;          // 누르면 사라졌다 나타남
-    public Button[] btnScale;         // 누르면 커졌다 돌아옴
-    public Button[] btnSizeDelta;     // 누르면 넓어졌다 돌아옴
-    public Button[] btnRotate;        // 누르면 한바퀴 회전
-    public Button[] btnColor;         // 누르면 색 변경
-    public Button[] btnSeqColor;      // 누르면 여러번 색 변경
+    public Button[] btnPunchScale;    // 통통 튐
+    public Button[] btnPunchPosition; // 좌우로 흔들림
+    public Button[] btnFade;          // 사라졌다 나타남
+    public Button[] btnScale;         // 커졌다 돌아옴
+    public Button[] btnSizeDelta;     // 넓어졌다 돌아옴
+    public Button[] btnRotate;        // 한바퀴 회전
+    public Button[] btnColor;         // 색 변경
+    public Button[] btnSeqColor;      // 여러번 색 변경
     public Button[] btnHoverColor;    // 미구현 
 
     private void Start()
