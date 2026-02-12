@@ -19,9 +19,8 @@ public class EnvironmentPresenter : MonoBehaviour
         //처음 시작할 때 현재 시각 기억
         DateTime now = DateTime.UtcNow.AddHours(9);
         //_model.UpdateTimeSet(now);
-        DateTime start = new(2024, 1, 1);
+        DateTime start = new(2026, 1, 1);
 
-        // 기준점으로부터 0 ~ 365일 사이의 무작위 시간을 더함
         DateTime randomDate = start.AddDays(UnityEngine.Random.Range(0, 365))
                                    .AddHours(UnityEngine.Random.Range(0, 24))
                                    .AddMinutes(UnityEngine.Random.Range(0, 60));
@@ -60,10 +59,11 @@ public class EnvironmentPresenter : MonoBehaviour
         }
 
     }
+    //이 친구 인스펙터에서 우클릭 후 해당 메서드 이름 누르시면 실행되요!
     [ContextMenu("Random Date")]
     public void TestRandomDate()
     {
-        DateTime start = new(2024, 1, 1);
+        DateTime start = new(2026, 1, 1);
 
         DateTime randomDate = start.AddDays(UnityEngine.Random.Range(0, 365))
                                    .AddHours(UnityEngine.Random.Range(0, 24))
