@@ -2,7 +2,7 @@
 using UnityEngine;
 
 // 상점 항목별 아이템 관리하는 클래스
-public class StoreCategory<T> : IItem where T : StoreItemBase
+public class StoreCategory<T> : IStoreItem where T : StoreItemBase
 {
     Dictionary<int, T> _category = new Dictionary<int, T>();
 
