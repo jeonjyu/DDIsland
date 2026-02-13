@@ -13,6 +13,7 @@ public class StoreItemBase : MonoBehaviour
     [SerializeField] private int _itemCount;
     [SerializeField] private int _purchasePrice;
     [SerializeField] private int _sellPrice;
+    [SerializeField] private string _itemImage;
     [SerializeField] private string _itemName;
     [SerializeField] private string _itemDesc;
 
@@ -24,6 +25,7 @@ public class StoreItemBase : MonoBehaviour
     public int ItemCount { get => _itemCount; set => _itemCount = value; }
     public int PurchasePrice => _purchasePrice; 
     public int SellPrice  => _sellPrice;
+    public string ItemImage => _itemImage;
     public string ItemName => _itemName; 
     public string ItemDesc => _itemDesc;
 }
