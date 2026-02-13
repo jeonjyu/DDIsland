@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 [CreateAssetMenu(fileName = "DummyStoreItemSO", menuName = "Scriptable Objects/DummyStoreItemSO")]
-public class DummyStoreItemSO : ScriptableObject
+public class DummyStoreItemSO : ScriptableObject, IStoreItem
 {
     //field
     [SerializeField] private int _itemId;
@@ -26,4 +26,9 @@ public class DummyStoreItemSO : ScriptableObject
     public string ItemImage => _itemImage;
     public string ItemName => _itemName;
     public string ItemDesc => _itemDesc;
+
+    public ScriptableObject GetStoreItem()
+    {
+        return this; 
+    }
 }
