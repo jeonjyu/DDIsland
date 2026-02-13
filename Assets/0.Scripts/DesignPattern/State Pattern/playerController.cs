@@ -1,9 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.InputSystem.LowLevel;
-using static UnityEditor.Experimental.GraphView.GraphView;
-using static UnityEngine.Rendering.DebugUI;
+
 
 public enum Point
 {
@@ -23,10 +21,12 @@ public class PlayerController : MonoBehaviour
     private bool _shouldSell = false;
     private bool _isFishing = false;
     private bool _isResting = false;
+    private bool _isYawning = false;
+    private bool _hasYawned = false;
     private int _fishingCount = 5;  //낚시횟수
 
     private Coroutine _fishingRoutine;  //낚시 코루틴
-
+    private Coroutine _yawnRoutine;  //하품 코루틴
     public PlayerData PlayerData { get; private set; }
 
     Point _currentPoint = Point.Fish;  //플레이어 목적지
@@ -40,8 +40,9 @@ public class PlayerController : MonoBehaviour
     public Animator Animator => _animator;
     public MeshRenderer MeshRenderer => _meshRenderer;
     public bool IsHungery => _ishungery;
-    public bool _IsResting => _isResting;
-
+    public bool IsResting => _isResting;
+    public bool HasYawn => _hasYawned;
+    public bool IsYawning => _isYawning;
     public Point Point => _currentPoint;
     public Transform FishPoint => _fishPoint;
     public Transform StorePoint => _storePoint;
@@ -55,6 +56,11 @@ public class PlayerController : MonoBehaviour
         _animator = GetComponent<Animator>();
         _rigid = GetComponent<Rigidbody2D>();
         _agent = GetComponent<NavMeshAgent>();
+        if (PlayerData == null) PlayerData = new PlayerData();
+        //테스트용
+        PlayerData.SetHunger(80);
+        PlayerData.SetStamina(80);
+        PlayerData.SetMoveSpeed(1);
     }
 
     private void Update()
@@ -108,7 +114,21 @@ public class PlayerController : MonoBehaviour
     {
         _fishingCount = 5;
     }
-
+    public void HasYawned()
+    {
+        if (_isYawning) return;
+        _hasYawned = true;
+        if (_yawnRoutine != null) StopCoroutine(_yawnRoutine);
+        _yawnRoutine = StartCoroutine(YawnWait());
+    }
+    IEnumerator YawnWait()
+    {
+        Agent.isStopped = true;          // 하품 중 이동 금지
+        Agent.velocity = Vector3.zero;
+        yield return new WaitForSeconds(8f);
+        _isYawning = false;
+        _yawnRoutine = null;
+    }
     public void FullyRecovered()  //휴식이 다찰때까지 어떤 상태로도 전환 불가
     {
         if (_isResting) return;
@@ -126,7 +146,13 @@ public class PlayerController : MonoBehaviour
             SetState(new IdleState(this));
         }
     }
-    
+    public void ApplyMoveSpeed()
+    {
+        float baseSpeed = PlayerData.MoveSpeed;
+        float finalSpeed = IsHungery ? baseSpeed * 0.5f : baseSpeed;  //배고프면 속도 절반
+
+        _agent.speed = finalSpeed;
+    }
     public void PlayAnim(string anim)
     {
         _animator.Play(anim);
@@ -156,17 +182,17 @@ public class PlayerController : MonoBehaviour
             return new MoveState(this, _currentPoint);
         }
 
-        if (_canCook)
-        {
-            _currentPoint = Point.Kitchen;
-            return new MoveState(this, _currentPoint);
-        }
+       // if (_canCook)
+       // {
+       //     _currentPoint = Point.Kitchen;
+       //     return new MoveState(this, _currentPoint);
+       // }
 
-        if (_shouldSell)
-        {
-            _currentPoint = Point.Store;
-            return new MoveState(this, _currentPoint);
-        }
+       // if (_shouldSell)
+       // {
+       //     _currentPoint = Point.Store;
+       //     return new MoveState(this, _currentPoint);
+       // }
         _currentPoint = Point.Fish;
         return new MoveState(this, _currentPoint);
     }

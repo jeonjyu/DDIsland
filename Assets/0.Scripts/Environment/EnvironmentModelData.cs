@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class EnvironmentModel
 {
-    EnvironmentDataBox _data;
+    EnvironmentData _data;
 
     public Season CurrentSeason { get; private set; }
     public DayilyCycle CurrentDay { get; private set; }
@@ -100,18 +100,19 @@ public class EnvironmentModel
         }
     }
     //데이터 저장 메서드
-    public EnvironmentDataBox SaveData()
+    public EnvironmentData SaveData(DateTime now)
     {
-        EnvironmentDataBox box = new();
-
-        box._lastDay = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss");
-        box._calculation = (int[])_seasonDuration.Clone();
+        EnvironmentData box = new()
+        {
+            _lastDay = now.ToString("yyyy-MM-dd HH:mm:ss"),
+            _calculation = (int[])_seasonDuration.Clone()
+        };
 
         Debug.Log($"<color=yellow>저장일자: {box._lastDay},계절 마지막 일자: [{box._calculation}] 저장완료</color>");
 
         return box;
     }
-    public void LoadData(EnvironmentDataBox box)
+    public void LoadData(EnvironmentData box)
     {
         _data = box;
         DateTime savedDate = DateTime.Parse(_data._lastDay);

@@ -10,6 +10,7 @@ public class SleepState : IState
 
     public void Enter()
     {
+        Debug.Log("수면진입");
         _player.Animator.SetBool("isSleep", true);
     }
 
