@@ -11,11 +11,11 @@ public class StoreCategory<T> : IStoreItem where T : StoreItemBase
 
     public void AddToCategory(T item)
     {
-        _category.Add(item.ItemId, item);
+        _category.Add(item.ItemDataSO.ItemId, item);
     }
 
     public void RemoveFromCategory(T item) 
     {
-        _category.Remove(item.ItemId);
+        _category.Remove(item.ItemDataSO.ItemId);
     }
 }

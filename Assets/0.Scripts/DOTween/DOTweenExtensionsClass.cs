@@ -14,7 +14,7 @@ using DG.Tweening;
 ///   rt.TweenScale(Vector3.one * 1.5f, 0.3f);           // 1.5배 커짐
 ///   rt.TweenSizeDelta(new Vector2(300, 100), 0.3f);    // 가로/세로 넓어짐
 ///   rt.TweenRotate(new Vector3(0, 0, 90), 0.3f);       // z축으로 90도 회전
-///   image.TweenColor(Color.red, 0.3f);                 // 빨간색으로 변경
+///   img.TweenColor(Color.red, 0.3f);                 // 빨간색으로 변경
 ///   
 /// </summary>
 public static class DOTweenExtensionsClass
@@ -23,7 +23,7 @@ public static class DOTweenExtensionsClass
     public static Tween TweenPunchScale(this RectTransform rt,
         float punch = 0.2f, float time = 0.3f, int vibrato = 10, float elasticity = 1f)
     {
-        rt.DOKill();
+        rt.DOKill(); // 이전 트윈이 있다면 제거
         return rt.DOPunchScale(Vector3.one * punch, time, vibrato, elasticity)
             .SetUpdate(true).SetLink(rt.gameObject);
     }
@@ -33,7 +33,7 @@ public static class DOTweenExtensionsClass
         Vector2 punch = default, float time = 0.3f, int vibrato = 10, float elasticity = 1f)
     {
         rt.DOKill();
-        if (punch == default) punch = new Vector2(30f, 0f);
+        if (punch == default) punch = new Vector2(30f, 0f); // 기본값 설정 (좌우로 30, 위아래로 0)
         return rt.DOPunchAnchorPos(punch, time, vibrato, elasticity)
             .SetUpdate(true).SetLink(rt.gameObject);
     }
@@ -74,7 +74,7 @@ public static class DOTweenExtensionsClass
             .SetUpdate(true).SetLink(rt.gameObject);
     }
 
-    // DOColor - 누르면 색 변경 // image.TweenColor(Color.red, 0.3f); // 빨간색으로 변경, 0.3초간 
+    // DOColor - 누르면 색 변경 // img.TweenColor(Color.red, 0.3f); // 빨간색으로 변경, 0.3초간 
     public static Tween TweenColor(this Image img,
         Color to, float time = 0.3f, Ease ease = Ease.OutQuad)
     {
