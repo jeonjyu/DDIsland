@@ -37,7 +37,7 @@ public class DataMgr : MonoBehaviour
     public async void LoadAllData()
     {
         // JSON 받아오기
-        string json = await FirebaseMgr.Instance.FirebaseDataGet("");
+        string json = await FirebaseMgr.Instance.FirebaseDataGet();
         Debug.Log("데이터 수신 완료: " + json);
 
         if (!string.IsNullOrEmpty(json))
@@ -45,16 +45,44 @@ public class DataMgr : MonoBehaviour
             //JSON을 UserAllData에 있는 각각에 맞는 자료형으로 변경
             _allUserData = JsonUtility.FromJson<UserAllData>(json);
 
-            
+
             //_allUserData.Decoration._buildings ??= new List<PlacedObject>();
 
-            Debug.Log("<color=green>서버 데이터 로드 완료!</color>");
+            Debug.Log("<color=green>서버 데이터 로드 완료</color>");
 
             OnDataLoaded?.Invoke();
         }
         else
         {
             Debug.Log("<color=yellow>저장된 데이터가 없습니다.</color>");
+
+            Debug.Log("<color=yellow>새로운 데이터로 진행합니다</color>");
+           
+            SetNewUserData();
+
+            SaveAllData();
+
+            //if (_allUserData.Decoration != null)
+            //{
+            //    _allUserData.Decoration._buildings ??= new List<PlacedObject>();
+            //}
+
+            OnDataLoaded?.Invoke();
         }
+    }
+    //새 유저를 위한 데이터입니다. 아직 뭘 넣어야할지 몰라 일단 환경 데이터만 넣었습니다
+    private void SetNewUserData()
+    {
+        _allUserData = new UserAllData();
+
+        EnvironmentModel env = new ();
+        DateTime now = DateTime.UtcNow.AddHours(9);
+        env.UpdateTimeSet(now); // 계절 및 시간대 계산 실행
+        _allUserData.Environment = env.SaveData(now);
+
+        _allUserData.Character = new ();
+        _allUserData.Decoration = new ();
+        _allUserData.Collection = new ();
+        _allUserData.Progress = new ();
     }
 }

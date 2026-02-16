@@ -8,6 +8,7 @@ using UnityEngine;
 public class FirebaseMgr : MonoBehaviour
 {
     static public FirebaseMgr Instance;
+    private bool _isInitialized = false;
 
     private FirebaseUser _user;
     static public FirebaseUser User => Instance._user;
@@ -22,27 +23,28 @@ public class FirebaseMgr : MonoBehaviour
     {
         Instance = this;
 
-        FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread
-        (task =>
+        InitializeFirebase();
+    }
+    private void InitializeFirebase()
+    {
+        FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task =>
         {
             if (task.Result == DependencyStatus.Available)
             {
-                //Firebase 초기화 성공
                 _database = FirebaseDatabase.DefaultInstance;
+                _isInitialized = true;
                 Debug.Log("<color=green>Firebase 초기화 성공</color>");
             }
             else
             {
-                //Firebase 초기화 실패
-                Debug.LogError($"<color=red>Firebase 초기화 실패: {task.Result}</color>");
+                Debug.LogError($"Firebase 초기화 실패: {task.Result}");
             }
-        }
-        );
+        });
     }
 
     public void FirebaseDataTransfer(string json, string path)
     {
-        if (_database == null)
+        if (!_isInitialized && _database == null)
         {
             Debug.LogError("<color=red>Firebase Database가 초기화되지 않았습니다.</color>");
             return;
@@ -69,11 +71,24 @@ public class FirebaseMgr : MonoBehaviour
         });
 
     }
-    public async Task<string> FirebaseDataGet(string path)
+    public async Task<string> FirebaseDataGet(string path = "")
     {
-        if (_database == null) return null;
+        if (!_isInitialized && _database == null)
+        {
+            Debug.LogWarning("Firebase가 아직 초기화되지 않았습니다.");
+            return null;
+        }
 
-        DataSnapshot snapshot = await _database.GetReference("Users").Child(DeviceID).GetValueAsync();
+        DatabaseReference dbRef = Database.GetReference("Users").Child(DeviceID);
+
+        if (!string.IsNullOrEmpty(path))
+        {
+            dbRef = dbRef.Child(path);
+        }
+
+        DataSnapshot snapshot = await dbRef.GetValueAsync();
+
+
 
         if (snapshot != null && snapshot.Exists)
         {

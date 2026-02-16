@@ -12,7 +12,7 @@ public class EnvironmentModel
     public int[] _seasonDuration = new int[4];
     private int _lastMonth = -1;
     private int _lastDay = -1;
-    
+
     [SerializeField] private float _dayDuration = 1200f;
     private Dictionary<Season, float[]> _seasonWeights = new()
     {
@@ -75,51 +75,40 @@ public class EnvironmentModel
             _seasonDuration[i] = currentDaySum; //위에서 계절 배열에다가 주입
         }
     }
-   
+
     private void SetDay(DateTime now)
     {
         float currentSeconds = (now.Minute * 60) + now.Second; //분과 초를 종합해서 계산 ex)3600초
         float[] mult = _seasonWeights[CurrentSeason]; //딕셔너리에 있는 가중치 들고옴
 
-        float morning = _dayDuration * mult[0];
-        float day = _dayDuration * mult[1];
-        float night = _dayDuration * mult[2];
+        float morningEnd = _dayDuration * mult[0];
+        float dayEnd = _dayDuration * mult[1];
 
-        //이 부분도 좀 고치려면 고칠 수 있을듯..?
-        if (currentSeconds < morning)
+        //스위치문으로 변경 시켰는데 더 깔끔해보이고 좋네요
+        //그리고 굳이 Night는 조건 안줘도 되니까 그냥 없앴습니다
+        CurrentDay = currentSeconds switch
         {
-            CurrentDay = DayilyCycle.Morning;
-        }
-        else if (currentSeconds < (morning + day))
-        {
-            CurrentDay = DayilyCycle.Day;
-        }
-        else
-        {
-            CurrentDay = DayilyCycle.Night;
-        }
+            _ when currentSeconds < morningEnd => DayilyCycle.Morning,
+            _ when currentSeconds < dayEnd => DayilyCycle.Day,
+            _ => DayilyCycle.Night
+        };
     }
     //데이터 저장 메서드
     public EnvironmentData SaveData(DateTime now)
     {
         EnvironmentData box = new()
         {
-            _lastDay = now.ToString("yyyy-MM-dd HH:mm:ss"),
             _calculation = (int[])_seasonDuration.Clone()
         };
 
-        Debug.Log($"<color=yellow>저장일자: {box._lastDay},계절 마지막 일자: [{box._calculation}] 저장완료</color>");
+        Debug.Log($"계절 마지막 일자: [{box._calculation}] 저장완료</color>");
 
         return box;
     }
     public void LoadData(EnvironmentData box)
     {
         _data = box;
-        DateTime savedDate = DateTime.Parse(_data._lastDay);
         _seasonDuration = (int[])_data._calculation.Clone();
-
-        _lastMonth = savedDate.Month;
-        _lastDay = savedDate.Day;
 
         Debug.Log($"<color=yellow>{_lastMonth}월{_lastDay}일 로드 완료</color>");
     }

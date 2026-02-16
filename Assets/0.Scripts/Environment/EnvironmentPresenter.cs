@@ -75,7 +75,7 @@ public class EnvironmentPresenter : MonoBehaviour
     }
     public void Save(DateTime now)
     {
-        
+        //데이터 저장하는거   
         _model.UpdateTimeSet(now);
         _view.ChangeDayilyBackGround(_model.CurrentDay);
         _view.PlaySeasonParticle(_model.CurrentSeason);
@@ -100,15 +100,12 @@ public class EnvironmentPresenter : MonoBehaviour
         // 데이터 꺼내오는거
         EnvironmentData env = DataMgr.Instance._allUserData.Environment;
 
-        if (env != null && !string.IsNullOrEmpty(env._lastDay))
+        if (env != null)
         {
-            //굳이 끝내는 시간을 저장해야하는지는 의문
-            DateTime savedTime = DateTime.Parse(env._lastDay);
             _model._seasonDuration = env._calculation;
 
            //Model에서 갖고 있는 시간에 따른 변화 - 근데 이거 Update에서 하고 있는데...혹시나 몰라서 넣어놨습니다 
            // + 테스트용
-            _model.UpdateTimeSet(savedTime);
 
             //모델에서 가지고 있는 현재 시간, 현재 계절을 Presenter에 갖고옴
             _lastDayily = _model.CurrentDay;
@@ -117,7 +114,7 @@ public class EnvironmentPresenter : MonoBehaviour
             _view.ChangeDayilyBackGround(_model.CurrentDay);
             _view.PlaySeasonParticle(_model.CurrentSeason);
 
-            Debug.Log($"<color=cyan>데이터 복구 완료: {savedTime} / {_lastSeason} / {_lastDayily}</color>");
+            Debug.Log($"<color=cyan> 데이터 복구 완료 {_lastSeason} / {_lastDayily}</color>");
         }
     }
 

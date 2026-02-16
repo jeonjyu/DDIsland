@@ -17,14 +17,6 @@ public class EnvironmentView : MonoBehaviour
         //미리 계절을 정수로 변환
         int seasonIndex = (int)season;
 
-        //현재 재생중인 파티클이 있으면 정지
-        if (_currentParticle != null)
-        {
-            _currentParticle.Stop();
-            _currentParticle.gameObject.SetActive(false);
-            _currentParticle = null; //밑에서 만약 파티클이 안나올 수 있기 때문에 null로 설정
-        }
-
         int rnd = Random.Range(1, 101);
 
         if (rnd <= 35)
@@ -34,7 +26,13 @@ public class EnvironmentView : MonoBehaviour
             _particles[seasonIndex].gameObject.SetActive(true);
             _particles[seasonIndex].Play();
         }
-
+        //만약 랜덤값이 35보다 크고 현재 재생중인 파티클이 있다면 멈추고 비활성화
+        else if (_currentParticle != null)
+        {
+            _currentParticle.Stop();
+            _currentParticle.gameObject.SetActive(false);
+            _currentParticle = null; //밑에서 만약 파티클이 안나올 수 있기 때문에 null로 설정
+        }
     }
     public void ChangeDayilyBackGround(DayilyCycle dayily)
     {
