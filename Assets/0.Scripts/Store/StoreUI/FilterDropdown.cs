@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-enum Filter
+public enum Filter
 {
     InteriorFilter = 1,
     CostumeFilter,
@@ -20,4 +20,21 @@ public class FilterDropdown : StoreDropdownBase
         SetOptions();
     }
 
+    public void UpdateFilter(Filter filter)
+    {
+        switch (filter)
+        {
+            case Filter.InteriorFilter:
+                optionList = StoreManager.Instance.GetEnumList<InteriorFilter>(Enum.GetValues(typeof(InteriorFilter))); 
+                break;
+            case Filter.CostumeFilter:
+                optionList = StoreManager.Instance.GetEnumList<CostumeFilter>(Enum.GetValues(typeof(CostumeFilter))); 
+                break;
+            case Filter.FishingFilter:
+                optionList = StoreManager.Instance.GetEnumList<FishingFilter>(Enum.GetValues(typeof(FishingFilter))); 
+                break;
+        }
+
+        SetOptions();
+    }
 }
