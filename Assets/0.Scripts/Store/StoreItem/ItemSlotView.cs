@@ -1,10 +1,13 @@
-﻿using TMPro;
+﻿using System.ComponentModel;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class StoreItemView : MonoBehaviour, IStoreItemView
+public class ItemSlotView : MonoBehaviour, IStoreItemView
 {
+    ItemSlotViewModel viewModel;
+
     // 인테리어 타입에 따라 다른 UI 테두리 표시
     [SerializeField] private Image _slotBackground;
     [SerializeField] private TMP_Text _itemPrice;
@@ -23,20 +26,28 @@ public class StoreItemView : MonoBehaviour, IStoreItemView
 
     void Start()
     {
+        viewModel = GetComponent<ItemSlotViewModel>();
+
         eventTrigger = gameObject.GetComponent<EventTrigger>();
         //eventTrigger.OnPointerClick(() => { }); 
         // 버튼 팝업 띄우고
         // 해당 뷰의 모델을 전달하는 메서드 
+
+        viewModel.PropertyChanged += OnViewModelPropChanged;
+        Init();
     }
 
-    public void Init(int price, string name, int count, bool isGained, string imgPath)
+    void OnEnable()
     {
-        UpdateSlotColor(isGained);
-        _itemName.text = name;
-        _itemPrice.text = price.ToString();
-        _itemCount.text = count.ToString();
-        //_itemImage.sprite = ;
+        if (viewModel != null)
+            viewModel.PropertyChanged += OnViewModelPropChanged;
     }
+
+    void OnDisable()
+    {
+        //viewModel.PropertyChanged -= OnViewModelPropChanged;
+    }
+
 
     public void UpdateItemCount(int count)
     {
@@ -49,5 +60,23 @@ public class StoreItemView : MonoBehaviour, IStoreItemView
             _slotBackground.color = Color.grey;
         else
             _slotBackground.color = Color.white;
+    }
+
+    private void OnViewModelPropChanged(object sender, PropertyChangedEventArgs e)
+    {
+        if (string.IsNullOrEmpty(e.PropertyName))
+        {
+            Debug.Log("[ItemSlotView] OnViewModelPropChanged | 모델 변경");
+
+            Init();
+        }
+        switch (e.PropertyName)
+        {
+            case "ItemId":
+                Debug.Log("[ItemSlotView] OnViewModelPropChanged | (id) 모델 변경");
+                Init();
+                break;
+
+        }
     }
 }
