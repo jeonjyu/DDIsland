@@ -104,11 +104,21 @@ public class PlayerController : MonoBehaviour
     {
         var waitTime = Random.Range(5f, 8f);
         yield return new WaitForSeconds(waitTime);
-        _fishingCount--;
-        _isFishing = false;
+        _animator.SetTrigger("FishingHit");
+        //물고기 얻기, 보관함추가등등      
+    }
+    public void AnimEvent_FishingCycleEnd() 
+    {
+        _fishingCount--; 
+        Debug.Log("fishingCount: " + _fishingCount);
         PlayerData.SetHunger(PlayerData.Hunger - 4);
         PlayerData.SetStamina(PlayerData.Stamina - 5);
-        //물고기 얻기, 보관함추가등등      
+        _isFishing = false; _fishingRoutine = null;
+        if (_fishingCount <= 0 || PlayerData.Hunger <= 0 || PlayerData.Stamina <= 0)
+        {
+            Animator.SetBool("isFish", false);
+            SetState(new IdleState(this)); 
+        }
     }
     public void ResetFishingCount()
     {
@@ -117,15 +127,21 @@ public class PlayerController : MonoBehaviour
     public void HasYawned()
     {
         if (_isYawning) return;
-        _hasYawned = true;
-        if (_yawnRoutine != null) StopCoroutine(_yawnRoutine);
+
+        _isYawning = true;
+
+        if (_yawnRoutine != null)
+            StopCoroutine(_yawnRoutine);
+
         _yawnRoutine = StartCoroutine(YawnWait());
     }
+
     IEnumerator YawnWait()
     {
         Agent.isStopped = true;          // 하품 중 이동 금지
         Agent.velocity = Vector3.zero;
         yield return new WaitForSeconds(8f);
+        _hasYawned = false;
         _isYawning = false;
         _yawnRoutine = null;
     }
