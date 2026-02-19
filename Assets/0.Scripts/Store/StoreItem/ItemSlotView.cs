@@ -48,6 +48,18 @@ public class ItemSlotView : MonoBehaviour, IStoreItemView
         //viewModel.PropertyChanged -= OnViewModelPropChanged;
     }
 
+    public void Init()
+    {
+        Debug.Log("[ItemSlotView] Init");
+        DummyStoreItemSO modelData = viewModel.Model;
+        int itemID = viewModel.ItemId;
+
+        UpdateSlotColor(modelData.IsGained);
+        _itemName.text = modelData.ItemName;
+        _itemPrice.text = modelData.PurchasePrice.ToString();
+        _itemCount.text = modelData.ItemCount.ToString();
+        //_itemImage.sprite = ;
+    }
 
     public void UpdateItemCount(int count)
     {
