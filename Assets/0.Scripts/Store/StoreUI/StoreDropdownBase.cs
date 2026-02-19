@@ -24,6 +24,6 @@ public class StoreDropdownBase : MonoBehaviour
         {
             dropdown.options.Add(new TMP_Dropdown.OptionData(option));
         }
-        dropdown.captionText.text = optionList[1];
+        dropdown.captionText.text = optionList[0];
     }
 }
