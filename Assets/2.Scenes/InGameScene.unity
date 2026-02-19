@@ -744,7 +744,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeManager
   goldText: {fileID: 1911192246}
-  playerCharacter: {fileID: 0}
+  playerCharacter: {fileID: 1726533986}
   hungerStatText: {fileID: 688418603}
   staminaStatText: {fileID: 318671443}
   moveSpeedText: {fileID: 102421047}
@@ -1225,6 +1225,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8641943bdc6c45349a1070ce7c3166ba, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1726533992}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8641943bdc6c45349a1070ce7c3166ba, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1726533995}
   m_SourcePrefab: {fileID: 100100000, guid: 8641943bdc6c45349a1070ce7c3166ba, type: 3}
 --- !u!1 &1726533986 stripped
 GameObject:
@@ -1296,6 +1299,29 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!136 &1726533995
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1726533986}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Height: 2
+  m_Direction: 1
+  m_Center: {x: 0, y: 1.5, z: 0}
 --- !u!114 &1911192246 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2216907090731788992, guid: d96aeccf34c6f69459dc04454fdf98cf, type: 3}
