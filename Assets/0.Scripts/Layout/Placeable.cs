@@ -16,5 +16,5 @@ public abstract class Placeable : MonoBehaviour
 
     }
 
-    public abstract void GetGridPosition();
+    public abstract Vector2Int ConvertedIndex();
 }
