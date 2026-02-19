@@ -21,12 +21,6 @@ public class FishingState : IState
     public void Execute()
     { 
         _player.TryFishing();
-
-        if (_player.FishingCount <= 0 || _player.PlayerData.Hunger <= 0 || _player.PlayerData.Stamina <= 0)
-        {
-            _player.Animator.SetBool("isFish", false);
-            _player.SetState(new IdleState(_player));
-        }
     }
 
     public void Exit()

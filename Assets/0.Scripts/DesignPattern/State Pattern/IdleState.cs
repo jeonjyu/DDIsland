@@ -34,16 +34,21 @@ public class IdleState : IState
 
     public void Execute()
     {
-        // 하품 연출
-        _yawnTimer += Time.deltaTime;
-        if (_yawnTimer >= _nextYawnTime)
+        if (!_player.IsYawning)
         {
-            _player.Animator.SetTrigger("Yawn");
-            _player.HasYawned();
-            Debug.Log("하품!");
-            _yawnTimer = 0f;
-            _nextYawnTime = Random.Range(3.0f, 8.0f);
+            _yawnTimer += Time.deltaTime;
+
+            if (_yawnTimer >= _nextYawnTime)
+            {
+                _player.HasYawned();
+                _player.Animator.SetTrigger("Yawn");
+
+                _yawnTimer = 0f;
+                _nextYawnTime = Random.Range(3f, 8f);
+            }
         }
+
+
         // 잠깐 쉬었다가
         _idleTimer += Time.deltaTime;
         if (_idleTimer >= _idleDuration && !_player.IsYawning) _player.RequestReplan();  //Idle에서 벗어나 수치에따른 다음 상태 결정
