@@ -119,6 +119,17 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!114 &3889824 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5778944209795035121, guid: d96aeccf34c6f69459dc04454fdf98cf, type: 3}
+  m_PrefabInstance: {fileID: 1357251072}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Text
 --- !u!114 &39488702 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6467610633823620311, guid: d96aeccf34c6f69459dc04454fdf98cf, type: 3}
@@ -404,6 +415,17 @@ MonoBehaviour:
 --- !u!114 &318310107 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3735959133054792076, guid: d96aeccf34c6f69459dc04454fdf98cf, type: 3}
+  m_PrefabInstance: {fileID: 1357251072}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Text
+--- !u!114 &388185623 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3478210440004842615, guid: d96aeccf34c6f69459dc04454fdf98cf, type: 3}
   m_PrefabInstance: {fileID: 1357251072}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
@@ -925,8 +947,20 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 352509112787528050, guid: d96aeccf34c6f69459dc04454fdf98cf, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -169
+      objectReference: {fileID: 0}
+    - target: {fileID: 352509112787528050, guid: d96aeccf34c6f69459dc04454fdf98cf, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 279
+      objectReference: {fileID: 0}
     - target: {fileID: 1408028207755108415, guid: d96aeccf34c6f69459dc04454fdf98cf, type: 3}
       propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1922073835732253723, guid: d96aeccf34c6f69459dc04454fdf98cf, type: 3}
+      propertyPath: m_UiScaleMode
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5179672339118055510, guid: d96aeccf34c6f69459dc04454fdf98cf, type: 3}
@@ -1131,10 +1165,10 @@ MonoBehaviour:
   staminaButton: {fileID: 39488702}
   moveSpeedButton: {fileID: 1918681907}
   fishingSpeedButton: {fileID: 237136097}
-  hungerButtonText: {fileID: 318310107}
-  staminaButtonText: {fileID: 427913614}
-  moveSpeedButtonText: {fileID: 544395775}
-  fishingSpeedButtonText: {fileID: 972810331}
+  hungerButtonText: {fileID: 388185623}
+  staminaButtonText: {fileID: 1897301573}
+  moveSpeedButtonText: {fileID: 1524292947}
+  fishingSpeedButtonText: {fileID: 3889824}
   hungerLevelText: {fileID: 318310107}
   staminaLevelText: {fileID: 427913614}
   moveSpeedLevelText: {fileID: 544395775}
@@ -1155,7 +1189,18 @@ MonoBehaviour:
   popupWindow: {fileID: 1357251074}
   upgradeManager: {fileID: 1519464752}
   playerCharacter: {fileID: 1726533986}
-  rayDistance: 100
+  rayDistance: 200
+--- !u!114 &1524292947 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5303168816580035748, guid: d96aeccf34c6f69459dc04454fdf98cf, type: 3}
+  m_PrefabInstance: {fileID: 1357251072}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Text
 --- !u!1001 &1726533985
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1318,14 +1363,25 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 1
+  m_Radius: 0.5
   m_Height: 2
   m_Direction: 1
-  m_Center: {x: 0, y: 0.5, z: 0}
+  m_Center: {x: 0, y: 1.5, z: 0}
+--- !u!114 &1897301573 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3145784633709766876, guid: d96aeccf34c6f69459dc04454fdf98cf, type: 3}
+  m_PrefabInstance: {fileID: 1357251072}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Text
 --- !u!114 &1918681907 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2218879742870332073, guid: d96aeccf34c6f69459dc04454fdf98cf, type: 3}
