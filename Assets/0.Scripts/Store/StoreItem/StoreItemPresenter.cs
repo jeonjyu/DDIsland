@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 public class StoreItemPresenter : MonoBehaviour
 {
@@ -16,8 +16,6 @@ public class StoreItemPresenter : MonoBehaviour
     {
         //_model = model.GetStoreItem();
         _model = model;
-        _view.Init(_model.PurchasePrice, _model.ItemName, _model.ItemCount, _model.IsGained, _model.ItemImage);
+        //_view.Init(_model.PurchasePrice, _model.ItemName, _model.ItemCount, _model.IsGained, _model.ItemImage);
     }
-
-
 }

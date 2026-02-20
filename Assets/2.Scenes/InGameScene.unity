@@ -200,14 +200,14 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 201791961}
   m_Enabled: 1
-  serializedVersion: 11
+  serializedVersion: 12
   m_Type: 1
   m_Color: {r: 1, g: 0.95686275, b: 0.8392157, a: 1}
   m_Intensity: 1
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
-  m_CookieSize: 10
+  m_CookieSize2D: {x: 10, y: 10}
   m_Shadows:
     m_Type: 2
     m_Resolution: -1
@@ -388,6 +388,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!33 &236287964
 MeshFilter:
@@ -626,6 +627,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!33 &555028793
 MeshFilter:
@@ -729,8 +731,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeClickHandler
   popupWindow: {fileID: 967708563}
   upgradeManager: {fileID: 607514080}
-  playerCharacter: {fileID: 1561882600}
-  rayDistance: 200
 --- !u!114 &607514080
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -904,6 +904,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!33 &1209487041
 MeshFilter:
@@ -1105,6 +1106,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!33 &1401280329
 MeshFilter:
@@ -1332,6 +1334,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!33 &1933992857
 MeshFilter:
@@ -1471,6 +1474,14 @@ PrefabInstance:
       propertyPath: m_UiScaleMode
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2876023825259461141, guid: d96aeccf34c6f69459dc04454fdf98cf, type: 3}
+      propertyPath: m_AdditionalShaderChannelsFlag
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 3051916429053291641, guid: d96aeccf34c6f69459dc04454fdf98cf, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 23.38971
+      objectReference: {fileID: 0}
     - target: {fileID: 5179672339118055510, guid: d96aeccf34c6f69459dc04454fdf98cf, type: 3}
       propertyPath: m_Name
       value: UpradeCanvas
@@ -1482,6 +1493,18 @@ PrefabInstance:
     - target: {fileID: 6377503876303233284, guid: d96aeccf34c6f69459dc04454fdf98cf, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6564370143937716181, guid: d96aeccf34c6f69459dc04454fdf98cf, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 23.38971
+      objectReference: {fileID: 0}
+    - target: {fileID: 6842569638219432552, guid: d96aeccf34c6f69459dc04454fdf98cf, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 23.38971
+      objectReference: {fileID: 0}
+    - target: {fileID: 6909717508390944289, guid: d96aeccf34c6f69459dc04454fdf98cf, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 23.38971
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
