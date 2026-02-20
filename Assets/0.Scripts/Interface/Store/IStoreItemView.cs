@@ -1,6 +1,6 @@
 ﻿public interface IStoreItemView
 {
-    void Init(int price, string name, int count, bool isGained, string imgPath);
+    void Init();
     void UpdateItemCount(int count);
     void UpdateSlotColor(bool isGained);
 }

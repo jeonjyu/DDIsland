@@ -2,5 +2,4 @@
 
 public interface IStoreItem
 {
-    public ScriptableObject GetStoreItem();
 }
