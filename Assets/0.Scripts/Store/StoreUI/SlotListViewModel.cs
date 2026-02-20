@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -12,7 +12,7 @@ public class StoreListViewModel : MonoBehaviour, INotifyPropertyChanged
     [SerializeField] GameObject itemContents;
 
 // test
-    [SerializeField] List<DummyStoreItemSO> itemList = new List<DummyStoreItemSO>();
+    //[SerializeField] List<StoreItem> itemList = new List<StoreItem>();
 
     List<ItemSlotViewModel> storeItemViewModels = new List<ItemSlotViewModel>();
     [SerializeField] FilterDropdown filterDropdown;
@@ -36,8 +36,8 @@ public class StoreListViewModel : MonoBehaviour, INotifyPropertyChanged
     void Start()
     {
         Debug.Log("[ItemListViewModel] Start");
-        
-        LoadSlotList();
+
+        UpdateCurrentCat(1);
     }
 
     // 바뀐 항목 갯수에 따라 아이템 슬롯 풀링해옴
@@ -67,12 +67,14 @@ public class StoreListViewModel : MonoBehaviour, INotifyPropertyChanged
         // StoreManager 메서드 호출
         // 아니면 이벤트 구독해서 모두 설정
 
+    // 아이템 매니저의 아이템 리스트 
+    // 
 
         // 슬롯 프리팹에 모델 넣어주기
-        foreach (DummyStoreItemSO item in itemList)
+        foreach (StoreItem item in ItemManager.Instance.displayItems)
         {
-            storeItemViewModels[itemList.IndexOf(item)].SetModel(item);
-            Debug.Log("[ItemListViewModel] UpdateSlotList | 슬롯 " + itemList.IndexOf(item));
+            storeItemViewModels[ItemManager.Instance.displayItems.IndexOf(item)].SetModel(item);
+            Debug.Log("[ItemListViewModel] UpdateSlotList | 슬롯 " + ItemManager.Instance.displayItems.IndexOf(item));
         }
 
         Debug.Log("[ItemListViewModel] UpdateSlotList | 슬롯 로딩 완료");
