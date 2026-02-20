@@ -1,27 +1,18 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 
 // 상점 항목별 아이템 관리하는 클래스
-public class StoreCategory<T> : IStoreItem where T : StoreItemBase
+public class StoreCategory<T> : IStoreCategory<T> where T : System.Enum
 {
-    // itemid, 아이템SO
-    Dictionary<int, T> _category = new Dictionary<int, T>();
+    [SerializeField] Dictionary<int, IStoreItem> _category = new Dictionary<int, IStoreItem>();
 
-    public Dictionary<int, T> Category => _category;
-    public int CategoryCount => _category.Count;
-
-    public void AddToCategory(T item)
+    public void AddToCategory(StoreItemBaseSO<T> item)
     {
-        _category.Add(item.ItemDataSO.ItemId, item);
+        _category.Add(item.ItemId, item);
     }
 
-    public ScriptableObject GetStoreItem()
+    public void RemoveFromCategory(StoreItemBaseSO<T> item)
     {
-        throw new System.NotImplementedException();
-    }
-
-    public void RemoveFromCategory(T item) 
-    {
-        _category.Remove(item.ItemDataSO.ItemId);
+        _category.Remove(item.ItemId);
     }
 }
