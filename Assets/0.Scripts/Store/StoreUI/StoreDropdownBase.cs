@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
@@ -11,9 +11,12 @@ public class StoreDropdownBase : MonoBehaviour
 
     protected List<string> optionList = new List<string>();
 
+    public int SelectedOption => dropdown.value;
+
     void Awake()
     {
         dropdown = GetComponent<TMP_Dropdown>();
+        dropdown.onValueChanged.AddListener(OnDropdownValueChagned);
     }
 
     public void SetOptions()
@@ -25,5 +28,15 @@ public class StoreDropdownBase : MonoBehaviour
             dropdown.options.Add(new TMP_Dropdown.OptionData(option));
         }
         dropdown.captionText.text = optionList[0];
+    }
+
+    public virtual void OnDropdownValueChagned(int index)
+    {
+
+    }
+
+    private void OnDisable()
+    {
+        dropdown.onValueChanged.RemoveListener(OnDropdownValueChagned);
     }
 }

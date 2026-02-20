@@ -1,7 +1,6 @@
 ﻿using System;
 using UnityEngine;
 
-public enum Filter
 public class FilterDropdown : StoreDropdownBase
 {
     StoreCat storeType;
@@ -14,6 +13,7 @@ public class FilterDropdown : StoreDropdownBase
         SetOptions();
     }
 
+    // 상점에 따른 필터 기준 변경
     public void UpdateFilter(Filter filter)
     {
         switch (filter)
@@ -31,4 +31,15 @@ public class FilterDropdown : StoreDropdownBase
 
         SetOptions();
     }
+
+    // 필터 드롭다운 값이 변경되면 필터링
+    public override void OnDropdownValueChagned(int index)
+    {
+        foreach(StoreItem item in ItemManager.Instance.displayItems)
+        {
+            //if(item )
+        }
+    }
+
+
 }
