@@ -2,17 +2,23 @@ using UnityEngine;
 
 public class StoreItemPresenter : MonoBehaviour
 {
-    private DummyStoreItemSO _model;
+    private StoreItem _model;
     private IStoreItemView _view;
 
-    public DummyStoreItemSO Model => _model;
+    public StoreItem Model => _model;
 
     void Awake()
     {
         _view = gameObject.GetComponent<IStoreItemView>();
     }
 
-    public void SetModel(DummyStoreItemSO model) 
+    public void Reset()
+    {
+        _model = null;
+        //transform.parent = // 오브젝트풀로 반납, 지금은 임시 오브젝트풀로 반납
+    }
+
+    public void SetModel(StoreItem model) 
     {
         //_model = model.GetStoreItem();
         _model = model;

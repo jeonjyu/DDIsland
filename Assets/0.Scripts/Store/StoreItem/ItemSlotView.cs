@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -51,9 +51,10 @@ public class ItemSlotView : MonoBehaviour, IStoreItemView
     public void Init()
     {
         Debug.Log("[ItemSlotView] Init");
-        DummyStoreItemSO modelData = viewModel.Model;
+        StoreItem modelData = viewModel.Model;
         int itemID = viewModel.ItemId;
 
+    // 처음 시작할 때 Null참조 오류 modelData 예상
         UpdateSlotColor(modelData.IsGained);
         _itemName.text = modelData.ItemName;
         _itemPrice.text = modelData.PurchasePrice.ToString();
