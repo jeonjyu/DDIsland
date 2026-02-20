@@ -2,12 +2,6 @@
 using UnityEngine;
 
 public enum Filter
-{
-    InteriorFilter = 1,
-    CostumeFilter,
-    FishingFilter
-}
-
 public class FilterDropdown : StoreDropdownBase
 {
     StoreCat storeType;

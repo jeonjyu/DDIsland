@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.ComponentModel;
@@ -7,23 +7,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public enum StoreCat 
-{
-    [Description("인테리어")] interior = 1,
-    [Description ("코스튬")] costume,
-    [Description ("낚시")] fishing,
-    [Description ("레시피")] recipe
-}
-
 public class StoreManager : Singleton<StoreManager>
-{
-    // 아이템 카탈로그 딕셔너리 모음
-    List<Dictionary<int, StoreItemBase>> _totalItemData = new List<Dictionary<int, StoreItemBase>>();
-
+{ 
     List<Enum> category = new List<Enum>();
-
-    // 플레이어가 소유한 아이템 딕셔너리 모음
-    List<Dictionary<int, StoreItemBase>> _playerItemData = new List<Dictionary<int, StoreItemBase>>();
 
     [SerializeField] GameObject storeListPanel;
 
@@ -33,8 +19,6 @@ public class StoreManager : Singleton<StoreManager>
 
     void Start() 
     {
-        //stores = storeListPanel.gameObject.GetComponentsInChildren<GameObject>().ToList();
-
         // 초기 카테고리 설정
         currentCat = (StoreCat)1;
     }
