@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -39,7 +39,7 @@ public class StoreListView : MonoBehaviour
             // 버튼에 모델을 현재 상점 카테고리로 설정하도록 하는 로직 추가
             stores[idx].GetComponent<Button>().onClick.AddListener(() =>
             {
-                viewModel.UpdateCurrentCat(idx);
+                viewModel.UpdateCurrentCat(idx+1);
             });
         }
     }
