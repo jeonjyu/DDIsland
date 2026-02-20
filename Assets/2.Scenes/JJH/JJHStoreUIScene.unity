@@ -636,6 +636,65 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 1091454025947396018, guid: 76369fa9474e68845aae1d442cd586a8, type: 3}
   m_PrefabInstance: {fileID: 1685845601283299132}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1589856229
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1589856231}
+  - component: {fileID: 1589856230}
+  m_Layer: 0
+  m_Name: ItemManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1589856230
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1589856229}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45255a5967786da48a628d73f6877a42, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ItemManager
+  displayItems: []
+  interiorItem:
+  - {fileID: 11400000, guid: a180df7ade62d384e882d3cb94f7e1a3, type: 2}
+  - {fileID: 11400000, guid: 1b2bf8b9ad0359d4c8adda60586309a4, type: 2}
+  - {fileID: 11400000, guid: 92ac7324a52a14849b985087efdd673d, type: 2}
+  - {fileID: 11400000, guid: 3b454f9100bd2164386f86a467e4b6fe, type: 2}
+  - {fileID: 11400000, guid: a466b6550a507ba4bb9b6481e33ed8c5, type: 2}
+  - {fileID: 11400000, guid: 5f87e2b0bef2b964ca99b47698862964, type: 2}
+  costumeItem:
+  - {fileID: 11400000, guid: 96c143937101f5f47815a1853d056447, type: 2}
+  - {fileID: 11400000, guid: 413d61ca53f869447b92fd16ce434903, type: 2}
+  - {fileID: 11400000, guid: e524b7603503f224da9a13492e33026b, type: 2}
+  - {fileID: 11400000, guid: d92069551734ddf42a9b6308eb2a0ace, type: 2}
+  - {fileID: 11400000, guid: f1ac98831b57b4a4699b013b0ff3f650, type: 2}
+  - {fileID: 11400000, guid: 0c5775331a4fc0443a644e2ceb54b935, type: 2}
+--- !u!4 &1589856231
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1589856229}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1718384214 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8118254847441289200, guid: 76369fa9474e68845aae1d442cd586a8, type: 3}
@@ -654,13 +713,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemListViewModel
   itemContents: {fileID: 1084087833}
-  itemList:
-  - {fileID: 11400000, guid: 04a61f08ece092d4ba1ad34709f6c8cf, type: 2}
-  - {fileID: 11400000, guid: f3c06efa4d8b9714f84e0d335f9cb919, type: 2}
-  - {fileID: 11400000, guid: 10f5494b252973f4d8c53d1d393c0342, type: 2}
-  - {fileID: 11400000, guid: ac254153e103d1942a183dfc796e22a8, type: 2}
-  - {fileID: 11400000, guid: ed7d746991f9cc14a858bd3274c325f6, type: 2}
-  - {fileID: 11400000, guid: 90e71a952e22b5a41b628f3a3291203d, type: 2}
   filterDropdown: {fileID: 1207343406}
   sortDropdown: {fileID: 1685845601283299138}
 --- !u!114 &1718384219
@@ -1500,7 +1552,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8666702687521919291, guid: 76369fa9474e68845aae1d442cd586a8, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.00012763673
+      value: 0.0001221148
       objectReference: {fileID: 0}
     - target: {fileID: 8730505870042384706, guid: 76369fa9474e68845aae1d442cd586a8, type: 3}
       propertyPath: m_AnchorMax.y
@@ -1670,3 +1722,4 @@ SceneRoots:
   - {fileID: 2079102266}
   - {fileID: 244244952}
   - {fileID: 1543916710}
+  - {fileID: 1589856231}
