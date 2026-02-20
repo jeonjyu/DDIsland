@@ -17,7 +17,7 @@ public class DummyStoreItemSO : ScriptableObject, IStoreItem
 
     //property
     public int ItemId => _itemId;
-    public bool IsGained => _isGained;
+    public bool IsGained { get => _isGained; set => _isGained = value; }
     public bool IsSaleable => _isSaleable;
     public int MaxCount => _maxCount;
     public int ItemCount { get => _itemCount; set => _itemCount = value; }
