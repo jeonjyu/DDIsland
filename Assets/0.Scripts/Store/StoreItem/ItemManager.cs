@@ -15,14 +15,33 @@ public class ItemManager : Singleton<ItemManager>
     // 슬롯으로 보여줄 아이템
     public List<StoreItem> displayItems = new List<StoreItem>();
 
+    [Header("테스트용 아이템 리스트")]
+    [SerializeField] List<StoreItem> interiorItem = new List<StoreItem>();
+    [SerializeField] List<StoreItem> costumeItem = new List<StoreItem>();
 
     // Start시 카탈로그 딕셔너리, 플레이어 소유 아이템 딕셔너리 넣어주기
     // 카탈로그 딕셔너리에 넣어둔 아이템 항목들로 아이템 딕셔너리 만들기
     void Start()
     {
         //_storeCategories.Add(StoreCat.interior, StoreManager.Instance.interiorItem);
+        CreateDictionary();
     }
 
+    public void CreateDictionary()
+    {
+        Dictionary<int, IStoreItem> keyValues = new Dictionary<int, IStoreItem>();
+        foreach (StoreItem item in interiorItem)
+            keyValues.Add(item.ItemId, item);
+        _storeCategories.Add(StoreCat.interior, keyValues);
+        
+
+        Dictionary<int, IStoreItem> keyValues1 = new Dictionary<int, IStoreItem>();
+        foreach (StoreItem item in costumeItem)
+            keyValues1.Add(item.ItemId, item);
+        _storeCategories.Add(StoreCat.costume, keyValues1);
+
+        Debug.Log("[ItemManger] 딕셔너리 생성");
+    }
 
 
     // 플레이어 소유 아이템 소유 딕셔너리에 추가
