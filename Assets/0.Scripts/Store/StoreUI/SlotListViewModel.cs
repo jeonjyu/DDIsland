@@ -45,12 +45,28 @@ public class StoreListViewModel : MonoBehaviour, INotifyPropertyChanged
 
 
 
-    // 재정렬 
-    // 필터 기준 변경
     public void UpdateCurrentCat(int catIdx)
     {
     // 현재 카테고리 변경
-        CurrentCat = (StoreCat)catIdx + 1;
+        CurrentCat = (StoreCat)catIdx;
+
+        // 카탈로그 변경
+        ItemManager.Instance.SetCurrentCategory(CurrentCat);
+
+        // test 
+        ItemManager.Instance.displayItems.Clear();
+        foreach (IStoreItem item in ItemManager.Instance._currentCategory.Values.ToList())
+        {
+            ItemManager.Instance.displayItems.Add(item as StoreItem);
+            Debug.Log($"{(item as StoreItem).ItemName}");
+        }
+        // test - end 
+
+        // 필터 기준 변경
+        // 재정렬
+
+
+
     // 아이템 리스트 업데이트
         LoadSlotList();
     }
