@@ -7,6 +7,7 @@ public class Placeable3D : Placeable
 
     [SerializeField] private LayerMask _groundLayer;
     [SerializeField] private InputAction _rotateAction;
+    [SerializeField] private InputAction _initAction;
     [SerializeField] private float _rotationStep = 90f; // 한 번 누를 때 회전할 각도
 
     Camera _mainCamera;
@@ -22,21 +23,32 @@ public class Placeable3D : Placeable
         _mainCamera = Camera.main;
         _selectedRenderer = GetComponentInChildren<MeshRenderer>();
         _rotateAction = InputSystem.actions.FindAction("UI/Rotation");
+        _initAction = InputSystem.actions.FindAction("UI/Init");
         _groundLayer = LayerMask.GetMask("Water"); //레이어 추가 설정하지 않아서 우선적으로 Water로 설정.
                                                    //추후 레이아웃에 맞는 레이어로 변경 필요
         enabled = true;
         _rotateAction.Enable(); // 입력 액션 활성화
         _rotateAction.performed += OnRotate;
+        _initAction.performed += OnPlaceInput;
+
     }
     private void OnDisable()
     {
         _rotateAction.performed -= OnRotate;
+        _initAction.performed -= OnPlaceInput;
         _rotateAction.Disable(); // 입력 액션 비활성화
     }
     private void OnRotate(InputAction.CallbackContext ctx)
     {
         Debug.Log("회전 입력");
         _currentYRotation = (_currentYRotation + _rotationStep) % 360;
+    }
+    private void OnPlaceInput(InputAction.CallbackContext ctx)
+    {
+        if (enabled)
+        {
+            Placement();
+        }
     }
     public override Vector2Int ConvertedIndex()
     {
