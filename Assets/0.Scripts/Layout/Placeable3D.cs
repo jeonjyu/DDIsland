@@ -13,6 +13,10 @@ public class Placeable3D : Placeable
     Camera _mainCamera;
     MeshRenderer _selectedRenderer;
     private float _currentYRotation = 0f; // 현재 유지 중인 회전값
+    private bool _isRotated;
+
+    [SerializeField] int _sizeX;
+    [SerializeField] int _sizeY;
     
     Color _succees = new (0, 1, 0, 0.1f);
     Color _fail = new (1, 0, 0, 0.1f);
@@ -40,8 +44,8 @@ public class Placeable3D : Placeable
     }
     private void OnRotate(InputAction.CallbackContext ctx)
     {
-        Debug.Log("회전 입력");
         _currentYRotation = (_currentYRotation + _rotationStep) % 360;
+        _isRotated = !_isRotated;
     }
     private void OnPlaceInput(InputAction.CallbackContext ctx)
     {
@@ -64,11 +68,12 @@ public class Placeable3D : Placeable
     public override void Placement()
     {
         Vector2Int index = ConvertedIndex();
+        Vector2Int size = GetRotatedSize();
 
         //현재 데이터가 없어서 1,1 사이즈로 고정. 추후에 SO데이터 받아서 변경 필요
-        if (index.x != -1 && _targetGrid.IsCellEmpty(index.x, index.y, 1, 1))
+        if (index.x != -1 && _targetGrid.IsCellEmpty(index.x, index.y, size.x, size.y))
         {
-            _targetGrid.PlaceItem(index.x, index.y, 1, 1);
+            _targetGrid.PlaceItem(index.x, index.y, size.x, size.y);
 
             _selectedRenderer.material.color = Color.white;
 
@@ -84,9 +89,15 @@ public class Placeable3D : Placeable
             return;
         }
 
-        bool flaceAble = _targetGrid.IsCellEmpty(index.x, index.y, 1, 1);
+        Vector2Int size = GetRotatedSize();
+        bool flaceAble = _targetGrid.IsCellEmpty(index.x, index.y, size.x, size.y);
 
         _selectedRenderer.material.color = flaceAble ? _succees : _fail;
+    }
+    //회전된 상태에서의 사이즈 계산
+    private Vector2Int GetRotatedSize()
+    {
+        return _isRotated ? new Vector2Int(_sizeY, _sizeX) : new Vector2Int(_sizeX, _sizeY);
     }
     private void Update()
     {
