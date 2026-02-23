@@ -118,7 +118,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 83.77034, y: 10.399986}
+  m_AnchoredPosition: {x: 83.770325, y: 10.399963}
   m_SizeDelta: {x: -185.29492, y: -265.5322}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2558705144324478684
@@ -194,7 +194,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -92.1, y: -21.871}
+  m_AnchoredPosition: {x: -92.10004, y: -21.870972}
   m_SizeDelta: {x: -208.5777, y: -71.874}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1069607413371618332
@@ -332,7 +332,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &8999013518053762460
 RectTransform:
   m_ObjectHideFlags: 0
@@ -410,6 +410,86 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ccf5259813f06f428e948ae7238cf6b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PanelHandler
+--- !u!1 &1415981168615534265
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3154326932702009956}
+  - component: {fileID: 3332035340618050149}
+  - component: {fileID: 1195085227230074466}
+  m_Layer: 0
+  m_Name: UpgradeManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3154326932702009956
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1415981168615534265}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -20.72345, y: 88.521454, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 211602363262499994}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3332035340618050149
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1415981168615534265}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c6d4b8237a4caa47a2cae935e0ad420, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UpgradeManager
+  goldText: {fileID: 2216907090731788992}
+  playerCharacter: {fileID: 0}
+  hungerStatText: {fileID: 4354402854337179650}
+  staminaStatText: {fileID: 7730993126497298428}
+  moveSpeedText: {fileID: 5215672325304078559}
+  fishingSpeedStatText: {fileID: 4494789124388674195}
+  hungerButton: {fileID: 1416773847134461680}
+  staminaButton: {fileID: 6467610633823620311}
+  moveSpeedButton: {fileID: 2218879742870332073}
+  fishingSpeedButton: {fileID: 7818452712512323106}
+  hungerButtonText: {fileID: 3478210440004842615}
+  staminaButtonText: {fileID: 3145784633709766876}
+  moveSpeedButtonText: {fileID: 5303168816580035748}
+  fishingSpeedButtonText: {fileID: 5778944209795035121}
+  hungerLevelText: {fileID: 3735959133054792076}
+  staminaLevelText: {fileID: 5291240534161280972}
+  moveSpeedLevelText: {fileID: 3706768242398353455}
+  fishingSpeedLevelText: {fileID: 7110746917810701693}
+  BitCoin: 99999
+--- !u!114 &1195085227230074466
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1415981168615534265}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ba24bf73999952418ef2028739968f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UpgradeClickHandler
+  popupWindow: {fileID: 219400135714556359}
+  upgradeManager: {fileID: 3332035340618050149}
+  playerCharacter: {fileID: 0}
+  rayDistance: 100
 --- !u!1 &1552962078861770943
 GameObject:
   m_ObjectHideFlags: 0
@@ -1274,7 +1354,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 23.389679, y: 0.8250122}
+  m_AnchoredPosition: {x: 23.38971, y: 0.8250122}
   m_SizeDelta: {x: -148.24318, y: -31.397797}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4286156197519439149
@@ -1427,6 +1507,7 @@ RectTransform:
   m_Children:
   - {fileID: 352509112787528050}
   - {fileID: 8999013518053762460}
+  - {fileID: 3154326932702009956}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -1452,7 +1533,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 0
-  m_AdditionalShaderChannelsFlag: 0
+  m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
   m_SortingOrder: 0
@@ -1469,10 +1550,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.CanvasScaler
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
+  m_ReferenceResolution: {x: 1980, y: 1080}
   m_ScreenMatchMode: 0
   m_MatchWidthOrHeight: 0
   m_PhysicalUnit: 3
@@ -1847,7 +1928,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -144.47, y: 166}
+  m_AnchoredPosition: {x: -169, y: 279}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5482118689112383073
@@ -2538,7 +2619,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 23.389679, y: 0.8250122}
+  m_AnchoredPosition: {x: 23.38971, y: 0.8250122}
   m_SizeDelta: {x: -148.24318, y: -31.397797}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8902353346455799377
@@ -2814,7 +2895,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 23.389679, y: 0.8250122}
+  m_AnchoredPosition: {x: 23.38971, y: 0.8250122}
   m_SizeDelta: {x: -148.24318, y: -31.397797}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6433659872370259775
@@ -3308,7 +3389,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 23.389679, y: 0.8250122}
+  m_AnchoredPosition: {x: 23.38971, y: 0.8250122}
   m_SizeDelta: {x: -148.24318, y: -31.397797}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7723094513248799920
