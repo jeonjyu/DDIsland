@@ -2,30 +2,51 @@ using UnityEngine;
 
 public class GridSystem : MonoBehaviour
 {
-    [SerializeField] private int _width = 12; //½ÇÁ¦·Î °¡Áö´Â ¼¿ÀÇ ¼ö
+    [SerializeField] private int _width = 12; //ì‹¤ì œë¡œ ê°€ì§€ëŠ” ì…€ì˜ ìˆ˜
     [SerializeField] private int _height = 12;
 
-    [SerializeField] private Transform _cell; //¼¿ÀÇ Å©±â¸¦ °áÁ¤ÇÏ´Â Transform, ÀÌ Å©±â¿¡ ¸ÂÃç ¼¿ÀÇ ½ÇÁ¦ Å©±â¸¦ °è»ê
+    [Header("Visual Settings")]
+    [SerializeField] private Transform _cell; //ì…€ì˜ í¬ê¸°ë¥¼ ê²°ì •í•˜ëŠ” Transform, ì´ í¬ê¸°ì— ë§ì¶° ì…€ì˜ ì‹¤ì œ í¬ê¸°ë¥¼ ê³„ì‚°
+    [SerializeField] private MeshRenderer _gridRenderer; //ë Œë”ëŸ¬ ì»´í¬ë„ŒíŠ¸
 
-    private int[,] _grid; //¼¿ÀÇ »óÅÂ¸¦ ³ªÅ¸³»´Â 2Â÷¿ø ¹è¿­, 0Àº ºó ¼¿, 1Àº Ã¤¿öÁø ¼¿
+    private Texture2D _gridDataTexture;
 
-    private float _cellSize; //¼¿ÀÇ ½ÇÁ¦ Å©±â
+    private int[,] _grid; //ì…€ì˜ ìƒíƒœë¥¼ ë‚˜íƒ€ë‚´ëŠ” 2ì°¨ì› ë°°ì—´, 0ì€ ë¹ˆ ì…€, 1ì€ ì±„ì›Œì§„ ì…€
+
+    private float _cellSize; //ì…€ì˜ ì‹¤ì œ í¬ê¸°
 
     private void Awake()
     {
         _grid = new int[_width, _height];
 
-        _cellSize = _cell.localScale.x; //¼¿ÀÇ Å©±â¸¦ TransformÀÇ ½ºÄÉÀÏ¿¡¼­ °¡Á®¿È
+        _cellSize = (_cell.localScale.x*10f)/ _width; //ì…€ì˜ í¬ê¸°ë¥¼ Transformì˜ ìŠ¤ì¼€ì¼ì—ì„œ ê°€ì ¸ì˜´
+    }
+    private void Start()
+    {
+        _gridDataTexture = new(_width, _height)
+        {
+            filterMode = FilterMode.Point,
+            wrapMode = TextureWrapMode.Clamp
+        };
+
+        ApplyGridToShader();
+    }
+    public void ApplyGridToShader()
+    {
+        if (_gridRenderer != null)
+        {
+            _gridRenderer.material.SetVector("_Gridsize", new Vector2(_width, _height));
+        }
     }
     public bool IsCellEmpty(int startX, int startY, int itemWidth, int itemHeight)
     {
-        if(startX<0 || startY < 0 || startX + itemWidth > _width || startY + itemHeight > _height)
+        if (startX < 0 || startY < 0 || startX + itemWidth > _width || startY + itemHeight > _height)
         {
             return false;
         }
-        for (int i = 0; i<itemWidth; i++ )
+        for (int i = 0; i < itemWidth; i++)
         {
-            for(int j = 0; j < itemHeight; j++)
+            for (int j = 0; j < itemHeight; j++)
             {
                 if (_grid[startX + i, startY + j] != 0)
                 {
@@ -37,7 +58,7 @@ public class GridSystem : MonoBehaviour
     }
     public void PlaceItem(int startX, int startY, int itemWidth, int itemHeight)
     {
-        if(startX<0 || startY < 0 || startX + itemWidth > _width || startY + itemHeight > _height)
+        if (startX < 0 || startY < 0 || startX + itemWidth > _width || startY + itemHeight > _height)
         {
             return;
         }
@@ -48,29 +69,88 @@ public class GridSystem : MonoBehaviour
                 _grid[startX + i, startY + j] = 1;
             }
         }
+        UpdateGridTexture();
     }
-    // °£´ÜÇÏ°Ô ¸»ÇØ¼­ ¼¿ ÁÂÇ¥ ¹ø¿ª±âÀÓ
+    // ê°„ë‹¨í•˜ê²Œ ë§í•´ì„œ ì…€ ì¢Œí‘œ ë²ˆì—­ê¸°ì„
     public Vector2Int GetGridIndex(Vector3 worldPosition)
     {
-        // worldPositionÀÌ ¼¿ÀÇ Áß½ÉÀ¸·ÎºÎÅÍ ¶³¾îÁø °Å¸®¸¦ °è»ê
-        float diffX = worldPosition.x - _cell.position.x;
-        float diffZ = worldPosition.z - _cell.position.z;
+        float halfWidth = (_width * _cellSize) * 0.5f;
+        float halfHeight = (_height * _cellSize) * 0.5f;
+        Vector3 origin = _cell.position - new Vector3(halfWidth, 0, halfHeight);
 
-        // À§¿¡¼­ °è»êÇÑ °Å¸®¸¦ ¼¿ÀÇ Å©±â·Î ³ª´©¾î ¸î ¹øÂ° ¼¿¿¡ ÇØ´çµÇ´ÂÁö °è»ê
+        // worldPositionì´ ì…€ì˜ ì¤‘ì‹¬ìœ¼ë¡œë¶€í„° ë–¨ì–´ì§„ ê±°ë¦¬ë¥¼ ê³„ì‚°
+        float diffX = worldPosition.x - origin.x;
+        float diffZ = worldPosition.z - origin.z;
+
+        // ìœ„ì—ì„œ ê³„ì‚°í•œ ê±°ë¦¬ë¥¼ ì…€ì˜ í¬ê¸°ë¡œ ë‚˜ëˆ„ì–´ ëª‡ ë²ˆì§¸ ì…€ì— í•´ë‹¹ë˜ëŠ”ì§€ ê³„ì‚°
         int x = Mathf.FloorToInt(diffX / _cellSize);
         int y = Mathf.FloorToInt(diffZ / _cellSize);
 
-        // ¼Ò¼öÁ¡ ¹ö¸²
-        return new Vector2Int(x, y);
+        // ì†Œìˆ˜ì  ë²„ë¦¼
+        return new Vector2Int(Mathf.Clamp(x, 0, _width - 1), Mathf.Clamp(y, 0, _height - 1));
     }
 
     public Vector3 GetWorldPosition(int x, int y)
     {
-        // ¼¿ÀÇ ÁÂÇ¥¸¦ ½ÇÁ¦ ¿ùµå ÁÂÇ¥·Î ÀüÈ¯
-        return new Vector3(
-            _cell.position.x + (x * _cellSize) + (_cellSize * 0.5f),
+        float halfWidth = (_width * _cellSize) * 0.5f;
+        float halfHeight = (_height * _cellSize) * 0.5f;
+        Vector3 origin = _cell.position - new Vector3(halfWidth, 0, halfHeight);
+        // ì…€ì˜ ì¢Œí‘œë¥¼ ì‹¤ì œ ì›”ë“œ ì¢Œí‘œë¡œ ì „í™˜
+        return new Vector3
+            (
+            origin.x + (x * _cellSize) + (_cellSize * 0.5f),
             _cell.position.y,
-            _cell.position.z + (y * _cellSize) + (_cellSize * 0.5f)
-        );
+            origin.z + (y * _cellSize) + (_cellSize * 0.5f)
+    );
+    }
+
+    public void UpdateShaderHover(Vector2Int index, Vector2Int size, bool canPlace)
+    {
+        if (_gridRenderer == null) return;
+
+        _gridRenderer.material.SetVector("_Hoverinfo", new Vector4(index.x, index.y, size.x, size.y));
+        _gridRenderer.material.SetFloat("_Canplace", canPlace ? 1f : 0f);
+    }
+
+    public void UpdateGridTexture()
+    {
+        for (int x = 0; x < _width; x++)
+        {
+            for (int y = 0; y < _height; y++)
+            {
+                
+                Color color = _grid[x, y] == 1 ? Color.red : Color.white;
+                _gridDataTexture.SetPixel(x, y, color);
+            }
+        }
+        _gridDataTexture.Apply(); // ë³€ê²½ì‚¬í•­ ì ìš©
+        _gridRenderer.material.SetTexture("_GridDataTex", _gridDataTexture);
+        _gridRenderer.material.SetFloat("_IsBuilding", 1f);
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (_cell == null) return;
+
+        float cellSize = (_cell.localScale.x * 10f) / _width;
+        float halfWidth = (_width * cellSize) * 0.5f;
+        float halfHeight = (_height * cellSize) * 0.5f;
+        Vector3 origin = _cell.position - new Vector3(halfWidth, 0, halfHeight);
+
+        for (int x = 0; x < _width; x++)
+        {
+            for (int y = 0; y < _height; y++)
+            {
+                // ë°ì´í„°(ë°°ì—´)ê°€ 1(ì„¤ì¹˜ë¨)ì´ë©´ ë¹¨ê°„ìƒ‰, 0ì´ë©´ í•˜ì–€ìƒ‰
+                if (_grid != null && _grid[x, y] != 0) Gizmos.color = Color.red;
+                else Gizmos.color = Color.white;
+
+                // ê° ì…€ì˜ ì¤‘ì‹¬ì  ê³„ì‚°
+                Vector3 cellCenter = origin + new Vector3(x * cellSize + cellSize * 0.5f, 0, y * cellSize + cellSize * 0.5f);
+
+                // ì™€ì´ì–´ í”„ë ˆì„ ë°•ìŠ¤ ê·¸ë¦¬ê¸°
+                Gizmos.DrawWireCube(cellCenter, new Vector3(cellSize, 0.1f, cellSize));
+            }
+        }
     }
 }
