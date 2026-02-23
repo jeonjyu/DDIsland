@@ -30,6 +30,31 @@ public class StoreListViewModel : MonoBehaviour, INotifyPropertyChanged
         }
     }
 
+    public FilterDropdown Filter
+    {
+        get => filterDropdown;
+        set
+        {
+            if (filterDropdown != value)
+            {
+                filterDropdown = value;
+                OnPropertyChanged(null);
+            }
+        }
+    }
+    public SortDropdown Sort
+    {
+        get => sortDropdown;
+        set
+        {
+            if (sortDropdown != value)
+            {
+                sortDropdown = value;
+                OnPropertyChanged(null);
+            }
+        }
+    }
+
     public event PropertyChangedEventHandler PropertyChanged;
 
 
@@ -43,6 +68,12 @@ public class StoreListViewModel : MonoBehaviour, INotifyPropertyChanged
     // 바뀐 항목 갯수에 따라 아이템 슬롯 풀링해옴
     // 풀링해오면서 storeItemViewModels 리스트에 추가
 
+    public void OnEnable()
+    {
+        StoreManager.Instance.currentCat = StoreCat.costume;
+        CurrentCat = StoreCat.interior;
+        ItemManager.Instance.SetCurrentCategory();
+    }
 
 
     public void UpdateCurrentCat(int catIdx)
@@ -54,12 +85,12 @@ public class StoreListViewModel : MonoBehaviour, INotifyPropertyChanged
         ItemManager.Instance.SetCurrentCategory(CurrentCat);
 
         // test 
-        ItemManager.Instance.displayItems.Clear();
-        foreach (IStoreItem item in ItemManager.Instance._currentCategory.Values.ToList())
-        {
-            ItemManager.Instance.displayItems.Add(item as StoreItem);
-            Debug.Log($"{(item as StoreItem).ItemName}");
-        }
+        //ItemManager.Instance.displayItems.Clear();
+        //foreach (IStoreItem item in ItemManager.Instance._currentCategory.Values.ToList())
+        //{
+        //    ItemManager.Instance.displayItems.Add(item as StoreItem);
+        //    Debug.Log($"{(item as StoreItem).ItemName}");
+        //}
         // test - end 
 
         // 필터 기준 변경
@@ -67,7 +98,8 @@ public class StoreListViewModel : MonoBehaviour, INotifyPropertyChanged
 
 
 
-    // 아이템 리스트 업데이트
+        // 아이템 리스트 업데이트
+        Debug.Log("[StoreListViewModel] UpdateCurrentCat LoatSlotList 시작");
         LoadSlotList();
     }
 
@@ -77,20 +109,22 @@ public class StoreListViewModel : MonoBehaviour, INotifyPropertyChanged
     {
         // test
         storeItemViewModels = itemContents.GetComponentsInChildren<ItemSlotViewModel>().ToList();
+        // 오브젝트풀에서 가져온 뒤 자동으로 storeItemViewModels에 추가하기
+
         // test-end
 
         // itemList에 선택된 상점 유형 아이템들로 설정
         // StoreManager 메서드 호출
         // 아니면 이벤트 구독해서 모두 설정
 
-    // 아이템 매니저의 아이템 리스트 
-    // 
+        // 아이템 매니저의 아이템 리스트 
+        // 
 
         // 슬롯 프리팹에 모델 넣어주기
         foreach (StoreItem item in ItemManager.Instance.displayItems)
         {
             storeItemViewModels[ItemManager.Instance.displayItems.IndexOf(item)].SetModel(item);
-            Debug.Log("[ItemListViewModel] UpdateSlotList | 슬롯 " + ItemManager.Instance.displayItems.IndexOf(item));
+            //Debug.Log("[ItemListViewModel] UpdateSlotList | 슬롯 " + ItemManager.Instance.displayItems.IndexOf(item));
         }
 
         Debug.Log("[ItemListViewModel] UpdateSlotList | 슬롯 로딩 완료");
@@ -114,9 +148,12 @@ public class StoreListViewModel : MonoBehaviour, INotifyPropertyChanged
 
     protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
     {
+        Debug.Log("[ItemListViewModel] OnPropertyChanged 실행");
+
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         filterDropdown.UpdateFilter((Filter)CurrentCat);
         sortDropdown.SetOptions();
+        LoadSlotList();
     }
 
 }

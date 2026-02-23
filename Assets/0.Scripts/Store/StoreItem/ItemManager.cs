@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class ItemManager : Singleton<ItemManager>
 {
@@ -10,10 +11,16 @@ public class ItemManager : Singleton<ItemManager>
     public List<StoreCategory<StoreCat>> _playerOwnedItems = new List<StoreCategory<StoreCat>>();
 
     // 현재 카탈로그 
-    public Dictionary<int, IStoreItem> _currentCategory = new Dictionary<int, IStoreItem>();
+    //public Dictionary<int, IStoreItem> _currentCategory = new Dictionary<int, IStoreItem>();
+    public List<StoreItem> currentCategory = new List<StoreItem>();
 
     // 슬롯으로 보여줄 아이템
     public List<StoreItem> displayItems = new List<StoreItem>();
+
+    // 정렬 우선순위 리스트
+    //public List<Comparer> sortPriority = new List<Comparer>();
+
+
 
     [Header("테스트용 아이템 리스트")]
     [SerializeField] List<StoreItem> interiorItem = new List<StoreItem>();
@@ -52,15 +59,20 @@ public class ItemManager : Singleton<ItemManager>
     //}
 
 
-    // 선택된 정렬 기준 받아서 우선순위 리스트에 따라 for문으로 체이닝 돌려주기
-    // 돌린 아이템 리스트를 displayItems에 넣어주기
-
-
     // 상점 선택에 따라 현재 상점에 해당하는 딕셔너리로 변경
-    public void SetCurrentCategory(StoreCat storeCat)
+    public void SetCurrentCategory(StoreCat storeCat = StoreCat.interior)
     {
-        _currentCategory = _storeCategories[storeCat];
+        //    currentCategory = _storeCategories[storeCat];
+        //    displayItems = currentCategory.Values.Cast<StoreItem>().ToList();
+
+
+        currentCategory = _storeCategories[storeCat].Values.Cast<StoreItem>().ToList();
+        displayItems = new List<StoreItem>(currentCategory);
         Debug.Log("[ItemManger] 현재 카테고리 딕셔너리 : " + storeCat.ToString());
+
+        displayItems = displayItems.OrderByDescending((StoreItem x) => x.IsGained).ThenBy(x => x.PurchasePrice).ThenBy(x => x.ItemId).ToList();
+
+        Debug.Log("정렬 완료: " + string.Join(", ", ItemManager.Instance.displayItems.Select(x => x.ItemName + "(" + x.ItemId + "):" + x.PurchasePrice)));
     }
 
 
