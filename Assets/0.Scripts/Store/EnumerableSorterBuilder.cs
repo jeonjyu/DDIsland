@@ -16,7 +16,7 @@ public static class EnumerableSorterBuilder
     }
 
     // 내림차순
-    public static IOrderedEnumerable<T> AppendOrderByDesending<T, TKey>(this IEnumerable<T> source, Func<T, TKey> func)
+    public static IOrderedEnumerable<T> AppendOrderByDescending<T, TKey>(this IEnumerable<T> source, Func<T, TKey> func)
     {
         // 이전에 정렬된 건지 확인
         if (source is IOrderedEnumerable<T>)
