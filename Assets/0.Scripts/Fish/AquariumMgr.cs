@@ -52,7 +52,7 @@ public class AquariumMgr : MonoBehaviour
 
         for (int i = 0; i < count; i++)
         {
-            float spawnX = isRight ? -1100f : 1100f; // 오른쪽으로 갈거면 왼쪽(-1100)에서 생성
+            float spawnX = isRight ? -1100f : 1100f; // 오른쪽으로 갈거면 왼쪽(-1100)에서 생성. 얘들은 해상도에 따라 임시로 설정
             spawnX += Random.Range(-50f, 50f); // 약간의 랜덤 위치 보정
             float spawnY = flockY + Random.Range(-50f, 50f); // 무리 내에서 약간의 Y 위치 보정
 
