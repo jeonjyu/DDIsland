@@ -49,8 +49,12 @@ public class Placeable3D : Placeable
     }
     private void OnRotate(InputAction.CallbackContext ctx)
     {
+        if (!enabled) return;
+
         _currentYRotation = (_currentYRotation + _rotationStep) % 360;
         _isRotated = !_isRotated;
+
+        VisualFeedback();
     }
     private void OnPlaceInput(InputAction.CallbackContext ctx)
     {
@@ -65,7 +69,19 @@ public class Placeable3D : Placeable
         Ray ray = _mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
         if (Physics.Raycast(ray, out RaycastHit hit, maxDistance, _groundLayer))
         {
-            return _targetGrid.GetGridIndex(hit.point);
+            Vector2Int mouseIndex = _targetGrid.GetGridIndex(hit.point);
+
+            Vector2Int size = GetRotatedSize(); // 사이즈 계산
+
+            // 아이템의 중심이 마우스 위치에 오도록 시작 좌표 계산
+            int startX = mouseIndex.x - (size.x - 1) / 2;
+            int startY = mouseIndex.y - (size.y - 1) / 2;
+
+            // 그리드 범위를 벗어나지 않도록 좌표 조정
+            return new Vector2Int(
+                Mathf.Clamp(startX, 0, _targetGrid.Width - size.x),
+                Mathf.Clamp(startY, 0, _targetGrid.Height - size.y)
+            );
         }
 
         return new Vector2Int(-1, -1);
@@ -124,10 +140,11 @@ public class Placeable3D : Placeable
         VisualFeedback();
 
         Vector2Int currentIndex = ConvertedIndex();
+        Vector2Int size = GetRotatedSize();
 
         if (currentIndex.x != -1)
         {
-            Vector3 snapPos = _targetGrid.GetWorldPosition(currentIndex.x, currentIndex.y);
+            Vector3 snapPos = _targetGrid.GetWorldPosition(currentIndex.x, currentIndex.y, size.x, size.y);
 
             transform.SetPositionAndRotation(snapPos, Quaternion.Euler(0, _currentYRotation, 0));
 

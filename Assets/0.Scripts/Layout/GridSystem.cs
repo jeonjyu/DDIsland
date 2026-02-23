@@ -15,11 +15,14 @@ public class GridSystem : MonoBehaviour
 
     private float _cellSize; //셀의 실제 크기
 
+    public int Width => _width;   
+    public int Height => _height;
+
     private void Awake()
     {
         _grid = new int[_width, _height];
 
-        _cellSize = (_cell.localScale.x*10f)/ _width; //셀의 크기를 Transform의 스케일에서 가져옴
+        _cellSize = (_cell.localScale.x * 10f) / _width; //셀의 크기를 Transform의 스케일에서 가져옴
     }
     private void Start()
     {
@@ -90,18 +93,22 @@ public class GridSystem : MonoBehaviour
         return new Vector2Int(Mathf.Clamp(x, 0, _width - 1), Mathf.Clamp(y, 0, _height - 1));
     }
 
-    public Vector3 GetWorldPosition(int x, int y)
+    public Vector3 GetWorldPosition(int x, int y, int sizeX, int sizeY)
     {
         float halfWidth = (_width * _cellSize) * 0.5f;
         float halfHeight = (_height * _cellSize) * 0.5f;
         Vector3 origin = _cell.position - new Vector3(halfWidth, 0, halfHeight);
         // 셀의 좌표를 실제 월드 좌표로 전환
+
+        float centerX = x + (sizeX * 0.5f);
+        float centerY = y + (sizeY * 0.5f);
+
         return new Vector3
-            (
-            origin.x + (x * _cellSize) + (_cellSize * 0.5f),
+        (
+            origin.x + (centerX * _cellSize),
             _cell.position.y,
-            origin.z + (y * _cellSize) + (_cellSize * 0.5f)
-    );
+            origin.z + (centerY * _cellSize)
+        );
     }
 
     public void UpdateShaderHover(Vector2Int index, Vector2Int size, bool canPlace)
@@ -133,31 +140,5 @@ public class GridSystem : MonoBehaviour
         if (_gridRenderer == null) return;
         _gridRenderer.material.SetFloat("_IsBuilding", 0f); // 하이라이트 끄기
         _gridRenderer.material.SetVector("_Hoverinfo", new Vector4(-10, -10, 0, 0)); // 좌표 초기화
-    }
-
-    private void OnDrawGizmos()
-    {
-        if (_cell == null) return;
-
-        float cellSize = (_cell.localScale.x * 10f) / _width;
-        float halfWidth = (_width * cellSize) * 0.5f;
-        float halfHeight = (_height * cellSize) * 0.5f;
-        Vector3 origin = _cell.position - new Vector3(halfWidth, 0, halfHeight);
-
-        for (int x = 0; x < _width; x++)
-        {
-            for (int y = 0; y < _height; y++)
-            {
-                // 데이터(배열)가 1(설치됨)이면 빨간색, 0이면 하얀색
-                if (_grid != null && _grid[x, y] != 0) Gizmos.color = Color.red;
-                else Gizmos.color = Color.white;
-
-                // 각 셀의 중심점 계산
-                Vector3 cellCenter = origin + new Vector3(x * cellSize + cellSize * 0.5f, 0, y * cellSize + cellSize * 0.5f);
-
-                // 와이어 프레임 박스 그리기
-                Gizmos.DrawWireCube(cellCenter, new Vector3(cellSize, 0.1f, cellSize));
-            }
-        }
     }
 }
