@@ -15,12 +15,14 @@ public class Placeable3D : Placeable
     MeshRenderer _selectedRenderer;
     private float _currentYRotation = 0f; // 현재 유지 중인 회전값
     private bool _isRotated;
+    private Color _originalColor;
+
 
     [SerializeField] int _sizeX;
     [SerializeField] int _sizeY;
     
-    Color _succees = new (0, 1, 0, 0.1f);
-    Color _fail = new (1, 0, 0, 0.1f);
+    Color _succees = new (0.5f, 1, 0.5f, 0.5f);
+    Color _fail = new (1, 0.5f, 0.5f, 0.5f);
 
     public void Initialize(GridSystem grid)
     {
@@ -31,6 +33,8 @@ public class Placeable3D : Placeable
         _initAction = InputSystem.actions.FindAction("UI/Init");
         _groundLayer = LayerMask.GetMask("Water"); //레이어 추가 설정하지 않아서 우선적으로 Water로 설정.
                                                    //추후 레이아웃에 맞는 레이어로 변경 필요
+
+        _originalColor = _selectedRenderer.material.color;
         enabled = true;
         _rotateAction.Enable(); // 입력 액션 활성화
         _rotateAction.performed += OnRotate;
@@ -71,12 +75,14 @@ public class Placeable3D : Placeable
         Vector2Int index = ConvertedIndex();
         Vector2Int size = GetRotatedSize();
 
-        //현재 데이터가 없어서 1,1 사이즈로 고정. 추후에 SO데이터 받아서 변경 필요
+        //현재 데이터가 없어서 사이즈 고정. 추후에 SO데이터 받아서 변경 필요
         if (index.x != -1 && _targetGrid.IsCellEmpty(index.x, index.y, size.x, size.y))
         {
             _targetGrid.PlaceItem(index.x, index.y, size.x, size.y);
 
-            _selectedRenderer.material.color = Color.white;
+            _selectedRenderer.material.color = _originalColor;
+
+            _targetGrid.ClearGrid(); // 셰이더 하이라이트 초기화
 
             enabled = false;
         }

@@ -108,6 +108,8 @@ public class GridSystem : MonoBehaviour
     {
         if (_gridRenderer == null) return;
 
+        _gridRenderer.material.SetFloat("_IsBuilding", 1f);
+
         _gridRenderer.material.SetVector("_Hoverinfo", new Vector4(index.x, index.y, size.x, size.y));
         _gridRenderer.material.SetFloat("_Canplace", canPlace ? 1f : 0f);
     }
@@ -118,14 +120,19 @@ public class GridSystem : MonoBehaviour
         {
             for (int y = 0; y < _height; y++)
             {
-                
-                Color color = _grid[x, y] == 1 ? Color.red : Color.white;
+                Color color = _grid[x, y] == 1 ? Color.red : new Color(0, 0, 0, 0);
                 _gridDataTexture.SetPixel(x, y, color);
             }
         }
-        _gridDataTexture.Apply(); // 변경사항 적용
+        _gridDataTexture.Apply();
         _gridRenderer.material.SetTexture("_GridDataTex", _gridDataTexture);
-        _gridRenderer.material.SetFloat("_IsBuilding", 1f);
+    }
+
+    public void ClearGrid()
+    {
+        if (_gridRenderer == null) return;
+        _gridRenderer.material.SetFloat("_IsBuilding", 0f); // 하이라이트 끄기
+        _gridRenderer.material.SetVector("_Hoverinfo", new Vector4(-10, -10, 0, 0)); // 좌표 초기화
     }
 
     private void OnDrawGizmos()
