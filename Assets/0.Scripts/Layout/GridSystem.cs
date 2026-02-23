@@ -9,6 +9,8 @@ public class GridSystem : MonoBehaviour
     [SerializeField] private Transform _cell; //셀의 크기를 결정하는 Transform, 이 크기에 맞춰 셀의 실제 크기를 계산
     [SerializeField] private MeshRenderer _gridRenderer; //렌더러 컴포넌트
 
+    private Texture2D _gridDataTexture;
+
     private int[,] _grid; //셀의 상태를 나타내는 2차원 배열, 0은 빈 셀, 1은 채워진 셀
 
     private float _cellSize; //셀의 실제 크기
@@ -21,6 +23,12 @@ public class GridSystem : MonoBehaviour
     }
     private void Start()
     {
+        _gridDataTexture = new(_width, _height)
+        {
+            filterMode = FilterMode.Point,
+            wrapMode = TextureWrapMode.Clamp
+        };
+
         ApplyGridToShader();
     }
     public void ApplyGridToShader()
@@ -61,6 +69,7 @@ public class GridSystem : MonoBehaviour
                 _grid[startX + i, startY + j] = 1;
             }
         }
+        UpdateGridTexture();
     }
     // 간단하게 말해서 셀 좌표 번역기임
     public Vector2Int GetGridIndex(Vector3 worldPosition)
@@ -94,11 +103,35 @@ public class GridSystem : MonoBehaviour
             origin.z + (y * _cellSize) + (_cellSize * 0.5f)
     );
     }
+
+    public void UpdateShaderHover(Vector2Int index, Vector2Int size, bool canPlace)
+    {
+        if (_gridRenderer == null) return;
+
+        _gridRenderer.material.SetVector("_Hoverinfo", new Vector4(index.x, index.y, size.x, size.y));
+        _gridRenderer.material.SetFloat("_Canplace", canPlace ? 1f : 0f);
+    }
+
+    public void UpdateGridTexture()
+    {
+        for (int x = 0; x < _width; x++)
+        {
+            for (int y = 0; y < _height; y++)
+            {
+                
+                Color color = _grid[x, y] == 1 ? Color.red : Color.white;
+                _gridDataTexture.SetPixel(x, y, color);
+            }
+        }
+        _gridDataTexture.Apply(); // 변경사항 적용
+        _gridRenderer.material.SetTexture("_GridDataTex", _gridDataTexture);
+        _gridRenderer.material.SetFloat("_IsBuilding", 1f);
+    }
+
     private void OnDrawGizmos()
     {
         if (_cell == null) return;
 
-        // _cellSize가 Awake에서 계산되므로, 에디터 모드 대응을 위해 여기서도 계산
         float cellSize = (_cell.localScale.x * 10f) / _width;
         float halfWidth = (_width * cellSize) * 0.5f;
         float halfHeight = (_height * cellSize) * 0.5f;

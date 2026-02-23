@@ -1,6 +1,7 @@
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Playables;
 
 public class Placeable3D : Placeable
 {
@@ -83,16 +84,27 @@ public class Placeable3D : Placeable
     public override void VisualFeedback()
     {
         Vector2Int index = ConvertedIndex();
+
+        Vector2Int size = GetRotatedSize();
+
         if (index.x == -1)
         {
             _selectedRenderer.material.color = _fail;
+            // 그리드 셰이더에도 실패 상태 전달 (좌표를 맵 밖으로 보내서 하이라이트 제거)
+            _targetGrid.UpdateShaderHover(new Vector2Int(-10, -10), size, false);
             return;
         }
 
-        Vector2Int size = GetRotatedSize();
-        bool flaceAble = _targetGrid.IsCellEmpty(index.x, index.y, size.x, size.y);
+        //if (index.x == -1)
+        //{
+        //    _selectedRenderer.material.color = _fail;
+        //    return;
+        //}
+        bool placeAble = _targetGrid.IsCellEmpty(index.x, index.y, size.x, size.y);
 
-        _selectedRenderer.material.color = flaceAble ? _succees : _fail;
+        _selectedRenderer.material.color = placeAble ? _succees : _fail;
+
+        _targetGrid.UpdateShaderHover(index, size, placeAble);
     }
     //회전된 상태에서의 사이즈 계산
     private Vector2Int GetRotatedSize()
