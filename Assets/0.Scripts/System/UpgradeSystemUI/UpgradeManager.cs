@@ -1,13 +1,13 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
+using TMPro;
 public class UpgradeManager : MonoBehaviour
 {
     #region UI 변수
     [Header("상점 UI")]
-    public Text goldText;
+    public TextMeshProUGUI goldText; // 레거시 > tmp로 변경 
 
     [Header("플레이어 캐릭터 프리팹")]
     public GameObject playerCharacter; // 테스트용 
