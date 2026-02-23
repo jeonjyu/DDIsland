@@ -1,8 +1,9 @@
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.Playables;
 
+/// <summary>
+/// 3D 오브젝트의 배치 기능을 구현하는 클래스
+/// </summary>
 public class Placeable3D : Placeable
 {
 
@@ -17,6 +18,8 @@ public class Placeable3D : Placeable
     private bool _isRotated;
     private Color _originalColor;
 
+    private Vector2Int _lastPlacedIndex;
+    private Vector2Int _lastPlacedSize;
 
     [SerializeField] int _sizeX;
     [SerializeField] int _sizeY;
@@ -33,9 +36,11 @@ public class Placeable3D : Placeable
         _initAction = InputSystem.actions.FindAction("UI/Init");
         _groundLayer = LayerMask.GetMask("Water"); //레이어 추가 설정하지 않아서 우선적으로 Water로 설정.
                                                    //추후 레이아웃에 맞는 레이어로 변경 필요
-
         _originalColor = _selectedRenderer.material.color;
+
+        ItemState = ItemState.Preview;
         enabled = true;
+
         _rotateAction.Enable(); // 입력 액션 활성화
         _rotateAction.performed += OnRotate;
         _initAction.performed += OnPlaceInput;
@@ -49,7 +54,7 @@ public class Placeable3D : Placeable
     }
     private void OnRotate(InputAction.CallbackContext ctx)
     {
-        if (!enabled) return;
+        if (ItemState == ItemState.Placed) return;
 
         _currentYRotation = (_currentYRotation + _rotationStep) % 360;
         _isRotated = !_isRotated;
@@ -58,17 +63,19 @@ public class Placeable3D : Placeable
     }
     private void OnPlaceInput(InputAction.CallbackContext ctx)
     {
-        if (enabled)
+        if (ItemState == ItemState.Preview)
         {
             Placement();
         }
     }
+    // 마우스 위치를 그리드 좌표로 변환
     public override Vector2Int ConvertedIndex()
     {
         float maxDistance = 1000f; // 레이캐스트 최대 거리
         Ray ray = _mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
         if (Physics.Raycast(ray, out RaycastHit hit, maxDistance, _groundLayer))
         {
+            // 레이캐스트가 그라운드에 닿았을 때, 해당 위치를 그리드 좌표로 변환
             Vector2Int mouseIndex = _targetGrid.GetGridIndex(hit.point);
 
             Vector2Int size = GetRotatedSize(); // 사이즈 계산
@@ -94,13 +101,18 @@ public class Placeable3D : Placeable
         //현재 데이터가 없어서 사이즈 고정. 추후에 SO데이터 받아서 변경 필요
         if (index.x != -1 && _targetGrid.IsCellEmpty(index.x, index.y, size.x, size.y))
         {
+            // 그리드에 아이템 배치
             _targetGrid.PlaceItem(index.x, index.y, size.x, size.y);
 
+            _lastPlacedIndex = index;
+            _lastPlacedSize = size;
+
+            // 아이템의 색을 원래대로 돌려놓기
             _selectedRenderer.material.color = _originalColor;
 
             _targetGrid.ClearGrid(); // 셰이더 하이라이트 초기화
 
-            enabled = false;
+            ItemState = ItemState.Placed;
         }
     }
     public override void VisualFeedback()
@@ -117,11 +129,6 @@ public class Placeable3D : Placeable
             return;
         }
 
-        //if (index.x == -1)
-        //{
-        //    _selectedRenderer.material.color = _fail;
-        //    return;
-        //}
         bool placeAble = _targetGrid.IsCellEmpty(index.x, index.y, size.x, size.y);
 
         _selectedRenderer.material.color = placeAble ? _succees : _fail;
@@ -135,6 +142,8 @@ public class Placeable3D : Placeable
     }
     private void Update()
     {
+        if (ItemState == ItemState.Placed) return;
+
         if (_mainCamera == null || _targetGrid == null) return;
 
         VisualFeedback();

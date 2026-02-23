@@ -1,5 +1,7 @@
 using UnityEngine;
-
+/// <summary>
+/// 그리드 시스템을 관리하는 클래스
+/// </summary>
 public class GridSystem : MonoBehaviour
 {
     [SerializeField] private int _width = 12; //실제로 가지는 셀의 수
@@ -26,6 +28,7 @@ public class GridSystem : MonoBehaviour
     }
     private void Start()
     {
+        // 그리드의 데이터를 저장하는 텍스처, 셰이더에 셀의 상태를 전달하기 위함
         _gridDataTexture = new(_width, _height)
         {
             filterMode = FilterMode.Point,
@@ -34,6 +37,7 @@ public class GridSystem : MonoBehaviour
 
         ApplyGridToShader();
     }
+    // 그리드 정보를 셰이더에 전달하는 메서드
     public void ApplyGridToShader()
     {
         if (_gridRenderer != null)
@@ -41,6 +45,7 @@ public class GridSystem : MonoBehaviour
             _gridRenderer.material.SetVector("_Gridsize", new Vector2(_width, _height));
         }
     }
+    // 해당 오브젝트가 그리드에 배치 될 수 있는지 확인하는 메서드
     public bool IsCellEmpty(int startX, int startY, int itemWidth, int itemHeight)
     {
         if (startX < 0 || startY < 0 || startX + itemWidth > _width || startY + itemHeight > _height)
@@ -59,6 +64,7 @@ public class GridSystem : MonoBehaviour
         }
         return true;
     }
+    // 그리드에 오브젝트를 배치하는 메서드
     public void PlaceItem(int startX, int startY, int itemWidth, int itemHeight)
     {
         if (startX < 0 || startY < 0 || startX + itemWidth > _width || startY + itemHeight > _height)
@@ -69,12 +75,27 @@ public class GridSystem : MonoBehaviour
         {
             for (int j = 0; j < itemHeight; j++)
             {
-                _grid[startX + i, startY + j] = 1;
+                _grid[startX + i, startY + j] = 1; // 1로 표시하여 해당 셀이 채워졌음을 나타냄
             }
         }
         UpdateGridTexture();
     }
-    // 간단하게 말해서 셀 좌표 번역기임
+    public void RemoveItem(int startX, int startY, int itemWidth, int itemHeight)
+    {
+        if (startX < 0 || startY < 0 || startX + itemWidth > _width || startY + itemHeight > _height)
+        {
+            return;
+        }
+        for (int i = 0; i < itemWidth; i++)
+        {
+            for (int j = 0; j < itemHeight; j++)
+            {
+                _grid[startX + i, startY + j] = 0; // 0로 표시하여 해당 셀을 비움
+            }
+        }
+        UpdateGridTexture();
+    }
+    // 월드 좌표를 셀 좌표로 번역
     public Vector2Int GetGridIndex(Vector3 worldPosition)
     {
         float halfWidth = (_width * _cellSize) * 0.5f;
@@ -93,6 +114,7 @@ public class GridSystem : MonoBehaviour
         return new Vector2Int(Mathf.Clamp(x, 0, _width - 1), Mathf.Clamp(y, 0, _height - 1));
     }
 
+    // 셀 좌표를 실제 월드 좌표로 번역
     public Vector3 GetWorldPosition(int x, int y, int sizeX, int sizeY)
     {
         float halfWidth = (_width * _cellSize) * 0.5f;
@@ -110,7 +132,7 @@ public class GridSystem : MonoBehaviour
             origin.z + (centerY * _cellSize)
         );
     }
-
+    // 셰이더의 색을 바꿔주기 위해 
     public void UpdateShaderHover(Vector2Int index, Vector2Int size, bool canPlace)
     {
         if (_gridRenderer == null) return;
@@ -121,24 +143,26 @@ public class GridSystem : MonoBehaviour
         _gridRenderer.material.SetFloat("_Canplace", canPlace ? 1f : 0f);
     }
 
+    // 그리드의 상태를 텍스쳐로 업데이트하여 셰이더에게 전달 해줌
     public void UpdateGridTexture()
     {
         for (int x = 0; x < _width; x++)
         {
             for (int y = 0; y < _height; y++)
             {
-                Color color = _grid[x, y] == 1 ? Color.red : new Color(0, 0, 0, 0);
-                _gridDataTexture.SetPixel(x, y, color);
+                Color color = _grid[x, y] == 1 ? Color.red : new Color(0, 0, 0, 0); //하나하나 전부 색을 바꿔주는 방식, 추후 개선 할 수 있으면 개선 필요
+                _gridDataTexture.SetPixel(x, y, color); // 1인 경우 빨간색, 0인 경우 투명색으로 설정
             }
         }
+        // 텍스쳐 업데이트
         _gridDataTexture.Apply();
-        _gridRenderer.material.SetTexture("_GridDataTex", _gridDataTexture);
+        _gridRenderer.material.SetTexture("_GridDataTex", _gridDataTexture); // 업데이트된 텍스쳐를 셰이더에 전달
     }
 
     public void ClearGrid()
     {
         if (_gridRenderer == null) return;
-        _gridRenderer.material.SetFloat("_IsBuilding", 0f); // 하이라이트 끄기
+        _gridRenderer.material.SetFloat("_IsBuilding", 0f); //만약 건물을 배치하는 중이 아니라면 셰이더에서 색 제거
         _gridRenderer.material.SetVector("_Hoverinfo", new Vector4(-10, -10, 0, 0)); // 좌표 초기화
     }
 }
