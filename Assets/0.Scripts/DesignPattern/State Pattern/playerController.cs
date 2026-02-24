@@ -1,4 +1,5 @@
-﻿using System.Collections;
+using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -35,6 +36,13 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Transform _kitchenPoint;
     [SerializeField] private Transform _restAreaPoint;
 
+    [SerializeField] private SkinnedMeshRenderer targetSMR;
+    [SerializeField] private SkinnedMeshRenderer slimSource;
+    [SerializeField] private SkinnedMeshRenderer normalSource;
+    [SerializeField] private SkinnedMeshRenderer roundSource;
+    [SerializeField] private SkinnedMeshRenderer chubbySource;
+
+
     public Rigidbody2D Rigid => _rigid;
     public NavMeshAgent Agent => _agent;
     public Animator Animator => _animator;
@@ -61,13 +69,14 @@ public class PlayerController : MonoBehaviour
         PlayerData.SetHunger(80);
         PlayerData.SetStamina(80);
         PlayerData.SetMoveSpeed(1);
+        PlayerData.SetDoongDoongStat(1000);
     }
 
     private void Update()
     {
         if (_currentState == null)
             SetState(new IdleState(this));
-
+        ApplyTier();
         _currentState?.Execute();
     }
 
@@ -85,6 +94,24 @@ public class PlayerController : MonoBehaviour
     {
         // 물고기 보관 로직
     }
+    public void ApplyTier()
+    {
+        SkinnedMeshRenderer src;
+        if (PlayerData.DoongDoongStat >= 1000) src = roundSource;
+        else if (PlayerData.DoongDoongStat >= 500) src = chubbySource;
+        else if (PlayerData.DoongDoongStat >= 300) src = normalSource;
+        else src = slimSource;
+        ApplySkin(src);
+    }
+    private void ApplySkin(SkinnedMeshRenderer src)
+    {
+        if (src == null || targetSMR == null) return;
+
+        targetSMR.sharedMesh = src.sharedMesh;
+        targetSMR.sharedMaterials = src.sharedMaterials;
+
+    }
+
     public void TryFishing()
     {
         if (_isFishing) return; 
@@ -152,9 +179,10 @@ public class PlayerController : MonoBehaviour
 
         InvokeRepeating("WaitRecovered", 0f, 1f);
     }
-    private void WaitRecovered()  
+    private void WaitRecovered()
     {
-        PlayerData.SetStamina(PlayerData.Stamina + 2);
+        float increase = PlayerData.Stamina * 0.02f;
+        PlayerData.SetStamina(PlayerData.Stamina + increase);
         if (PlayerData.Stamina >= 100)
         {
             CancelInvoke("WaitRecovered");

@@ -1,4 +1,4 @@
-﻿using UnityEditor;
+using UnityEditor;
 using UnityEngine;
 
 public class GameDataEditor : EditorWindow
@@ -34,6 +34,7 @@ public class GameDataEditor : EditorWindow
 
         PlayerData.SetHunger(EditorGUILayout.Slider("Hunger", PlayerData.Hunger, 0, 100));
         PlayerData.SetStamina(EditorGUILayout.Slider("Stamina", PlayerData.Stamina, 0, 100));
+        PlayerData.SetDoongDoongStat(EditorGUILayout.IntField("DoongDoongStat", PlayerData.DoongDoongStat));
         PlayerData.SetMoveSpeed(EditorGUILayout.FloatField("Move Speed", PlayerData.MoveSpeed));
         PlayerData.SetFishingSpeed(EditorGUILayout.FloatField("Fishing Speed", PlayerData.FishingSpeed));
 
