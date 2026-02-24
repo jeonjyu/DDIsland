@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 public class EatState : IState
 {
@@ -9,12 +9,14 @@ public class EatState : IState
     }
     public void Enter()
     {
-
+        _player.Agent.isStopped = true;
+        _player.Agent.velocity = Vector3.zero;
+        //_player.Animator.SetTrigger("Eat");
+        _player.EatCurrentAcorn();  
     }
 
     public void Execute()
     {
-
     }
 
     public void Exit()

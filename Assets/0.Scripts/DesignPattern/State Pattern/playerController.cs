@@ -1,15 +1,12 @@
+
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.Analytics;
-using UnityEngine.InputSystem.Controls;
-using static UnityEditor.Experimental.GraphView.GraphView;
-
+using System.Collections.Generic;
 
 public enum Point
 {
-    Fish,Store,Kitchen,Rest
+    Fish,Store,Kitchen,Rest,Acorn
 }
 public class PlayerController : MonoBehaviour
 {
@@ -21,9 +18,10 @@ public class PlayerController : MonoBehaviour
     private MeshRenderer _meshRenderer;
 
     private bool _ishungery = false;
-    private bool _canCook = true;  //테스트
+    private bool _canCook = false;  
     private bool _shouldSell = false;
     private bool _isFishing = false;
+    private bool _isAcornFalling = false;
     private bool _isResting = false;
     private bool _isYawning = false;
     private bool _hasYawned = false;
@@ -38,6 +36,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Transform _storePoint;
     [SerializeField] private Transform _kitchenPoint;
     [SerializeField] private Transform _restAreaPoint;
+     private Transform _acornPoint;
 
     [SerializeField] private SkinnedMeshRenderer _targetSMR;
     [SerializeField] private SkinnedMeshRenderer _slimSource;
@@ -48,6 +47,10 @@ public class PlayerController : MonoBehaviour
     private float _hungerTickTimer;
     private float _baseMoveSpeed;  
     private bool _slowApplied;
+
+    [SerializeField] private GameObject _acornPrefab;
+    private readonly List<GameObject> _acorns = new();
+    private int _acornIndex = 0; //도토리 프리팹 인덱스
 
     public Rigidbody2D Rigid => _rigid;
     public NavMeshAgent Agent => _agent;
@@ -62,6 +65,7 @@ public class PlayerController : MonoBehaviour
     public Transform StorePoint => _storePoint;
     public Transform KitchenPoint => _kitchenPoint;
     public Transform RestAreaPoint => _restAreaPoint;
+    public Transform AcornPoint => _acornPoint;
     public int FishingCount => _fishingCount;
 
 
@@ -72,8 +76,8 @@ public class PlayerController : MonoBehaviour
         _agent = GetComponent<NavMeshAgent>();
         if (PlayerData == null) PlayerData = new PlayerData();
         //테스트용
-        PlayerData.SetHunger(80);
-        PlayerData.SetStamina(5);
+        PlayerData.SetHunger(10);
+        PlayerData.SetStamina(100);
         PlayerData.SetMoveSpeed(1);
         PlayerData.SetDoongDoongStat(1000);
     }
@@ -91,6 +95,7 @@ public class PlayerController : MonoBehaviour
         ExhaustionMovement(); //피로도에 따른 이동속도 감소 
         UpdateMoveType();     //위 두개 상태에 따른 이동타입 업데이트, 애니메이션에 적용
 
+
         ApplyTier();  //둥둥수치에 따른 외형변화
         _currentState?.Execute(); 
     }
@@ -100,12 +105,63 @@ public class PlayerController : MonoBehaviour
         _currentState?.FixedExecute();
     }
 
-    public void SupplyAcorns()
+   public void StartAcornSupply(Vector3 center)  //도토리 떨어지는 함수
     {
-        if (!_canCook && !_shouldSell) return;
-        //보급용도토리 로직
-    }
+        if (_isAcornFalling) return;
+        _isAcornFalling = true;
+        _acorns.Clear();
+        _acornIndex = 0;
 
+        for (int i = 0; i < 3; i++)
+        {
+            Vector3 randomPos = center + new Vector3(Random.Range(-4f, 4f), 0, Random.Range(-4f, 4f));
+
+            if (NavMesh.SamplePosition(randomPos, out NavMeshHit hit, 2f, NavMesh.AllAreas))
+            {
+                GameObject acorn = Instantiate(_acornPrefab, hit.position + Vector3.up * 2f, Quaternion.identity);
+                _acorns.Add(acorn);
+            }
+        }
+
+        SetNextAcornTargetAndMove();
+    }
+    private void SetNextAcornTargetAndMove()  //다음 도토리 위치로 이동하거나, 도토리가 없으면 도토리 떨어지는 상태 종료
+    {
+        _acorns.RemoveAll(a => a == null);  //파괴된 도토리 리스트에서 제거
+
+        if (_acorns.Count == 0)  
+        {
+            _isAcornFalling = false;
+            SetState(new IdleState(this));
+            return;
+        }
+
+        if (_acornIndex >= _acorns.Count) _acornIndex = 0;  
+        _acornPoint = _acorns[_acornIndex].transform;    
+        SetState(new MoveState(this, Point.Acorn));
+    }
+    public void EatCurrentAcorn()  //도토리 먹는 함수, 도토리 없으면 도토리 떨어지는 상태 종료
+    {
+        if (!_isAcornFalling) return;
+        if (_acorns.Count == 0)  
+        {
+            SetNextAcornTargetAndMove();
+            return;
+        }
+        var acorn = _acorns[_acornIndex];  
+
+        PlayerData.SetHunger(PlayerData.Hunger + 10);
+        Destroy(acorn);
+        _acorns.RemoveAt(_acornIndex);
+        if (_acorns.Count == 0)
+        {
+            _isAcornFalling = false;
+            SetState(new IdleState(this));
+            return;
+        }
+        else SetNextAcornTargetAndMove();
+
+    }
     public void TryConsumeFood()
     {
         // 음식 섭취 로직
@@ -166,7 +222,13 @@ public class PlayerController : MonoBehaviour
     }
     private void UpdateConditionFlags()  //상태 업데이트
     {
-        _ishungery = PlayerData.Hunger <= 25;  
+        _ishungery = PlayerData.Hunger <= 25;
+
+        if (_isAcornFalling) return;
+        if (!_canCook && !_shouldSell && PlayerData.Hunger <= 20)
+        {
+            StartAcornSupply(transform.position); 
+        }
     }
 
     private void UpdateMoveType()  //이동타입 업데이트, 애니메이션에 적용
@@ -302,8 +364,8 @@ public class PlayerController : MonoBehaviour
 
     private IState DecideNextState()    //상태에 따른 도착지 결정, Move상태가 도착지의 따른 행동결정
     {
-        if (PlayerData.Hunger <= 20)
-            return new EatState(this);
+        //if (PlayerData.Hunger <= 20)
+        //    return new EatState(this);
 
         if (PlayerData.Stamina <= 10)
         {
@@ -322,6 +384,11 @@ public class PlayerController : MonoBehaviour
        //     _currentPoint = Point.Store;
        //     return new MoveState(this, _currentPoint);
        // }
+       if (_isAcornFalling) 
+        {
+            _currentPoint = Point.Acorn;
+            return new MoveState(this, _currentPoint);  
+        }
         _currentPoint = Point.Fish;
         return new MoveState(this, _currentPoint);
     }
