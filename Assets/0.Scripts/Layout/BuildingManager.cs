@@ -92,7 +92,7 @@ public class BuildingManager : MonoBehaviour
         {
             //이전 위치를 저장했을테니 그 위치로 복구
             _gridSystem.PlaceItem(_currentSnapshot.Pos.x, _currentSnapshot.Pos.y,
-                                  _currentSnapshot.Size.x, _currentSnapshot.Size.y);
+                                  _currentSnapshot.Size.x, _currentSnapshot.Size.y, _activePlaceable);
 
             Vector3 originWorldPos = _gridSystem.GetWorldPosition(
                 _currentSnapshot.Pos.x, _currentSnapshot.Pos.y,

@@ -29,7 +29,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 10, y: 5, z: 4}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8874104979484684477}
@@ -125,7 +125,7 @@ GameObject:
   - component: {fileID: 713072061826039181}
   - component: {fileID: 8708796684742351519}
   m_Layer: 5
-  m_Name: Button (2)
+  m_Name: Rotation
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -148,7 +148,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -3.7300005}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 4, y: 4}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2503820195026292586
@@ -233,9 +233,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: PlacementMgr, Assembly-CSharp
-        m_MethodName: OnClickMove
+      - m_Target: {fileID: 4542420452772097813}
+        m_TargetAssemblyTypeName: EditUI, Assembly-CSharp
+        m_MethodName: CallRotate
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -532,7 +532,7 @@ GameObject:
   - component: {fileID: 589496530718895704}
   - component: {fileID: 1597114883031027582}
   m_Layer: 5
-  m_Name: Button (1)
+  m_Name: Delete
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -555,7 +555,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 4, y: -3.7300005}
+  m_AnchoredPosition: {x: 4, y: 0}
   m_SizeDelta: {x: 4, y: 4}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1024215467083587570
@@ -640,9 +640,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: PlacementMgr, Assembly-CSharp
-        m_MethodName: OnClickDelete
+      - m_Target: {fileID: 4542420452772097813}
+        m_TargetAssemblyTypeName: EditUI, Assembly-CSharp
+        m_MethodName: CallDelete
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -680,7 +680,7 @@ RectTransform:
   m_GameObject: {fileID: 4709853336958416976}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.1, y: 0.2, z: 0.25}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6004150349473983187}
@@ -690,7 +690,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 2}
+  m_AnchoredPosition: {x: 0, y: 10}
   m_SizeDelta: {x: 1920, y: 1080}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &109945779940518338
@@ -766,6 +766,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8874104979484684477}
   - component: {fileID: -9099409440647072871}
+  - component: {fileID: 4542420452772097813}
   m_Layer: 0
   m_Name: TestBuild
   m_TagString: Untagged
@@ -783,7 +784,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 10, y: 5, z: 4}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 279997979307702155}
@@ -809,6 +810,20 @@ MonoBehaviour:
   _editMenuUI: {fileID: 4709853336958416976}
   _sizeX: 3
   _sizeY: 3
+--- !u!114 &4542420452772097813
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6989615876444269669}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba7aba55151874e4783c0397026c50f9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EditUI
+  _ui: {fileID: 4709853336958416976}
+  _size: 1.8
 --- !u!1 &7408468053219736438
 GameObject:
   m_ObjectHideFlags: 0
@@ -959,7 +974,7 @@ GameObject:
   - component: {fileID: 778125313232793313}
   - component: {fileID: 1929794756397897513}
   m_Layer: 5
-  m_Name: Button
+  m_Name: Move
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -982,7 +997,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -4, y: -3.73}
+  m_AnchoredPosition: {x: -4, y: 0}
   m_SizeDelta: {x: 4, y: 4}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3469444157257510509
@@ -1067,9 +1082,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: PlacementMgr, Assembly-CSharp
-        m_MethodName: OnClickRotate
+      - m_Target: {fileID: 4542420452772097813}
+        m_TargetAssemblyTypeName: EditUI, Assembly-CSharp
+        m_MethodName: CallMove
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

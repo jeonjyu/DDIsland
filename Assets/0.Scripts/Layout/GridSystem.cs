@@ -14,7 +14,7 @@ public class GridSystem : MonoBehaviour
 
     private Texture2D _gridDataTexture;
 
-    private int[,] _grid; //셀의 상태를 나타내는 2차원 배열, 0은 빈 셀, 1은 채워진 셀
+    private Placeable[,] _grid; //셀의 상태를 나타내는 2차원 배열, 0은 빈 셀, 1은 채워진 셀
 
     private float _cellSize; //셀의 실제 크기
 
@@ -25,7 +25,7 @@ public class GridSystem : MonoBehaviour
 
     private void Awake()
     {
-        _grid = new int[_width, _height];
+        _grid = new Placeable[_width, _height];
 
         _cellSize = (_cell.localScale.x * 10f) / _width; //셀의 크기를 Transform의 스케일에서 가져옴
     }
@@ -57,7 +57,7 @@ public class GridSystem : MonoBehaviour
         }
     }
     // 해당 오브젝트가 그리드에 배치 될 수 있는지 확인하는 메서드
-    public bool IsCellEmpty(int startX, int startY, int itemWidth, int itemHeight)
+    public bool IsCellEmpty(int startX, int startY, int itemWidth, int itemHeight, Placeable self) 
     {
         if (startX < 0 || startY < 0 || startX + itemWidth > _width || startY + itemHeight > _height)
         {
@@ -67,7 +67,10 @@ public class GridSystem : MonoBehaviour
         {
             for (int j = 0; j < itemHeight; j++)
             {
-                if (_grid[startX + i, startY + j] != 0)
+                int checkX = startX + i;
+                int checkY = startY + j;
+
+                if (_grid[checkX, checkY] != null && _grid[checkX, checkY] != self)
                 {
                     return false;
                 }
@@ -76,7 +79,7 @@ public class GridSystem : MonoBehaviour
         return true;
     }
     // 그리드에 오브젝트를 배치하는 메서드
-    public void PlaceItem(int startX, int startY, int itemWidth, int itemHeight)
+    public void PlaceItem(int startX, int startY, int itemWidth, int itemHeight, Placeable item)
     {
         if (startX < 0 || startY < 0 || startX + itemWidth > _width || startY + itemHeight > _height)
         {
@@ -86,7 +89,7 @@ public class GridSystem : MonoBehaviour
         {
             for (int j = 0; j < itemHeight; j++)
             {
-                _grid[startX + i, startY + j] = 1; // 1로 표시하여 해당 셀이 채워졌음을 나타냄
+                _grid[startX + i, startY + j] = item; // 해당 셀이 채워졌음을 나타냄
             }
         }
         UpdateGridTexture();
@@ -101,7 +104,7 @@ public class GridSystem : MonoBehaviour
         {
             for (int j = 0; j < itemHeight; j++)
             {
-                _grid[startX + i, startY + j] = 0; // 0로 표시하여 해당 셀을 비움
+                _grid[startX + i, startY + j] = null; // 해당 셀을 비움
             }
         }
         UpdateGridTexture();
@@ -161,7 +164,7 @@ public class GridSystem : MonoBehaviour
         {
             for (int y = 0; y < _height; y++)
             {
-                Color color = _grid[x, y] == 1 ? Color.red : new Color(0, 0, 0, 0); //하나하나 전부 색을 바꿔주는 방식, 추후 개선 할 수 있으면 개선 필요
+                Color color = _grid[x, y] != null ? Color.red : new Color(0, 0, 0, 0); //하나하나 전부 색을 바꿔주는 방식, 추후 개선 할 수 있으면 개선 필요
                 _gridDataTexture.SetPixel(x, y, color); // 1인 경우 빨간색, 0인 경우 투명색으로 설정
             }
         }

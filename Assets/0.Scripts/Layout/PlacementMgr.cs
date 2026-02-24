@@ -12,14 +12,16 @@ public enum PlacementState
 
 public class PlacementMgr : MonoBehaviour
 {
-    private PlacementMgr _instance;
+    static private PlacementMgr _instance;
     private Placeable3D _selectedTarget; // 현재 선택된 건물
     private InputAction _clickAction; // 클릭 입력 액션
 
     [SerializeField] private BuildingManager _buildingManager;
 
-    public PlacementMgr Instance => _instance;
+    #region 프로퍼티
+    static public PlacementMgr Instance => _instance;
     public PlacementState CurrentState { get; private set; } = PlacementState.View;
+    #endregion
 
     private void Awake()
     {
@@ -94,7 +96,6 @@ public class PlacementMgr : MonoBehaviour
 
             if (target != null && target.ItemState == ItemState.Placed)
             {
-                _selectedTarget = target; // 건물을 선택 그리고 저장
                 ShowEditMenu(target); // 편집 메뉴 표시
             }
             else

@@ -29,8 +29,8 @@ public class Placeable3D : Placeable
     private bool _hasHit;
     #endregion
 
-    Color _succees = new (0.5f, 1, 0.5f, 0.5f);
-    Color _fail = new (1, 0.5f, 0.5f, 0.5f);
+    Color _succees = new(0.5f, 1, 0.5f, 0.5f);
+    Color _fail = new(1, 0.5f, 0.5f, 0.5f);
 
     #region 프로퍼티
     public Vector2Int PlacedIndex => _lastPlacedIndex;
@@ -61,10 +61,25 @@ public class Placeable3D : Placeable
 
     public void OnRotate()
     {
-        if (ItemState == ItemState.Placed) return;
+        if (ItemState == ItemState.Placed)
+        {
+            _targetGrid.RemoveItem(_lastPlacedIndex.x, _lastPlacedIndex.y, _lastPlacedSize.x, _lastPlacedSize.y);
+        }
 
         _currentYRotation = (_currentYRotation + _rotationStep) % 360;
         _isRotated = !_isRotated;
+
+        Vector2Int newSize = GetRotatedSize();
+        if (ItemState == ItemState.Placed) _cachedIndex = _lastPlacedIndex;
+
+        Vector3 snapPos = _targetGrid.GetWorldPosition(_cachedIndex.x, _cachedIndex.y, newSize.x, newSize.y);
+        transform.SetPositionAndRotation(snapPos, Quaternion.Euler(0, _currentYRotation, 0));
+
+        if (ItemState == ItemState.Placed)
+        {
+            _targetGrid.PlaceItem(_cachedIndex.x, _cachedIndex.y, newSize.x, newSize.y, this);
+            _lastPlacedSize = newSize;
+        }
 
         VisualFeedback();
     }
@@ -100,10 +115,14 @@ public class Placeable3D : Placeable
         Vector2Int size = GetRotatedSize();
 
         //현재 데이터가 없어서 사이즈 고정. 추후에 SO데이터 받아서 변경 필요
-        if (index.x != -1 && _targetGrid.IsCellEmpty(index.x, index.y, size.x, size.y))
+        if (index.x != -1 && _targetGrid.IsCellEmpty(index.x, index.y, size.x, size.y, this))
         {
+            if (ItemState == ItemState.Placed)
+            {
+                _targetGrid.RemoveItem(_lastPlacedIndex.x, _lastPlacedIndex.y, _lastPlacedSize.x, _lastPlacedSize.y);
+            }
             // 그리드에 아이템 배치
-            _targetGrid.PlaceItem(index.x, index.y, size.x, size.y);
+            _targetGrid.PlaceItem(index.x, index.y, size.x, size.y,this);
 
             _lastPlacedIndex = index;
             _lastPlacedSize = size;
@@ -123,17 +142,23 @@ public class Placeable3D : Placeable
 
         if (index.x == -1)
         {
-            _selectedRenderer.material.color = _fail;
-            // 그리드 셰이더에도 실패 상태 전달 (좌표를 맵 밖으로 보내서 하이라이트 제거)
-            _targetGrid.UpdateShaderHover(new Vector2Int(-10, -10), size, false);
             return;
         }
 
-        bool placeAble = _targetGrid.IsCellEmpty(index.x, index.y, size.x, size.y);
+        bool placeAble = _targetGrid.IsCellEmpty(index.x, index.y, size.x, size.y,this);
 
-        _selectedRenderer.material.color = placeAble ? _succees : _fail;
+        if (ItemState == ItemState.Preview)
+        {
+            // 배치 중일 때는 물체 색상도 변경
+            _selectedRenderer.material.color = placeAble ? _succees : _fail;
+            _targetGrid.UpdateShaderHover(index, size, placeAble);
+        }
+        else
+        {
+            _selectedRenderer.material.color = _originalColor;
+            _targetGrid.UpdateShaderHover(index, size, false);
+        }
 
-        _targetGrid.UpdateShaderHover(index, size, placeAble);
     }
     //회전된 상태에서의 사이즈 계산
     private Vector2Int GetRotatedSize()
@@ -162,7 +187,7 @@ public class Placeable3D : Placeable
     }
     public void RestoreState(Vector3 worldPos, float yRotation, bool isRotated)
     {
-        
+
         transform.SetPositionAndRotation(worldPos, Quaternion.Euler(0, yRotation, 0));
 
         // 저장된 회전값과 회전 상태 복원
@@ -170,9 +195,9 @@ public class Placeable3D : Placeable
         _isRotated = isRotated;
 
         // 저장 되어 있던 상태 정리
-        ItemState = ItemState.Placed; 
-        _selectedRenderer.material.color = _originalColor; 
-        _targetGrid.ClearGrid(); 
+        ItemState = ItemState.Placed;
+        _selectedRenderer.material.color = _originalColor;
+        _targetGrid.ClearGrid();
         enabled = false;
     }
 }
