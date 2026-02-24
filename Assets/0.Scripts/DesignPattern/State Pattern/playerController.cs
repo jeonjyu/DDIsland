@@ -3,6 +3,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Analytics;
+using UnityEngine.InputSystem.Controls;
 using static UnityEditor.Experimental.GraphView.GraphView;
 
 
@@ -20,7 +21,7 @@ public class PlayerController : MonoBehaviour
     private MeshRenderer _meshRenderer;
 
     private bool _ishungery = false;
-    private bool _canCook = false;
+    private bool _canCook = true;  //테스트
     private bool _shouldSell = false;
     private bool _isFishing = false;
     private bool _isResting = false;
@@ -44,6 +45,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private SkinnedMeshRenderer _roundSource;
     [SerializeField] private SkinnedMeshRenderer _chubbySource;
 
+    private float _hungerTickTimer;
+    private float _baseMoveSpeed;  
+    private bool _slowApplied;
 
     public Rigidbody2D Rigid => _rigid;
     public NavMeshAgent Agent => _agent;
@@ -73,13 +77,22 @@ public class PlayerController : MonoBehaviour
         PlayerData.SetMoveSpeed(1);
         PlayerData.SetDoongDoongStat(1000);
     }
-
+    private void Start()
+    {
+        _baseMoveSpeed = PlayerData.MoveSpeed;
+    }
     private void Update()
     {
         if (_currentState == null)
             SetState(new IdleState(this));
-        ApplyTier();
-        _currentState?.Execute();
+        UpdateConditionFlags(); //상태 업데이트
+
+        HungerMovement();  //배고픔에 따른 이동속도 감소 
+        ExhaustionMovement(); //피로도에 따른 이동속도 감소 
+        UpdateMoveType();     //위 두개 상태에 따른 이동타입 업데이트, 애니메이션에 적용
+
+        ApplyTier();  //둥둥수치에 따른 외형변화
+        _currentState?.Execute(); 
     }
 
     private void FixedUpdate()
@@ -103,17 +116,70 @@ public class PlayerController : MonoBehaviour
         // 물고기 보관 로직
     }
 
-    public void ExhaustionMovement()
+    public void ExhaustionMovement()  //피로도에 따른 이동속도 감소 및 애니메이션 변화
     {
-        _animator.SetFloat("MoveType", 1);
-        if (PlayerData.Stamina <= 10) Debug.Log("탈진 상태. 완전히 피곤해 찌들은 애니메이션");
-        else if (PlayerData.Stamina <= 14) Debug.Log("꾸벅거림이 심해진다.");
-        else if(PlayerData.Stamina <= 19) Debug.Log("꽤나 자주 꾸벅거린다.");
-        else if (PlayerData.Stamina <= 24) Debug.Log("조금 더 자주 꾸벅거린다.");
-        else  Debug.Log("가끔 꾸벅거린다"); 
+        //로그창 폭발로 주석처리
+        if (PlayerData.Stamina > 30) return;
+        if (PlayerData.Stamina <= 10) return; //Debug.Log("탈진 상태. 완전히 피곤해 찌들은 애니메이션");
+        else if (PlayerData.Stamina <= 14) return;//Debug.Log("꾸벅거림이 심해진다.");
+        else if (PlayerData.Stamina <= 19) return;//Debug.Log("꽤나 자주 꾸벅거린다.");
+        else if (PlayerData.Stamina <= 24) return; //Debug.Log("조금 더 자주 꾸벅거린다.");
+        else return; //Debug.Log("가끔 꾸벅거린다"); 
+    }
+    public void HungerMovement()  //배고픔에 따른 이동속도 감소 및 애니메이션 변화
+    {
+        if (!_ishungery || PlayerData.Hunger > 25)
+        {
+            if (_slowApplied)
+            {
+                PlayerData.SetMoveSpeed(_baseMoveSpeed);
+                _slowApplied = false;
+            }
+            _hungerTickTimer = 0f;
+            return;
+        }
+        ApplyHungerTier();
+        // _animator.SetFloat("MoveType", 2);
+        // Debug.Log("배고픔 힘 빠진 이동");
+    }
+    public void ApplyHungerTier()  //배고픔 단계에 따른 둥둥 감소 간격 조절
+    {
+        float interval = 0f;
+        if (PlayerData.Hunger <= 9) interval = 1f;
+        else if (PlayerData.Hunger <= 14) interval = 3f;
+        else if (PlayerData.Hunger <= 19) interval = 5f;
+        else if (PlayerData.Hunger <= 25) interval = 10f;
+        ApplyHunger(interval);
+    }
+    public void ApplyHunger(float inter)  //배고픔 단계에 따른 둥둥 감소 간격 조절
+    {
+        if (inter <= 0f) return;
+        _hungerTickTimer += Time.deltaTime;
+        while (_hungerTickTimer >= inter)
+        {
+            _hungerTickTimer -= inter;
+
+            int next = Mathf.Max(0, PlayerData.DoongDoongStat - 1);
+            PlayerData.SetDoongDoongStat(next);
+            if (next == 0) break;
+        }
+    }
+    private void UpdateConditionFlags()  //상태 업데이트
+    {
+        _ishungery = PlayerData.Hunger <= 25;  
     }
 
-    public void ApplyTier()
+    private void UpdateMoveType()  //이동타입 업데이트, 애니메이션에 적용
+    {
+        // 0 기본 / 1 탈진 / 2 배고픔
+        float moveType;
+        if (_ishungery) moveType = 2;
+        else if (PlayerData.Stamina <= 30) moveType = 1;
+        else moveType = 0;
+        _animator.SetFloat("MoveType", moveType);
+    }
+
+    public void ApplyTier()  //둥둥수치에 따른 외형변화
     {
         SkinnedMeshRenderer src;
         if (PlayerData.DoongDoongStat >= 1000) src = _roundSource;

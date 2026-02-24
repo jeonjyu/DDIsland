@@ -17,12 +17,11 @@ public class MoveState : IState
           //  case Point.Store:
           //      target = _player.StorePoint;
           //      break;
-          //  case Point.Kitchen:
-          //      target = _player.KitchenPoint;
+          // case Point.Kitchen:
+          //     target = _player.KitchenPoint;
           //      break;
             case Point.Rest:
                 target = _player.RestAreaPoint;
-                _player.ExhaustionMovement();
                 break;
         }
     }
@@ -62,7 +61,6 @@ public class MoveState : IState
 
     public void Exit()
     {
-        _player.Animator.SetFloat("MoveType", 0);
         _player.Animator.SetBool("isMove", false);
 
     }
