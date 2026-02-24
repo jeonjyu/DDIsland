@@ -41,8 +41,9 @@ public class BuildingManager : MonoBehaviour
 
         RemoveBuildingFromGrid(target); // 그리드에서 해당 건물 제거
 
+        target.ToggleUI(false);
+
         target.ItemState = ItemState.Preview;
-        target.enabled = true; // 다시 Update와 VisualFeedback이 작동하게 함
     }
     public void DeleteBuilding(Placeable3D target)
     {

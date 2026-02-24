@@ -9,6 +9,8 @@ public class Placeable3D : Placeable
 
     [SerializeField] private LayerMask _groundLayer;
     [SerializeField] private float _rotationStep = 90f; // 한 번 누를 때 회전할 각도
+    [SerializeField] private GameObject _editMenuUI; // 현재 선택된 건물의 편집 UI
+
 
     Camera _mainCamera;
     MeshRenderer _selectedRenderer;
@@ -49,7 +51,14 @@ public class Placeable3D : Placeable
         ItemState = ItemState.Preview;
         enabled = true;
     }
-   
+    public void ToggleUI(bool isActive)
+    {
+        if (_editMenuUI != null)
+        {
+            _editMenuUI.SetActive(isActive);
+        }
+    }
+
     public void OnRotate()
     {
         if (ItemState == ItemState.Placed) return;

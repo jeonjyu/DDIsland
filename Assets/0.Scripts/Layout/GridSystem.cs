@@ -10,6 +10,7 @@ public class GridSystem : MonoBehaviour
     [Header("Visual Settings")]
     [SerializeField] private Transform _cell; //셀의 크기를 결정하는 Transform, 이 크기에 맞춰 셀의 실제 크기를 계산
     [SerializeField] private MeshRenderer _gridRenderer; //렌더러 컴포넌트
+    [SerializeField] private GameObject _gridObject; //그리드 시각화 오브젝트
 
     private Texture2D _gridDataTexture;
 
@@ -38,6 +39,14 @@ public class GridSystem : MonoBehaviour
         };
 
         ApplyGridToShader();
+    }
+    public void SetGridActive(bool isActive)
+    {
+        if (_gridObject != null)
+        {
+            Debug.Log($"그리드 시각화 오브젝트의 활성 상태를 {(isActive ? "활성화" : "비활성화")}합니다.");
+            _gridObject.SetActive(isActive);
+        }
     }
     // 그리드 정보를 셰이더에 전달하는 메서드
     public void ApplyGridToShader()

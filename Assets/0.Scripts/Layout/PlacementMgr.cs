@@ -1,4 +1,7 @@
+using System.Collections.Generic;
+using UnityEditorInternal;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 public enum PlacementState
@@ -7,7 +10,6 @@ public enum PlacementState
     Edit
 }
 
-
 public class PlacementMgr : MonoBehaviour
 {
     private PlacementMgr _instance;
@@ -15,7 +17,6 @@ public class PlacementMgr : MonoBehaviour
     private InputAction _clickAction; // 클릭 입력 액션
 
     [SerializeField] private BuildingManager _buildingManager;
-    [SerializeField] private GameObject _editMenuUI; // 현재 선택된 건물의 편집 UI
 
     public PlacementMgr Instance => _instance;
     public PlacementState CurrentState { get; private set; } = PlacementState.View;
@@ -39,6 +40,11 @@ public class PlacementMgr : MonoBehaviour
     public void ToggleEditMode()
     {
         CurrentState = (CurrentState == PlacementState.View) ? PlacementState.Edit : PlacementState.View;
+
+        bool isEditMode = (CurrentState == PlacementState.Edit);
+
+        _buildingManager.GridSystem.SetGridActive(isEditMode);
+
         Debug.Log($"현재 모드: {CurrentState}");
 
         if (CurrentState == PlacementState.View)
@@ -62,8 +68,7 @@ public class PlacementMgr : MonoBehaviour
     private void OnClickInput(InputAction.CallbackContext ctx)
     {
         //현재 상태가 편집모드가 아니라면 넘기기
-        if (CurrentState != PlacementState.Edit) return;
-
+        if (CurrentState != PlacementState.Edit || IsPointerOverUI()) return;
 
         if (_buildingManager.ActivePlaceable != null)
         {
@@ -77,7 +82,7 @@ public class PlacementMgr : MonoBehaviour
     private void TrySelectBuildingForMove()
     {
         // UI 요소 위에서 클릭이 발생하면 건물 선택을 무시, 즉 else가 실행되지 않음
-        if (UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject()) return;
+        if (IsPointerOverUI()) return;
 
         Vector2 mousePos = Mouse.current.position.ReadValue();
 
@@ -99,17 +104,41 @@ public class PlacementMgr : MonoBehaviour
             }
         }
     }
+    // UI 요소 위에서 클릭이 발생했는지 확인하는 메서드
+    private bool IsPointerOverUI()
+    {
+        if (EventSystem.current == null) return false;
+
+        PointerEventData eventData = new(EventSystem.current)
+        {
+            position = Mouse.current.position.ReadValue()
+        };
+
+        List<RaycastResult> results = new ();
+
+        EventSystem.current.RaycastAll(eventData, results);
+
+        return results.Count > 0;
+    }
+    // 선택된 건물에 대해 편집 메뉴를 표시하는 메서드
     private void ShowEditMenu(Placeable3D target)
     {
-        _editMenuUI.SetActive(true);
+        if (_selectedTarget != null && _selectedTarget != target)
+        {
+            _selectedTarget.ToggleUI(false);
+        }
 
-        _editMenuUI.transform.position = target.transform.position + Vector3.up * 3f;
+        _selectedTarget = target;
+        _selectedTarget.ToggleUI(true); 
     }
-
+    // 편집 메뉴를 닫는 메서드
     public void CloseEditMenu()
     {
+        if (_selectedTarget != null)
+        {
+            _selectedTarget.ToggleUI(false);
+        }
         _selectedTarget = null;
-        _editMenuUI.SetActive(false);
     }
     public void OnClickMove() // '이동' 버튼에 연결
     {
