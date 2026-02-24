@@ -8,8 +8,6 @@ public class Placeable3D : Placeable
 {
 
     [SerializeField] private LayerMask _groundLayer;
-    [SerializeField] private InputAction _rotateAction;
-    [SerializeField] private InputAction _initAction;
     [SerializeField] private float _rotationStep = 90f; // 한 번 누를 때 회전할 각도
 
     Camera _mainCamera;
@@ -23,36 +21,36 @@ public class Placeable3D : Placeable
 
     [SerializeField] int _sizeX;
     [SerializeField] int _sizeY;
-    
+
+    #region 레이캐스트
+    private Vector2Int _cachedIndex;
+    private bool _hasHit;
+    #endregion
+
     Color _succees = new (0.5f, 1, 0.5f, 0.5f);
     Color _fail = new (1, 0.5f, 0.5f, 0.5f);
+
+    #region 프로퍼티
+    public Vector2Int PlacedIndex => _lastPlacedIndex;
+    public Vector2Int PlacedSize => _lastPlacedSize;
+    public bool IsRotated => _isRotated;
+    public float CurrentYRotation => _currentYRotation;
+    #endregion
 
     public void Initialize(GridSystem grid)
     {
         _targetGrid = grid;
         _mainCamera = Camera.main;
         _selectedRenderer = GetComponentInChildren<MeshRenderer>();
-        _rotateAction = InputSystem.actions.FindAction("UI/Rotation");
-        _initAction = InputSystem.actions.FindAction("UI/Init");
         _groundLayer = LayerMask.GetMask("Water"); //레이어 추가 설정하지 않아서 우선적으로 Water로 설정.
                                                    //추후 레이아웃에 맞는 레이어로 변경 필요
         _originalColor = _selectedRenderer.material.color;
 
         ItemState = ItemState.Preview;
         enabled = true;
-
-        _rotateAction.Enable(); // 입력 액션 활성화
-        _rotateAction.performed += OnRotate;
-        _initAction.performed += OnPlaceInput;
-
     }
-    private void OnDisable()
-    {
-        _rotateAction.performed -= OnRotate;
-        _initAction.performed -= OnPlaceInput;
-        _rotateAction.Disable(); // 입력 액션 비활성화
-    }
-    private void OnRotate(InputAction.CallbackContext ctx)
+   
+    public void OnRotate()
     {
         if (ItemState == ItemState.Placed) return;
 
@@ -60,13 +58,6 @@ public class Placeable3D : Placeable
         _isRotated = !_isRotated;
 
         VisualFeedback();
-    }
-    private void OnPlaceInput(InputAction.CallbackContext ctx)
-    {
-        if (ItemState == ItemState.Preview)
-        {
-            Placement();
-        }
     }
     // 마우스 위치를 그리드 좌표로 변환
     public override Vector2Int ConvertedIndex()
@@ -93,9 +84,10 @@ public class Placeable3D : Placeable
 
         return new Vector2Int(-1, -1);
     }
+    // 아이템을 그리드에 배치
     public override void Placement()
     {
-        Vector2Int index = ConvertedIndex();
+        Vector2Int index = _cachedIndex;
         Vector2Int size = GetRotatedSize();
 
         //현재 데이터가 없어서 사이즈 고정. 추후에 SO데이터 받아서 변경 필요
@@ -117,8 +109,7 @@ public class Placeable3D : Placeable
     }
     public override void VisualFeedback()
     {
-        Vector2Int index = ConvertedIndex();
-
+        Vector2Int index = _cachedIndex;
         Vector2Int size = GetRotatedSize();
 
         if (index.x == -1)
@@ -146,18 +137,33 @@ public class Placeable3D : Placeable
 
         if (_mainCamera == null || _targetGrid == null) return;
 
-        VisualFeedback();
 
-        Vector2Int currentIndex = ConvertedIndex();
+        _cachedIndex = ConvertedIndex();
         Vector2Int size = GetRotatedSize();
 
-        if (currentIndex.x != -1)
+        VisualFeedback();
+        if (_cachedIndex.x != -1)
         {
-            Vector3 snapPos = _targetGrid.GetWorldPosition(currentIndex.x, currentIndex.y, size.x, size.y);
+            Vector3 snapPos = _targetGrid.GetWorldPosition(_cachedIndex.x, _cachedIndex.y, size.x, size.y);
 
             transform.SetPositionAndRotation(snapPos, Quaternion.Euler(0, _currentYRotation, 0));
 
-            Debug.Log($"현재 칸 좌표: {currentIndex}");
+            Debug.Log($"현재 칸 좌표: {_cachedIndex}");
         }
+    }
+    public void RestoreState(Vector3 worldPos, float yRotation, bool isRotated)
+    {
+        
+        transform.SetPositionAndRotation(worldPos, Quaternion.Euler(0, yRotation, 0));
+
+        // 저장된 회전값과 회전 상태 복원
+        _currentYRotation = yRotation;
+        _isRotated = isRotated;
+
+        // 저장 되어 있던 상태 정리
+        ItemState = ItemState.Placed; 
+        _selectedRenderer.material.color = _originalColor; 
+        _targetGrid.ClearGrid(); 
+        enabled = false;
     }
 }

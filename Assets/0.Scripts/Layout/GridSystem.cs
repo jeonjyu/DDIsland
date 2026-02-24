@@ -17,8 +17,10 @@ public class GridSystem : MonoBehaviour
 
     private float _cellSize; //셀의 실제 크기
 
+    #region 프로퍼티
     public int Width => _width;   
     public int Height => _height;
+    #endregion
 
     private void Awake()
     {

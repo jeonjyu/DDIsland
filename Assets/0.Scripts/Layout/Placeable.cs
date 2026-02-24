@@ -32,6 +32,8 @@ public abstract class Placeable : MonoBehaviour
     {
 
     }
+    // 배치 가능한 오브젝트가 그리드에 배치될 때 시각적 피드백을 제공하는 추상 메서드
     public abstract void VisualFeedback();
     public abstract Vector2Int ConvertedIndex();
+
 }
