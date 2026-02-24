@@ -46,7 +46,7 @@ public class SortDropdown : StoreDropdownBase
         comparers.Remove(comparer);
         comparers.Insert(0, comparer);
 
-        IEnumerable<StoreItem> items = ItemManager.Instance.displayItems;
+        IEnumerable<StoreItem> items = ItemManager.Instance.currentCategory;
 
         foreach (Comparer comp in comparers)
         {
@@ -73,7 +73,7 @@ public class SortDropdown : StoreDropdownBase
 
         ItemManager.Instance.displayItems = items.ToList();
 
-        Debug.Log("정렬 완료: " + string.Join(", ", ItemManager.Instance.displayItems.Select(x => x.ItemName + "(" + x.ItemId + "):" + x.PurchasePrice)));
+        Debug.Log("정렬 완료: " + string.Join(", ", ItemManager.Instance.currentCategory.Select(x => x.ItemName + "(" + x.ItemId + "):" + x.PurchasePrice)));
     }
 
 
