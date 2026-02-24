@@ -59,7 +59,8 @@ public class ItemSlotView : MonoBehaviour, IStoreItemView
 
         if (!modelData)
         {
-            Debug.Log("mode이 없음");
+            Debug.Log("model이 없음");
+            ResetSlot();
             return;
         }
         UpdateSlotColor(modelData.IsGained);
@@ -69,6 +70,13 @@ public class ItemSlotView : MonoBehaviour, IStoreItemView
         //_itemImage.sprite = ;
     }
 
+    public void ResetSlot()
+    {
+        UpdateSlotColor(false);
+        _itemName.text = "";
+        _itemPrice.text = "";
+        _itemCount.text = "0";
+    }
     public void UpdateItemCount(int count)
     {
         _itemCount.text = count.ToString();

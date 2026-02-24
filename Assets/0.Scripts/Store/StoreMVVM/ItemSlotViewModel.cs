@@ -86,7 +86,7 @@ public class ItemSlotViewModel : MonoBehaviour, INotifyPropertyChanged
     public void Reset()
     {
         Model = null;
-        ItemId = 99999999;
+        ItemId = -1;
     }
 
     public event PropertyChangedEventHandler PropertyChanged;
