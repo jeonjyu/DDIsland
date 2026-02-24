@@ -1,8 +1,10 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
-using UnityEngine;
 using System.ComponentModel;
+using System.Linq;
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
 
 
 // 드롭다운 기준
@@ -20,6 +22,12 @@ public enum Comparer
 public class SortDropdown : StoreDropdownBase
 {
     List<Comparer> comparers = new List<Comparer>();
+
+    //private void Awake()
+    //{
+    //    Debug.Log("[SortDropdown] Awake");
+    //    dropdown = GetComponent<TMP_Dropdown>();
+    //}
 
     void Start()
     {
