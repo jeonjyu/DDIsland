@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 public class MoveState : IState
 {
@@ -22,6 +22,7 @@ public class MoveState : IState
           //      break;
             case Point.Rest:
                 target = _player.RestAreaPoint;
+                _player.ExhaustionMovement();
                 break;
         }
     }
@@ -61,6 +62,7 @@ public class MoveState : IState
 
     public void Exit()
     {
+        _player.Animator.SetFloat("MoveType", 0);
         _player.Animator.SetBool("isMove", false);
 
     }

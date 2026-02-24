@@ -2,6 +2,8 @@ using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Analytics;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 
 public enum Point
@@ -36,11 +38,11 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Transform _kitchenPoint;
     [SerializeField] private Transform _restAreaPoint;
 
-    [SerializeField] private SkinnedMeshRenderer targetSMR;
-    [SerializeField] private SkinnedMeshRenderer slimSource;
-    [SerializeField] private SkinnedMeshRenderer normalSource;
-    [SerializeField] private SkinnedMeshRenderer roundSource;
-    [SerializeField] private SkinnedMeshRenderer chubbySource;
+    [SerializeField] private SkinnedMeshRenderer _targetSMR;
+    [SerializeField] private SkinnedMeshRenderer _slimSource;
+    [SerializeField] private SkinnedMeshRenderer _normalSource;
+    [SerializeField] private SkinnedMeshRenderer _roundSource;
+    [SerializeField] private SkinnedMeshRenderer _chubbySource;
 
 
     public Rigidbody2D Rigid => _rigid;
@@ -67,7 +69,7 @@ public class PlayerController : MonoBehaviour
         if (PlayerData == null) PlayerData = new PlayerData();
         //테스트용
         PlayerData.SetHunger(80);
-        PlayerData.SetStamina(80);
+        PlayerData.SetStamina(5);
         PlayerData.SetMoveSpeed(1);
         PlayerData.SetDoongDoongStat(1000);
     }
@@ -85,6 +87,12 @@ public class PlayerController : MonoBehaviour
         _currentState?.FixedExecute();
     }
 
+    public void SupplyAcorns()
+    {
+        if (!_canCook && !_shouldSell) return;
+        //보급용도토리 로직
+    }
+
     public void TryConsumeFood()
     {
         // 음식 섭취 로직
@@ -94,21 +102,32 @@ public class PlayerController : MonoBehaviour
     {
         // 물고기 보관 로직
     }
+
+    public void ExhaustionMovement()
+    {
+        _animator.SetFloat("MoveType", 1);
+        if (PlayerData.Stamina <= 10) Debug.Log("탈진 상태. 완전히 피곤해 찌들은 애니메이션");
+        else if (PlayerData.Stamina <= 14) Debug.Log("꾸벅거림이 심해진다.");
+        else if(PlayerData.Stamina <= 19) Debug.Log("꽤나 자주 꾸벅거린다.");
+        else if (PlayerData.Stamina <= 24) Debug.Log("조금 더 자주 꾸벅거린다.");
+        else  Debug.Log("가끔 꾸벅거린다"); 
+    }
+
     public void ApplyTier()
     {
         SkinnedMeshRenderer src;
-        if (PlayerData.DoongDoongStat >= 1000) src = roundSource;
-        else if (PlayerData.DoongDoongStat >= 500) src = chubbySource;
-        else if (PlayerData.DoongDoongStat >= 300) src = normalSource;
-        else src = slimSource;
+        if (PlayerData.DoongDoongStat >= 1000) src = _roundSource;
+        else if (PlayerData.DoongDoongStat >= 500) src = _chubbySource;
+        else if (PlayerData.DoongDoongStat >= 300) src = _normalSource;
+        else src = _slimSource;
         ApplySkin(src);
     }
     private void ApplySkin(SkinnedMeshRenderer src)
     {
-        if (src == null || targetSMR == null) return;
+        if (src == null || _targetSMR == null) return;
 
-        targetSMR.sharedMesh = src.sharedMesh;
-        targetSMR.sharedMaterials = src.sharedMaterials;
+        _targetSMR.sharedMesh = src.sharedMesh;
+        _targetSMR.sharedMaterials = src.sharedMaterials;
 
     }
 
