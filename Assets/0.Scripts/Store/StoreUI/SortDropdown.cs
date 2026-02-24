@@ -23,12 +23,6 @@ public class SortDropdown : StoreDropdownBase
 {
     List<Comparer> comparers = new List<Comparer>();
 
-    //private void Awake()
-    //{
-    //    Debug.Log("[SortDropdown] Awake");
-    //    dropdown = GetComponent<TMP_Dropdown>();
-    //}
-
     void Start()
     {
         // 드롭다운 옵션 리스트 전달
