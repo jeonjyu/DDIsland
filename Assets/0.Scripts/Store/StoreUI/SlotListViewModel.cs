@@ -35,13 +35,11 @@ public class StoreListViewModel : MonoBehaviour, INotifyPropertyChanged
         get => filterDropdown;
         set
         {
-            if (filterDropdown != value)
-            {
-                filterDropdown = value;
-                OnPropertyChanged(null);
-            }
+            filterDropdown = value;
+            OnPropertyChanged(null);
         }
     }
+
     public SortDropdown Sort
     {
         get => sortDropdown;
@@ -111,6 +109,7 @@ public class StoreListViewModel : MonoBehaviour, INotifyPropertyChanged
         storeItemViewModels = itemContents.GetComponentsInChildren<ItemSlotViewModel>().ToList();
         // 오브젝트풀에서 가져온 뒤 자동으로 storeItemViewModels에 추가하기
 
+        ResetSlotList();
         // test-end
 
         // itemList에 선택된 상점 유형 아이템들로 설정
