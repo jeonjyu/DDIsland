@@ -1,6 +1,7 @@
 using UnityEngine;
+using System;
 
-public class StoreItem : ScriptableObject, IStoreItem
+public abstract class StoreItem : ScriptableObject, IStoreItem
 {
     //field
     [SerializeField] private int _itemId;
@@ -30,4 +31,6 @@ public class StoreItem : ScriptableObject, IStoreItem
     {
         return this; 
     }
+
+    public abstract Enum GetFilter();
 }
