@@ -47,11 +47,16 @@ public enum LakeTileState
 {
     Empty,      // 흰색,   배치 가능한 빈 타일
     Fixed,      // 빨간색, 수정 불가한 고정 오브젝트 
-    Occupied,   // 회색,   유저가 배치한 옵젝 있음, 이동/회수 가능
-    Preview,    // 초록색, 드래그 예상 위치 
+    Occupied,   // 회색,   배치된 오브젝트, 이동/회수 가능
+    Preview,    // 초록색, 배치 예상 위치 
     Invalid     // 빨간색, 배치 불가 
 }
-
+public enum LakeObjectSize
+{
+    Small_1x1,  // (1,1)
+    Medium_2x1, // (2,1)
+    Large_4x2   // (4,2) 
+}
 // 타일 한칸 데이터 
 [Serializable]
 public class LakeTileData
@@ -60,20 +65,15 @@ public class LakeTileData
     public LakeTileState state;   // 현재 타일 상태
     public string placedObjectId; // 배치된 오브젝트 ID
 }
-public enum LakeObjectSize
-{
-    Small_1x1,  // (1,1)
-    Medium_2x1, // (2,1)
-    Large_4x2   // (4,2) 
-}
+
 
 // 배치된 오브젝트 데이터 
 [Serializable]
-internal class LakePlacedObjectData 
+public class LakePlacedObjectData 
 {
     public string objectId;           // 배치 ID (같은 템 여러 개 구분용)
     public int itemId;                // 아이템 종류 ID (바위, 수초)
-    public InteriorType interiorType; //  LakeFix, LakeFree //  BuildingItem.cs의 enum 사용 
+    // public InteriorType interiorType; //  LakeFix, LakeFree //  BuildingItem.cs의 enum 사용 // 현재 참조할 수 없음
     public Vector2Int gridPos;        // 배치 좌표 
     public Vector2Int size;           // 타일 크기 (1,1) (2,1) (4,2) 
 }
@@ -88,7 +88,7 @@ public class LakeInvenSlot
 
 // 저장용 
 [Serializable]
-class LakeEditSaveData
+public class LakeEditSaveData
 {
     public List<LakePlacedObjectData> placedObjects;    // 배치된 오브젝트 목록
     public List<LakeInvenSlot> inventory;       // 보관함 상태
