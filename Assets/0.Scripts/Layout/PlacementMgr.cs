@@ -13,8 +13,9 @@ public enum PlacementState
 public class PlacementMgr : MonoBehaviour
 {
     static private PlacementMgr _instance;
-    private Placeable3D _selectedTarget; // 현재 선택된 건물
+    private Placeable3D _selectedTarget; // 현재 선택된 건물 
     private InputAction _clickAction; // 클릭 입력 액션
+    private InputAction _rotation;
 
     [SerializeField] private BuildingManager _buildingManager;
 
@@ -27,11 +28,13 @@ public class PlacementMgr : MonoBehaviour
     {
         _instance = this;
         _clickAction = InputSystem.actions.FindAction("UI/Select");
+        _rotation = InputSystem.actions.FindAction("UI/Roation");
     }
     private void OnEnable()
     {
         _clickAction.Enable();
         _clickAction.performed += OnClickInput;
+        //_rotation.performed += OnRoation;
     }
 
     private void OnDisable()
@@ -153,7 +156,7 @@ public class PlacementMgr : MonoBehaviour
     {
         if (_selectedTarget == null) return;
 
-        _selectedTarget.OnRotate();
+        _selectedTarget.ObjectRotate();
     }
     public void OnClickDelete() // '삭제' 버튼에 연결
     {

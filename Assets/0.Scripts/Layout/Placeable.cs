@@ -3,7 +3,7 @@ using UnityEngine;
 
 public enum ItemState // 건물의 상태를 나타내는 열거형
 {
-    Preview, // 배치 미리보기 상태
+    Preview, // 배치 미리보기 상태 
     Placed, // 배치 된 상태
 }
 /// <summary>

@@ -8,9 +8,8 @@ public class Placeable3D : Placeable
 {
 
     [SerializeField] private LayerMask _groundLayer;
-    [SerializeField] private float _rotationStep = 90f; // 한 번 누를 때 회전할 각도
+    [SerializeField] private float _rotationStep = 90f; // 한 번 누를 때 회전할 각도 
     [SerializeField] private GameObject _editMenuUI; // 현재 선택된 건물의 편집 UI
-
 
     Camera _mainCamera;
     MeshRenderer _selectedRenderer;
@@ -26,7 +25,7 @@ public class Placeable3D : Placeable
 
     #region 레이캐스트
     private Vector2Int _cachedIndex;
-    private bool _hasHit;
+    //private bool _hasHit;
     #endregion
 
     Color _succees = new(0.5f, 1, 0.5f, 0.5f);
@@ -44,7 +43,7 @@ public class Placeable3D : Placeable
         _targetGrid = grid;
         _mainCamera = Camera.main;
         _selectedRenderer = GetComponentInChildren<MeshRenderer>();
-        _groundLayer = LayerMask.GetMask("Water"); //레이어 추가 설정하지 않아서 우선적으로 Water로 설정.
+        _groundLayer = LayerMask.GetMask("Water"); //레이어 추가 설정하지 않아서 우선적으로 Water로 설정
                                                    //추후 레이아웃에 맞는 레이어로 변경 필요
         _originalColor = _selectedRenderer.material.color;
 
@@ -59,7 +58,7 @@ public class Placeable3D : Placeable
         }
     }
 
-    public void OnRotate()
+    public void ObjectRotate()
     {
         if (ItemState == ItemState.Placed)
         {
@@ -122,7 +121,7 @@ public class Placeable3D : Placeable
                 _targetGrid.RemoveItem(_lastPlacedIndex.x, _lastPlacedIndex.y, _lastPlacedSize.x, _lastPlacedSize.y);
             }
             // 그리드에 아이템 배치
-            _targetGrid.PlaceItem(index.x, index.y, size.x, size.y,this);
+            _targetGrid.PlaceItem(index.x, index.y, size.x, size.y, this);
 
             _lastPlacedIndex = index;
             _lastPlacedSize = size;
@@ -145,7 +144,7 @@ public class Placeable3D : Placeable
             return;
         }
 
-        bool placeAble = _targetGrid.IsCellEmpty(index.x, index.y, size.x, size.y,this);
+        bool placeAble = _targetGrid.IsCellEmpty(index.x, index.y, size.x, size.y, this);
 
         if (ItemState == ItemState.Preview)
         {
