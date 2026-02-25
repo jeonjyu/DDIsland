@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 
@@ -9,9 +9,9 @@ public class ItemSlotViewModel : MonoBehaviour, INotifyPropertyChanged
     // 아이템 갯수
     // 획득 여부
 
-    [SerializeField] private DummyStoreItemSO _model;
+    [SerializeField] private StoreItem _model;
 
-    public DummyStoreItemSO Model
+    public StoreItem Model
     {
         get => _model;
         set
@@ -77,7 +77,7 @@ public class ItemSlotViewModel : MonoBehaviour, INotifyPropertyChanged
         }
     }
 
-    public void SetModel(DummyStoreItemSO model)
+    public void SetModel(StoreItem model)
     {
         Model = model;
         ItemId = model.ItemId;
@@ -86,7 +86,7 @@ public class ItemSlotViewModel : MonoBehaviour, INotifyPropertyChanged
     public void Reset()
     {
         Model = null;
-        ItemId = 99999999;
+        ItemId = -1;
     }
 
     public event PropertyChangedEventHandler PropertyChanged;

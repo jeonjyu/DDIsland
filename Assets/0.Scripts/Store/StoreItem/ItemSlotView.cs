@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -7,6 +7,8 @@ using UnityEngine.UI;
 public class ItemSlotView : MonoBehaviour, IStoreItemView
 {
     ItemSlotViewModel viewModel;
+    StoreItem modelData;
+
 
     // 인테리어 타입에 따라 다른 UI 테두리 표시
     [SerializeField] private Image _slotBackground;
@@ -26,8 +28,9 @@ public class ItemSlotView : MonoBehaviour, IStoreItemView
 
     void Start()
     {
+        Debug.Log("[ItemSlotView] Start");
         viewModel = GetComponent<ItemSlotViewModel>();
-
+        //modelData = viewModel.Model;
         eventTrigger = gameObject.GetComponent<EventTrigger>();
         //eventTrigger.OnPointerClick(() => { }); 
         // 버튼 팝업 띄우고
@@ -50,10 +53,16 @@ public class ItemSlotView : MonoBehaviour, IStoreItemView
 
     public void Init()
     {
-        Debug.Log("[ItemSlotView] Init");
-        DummyStoreItemSO modelData = viewModel.Model;
+        //Debug.Log("[ItemSlotView] Init");
+        modelData = viewModel.Model;
         int itemID = viewModel.ItemId;
 
+        if (!modelData)
+        {
+            Debug.Log("model이 없음");
+            ResetSlot();
+            return;
+        }
         UpdateSlotColor(modelData.IsGained);
         _itemName.text = modelData.ItemName;
         _itemPrice.text = modelData.PurchasePrice.ToString();
@@ -61,6 +70,13 @@ public class ItemSlotView : MonoBehaviour, IStoreItemView
         //_itemImage.sprite = ;
     }
 
+    public void ResetSlot()
+    {
+        UpdateSlotColor(false);
+        _itemName.text = "";
+        _itemPrice.text = "";
+        _itemCount.text = "0";
+    }
     public void UpdateItemCount(int count)
     {
         _itemCount.text = count.ToString();
@@ -78,17 +94,17 @@ public class ItemSlotView : MonoBehaviour, IStoreItemView
     {
         if (string.IsNullOrEmpty(e.PropertyName))
         {
-            Debug.Log("[ItemSlotView] OnViewModelPropChanged | 모델 변경");
+            //Debug.Log("[ItemSlotView] OnViewModelPropChanged | 모델 변경");
 
             Init();
         }
         switch (e.PropertyName)
         {
-            case "ItemId":
-                Debug.Log("[ItemSlotView] OnViewModelPropChanged | (id) 모델 변경");
-                Init();
+            case "IsGained":
+            case "ItemCount":
+                UpdateItemCount(modelData.ItemCount);
+                UpdateSlotColor(modelData.IsGained);
                 break;
-
         }
     }
 }

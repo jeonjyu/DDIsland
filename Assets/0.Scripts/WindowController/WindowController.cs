@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
-public class WindowController : MonoBehaviour
+public class WindowController : Singleton<WindowController>
 {
     private WindowCore core = null;
 
@@ -108,11 +108,12 @@ public class WindowController : MonoBehaviour
 
     private bool onObject;      // 현재 마우스가 오브젝트 위에 있는지 판단하는 변수
 
-    private void Awake()
-    {
 #if !UNITY_EDITOR
+    protected override void Awake()
+    {
+        base.Awake();
+
         Application.targetFrameRate = targetFrame;
-#endif
         currentCamera = Camera.main;
 
         if (currentCamera)
@@ -162,6 +163,7 @@ public class WindowController : MonoBehaviour
 
         UpdateClickThrough();
     }
+#endif
 
     /// <summary>
     /// 마우스 위치 좌표에 오브젝트나 UGUI가 있는지 검사

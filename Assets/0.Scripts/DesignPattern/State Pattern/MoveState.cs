@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 public class MoveState : IState
 {
@@ -14,12 +14,15 @@ public class MoveState : IState
             case Point.Fish:
                 target = _player.FishPoint;
                 break;
-          //  case Point.Store:
-          //      target = _player.StorePoint;
-          //      break;
-          //  case Point.Kitchen:
-          //      target = _player.KitchenPoint;
-          //      break;
+                //  case Point.Store:
+                //      target = _player.StorePoint;
+                //      break;
+                // case Point.Kitchen:
+                //     target = _player.KitchenPoint;
+                //      break;
+                 case Point.Acorn:
+                    target = _player.AcornPoint;
+                break;
             case Point.Rest:
                 target = _player.RestAreaPoint;
                 break;
@@ -46,12 +49,15 @@ public class MoveState : IState
                 case Point.Fish:
                     _player.SetState(new FishingState(_player));
                     break;
-               // case Point.Store:
-               //     _player.SetState(new SalesState(_player));
-               //     break;
-               // case Point.Kitchen:
-               //     //_player.SetState(new CookState(_player));  //먹는상태 있어야할거같은
+                // case Point.Store:
+                //     _player.SetState(new SalesState(_player));
+                //     break;
+                // case Point.Kitchen:
+                //     //_player.SetState(new CookState(_player));  
                 //    break;
+                case Point.Acorn:
+                    _player.SetState(new EatState(_player));  
+                   break;
                 case Point.Rest:
                     _player.SetState(new SleepState(_player));
                     break;
