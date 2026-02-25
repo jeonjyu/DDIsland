@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class EditUI : MonoBehaviour
 {
+
     [SerializeField] private GameObject _ui;
     [SerializeField] private float _size;
     private Transform _mainCameraTransform;

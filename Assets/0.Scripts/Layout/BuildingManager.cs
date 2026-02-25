@@ -6,7 +6,7 @@ using UnityEngine;
 /// </summary>
 public class BuildingManager : MonoBehaviour
 {
-    // 건물의 현재 상태를 저장하는 구조체
+    // 건물의 현재 상태를 저장하는 구조체 
     private struct BuildingSnapshot
     {
         public Placeable3D Target;

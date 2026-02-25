@@ -13,7 +13,7 @@ public enum PlacementState
 public class PlacementMgr : MonoBehaviour
 {
     static private PlacementMgr _instance;
-    private Placeable3D _selectedTarget; // 현재 선택된 건물
+    private Placeable3D _selectedTarget; // 현재 선택된 건물 
     private InputAction _clickAction; // 클릭 입력 액션
 
     [SerializeField] private BuildingManager _buildingManager;

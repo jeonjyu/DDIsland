@@ -4,7 +4,7 @@ using UnityEngine;
 /// </summary>
 public class GridSystem : MonoBehaviour
 {
-    [SerializeField] private int _width = 12; //실제로 가지는 셀의 수
+    [SerializeField] private int _width = 12; //실제로 가지는 셀의 수 
     [SerializeField] private int _height = 12;
 
     [Header("Visual Settings")]

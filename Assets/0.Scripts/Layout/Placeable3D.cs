@@ -8,7 +8,7 @@ public class Placeable3D : Placeable
 {
 
     [SerializeField] private LayerMask _groundLayer;
-    [SerializeField] private float _rotationStep = 90f; // 한 번 누를 때 회전할 각도
+    [SerializeField] private float _rotationStep = 90f; // 한 번 누를 때 회전할 각도 
     [SerializeField] private GameObject _editMenuUI; // 현재 선택된 건물의 편집 UI
 
 
