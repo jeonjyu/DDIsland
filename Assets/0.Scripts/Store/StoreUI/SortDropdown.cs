@@ -7,6 +7,8 @@ using UnityEngine;
 using UnityEngine.UI;
 
 
+// to-do: 모든 정렬 기준에서 사용되는 기준과 드롭다운에서 선택될 때만 사용되는 기준이 따로 존재, 이부분 분리하여 다시 작업할 것
+
 // 드롭다운 기준
 // 보유/미보유, 가격, 카테고리(MVP 이후), id
 public enum Comparer
@@ -16,8 +18,6 @@ public enum Comparer
     ItemId
 }
 
-// 정렬 enum에 따라 해당 enum을 맨 앞으로 가져옴
-// 리스트가 있고 순서를 지키지만 특정한 하나를 1순위로 > 해당 리스트 요소를 널으로 만들고 0 위치에 insert, 빈 거 제거/무시 후 리스트화 
 
 public class SortDropdown : StoreDropdownBase
 {
@@ -35,12 +35,15 @@ public class SortDropdown : StoreDropdownBase
     // 정렬 체이닝 돌리기
     public void SortSlots(Comparer comparer)
     {
+        // 정렬 enum에 따라 해당 enum을 맨 앞으로 가져옴
+        // 리스트가 있고 순서를 지키지만 특정한 하나를 1순위로 >
+        // 해당 리스트 요소를 널으로 만들고 0 위치에 insert, 빈 거 제거/무시 후 리스트화 
         Debug.Log("[SortDropdown] 정렬 시작");
         comparers = comparers.OrderBy(x => x).ToList();
         comparers.Remove(comparer);
         comparers.Insert(0, comparer);
 
-        IEnumerable<StoreItem> items = ItemManager.Instance.currentCategory;
+        IEnumerable<StoreItem> items = ItemManager.Instance.displayItems;
 
         foreach (Comparer comp in comparers)
         {
@@ -58,6 +61,9 @@ public class SortDropdown : StoreDropdownBase
                     else 
                         items = items.AppendOrderByDescending(x => x.PurchasePrice);
                         break;
+                //case Comparer.Name:
+                //    items = items.AppendOrderBy(x => x.ItemName);
+                //    break;
                 case Comparer.ItemId:
                     items = items.AppendOrderBy(x => x.ItemId);
                     break;
@@ -67,7 +73,7 @@ public class SortDropdown : StoreDropdownBase
 
         ItemManager.Instance.displayItems = items.ToList();
 
-        Debug.Log("정렬 완료: " + string.Join(", ", ItemManager.Instance.currentCategory.Select(x => x.ItemName + "(" + x.ItemId + "):" + x.PurchasePrice)));
+        Debug.Log("정렬 완료: " + string.Join(", ", ItemManager.Instance.displayItems.Select(x => x.ItemName + "(" + x.ItemId + "):" + x.PurchasePrice)));
     }
 
 
@@ -86,6 +92,10 @@ public class SortDropdown : StoreDropdownBase
                 SortSlots(Comparer.Price);
                 storeListViewModel.LoadSlotList();
                 break;
+            //case StoreSort.name:
+            //    SortSlots(Comparer.Name);
+            //    storeListViewModel.LoadSlotList();
+            //    break;
         }
     }
 }
