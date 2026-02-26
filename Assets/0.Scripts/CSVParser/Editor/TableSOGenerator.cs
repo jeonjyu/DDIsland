@@ -242,7 +242,7 @@ public class TableSOGenerator
 
             string bitType = string.Empty;
 
-            sb.AppendLine($"// {lines[0]}");
+            sb.AppendLine($"// {lines[0].Trim(' ', '"')}");
 
             if (type.ToLower().Contains("_flag"))
             {
@@ -322,7 +322,7 @@ public class TableSOGenerator
             {
                 // 설명행의 첫 번째 문장만 주석으로 만듬
                 string comment = col.Desc.Split(new[] { "\r\n", "\r", "\n" }, System.StringSplitOptions.RemoveEmptyEntries)[0];
-                sb.AppendLine($"    // {comment}");
+                sb.AppendLine($"    // {comment.Trim(' ', '"')}");
                 sb.AppendLine($"    [field: SerializeField] public {col.Name} {name.Replace("type", string.Empty)}Type {{ get; private set; }}");
                 sb.AppendLine();
 
@@ -353,8 +353,10 @@ public class TableSOGenerator
             }
             else if (name.Contains("_string"))
             {
+                string fieldName = $"{char.ToLower(col.Name[0])}" + $"{col.Name.Substring(1).Replace("_String", string.Empty)}";
                 sb.AppendLine($"    // {col.Desc.Replace('\n', ' ')}");
-                sb.AppendLine($"    public {type} {col.Name} => LocalizationManager.Instance.GetString(\"{col.Name}\");");
+                sb.AppendLine($"    [SerializeField] private string {fieldName};");
+                sb.AppendLine($"    public {type} {col.Name} => LocalizationManager.Instance.GetString({fieldName});");
                 sb.AppendLine();
                 continue;
             }
@@ -618,22 +620,55 @@ public class TableSOGenerator
 
             // 컬럼 이름과 똑같은 이름의 프로퍼티를 찾기
             // enum일 경우에는 예외로 찾음 → 컬럼 이름이 타입명이 되기 때문
-            string propName = column.Type.ToLower().Contains("enum")
-                ? $"{column.Name.ToLower().Replace("type", string.Empty)}Type"
-                : column.Name;
+            string memberName = string.Empty;
 
-            PropertyInfo prop = soType.GetProperty(propName);
+            // 각 조건에 맞는 멤버 변수 이름으로 변형
+            if(column.Type.ToLower().Contains("enum"))
+            {
+                // 컬럼의 타입이 Enum이면 필드명으로 Type을 붙이기로 약속했기 때문에 바꿔줌
+                memberName = $"{column.Name.ToLower().Replace("type", string.Empty)}Type";
+            }
+            else if(column.Name.ToLower().Contains("_string"))
+            {
+                // 컬럼 이름에 _string이 들어가면 앞을 소문자 + 뒤에 _String은 떼기로 약속했기 때문에 바꿔줌
+                memberName = $"{char.ToLower(column.Name[0])}" + $"{column.Name.Substring(1).Replace("_String", string.Empty)}";
+            }
+            else
+            {
+                // 특별한 조건이 없을 경우 컬럼의 이름을 그대로 필드명으로 사용하고 있으므로 대입
+                memberName = column.Name;
+            }
+
+                MemberInfo member = soType.GetMember(memberName,
+                    BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
+                    .FirstOrDefault();
 
             // prop이 null이 아니고 쓰기 가능할 때
-            if (prop != null && prop.CanWrite)
+            if (member != null)
             {
                 if (string.IsNullOrEmpty(value))
                     continue;
 
                 try
                 {
-                    // 타입을 넣을 오브젝트
-                    object type = null;
+                    // 현재 변수의 타입을 체크, 필드인지 프로퍼티인지
+                    Type targetType = null;
+
+                    if (member is FieldInfo field)
+                    {
+                        targetType = field.FieldType;
+                    }
+                    else if (member is PropertyInfo prop)
+                    {
+                        targetType = prop.PropertyType;
+                    }
+
+                    if (targetType == null)
+                        continue;
+
+                    // 변환된 데이터를 담을 변수
+                    object convertedValue = null;
+
                     // 필드명 이름 → 비교를 위해 소문자로 변환
                     string columnName = csvFile.Columns[i].Name.ToLower();
 
@@ -659,7 +694,7 @@ public class TableSOGenerator
                             // guid 형태로 받은 파일의 경로를 반환
                             string assetPath = AssetDatabase.GUIDToAssetPath(guids[0]);
                             // type에 해당 경로의 파일 넣어주기
-                            type = AssetDatabase.LoadAssetAtPath(assetPath, prop.PropertyType);
+                            convertedValue = AssetDatabase.LoadAssetAtPath(assetPath, targetType);
                         }
                         else
                         {
@@ -670,27 +705,37 @@ public class TableSOGenerator
                     {
                         // 필드명에 "Path_"가 안들어가면 아래 실행
 
-                        if (prop.PropertyType.IsEnum)
+                        if (targetType.IsEnum)
                         {
                             // 프로퍼티가 Enum 타입일 경우
-                            type = Enum.Parse(prop.PropertyType, value, true);
+                            convertedValue = Enum.Parse(targetType, value, true);
                         }
-                        else if (prop.PropertyType == typeof(int) || prop.PropertyType == typeof(float))
+                        else if (targetType == typeof(int) || targetType == typeof(float))
                         {
                             // ',' '$' '%' 문자는 없애고 값 넣어주기
                             value = Regex.Replace(value, @"[,$%]", string.Empty).Trim();
 
                             // 프로퍼티가 int, float 타입이 아닐 경우
-                            type = Convert.ChangeType(value, prop.PropertyType);
+                            convertedValue = Convert.ChangeType(value, targetType);
                         }
                         else
                         {
                             // 프로퍼티가 Enum 타입이 아닐 경우
-                            type = Convert.ChangeType(value, prop.PropertyType);
+                            convertedValue = Convert.ChangeType(value, targetType);
                         }
                     }
 
-                    prop.SetValue(soInstance, type);
+                    switch(member.MemberType)
+                    {
+                        case MemberTypes.Field:
+                            ((FieldInfo)member).SetValue(soInstance, convertedValue);
+                            break;
+                        case MemberTypes.Property:
+                            var prop = (PropertyInfo)member;
+                            if (prop.CanWrite)
+                                prop.SetValue(soInstance, convertedValue);
+                            break;
+                    }
                 }
                 catch (Exception e)
                 {
@@ -698,6 +743,10 @@ public class TableSOGenerator
                 }
             }
         }
+    }
+    private static void SetFieldData(Type type, CsvClassData csvFile, int index)
+    {
+
     }
     #endregion
 
