@@ -14,10 +14,16 @@ public class StringData
 public class LocalizationManager : Singleton<LocalizationManager>
 {
     [field: SerializeField] public StringDataSO StringDataSO { get; private set; }
+    [field: SerializeField] public FishDatabaseSO FishDataSO { get; private set; }
 
     protected override void Awake()
     {
         base.Awake();
+    }
+
+    private void Start()
+    {
+        Debug.Log(FishDataSO[10002].FishName_String);
     }
 
     public string GetString(string key)

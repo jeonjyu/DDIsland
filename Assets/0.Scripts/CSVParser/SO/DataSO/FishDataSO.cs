@@ -1,7 +1,7 @@
-using System;
+﻿using System;
 using UnityEngine;
 
-// "사는 공간
+// 사는 공간
 [Serializable]
 public enum FishType
 {
@@ -10,7 +10,7 @@ public enum FishType
     Sea = 2,      //바다
 }
 
-// "등급
+// 등급
 [Serializable]
 public enum Grade
 {
@@ -21,7 +21,7 @@ public enum Grade
     Legendary = 4,      //전설
 }
 
-// "등장 계절
+// 등장 계절
 [Flags, Serializable]
 public enum ArriveSeason : byte
 {
@@ -40,18 +40,20 @@ public class FishDataSO : TableBase<int>
     [field: SerializeField] public int ID { get; private set; }
 
     // 이름
-    public string FishName_String => LocalizationManager.Instance.GetString("FishName_String");
+    [SerializeField] private string fishName;
+    public string FishName_String => LocalizationManager.Instance.GetString(fishName);
 
     // 설명
-    public string FishDesc_String => LocalizationManager.Instance.GetString("FishDesc_String");
+    [SerializeField] private string fishDesc;
+    public string FishDesc_String => LocalizationManager.Instance.GetString(fishDesc);
 
-    // "사는 공간
+    // 사는 공간
     [field: SerializeField] public FishType fishType { get; private set; }
 
-    // "등급
+    // 등급
     [field: SerializeField] public Grade gradeType { get; private set; }
 
-    // "등장 계절
+    // 등장 계절
     [field: SerializeField] public ArriveSeason arriveseasonType { get; private set; }
 
     // 특수 조건
