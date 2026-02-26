@@ -1,13 +1,13 @@
 #if UNITY_EDITOR
-using UnityEngine;
-using UnityEditor;
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System;
 using System.Reflection;
-using System.Collections.Generic;
+using System.Text;
 using System.Text.RegularExpressions;
+using UnityEditor;
+using UnityEngine;
 
 public class TableSOGenerator
 {
@@ -15,13 +15,12 @@ public class TableSOGenerator
     private const int ColumnDescRow = 0;                // 어떤 컬럼인지에 대한 설명
     private const int ColumnInternalNameRow = 1;        // 컬럼명 (내부 변수 이름)
     private const int DataTypeRow = 2;                  // 자료형 (int, float, bool, string) 타입
-    private const int DataRow = 3;                      // 실제 데이터가 시작되는 열
+    private const int DataRow = 3;                      // 실제 데이터가 시작되는 행
+
+    private const int descColumn = 1;                   // 설명이 들어있는 열 → 데이터 취급 X
 
     // 클래스를 작성할 때 사용할 stringbuilder
     private static StringBuilder sb_fileName = new StringBuilder();
-
-    // string 테이블은 값을 따로 저장
-    private static Dictionary<string, string> stringTables = new Dictionary<string, string>();
 
     #region SO 정의 클래스 셍성 메서드
     /// <summary>
@@ -113,7 +112,7 @@ public class TableSOGenerator
         // string[] lines = csvFile.text.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);        // 기존의 방식, 셀 내의 줄바꿈도 잘라버려서 이상하게 분리됨
         string[] lines = Regex.Split(csvFile.text, @"\r\n|\n(?=(?:[^""]*""[^""]*"")*[^""]*$)");                     // 큰따옴표 내의 줄바꿈은 무시
 
-        //데이터 타입이 적힌 행보다 lines의 길이가 
+        // 데이터 타입이 적힌 행보다 lines의 길이가 작거나 같으면 데이터가 없는 것
         if (lines.Length <= DataTypeRow)
         {
             Debug.LogError($"[Generator ERROR] CSV 파일 '{csvFile.name}'의 헤더 행이 부족합니다.");
@@ -135,6 +134,9 @@ public class TableSOGenerator
         // 3. 컬럼 정의 리스트 생성
         for (int i = 0; i < columnCount; i++)
         {
+            // 설명이 들어있는 컬럼이면 무시
+            if (i == descColumn) continue;
+
             string desc = dataDesc[i];
             string name = internalNames[i];
             string type = dataTypes[i];
@@ -162,22 +164,15 @@ public class TableSOGenerator
 
                 for (int i = 0; i < classData.DataCount; i++)
                 {
-                    string[] values = Regex.Split(lines[i + DataRow], @",(?=(?:[^""]*""[^""]*"")*[^""]*$)");
+                    string[] rawValues = Regex.Split(lines[i + DataRow], @",(?=(?:[^""]*""[^""]*"")*[^""]*$)");
+
+                    string[] values = rawValues
+                        .Select(v => v.Trim(' ', '"'))
+                        .Where((v, idx) => idx != descColumn)
+                        .ToArray();
 
                     for (int j = 0; j < values.Length; j++)
                     {
-                        // 해당 컬럼 필드명에 "_Name" 또는 "_Desc"가 들어갈 경우 stringTable에서 가져와야 하는 값이라고 판단
-                        // stringTables 딕셔너리에 접근하여 값 가져오기
-                        if (classData.Columns[j].Name.Contains("_Name") || classData.Columns[j].Name.Contains("_Desc"))
-                        {
-                            if (stringTables.Keys.Contains(values[j]) && stringTables.TryGetValue(values[j], out var str))
-                            {
-                                Debug.Log(str);
-                                classData.Columns[j].values[i] = str;
-                                continue;
-                            }
-                        }
-
                         classData.Columns[j].values[i] = values[j];
                     }
                 }
@@ -198,13 +193,12 @@ public class TableSOGenerator
         switch (csvType.ToLower())
         {
             case "int":
-            case "enum":
-                return "int";
             case "float":
-                return "float";
             case "bool":
-                return "bool";
+            case "enum":
+            case "enum_flag":
             case "string":
+                return csvType.ToLower();
             default:
                 return "string";
         }
@@ -214,7 +208,6 @@ public class TableSOGenerator
     /// Csv 파일을 기반으로 생성할 Scriptable Object를 정의하는 클래스를 만듭니다.
     /// </summary>
     /// <param name="data"> CSV 파일의 헤더 정보를 저장한 클래스 컨테이너 </param>
-    /// <param name="dataSOPath"> SO 데이터를 저장할 경로 </param>
     /// <returns> SO 생성 정의 클래스 문자열 </returns>
     private static string GenerateDataSO(CsvClassData data)
     {
@@ -226,37 +219,151 @@ public class TableSOGenerator
 
         StringBuilder sb = new StringBuilder();
 
+        // using문 작성
+        sb.AppendLine("using System;");
         sb.AppendLine("using UnityEngine;");
+        sb.AppendLine();
+
+        // Enum 타입이 있다면 Enum 정의 작성
+        foreach (var col in data.Columns)
+        {
+            string type = col.Type;
+
+            // Enum 타입이 아닌 경우 무시
+            if (string.IsNullOrEmpty(type) || !type.ToLower().Contains("enum")) continue;
+
+            string name = col.Name.ToLower();
+            string desc = col.Desc;
+
+            // name이나 desc에 값이 없을 경우
+            if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(desc)) continue;
+
+            string[] lines = desc.Split(new[] { "\r\n", "\r", "\n" }, System.StringSplitOptions.RemoveEmptyEntries);
+
+            string bitType = string.Empty;
+
+            sb.AppendLine($"// {lines[0]}");
+
+            if (type.ToLower().Contains("_flag"))
+            {
+                // 플래그 속성 Enum인 경우
+                sb.AppendLine("[Flags, Serializable]");
+
+                if (lines.Length - 1 <= 8)
+                {
+                    bitType = " : byte";
+                }
+                else if (lines.Length - 1 <= 16)
+                {
+                    bitType = " : short";
+                }
+                else if (lines.Length - 1 <= 32)
+                {
+                    bitType = " : int";
+                }
+                else
+                {
+                    bitType = " : long";
+                }
+            }
+            else
+            {
+                // 일반 Enum인 경우
+                sb.AppendLine("[Serializable]");
+            }
+
+            sb.AppendLine($"public enum {col.Name}{bitType}");
+            sb.AppendLine("{");
+            sb.AppendLine("    None = 0,");
+
+            // 설명 Enum 멤버 중 가장 길이가 긴 값을 찾기
+            int maxLength = lines
+                .Skip(1)
+                .Select(v => v.Length)
+                .DefaultIfEmpty(0)
+                .Max();
+
+            for (int i = 1; i < lines.Length; i++)
+            {
+                // value.Groups[0]은 전체 문자열 "1:Spring(봄)"
+                // value.Groups[1]은 첫 번째 괄호 내용 "1"
+                // value.Groups[2]은 두 번째 괄호 내용 "Spring"
+                // value.Groups[3]은 세 번째 괄호 내용 "봄"
+                var value = Regex.Match(lines[i], @"^(\d+):([^(]+)\(([^)]+)\)");
+
+                if (value.Success)
+                {
+                    // 공백 넓이를 맞춰서 주석 생성
+                    string text = $"    {value.Groups[2].Value} = {value.Groups[1].Value},";
+                    sb.AppendLine($"{text.PadRight((text.Length - value.Groups[2].Value.Length - value.Groups[1].Value.Length) + maxLength)}//{value.Groups[3].Value.Trim('"')}");
+                }
+            }
+
+            sb.AppendLine("}");
+            sb.AppendLine();
+        }
+
+        // 클래스 정의문 작성
         sb.AppendLine();
         sb.AppendLine($"[CreateAssetMenu(fileName = \"{dataSOName}\", menuName = \"Scriptable Objects/Data/{dataSOName}\")]");
         sb.AppendLine($"public class {dataSOName} : TableBase<{idType}>");
         sb.AppendLine("{");
 
+        // 필드명 작성
         foreach (var col in data.Columns)
         {
             // CSV 파일에 있는 필드 명에 따라 타입을 지정
             string type = col.Type;
+            string name = col.Name.ToLower();
 
-            if (col.Name.ToLower().Contains("path_"))
+            #region Enum 타입 필드 정의
+            // Enum 타입일 때
+            if (type.ToLower().Contains("enum"))
+            {
+                // 설명행의 첫 번째 문장만 주석으로 만듬
+                string comment = col.Desc.Split(new[] { "\r\n", "\r", "\n" }, System.StringSplitOptions.RemoveEmptyEntries)[0];
+                sb.AppendLine($"    // {comment}");
+                sb.AppendLine($"    [field: SerializeField] public {col.Name} {name.Replace("type", string.Empty)}Type {{ get; private set; }}");
+                sb.AppendLine();
+
+                continue;
+            }
+            #endregion
+
+            #region Enum 제외 타입 필드 정의
+            if (name.Contains("path_"))
             {
                 // 필드명에 "Path_"가 들어가면
 
-                if (col.Name.ToLower().Contains("_sprite"))
+                if (name.Contains("_sprite"))
                 {
                     // 필드명에 "_Sprite"가 들어가면 타입을 Sprite로 지정
                     type = "Sprite";
                 }
-                else if (col.Name.ToLower().Contains("_audioclip"))
+                else if (name.Contains("_audioclip"))
                 {
                     // 필드명에 "_AudioClip"이 들어가면 타입을 AudioClip으로 지정
                     type = "AudioClip";
                 }
+                else if (name.Contains("_gameobject"))
+                {
+                    // 필드명에 "_gameobject"가 들어가면 타입을 GameObject로 지정
+                    type = "GameObject";
+                }
+            }
+            else if (name.Contains("_string"))
+            {
+                sb.AppendLine($"    // {col.Desc.Replace('\n', ' ')}");
+                sb.AppendLine($"    public {type} {col.Name} => LocalizationManager.Instance.GetString(\"{col.Name}\");");
+                sb.AppendLine();
+                continue;
             }
 
             //프로퍼티 생성
             sb.AppendLine($"    // {col.Desc.Replace('\n', ' ')}");
             sb.AppendLine($"    [field: SerializeField] public {type} {col.Name} {{ get; private set; }}");
             sb.AppendLine();
+            #endregion
         }
 
         sb.AppendLine("    // 부모 클래스의 ID 반환 추상 메서드");
@@ -271,7 +378,6 @@ public class TableSOGenerator
     /// Csv 파일을 기반으로 생성할 데이터 SO를 보관할 총괄 SO를 정의하는 클래스를 만듭니다.
     /// </summary>
     /// <param name="data"> CSV 파일 데이터 </param>
-    /// <param name="databaseSOPath"> 저장할 경로 </param>
     /// <returns> SO 생성 정의 클래스 문자열 </returns>
     private static string GenerateDatabaseSO(CsvClassData data)
     {
@@ -294,6 +400,68 @@ public class TableSOGenerator
 
         return sb.ToString();
     }
+
+    /// <summary>
+    /// String 테이블 SO 정의 클래스 작성
+    /// </summary>
+    /// <param name="data"> String 테이블 파일 </param>
+    /// <returns> String 테이블 SO 정의 클래스 문자열 </returns>
+    private static string GenerateStringTableSO(CsvClassData data)
+    {
+        string tableName = data.TableName.Replace("Table", "").Trim();
+        string className = $"{tableName}DataSO";
+        string dataClassName = "StringData";
+
+        StringBuilder sb = new StringBuilder();
+
+        // using문 작성
+        sb.AppendLine("using UnityEngine;");
+        sb.AppendLine("using System.Collections.Generic;");
+        sb.AppendLine();
+
+        sb.AppendLine("// 언어 타입");
+        sb.AppendLine("public enum LanguageType");
+        sb.AppendLine("{");
+
+        // 언어 컬럼 중에서 이름이 가장 긴 값을 찾음 → 주석 열을 이쁘게 맞추기 위함
+        int maxLength = data.Columns
+            .Select(v => v.Name.Length)
+            .DefaultIfEmpty(0)
+            .Max();
+
+        // String 테이블의 두 번째 컬럼부터 언어 문자이기 때문 (첫 번째 컬럼은 ID)
+        for (int i = 1; i < data.Columns.Count; i++)
+        {
+            string text = $"    {data.Columns[i].Name} = {i - 1},";
+            sb.AppendLine($"{text.PadRight((text.Length - data.Columns[i].Name.Length - (i - 1).ToString().Length) + (maxLength + 8))}//{data.Columns[i].Desc}");
+        }
+
+        sb.AppendLine("}");
+        sb.AppendLine();
+
+        // SriptableObject 클래스 정의문 작성
+        sb.AppendLine($"[CreateAssetMenu(fileName = \"{className}\", menuName = \"Scriptable Objects/Data/{className}\")]");
+        sb.AppendLine($"public class {className} : ScriptableObject");
+        sb.AppendLine("{");
+        sb.AppendLine($"    public List<{dataClassName}> StringDatas;");
+        sb.AppendLine($"    public Dictionary<string, string[]> StringDic = new SerializeDictionary<string, string[]>();");
+        sb.AppendLine();
+        sb.AppendLine("    private void OnValidate()");
+        sb.AppendLine("    {");
+        sb.AppendLine("        foreach(var data in StringDatas)");
+        sb.AppendLine("        {");
+        sb.AppendLine("            if (StringDic.ContainsKey(data.key))");
+        sb.AppendLine("                continue;");
+        sb.AppendLine();
+        sb.AppendLine("            StringDic.Add(data.key, data.values);");
+        sb.AppendLine("        }");
+        sb.AppendLine("    }");
+        sb.AppendLine("}");
+
+
+
+        return sb.ToString();
+    }
     #endregion
 
     #region SO 파일 생성
@@ -301,14 +469,14 @@ public class TableSOGenerator
     /// SO 정의 클래스를 이용해 실제 SO 파일을 생성
     /// </summary>
     /// <param name="csvPath"> CSV 파일 폴더 경로 </param>
-    /// <param name="dataSOPath"> SO 정의 클래스가 있는 폴더 경로 </param>
+    /// <param name="dataSOClassPath"> SO 정의 클래스가 있는 폴더 경로 </param>
     /// <param name="dataSOSavePath"> SO 정의 클래스를 저장할 경로 </param>
-    /// <param name="databaseSOPath"> SO 파일 데이터베이스 정의 클래스가 있는 폴더 경로 </param>
+    /// <param name="databaseSOClassPath"> SO 파일 데이터베이스 정의 클래스가 있는 폴더 경로 </param>
     /// <param name="databaseSOSavePath"> SO 데이터베이스 정의 클래스를 저장할 경로 </param>
-    public static void CreateSOFileFromScript(string csvPath, string dataSOPath, string dataSOSavePath, string databaseSOPath, string databaseSOSavePath)
+    public static void CreateSOFileFromScript(string csvPath, string dataSOClassPath, string dataSOSavePath, string databaseSOClassPath, string databaseSOSavePath)
     {
         // dataSOPath에 위치한 모든 스크립트를 받아옴 → guid 형식
-        string[] dataSOGUIDs = AssetDatabase.FindAssets($"t:MonoScript", new[] { dataSOPath });
+        string[] dataSOGUIDs = AssetDatabase.FindAssets($"t:MonoScript", new[] { dataSOClassPath });
 
         // 지정된 경로에 스크립트 파일이 존재하지 않을 경우
         if (dataSOGUIDs.Length == 0)
@@ -327,9 +495,9 @@ public class TableSOGenerator
             #region 데이터베이스 SO 생성
             // 이번 데이터 SO와 매칭되는 데이터베이스 SO 클래스 파일 경로 찾기
             // 데이터 SO는 ~DataSO / 데이터베이스 SO는 ~DatabaseSO 이기에 이름으로 찾음
-            Debug.Log($"databaseSOPath: {databaseSOPath}");
+            Debug.Log($"databaseSOPath: {databaseSOClassPath}");
             Debug.Log($"soType: {soType}");
-            string dbSOPath = Path.Combine(databaseSOPath, $"{soType.ToString().Replace("SO", "baseSO")}.cs");
+            string dbSOPath = Path.Combine(databaseSOClassPath, $"{soType.ToString().Replace("SO", "baseSO")}.cs");
 
             // 데이터 SO들을 담을 리스트 생성
             System.Collections.IList dbList = (System.Collections.IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(soType));
@@ -351,12 +519,12 @@ public class TableSOGenerator
 
             // CSV 파일 불러오기
             string csvFileName = string.Format("{0}Table", scriptInfo.GetClass().ToString().Replace("DataSO", "").Trim());
-            string[] assetGUIDs = AssetDatabase.FindAssets($"t:TextAsset", new[] { csvPath });
+            string[] assetGUID = AssetDatabase.FindAssets($"{csvFileName} t:TextAsset", new[] { csvPath });
 
             CsvClassData csvClassData = new CsvClassData();
 
             // 해당 경로에서 찾은 TextAsset 타입의 파일이 없을 경우
-            if (assetGUIDs.Length == 0)
+            if (assetGUID.Length == 0)
             {
                 Debug.LogWarning($"[Generator WARNING] 경로 '{csvPath}' 에서 TextAsset 파일을 찾을 수 없습니다.");
                 EditorUtility.DisplayDialog("클래스 생성 완료", $"경로 '{csvPath}' 에서 CSV 파일을 찾지 못했습니다.", "확인");
@@ -364,17 +532,14 @@ public class TableSOGenerator
                 continue;
             }
 
-            // csvFileName에 맞는 CSV 파일 찾기
-            foreach (var guid in assetGUIDs)
+            // csvFileName에 맞는 CSV 파일이 있으면 받아오기
+            if (assetGUID.Length > 0)
             {
-                string path = AssetDatabase.GUIDToAssetPath(guid);
-
-                if (Path.GetFileNameWithoutExtension(path) == csvFileName && path.EndsWith(".csv"))
-                {
-                    csvClassData = ParseCsvHeaders(AssetDatabase.LoadAssetAtPath<TextAsset>(path));
-                    continue;
-                }
-
+                string path = AssetDatabase.GUIDToAssetPath(assetGUID[0]);
+                csvClassData = ParseCsvHeaders(AssetDatabase.LoadAssetAtPath<TextAsset>(path));
+            }
+            else
+            {
                 Debug.LogWarning($"{csvFileName}에 맞는 TextAsset 파일을 찾을 수 없습니다.");
                 continue;
             }
@@ -452,8 +617,12 @@ public class TableSOGenerator
             string value = csvFile.Columns[i].values[index];
 
             // 컬럼 이름과 똑같은 이름의 프로퍼티를 찾기
-            PropertyInfo prop = soType.GetProperty(csvFile.Columns[i].Name);
-            // 타입을 넣을 오브젝트
+            // enum일 경우에는 예외로 찾음 → 컬럼 이름이 타입명이 되기 때문
+            string propName = column.Type.ToLower().Contains("enum")
+                ? $"{column.Name.ToLower().Replace("type", string.Empty)}Type"
+                : column.Name;
+
+            PropertyInfo prop = soType.GetProperty(propName);
 
             // prop이 null이 아니고 쓰기 가능할 때
             if (prop != null && prop.CanWrite)
@@ -500,7 +669,25 @@ public class TableSOGenerator
                     else
                     {
                         // 필드명에 "Path_"가 안들어가면 아래 실행
-                        type = Convert.ChangeType(value, prop.PropertyType);
+
+                        if (prop.PropertyType.IsEnum)
+                        {
+                            // 프로퍼티가 Enum 타입일 경우
+                            type = Enum.Parse(prop.PropertyType, value, true);
+                        }
+                        else if (prop.PropertyType == typeof(int) || prop.PropertyType == typeof(float))
+                        {
+                            // ',' '$' '%' 문자는 없애고 값 넣어주기
+                            value = Regex.Replace(value, @"[,$%]", string.Empty).Trim();
+
+                            // 프로퍼티가 int, float 타입이 아닐 경우
+                            type = Convert.ChangeType(value, prop.PropertyType);
+                        }
+                        else
+                        {
+                            // 프로퍼티가 Enum 타입이 아닐 경우
+                            type = Convert.ChangeType(value, prop.PropertyType);
+                        }
                     }
 
                     prop.SetValue(soInstance, type);
@@ -520,23 +707,88 @@ public class TableSOGenerator
     /// 추후 다른 데이터 테이블에서 키로 접근 후 해당 키의 값을 저장하기 위함
     /// </summary>
     /// <param name="stringTable"> StringTable.csv 파일 </param>
-    public static void ParseStringTable(TextAsset stringTable)
+    public static void ParseStringTable(TextAsset stringTable, string saveClassPath, string saveSOPath)
     {
-        string[] lines = Regex.Split(stringTable.text, @"\r\n|\n(?=(?:[^""]*""[^""]*"")*[^""]*$)");                     // 큰따옴표 내의 줄바꿈은 무시
+        CsvClassData data = ParseCsvHeaders(stringTable);
+        string code = GenerateStringTableSO(data);
+        string fileName = $"{data.TableName.Replace("Table", "").Trim()}DataSO";
 
-        //데이터 타입이 적힌 행보다 lines의 길이가 
-        if (lines.Length <= DataTypeRow)
+        sb_fileName.Clear();
+        sb_fileName.Append(fileName);
+
+        SaveClassFile(code, sb_fileName.ToString(), saveClassPath, false);
+    }
+
+    public static void CreateStringSOFileFromScript(TextAsset stringTable, string stringSOClassPath, string stringSOSavePath)
+    {
+        CsvClassData data = ParseCsvHeaders(stringTable);
+        string fileName = $"{data.TableName.Replace("Table", "").Trim()}DataSO";
+
+        // dataSOPath에 위치한 StringDataSO 이름의 파일 가져옴 → guid 형식
+        string[] dataSOGUIDs = AssetDatabase.FindAssets($"StringDataSO t:MonoScript", new[] { stringSOClassPath });
+
+        // StringData 파일이 존재하지 않을 경우
+        if (dataSOGUIDs.Length == 0)
         {
-            Debug.LogError($"[Generator ERROR] CSV 파일 '{stringTable.name}'의 헤더 행이 부족합니다.");
+            Debug.Log("지정된 경로에 String 데이터 파일이 존재하지 않습니다.");
             return;
         }
 
-        int dataCount = lines.Length - DataRow;
-        for (int i = 0; i < dataCount; i++)
+        string scriptPath = AssetDatabase.GUIDToAssetPath(dataSOGUIDs[0]);
+        MonoScript scriptInfo = AssetDatabase.LoadAssetAtPath<MonoScript>(scriptPath);
+        Type soType = scriptInfo.GetClass();
+
+        string filePath = Path.Combine(stringSOSavePath, $"{fileName}.asset");
+
+        // filePath 경로가 없다면 폴더 생성해줌
+        if (!Directory.Exists(Path.GetDirectoryName(stringSOSavePath)))
         {
-            string[] values = Regex.Split(lines[i + DataRow], @",(?=(?:[^""]*""[^""]*"")*[^""]*$)");
-            stringTables[values[0]] = values[1];
+            Directory.CreateDirectory(Path.GetDirectoryName(stringSOSavePath));
         }
+
+        if (soType == null)
+        {
+            Debug.Log("유효한 클래스 타입이 아닙니다.");
+            return;
+        }
+
+        ScriptableObject instance = ScriptableObject.CreateInstance(soType);
+        FieldInfo field = soType.GetField("StringDatas", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+
+        // CSV 파일 불러오기
+        string csvFileName = string.Format("{0}Table", scriptInfo.GetClass().ToString().Replace("DataSO", "").Trim());
+
+        if (field != null)
+        {
+            List<StringData> datas = new List<StringData>();
+
+            // dataDic 자료구조에 String 테이블 데이터 넣기
+            for (int i = 0; i < data.Columns[0].values.Length; i++)
+            {
+                string[] values = new string[data.Columns.Count - 1];
+
+                for (int j = 1; j < data.Columns.Count; j++)
+                {
+                    values[j - 1] = data.Columns[j].values[i];
+                }
+
+                if (values.Length > 0)
+                {
+                    datas.Add(new StringData
+                    {
+                        key = data.Columns[0].values[i],
+                        values = values
+                    });
+                }
+            }
+
+            field.SetValue(instance, datas);
+
+            AssetDatabase.CreateAsset(instance, filePath);
+        }
+
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh();
     }
     #endregion
 

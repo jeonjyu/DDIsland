@@ -1,6 +1,5 @@
 #if UNITY_EDITOR
 using UnityEditor;
-using UnityEditor.Callbacks;
 using UnityEngine;
 
 /// <summary>
@@ -9,37 +8,46 @@ using UnityEngine;
 public class TableSOGeneratorWindow : EditorWindow
 {
     #region SO 정의 클래스 생성에 필요한 변수
+
     // 각 경로의 폴더
     private DefaultAsset csvFolder;
+    private DefaultAsset stringSoClassFolder;
     private DefaultAsset dataSoClassFolder;
     private DefaultAsset databaseSOClassFolder;
 
     // 각 필드에 들어간 값을 저장하는 키
     private const string CSVKEY = "CsvKey";
+    private const string STRINGDATASOCLASSKEY = "StringDataSOClassKey";
     private const string DATASOCLASSKEY = "DataSOClassKey";
     private const string DATABASESOClassKEY = "DatabaseSOClassKey";
 
     private static string csvFolderPath = "Assets/6.DataTable/CSV";                         // CSV 파일 폴더 경로
-    private static string dataSOClassFolderPath = "Assets/6.DataTable/DataSO";              // 데이터 SO를 생성할 폴더 경로
-    private static string databaseSOClassFolderPath = "Assets/6.DataTable/DatabaseSO";      // 데이터베이스 SO를 생성할 폴더 경로
+    private static string stringSOClassFolderPath = "Assets/0.Scripts/StringDataSO";        // String 테이블 SO 정의 클래스를 생성할 폴더 경로
+    private static string dataSOClassFolderPath = "Assets/0.Scripts/DataSO";                // 데이터 SO 정의 클래스를 생성할 폴더 경로
+    private static string databaseSOClassFolderPath = "Assets/0.Scripts/DatabaseSO";        // 데이터베이스 SO 정의 클래스를 생성할 폴더 경로
     #endregion
 
     #region 실제 데이터가 들어간 SO 파일을 생성하기 위한 변수
+    private DefaultAsset stringSOFolder;
     private DefaultAsset dataSOFolder;
     private DefaultAsset databaseSOFolder;
 
+    private const string STRINGDATASOKEY = "StringDataSOKey";
     private const string DATASOKEY = "DataSOKey";
     private const string DATABASESOKEY = "DatabaseSOKey";
 
-    private static string dataSOFolderPath = "Assets/6.DataTable/SO/Data";                  // 데이터 SO가 저장될 경로
-    private static string databaseSOFolderPath = "Assets/6.DataTable/SO/Database";          // 데이터베이스 SO가 저장될 경로
+    private static string stringSOFolderPath = "Assets/1.Prefabs/SO/StringDataSO";          // 데이터 SO가 저장될 경로
+    private static string dataSOFolderPath = "Assets/1.Prefabs/SO/Data";                    // 데이터 SO가 저장될 경로
+    private static string databaseSOFolderPath = "Assets/1.Prefabs/SO/Database";            // 데이터베이스 SO가 저장될 경로
     #endregion
 
     #region 
     private TextAsset stringTableFolder;                                                    // StringTable.csv 파일
     private const string STRINGTABLEKEY = "StringTableKey";                                 // StringTable.csv 데이터 저장 키
-    private static string stringTableFolderPath = "Assets/6.DataTable/StringTable";         // StringTable 저장 경로
+    private static string stringTableFilePath = "Assets/6.DataTable/StringTable";           // StringTable 저장 경로
     #endregion
+
+    private Vector2 scrollPos;
 
     [MenuItem("Cooperation Tool/Data/Table Scriptable Object Generator")]
     public static void ShowWindow()
@@ -65,6 +73,9 @@ public class TableSOGeneratorWindow : EditorWindow
         GUIStyle bodyLabelStyle = new GUIStyle(EditorStyles.label);
         bodyLabelStyle.wordWrap = true;
 
+        // 스크롤 배치 및 시작 지점
+        scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
+
         // 줄바꿈, 매개변수로 float 값을 줄 수도 있음
         EditorGUILayout.Space();
 
@@ -76,7 +87,7 @@ public class TableSOGeneratorWindow : EditorWindow
 
         EditorGUILayout.Space();
         EditorGUILayout.Space();
-        DrawTextAssetField("StringTable.csv를 넣어주세요", ref stringTableFolder, ref stringTableFolderPath, STRINGTABLEKEY);
+        DrawTextAssetField("StringTable.csv를 넣어주세요", ref stringTableFolder, ref stringTableFilePath, STRINGTABLEKEY);
         #endregion
 
         EditorGUILayout.Space();
@@ -93,10 +104,13 @@ public class TableSOGeneratorWindow : EditorWindow
         DrawFolderField("CSV 폴더 경로를 지정해주세요", ref csvFolder, ref csvFolderPath, CSVKEY);
 
         EditorGUILayout.Space();
-        DrawFolderField("Data SO 파일을 생성할 폴더 경로를 지정해주세요", ref dataSoClassFolder, ref dataSOClassFolderPath, DATASOCLASSKEY);
+        DrawFolderField("String 데이터 SO 파일을 생성할 폴더 경로를 지정해주세요", ref stringSoClassFolder, ref stringSOClassFolderPath, STRINGDATASOCLASSKEY);
 
         EditorGUILayout.Space();
-        DrawFolderField("Database SO 파일을 생성할 폴더 경로를 지정해주세요", ref databaseSOClassFolder, ref databaseSOClassFolderPath, DATABASESOClassKEY);
+        DrawFolderField("데이터 SO 파일을 생성할 폴더 경로를 지정해주세요", ref dataSoClassFolder, ref dataSOClassFolderPath, DATASOCLASSKEY);
+
+        EditorGUILayout.Space();
+        DrawFolderField("데이터베이스 SO 파일을 생성할 폴더 경로를 지정해주세요", ref databaseSOClassFolder, ref databaseSOClassFolderPath, DATABASESOClassKEY);
 
         #endregion
 
@@ -111,6 +125,9 @@ public class TableSOGeneratorWindow : EditorWindow
 
         EditorGUILayout.Space();
         EditorGUILayout.Space();
+        DrawFolderField("String 데이터를 저장할 SO 저장 경로를 지정해주세요", ref stringSOFolder, ref stringSOFolderPath, STRINGDATASOKEY);
+
+        EditorGUILayout.Space();
         DrawFolderField("데이터를 저장할 SO 저장 경로를 지정해주세요", ref dataSOFolder, ref dataSOFolderPath, DATASOKEY);
 
         EditorGUILayout.Space();
@@ -121,18 +138,16 @@ public class TableSOGeneratorWindow : EditorWindow
 
 
         // 이 코드 이후 그려지는 GUI 컨트롤의 상호 작용 여부를 켜거나 끔
-        GUI.enabled = IsValid(stringTableFolderPath) &&
+        GUI.enabled = IsValid(stringTableFilePath) &&
             IsValid(csvFolderPath, dataSOClassFolderPath, databaseSOClassFolderPath) &&
             IsValid(csvFolderPath, dataSOClassFolderPath, databaseSOClassFolderPath, dataSOFolderPath, databaseSOFolderPath);
 
         if (GUILayout.Button("CSV 파싱 시작", GUILayout.Height(30)))
         {
-            // StringTable.csv 파일 자료구조에 넣는 메서드
-            TableSOGenerator.ParseStringTable(stringTableFolder);
+            // StringTable.csv 파일 따로 변환
+            TableSOGenerator.ParseStringTable(stringTableFolder, stringSOClassFolderPath, stringSOFolderPath);
             // SO 정의 클래스 생성 메서드
             TableSOGenerator.GenerateAllClassedInFolder(csvFolderPath, dataSOClassFolderPath, databaseSOClassFolderPath);
-            // SO 파일 생성 메서드
-            // OnClick_CreateSO(); 메서드는 [DidReloadScripts] 어트리뷰트가 있어서 호출해주지 않아도 에디터 리로드 시 자동 호출
         }
 
         GUI.enabled = true;
@@ -144,14 +159,15 @@ public class TableSOGeneratorWindow : EditorWindow
         #endregion
 
         // 이 코드 이후 그려지는 GUI 컨트롤의 상호 작용 여부를 켜거나 끔
-        GUI.enabled = IsValid(stringTableFolderPath) &&
+        GUI.enabled = IsValid(stringTableFilePath) &&
             IsValid(csvFolderPath, dataSOClassFolderPath, databaseSOClassFolderPath) &&
             IsValid(csvFolderPath, dataSOClassFolderPath, databaseSOClassFolderPath, dataSOFolderPath, databaseSOFolderPath);
 
         if (GUILayout.Button("SO 생성 시작", GUILayout.Height(30)))
         {
             // SO 파일 생성 메서드
-            OnClick_CreateSO();
+            TableSOGenerator.CreateSOFileFromScript(csvFolderPath, dataSOClassFolderPath, dataSOFolderPath, databaseSOClassFolderPath, databaseSOFolderPath);
+            TableSOGenerator.CreateStringSOFileFromScript(stringTableFolder, stringSOClassFolderPath, stringSOFolderPath);
         }
 
         GUI.enabled = true;
@@ -160,16 +176,19 @@ public class TableSOGeneratorWindow : EditorWindow
         {
             EditorGUILayout.HelpBox("모든 파일 및 폴더 경로를 지정해주세요.", MessageType.Error);
         }
+
+        // 스크롤 종료 지점
+        EditorGUILayout.EndScrollView();
     }
 
     // DidReloadScripts → 스크립트가 로드된 후 특정 메소드를 호출
     // 하지만 의도한 스크립트가 생기는 것 외에도 에디터가 변해서 저장되고 로드되면 무조건 호출되기 때문에 의도된 사항은 아님, 추후 고쳐야 됨
     // 직접 버튼 클릭 등의 이벤트로 메서드를 부르지 않아도 에디터가 리로드될 때 무조건 실행됨
     //[DidReloadScripts]
-    private static void OnClick_CreateSO()
-    {
-        TableSOGenerator.CreateSOFileFromScript(csvFolderPath, dataSOClassFolderPath, dataSOFolderPath, databaseSOClassFolderPath, databaseSOFolderPath);
-    }
+    //private static void OnClick_CreateSO()
+    //{
+    //    TableSOGenerator.CreateSOFileFromScript(csvFolderPath, dataSOClassFolderPath, dataSOFolderPath, databaseSOClassFolderPath, databaseSOFolderPath);
+    //}
 
     /// <summary>
     /// 폴더를 드래그할 오브젝트 필드를 만들고 에디터 내부에 저장하는 메서드
@@ -241,6 +260,19 @@ public class TableSOGeneratorWindow : EditorWindow
     }
 
     /// <summary>
+    /// 정수를 받아오는 필드
+    /// </summary>
+    /// <param name="label">  </param>
+    /// <param name="index">  </param>
+    /// <param name="key">  </param>
+    private void DrawIntField(string label, ref int index, string key)
+    {
+        EditorGUILayout.LabelField(label, EditorStyles.boldLabel);
+
+
+    }
+
+    /// <summary>
     /// 모든 경로에 값이 들어있는지 확인
     /// </summary>
     /// <returns> 모든 경로에 값이 들어있으면 true, 아니면 false </returns>
@@ -280,21 +312,25 @@ public class TableSOGeneratorWindow : EditorWindow
     private void OnEnable()
     {
         //에디터 창이 켜질 때 최소 사이즈 설정
-        minSize = new Vector2(300, 500);
+        minSize = new Vector2(300, 750);
 
         csvFolderPath = EditorPrefs.GetString(CSVKEY);
         dataSOClassFolderPath = EditorPrefs.GetString(DATASOCLASSKEY);
         databaseSOClassFolderPath = EditorPrefs.GetString(DATABASESOClassKEY);
         dataSOFolderPath = EditorPrefs.GetString(DATASOKEY);
         databaseSOFolderPath = EditorPrefs.GetString(DATABASESOKEY);
-        stringTableFolderPath = EditorPrefs.GetString(STRINGTABLEKEY);
+        stringSOFolderPath = EditorPrefs.GetString(STRINGDATASOKEY);
+        stringSOClassFolderPath = EditorPrefs.GetString(STRINGDATASOCLASSKEY);
+        stringTableFilePath = EditorPrefs.GetString(STRINGTABLEKEY);
 
         RestoreFolderAsset(ref csvFolder, csvFolderPath);
+        RestoreFolderAsset(ref stringSoClassFolder, stringSOClassFolderPath);
         RestoreFolderAsset(ref dataSoClassFolder, dataSOClassFolderPath);
         RestoreFolderAsset(ref databaseSOClassFolder, databaseSOClassFolderPath);
+        RestoreFolderAsset(ref stringSOFolder, stringSOFolderPath);
         RestoreFolderAsset(ref dataSOFolder, dataSOFolderPath);
         RestoreFolderAsset(ref databaseSOFolder, databaseSOFolderPath);
-        RestoreTextAsset(ref stringTableFolder, stringTableFolderPath);
+        RestoreTextAsset(ref stringTableFolder, stringTableFilePath);
     }
 }
 #endif
