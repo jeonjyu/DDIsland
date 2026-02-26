@@ -2,8 +2,8 @@ using System;
 using UnityEngine;
 
 
-//public enum ApplyType { None = 0, Add=1, Set=2 }
-//public enum StatType { None =0, BaseHunger=1, BaseStamina=2, BaseMoveSpeed=3, BaseFishingSpeed=4 }
+public enum ApplyType { None = 0, Add=1, Set=2 }
+public enum StatType { None =0, BaseHunger=1, BaseStamina=2, BaseMoveSpeed=3, BaseFishingSpeed=4 }
 
 
 [System.Serializable]
