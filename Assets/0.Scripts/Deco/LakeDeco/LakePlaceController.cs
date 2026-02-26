@@ -1,22 +1,32 @@
 using UnityEngine.InputSystem;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 
 /// [호수 편집 모드] 
 public class LakePlaceController : MonoBehaviour
 {
     [Header("2d 그리드 배치 전용")]
     public LakeGridManager gridManager;
-    public LakeItemListManager itemListManager;
-    public LakeEditModeManager editModeManager;
+    public DecoItemListManager itemListManager;
+    public DecoEditModeManager editModeManager;
     public RectTransform gridArea; // GridPanel
+
+    [Header("액션 패널 (회수/이동)")]
+    public GameObject objectActionPanel; 
+    public Button btnRecall;  // 회수            
+    public Button btnMove;    // 이동            
 
     // 내부 변수
     bool isPlacing = false; // 지금 배치 모드인지
     GameObject previewObj;  // 마우스 따라다니는 프리뷰 오브젝트
     int currentItemId = -1; // 현재 선택된 아이템 ID
     int currentSizeX = 1;  
-    int currentSizeY = 1;  
+    int currentSizeY = 1;
+    bool skipNextClick = false; // 슬롯 클릭한 프레임에 좌클릭 씹히는거 방지
+   
+    string selectedObjectId = ""; // 현재 선택된 배치 오브젝트 ID
+
 
     void Start()
     {
@@ -26,6 +36,13 @@ public class LakePlaceController : MonoBehaviour
             itemListManager.OnItemSelected += OnItemSelected;
             itemListManager.OnItemDeselected += OnItemDeselected;
         }
+
+        // 액션 버튼 연결
+        if (btnRecall != null)
+            btnRecall.onClick.AddListener(OnRecallClicked);
+
+        if (btnMove != null)
+            btnMove.onClick.AddListener(OnMoveClicked);
     }
 
     void OnDestroy()
@@ -40,38 +57,151 @@ public class LakePlaceController : MonoBehaviour
 
     void Update()
     {
-        // 편집 모드 아닐 때는 아무것도 안 함
+        // 편집 모드 아니면 파업
         if (editModeManager != null && !editModeManager.IsEditMode())
             return;
+        // 호수가 아니면 파업
+        if (editModeManager != null && editModeManager.GetCurrentMode() != DecoMode.Lake)
+            return;
 
-        if (!isPlacing) return;
-
-        // 마우스 위치 시 그리드 좌표
-        Vector2Int gridPos = gridManager.MouseToGridPos();
-
-        // 미리보기 색상 표시 (초록/빨강)
-        gridManager.ShowPreview(gridPos.x, gridPos.y, currentSizeX, currentSizeY);
-
-        // 프리뷰 오브젝트를 마우스 위치로 이동
-        if (previewObj != null)
+        if (isPlacing)
         {
-            RectTransform rt = previewObj.GetComponent<RectTransform>();
-            rt.position = Mouse.current.position.ReadValue();
+
+            if (skipNextClick)
+            {
+                skipNextClick = false;
+                return;
+            }
+
+            // 마우스 위치가 그리드 좌표
+            Vector2Int gridPos = gridManager.MouseToGridPos();
+
+            // 좌클릭 시 배치 시도
+            if (Mouse.current.leftButton.wasPressedThisFrame)
+            {
+                TryPlace(gridPos);
+                return; // 배치 시도 후 이번 프레임은 끝
+            }
+
+            // 우클릭 시 취.소.
+            if (Mouse.current.rightButton.wasPressedThisFrame)
+            {
+                CancelPlacing();
+                return;
+            }
+
+            // 업데이트 순서를 클릭 안했을때만
+            // 미리보기 색상 표시 (초록/빨강)
+            // 배치 예상도 중앙 정령 
+            int cx = gridPos.x - (currentSizeX / 2);
+            int cy = gridPos.y - (currentSizeY / 2);
+            gridManager.ShowPreview(cx, cy, currentSizeX, currentSizeY);
+
+            // 오브젝트를 마우스 위치로 이동
+            if (previewObj != null)
+            {
+                RectTransform rt = previewObj.GetComponent<RectTransform>();
+                Vector2 mousePos = Mouse.current.position.ReadValue();
+                rt.position = mousePos + new Vector2(0, 40f); // 마우스 위치 위로 살짝 띄움 
+            }
+        }
+        else // 배치모드가 아닐때 
+        {
+            // 배치된 오브젝트 클릭 감지 
+            if (Mouse.current.leftButton.wasPressedThisFrame)
+            {
+                // TODO : 집 
+                // 액션패널이 열려있으면 클릭 무시 (버튼 클릭 우선)
+                if (objectActionPanel != null && objectActionPanel.activeSelf)
+                    return;
+
+                string objectId = gridManager.GetObjectIdAtMouse();
+
+                if (string.IsNullOrEmpty(objectId) || objectId == "fixed")
+                {
+                    HideActionPanel();
+                    return;
+                }
+
+                selectedObjectId = objectId;
+                ShowActionPanel();
+            }
         }
 
-        // 좌클릭 시 배치 시도
-        if (Mouse.current.leftButton.wasPressedThisFrame)
-        {
-            TryPlace(gridPos);
-        }
+    }
+    #region 액션 패널(회수/이동)
+    void ShowActionPanel()
+    {
+        if (objectActionPanel == null) return;
+        objectActionPanel.SetActive(true);
 
-        // 우클릭 시 취소
-        if (Mouse.current.rightButton.wasPressedThisFrame)
+        RectTransform rt = objectActionPanel.GetComponent<RectTransform>();
+        Vector2 mousePos = Mouse.current.position.ReadValue();
+        rt.position = mousePos + new Vector2(0, 60f);
+
+        if (gridManager != null && !string.IsNullOrEmpty(selectedObjectId))
         {
-            CancelPlacing();
+            GameObject visual = gridManager.GetVisual(selectedObjectId);
+            if (visual != null)
+            {
+                RectTransform vrt = visual.GetComponent<RectTransform>();
+                vrt.DOAnchorPosY(vrt.anchoredPosition.y + 20f, 0.2f)
+                    .SetEase(Ease.OutBack);
+            }
         }
     }
+  
+    // 액션 패널 숨기기
+    void HideActionPanel()
+    {
+        selectedObjectId = "";
+        if (objectActionPanel != null)
+            objectActionPanel.SetActive(false);
+    }
 
+    // 회수 버튼
+    void OnRecallClicked()
+    {
+        if (string.IsNullOrEmpty(selectedObjectId)) return;
+
+        int itemId = gridManager.GetItemIdByObjectId(selectedObjectId);
+        gridManager.RecallObject(selectedObjectId);
+
+        if (itemId >= 0 && itemListManager != null)
+            itemListManager.RestoreItem(itemId); // 복원
+
+        HideActionPanel();
+    }
+
+    // 이동 버튼
+    void OnMoveClicked()
+    {
+        if (string.IsNullOrEmpty(selectedObjectId)) return;
+
+        int itemId = gridManager.GetItemIdByObjectId(selectedObjectId);
+        if (itemId < 0) return;
+
+        // 인벤에 복원 
+        if (itemListManager != null)
+            itemListManager.RestoreItem(itemId);
+
+        // 타일에서 제거
+        gridManager.RecallObject(selectedObjectId);
+
+        // 다시 배치 모드
+        currentItemId = itemId;
+        Vector2Int size = GetItemSize(itemId);
+        currentSizeX = size.x;
+        currentSizeY = size.y;
+
+        isPlacing = true;
+        skipNextClick = true;
+        CreatePreviewObject();
+        HideActionPanel();
+    }
+    #endregion 
+    
+    
     // 아이템 리스트에서 슬롯 클릭했을 때
     void OnItemSelected(int itemId, int slotIndex)
     {
@@ -87,6 +217,7 @@ public class LakePlaceController : MonoBehaviour
 
         // 배치 모드 시작
         isPlacing = true;
+        skipNextClick = true; 
         CreatePreviewObject();
     }
 
@@ -98,8 +229,12 @@ public class LakePlaceController : MonoBehaviour
     // 배치 시도
     void TryPlace(Vector2Int gridPos)
     {
-        bool success = gridManager.PlaceObject(currentItemId, gridPos.x, gridPos.y, currentSizeX, currentSizeY);
-
+        gridManager.ClearPreview(); // 먼저 프리뷰 클리어 (색상 초기화 위해)
+        
+        // 중앙 기준
+        int cx = gridPos.x - (currentSizeX / 2);
+        int cy = gridPos.y - (currentSizeY / 2);
+        bool success = gridManager.PlaceObject(currentItemId, cx, cy, currentSizeX, currentSizeY);
         if (success)
         {
             // 배치 성공 시 수량 차감
@@ -109,13 +244,15 @@ public class LakePlaceController : MonoBehaviour
             // 프리뷰 정리
             CleanupPreview();
             isPlacing = false;
-            gridManager.ClearPreview();
 
             // 선택 해제
             if (itemListManager != null)
                 itemListManager.DeselectSlot();
         }
-        // 실패하면 아무것도 안 함 (계속 배치 모드 유지)
+        else
+        {
+            // 실패하면 아무것도 안 함 (계속 배치 모드 유지)
+        }
     }
 
     // 배치 취소 
@@ -133,8 +270,7 @@ public class LakePlaceController : MonoBehaviour
             itemListManager.DeselectSlot();
     }
 
-    // 프리뷰 오브젝트 
-    // 마우스 따라다니는 반투명 프리뷰 생성
+    // 마우스 따라다니는 오브젝트 생성
     void CreatePreviewObject()
     {
         previewObj = new GameObject("PlacementPreview");
@@ -147,8 +283,10 @@ public class LakePlaceController : MonoBehaviour
         );
         rt.pivot = new Vector2(0.5f, 0.5f);
 
-
         Image img = previewObj.AddComponent<Image>();
+        Sprite sprite = LakeDecoTestData.GetIconSprite(currentItemId);
+        if (sprite != null)
+            img.sprite = sprite;
         img.color = new Color(0.3f, 0.8f, 1f, 0.5f);  // 반투명 하늘색
         img.raycastTarget = false;  // 클릭 방해 안 하게
 
@@ -171,16 +309,16 @@ public class LakePlaceController : MonoBehaviour
     {
         switch (itemId)
         {
-            case 10001: return new Vector2Int(1, 1);
-            case 10002: return new Vector2Int(1, 1);
-            case 10003: return new Vector2Int(1, 1);
-            case 10004: return new Vector2Int(2, 1);
-            case 10005: return new Vector2Int(2, 1);
-            case 10006: return new Vector2Int(2, 1);
-            case 10007: return new Vector2Int(4, 2);
-            case 10008: return new Vector2Int(1, 1);
-            case 10009: return new Vector2Int(1, 1);
-            case 10010: return new Vector2Int(2, 1);
+            case 1001: return new Vector2Int(1, 1);
+            case 1002: return new Vector2Int(1, 1);
+            case 1003: return new Vector2Int(1, 1);
+            case 1004: return new Vector2Int(2, 1);
+            case 1005: return new Vector2Int(2, 1);
+            case 1006: return new Vector2Int(2, 1);
+            case 1007: return new Vector2Int(4, 2);
+            case 1008: return new Vector2Int(1, 1);
+            case 1009: return new Vector2Int(1, 1);
+            case 1010: return new Vector2Int(2, 1);
 
             default: return new Vector2Int(1, 1);
         }
@@ -193,7 +331,7 @@ public class LakePlaceController : MonoBehaviour
         return isPlacing;
     }
 
-    // 편집 모드 나갈 때 강제 정리 (LakeEditModeManager.cs에서 호출)
+    // 편집 모드 나갈 때 정리 (LakeEditModeManager.cs에서 호출)
     public void ForceCancel()
     {
         if (isPlacing)
