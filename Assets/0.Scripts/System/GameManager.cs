@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class GameManager : Singleton<GameManager>
 {
-    int playerGold = 0;
+    [SerializeField] int playerGold = 10000000;
     public int PlayerGold => playerGold;
 
     protected override void Awake()
