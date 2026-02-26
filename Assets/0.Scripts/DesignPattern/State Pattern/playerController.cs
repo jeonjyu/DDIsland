@@ -76,7 +76,7 @@ public class PlayerController : MonoBehaviour
         _agent = GetComponent<NavMeshAgent>();
         if (PlayerData == null) PlayerData = new PlayerData();
         //테스트용
-        PlayerData.SetHunger(10);
+        PlayerData.SetHunger(100);
         PlayerData.SetStamina(100);
         PlayerData.SetMoveSpeed(1);
         PlayerData.SetDoongDoongStat(1000);
@@ -280,6 +280,7 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForSeconds(waitTime);
         _animator.SetTrigger("FishingHit");
         //물고기 얻기, 보관함추가등등      
+        FishManager.Instance.PickRandomSeasonFish();
     }
     public void AnimEvent_FishingCycleEnd() 
     {
