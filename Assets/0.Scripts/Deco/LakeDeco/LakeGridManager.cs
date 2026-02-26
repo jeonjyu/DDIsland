@@ -20,12 +20,15 @@ public class LakeGridManager : MonoBehaviour
     [Header("프리팹 (없으면 코드로 생성)")]
     public GameObject tilePrefab;  // 타일재
     public GameObject itemPrefab;  // 배치템 
+
     //  내부 변수 
     LakeTileData[,] tileDataArray;        // 타일 데이터 2차원 배열
     GameObject[,] tileObjectArray;        // 타일 게임오브젝트 2차원 배열
     List<LakePlacedObjectData> placedObjects = new List<LakePlacedObjectData>();
     Dictionary<string, GameObject> placedVisuals = new Dictionary<string, GameObject>(); // 배치된 실제 오브젝트 관리
-    int placedIdCounter = 0;              // 배치 ID 카운터
+    List<GameObject> blockedIcons = new List<GameObject>();
+    public GameObject blockedIconPrefab; // 접근금지 이미지 프리팹 
+    int placedIdCounter = 0; // 배치 ID
 
     // 타일 크기 (부모에 맞게 자동 계산, 가로세로 다를 수 있음 = 직사각형)
     float tileWidth;
@@ -67,7 +70,7 @@ public class LakeGridManager : MonoBehaviour
         myRect.anchoredPosition = Vector2.zero;
         myRect.sizeDelta = new Vector2(totalGridWidth, totalGridHeight);
 
-        // 타일 오프셋 (GridContainer 중앙 → 좌하단 시작점)
+        // 타일 오프셋
         offsetX = -totalGridWidth / 2f;
         offsetY = -totalGridHeight / 2f;
 
@@ -208,6 +211,15 @@ public class LakeGridManager : MonoBehaviour
                     tileDataArray[x, y].state = canPlace ? LakeTileState.Preview : LakeTileState.Invalid;
                     UpdateTileColor(x, y);
                 }
+                else if (tileDataArray[x, y].state == LakeTileState.Fixed)
+                {
+                    // 접근 금지 표시
+                    if (blockedIconPrefab != null)
+                    {
+                        GameObject icon = Instantiate(blockedIconPrefab, tileObjectArray[x, y].transform);
+                        blockedIcons.Add(icon);
+                    }
+                }
             }
         }
     }
@@ -227,6 +239,9 @@ public class LakeGridManager : MonoBehaviour
                 }
             }
         }
+        for (int i = 0; i < blockedIcons.Count; i++)
+            Destroy(blockedIcons[i]);
+        blockedIcons.Clear(); // 접근금지 아이콘 지우기
     }
 
     // 오브젝트 배치 (타일 상태 변경 + 오브젝트 생성)
@@ -269,35 +284,54 @@ public class LakeGridManager : MonoBehaviour
         return true;
     }
 
-    // 배치된 오브젝트 시각적 이미지 생성 
+    // 배치 오브젝트 생성 
     GameObject CreatePlacedVisual(LakePlacedObjectData data)
     {
-        GameObject obj = new GameObject("Placed_" + data.objectId);
-        obj.transform.SetParent(this.transform, false);
+        GameObject obj;
 
-        RectTransform rt = obj.AddComponent<RectTransform>();
+        if (itemPrefab != null) // 인스펙터에 프리팹 넣으면 프리팹 생성 
+        {
+            // TODO: 실제 스프라이트 로드 (나중에 ObjectTable 연동)
+            obj = Instantiate(itemPrefab);
+            obj.name = "Placed_" + data.objectId;
+            obj.transform.SetParent(this.transform, false);
+        }
+        else  // 프리팹 없을시 더미 
+        {
+            obj = new GameObject("Placed_" + data.objectId);
+            obj.transform.SetParent(this.transform, false);
+            obj.AddComponent<RectTransform>();
+
+            Image img = obj.AddComponent<Image>();
+            Sprite sprite = LakeDecoTestData.GetIconSprite(data.itemId);
+            if (sprite != null) 
+            {
+                img.sprite = sprite;
+                img.color = Color.white;
+            }
+            else // 폴백할 스프라이트도 없으면 랜덤색 타일
+            {
+                img.color = GetDummyItemColor(data.itemId);
+            }
+
+            img.raycastTarget = true;
+        }
+
+        // 위치와 크기 세팅 (프리팹이든 더미든 동일)
+        RectTransform rt = obj.GetComponent<RectTransform>();
         rt.anchorMin = new Vector2(0.5f, 0.5f);
         rt.anchorMax = new Vector2(0.5f, 0.5f);
-        rt.pivot = new Vector2(0f, 0f); // 좌하단 기준 
+        rt.pivot = new Vector2(0f, 0f);
 
-        // 크기 = 타일 크기 * 아이템 크기
         float objWidth = tileWidth * data.size.x;
         float objHeight = tileHeight * data.size.y;
         rt.sizeDelta = new Vector2(objWidth, objHeight);
 
-        // 위치 = 타일 좌표와 동일하게
         rt.anchoredPosition = new Vector2(
             offsetX + (data.gridPos.x * tileWidth),
             offsetY + (data.gridPos.y * tileHeight)
         );
-
-        // 이미지 컴포넌트 추가
-        Image img = obj.AddComponent<Image>();
-        img.raycastTarget = true; // 나중에 클릭해서 회수/이동할 때 필요
-
-        // TODO: 실제 스프라이트 로드 (나중에 ObjectTable 연동)
-        img.color = GetDummyItemColor(data.itemId);
-
+     
         return obj;
     }
 
@@ -379,7 +413,7 @@ public class LakeGridManager : MonoBehaviour
         SetFixed(5, 1);
         SetFixed(15, 0);
         PlaceObject(1001, 8, 0, 2, 2);
-        ShowPreview(12, 0, 2, 1);
+      //  ShowPreview(12, 0, 2, 1);
     }
 
     // 격자 보이기 (편집 모드 ON) // 이미지에 격자가 있는게 아니라, 중간중간 띄워서 백그라운드가 보이게 하는 방식
@@ -396,12 +430,20 @@ public class LakeGridManager : MonoBehaviour
                 UpdateTileColor(x, y);
             }
         }
+
+        // 배치된 오브젝트 보이기
+        foreach (var visual in placedVisuals.Values)
+        {
+            if (visual != null) visual.SetActive(true);
+        }
     }
 
     // 격자 숨기기 (편집 모드 OFF)
     public void HideGrid()
     {
-        currentGap = 0f;
+        ClearPreview(); // 미리보기 정리 
+
+        currentGap = 0f; 
 
         for (int x = 0; x < gridWidth; x++)
         {
@@ -414,6 +456,11 @@ public class LakeGridManager : MonoBehaviour
                 Image img = tileObjectArray[x, y].GetComponent<Image>();
                 img.color = new Color(0, 0, 0, 0);
             }
+        }
+        // 배치된 오브젝트 숨기기 (편집 모드 아닐 땐 안 보이게)
+        foreach (var visual in placedVisuals.Values)
+        {
+            if (visual != null) visual.SetActive(false);
         }
     }
 
@@ -462,7 +509,10 @@ public class LakeGridManager : MonoBehaviour
         if (IsOutOfBounds(x, y)) return null;
         return tileDataArray[x, y];
     }
-
+    public GameObject GetVisual(string objectId)
+    {
+        return placedVisuals.ContainsKey(objectId) ? placedVisuals[objectId] : null;
+    }
     /// 배치된 오브젝트 목록 가져오기 (저장용)
     public List<LakePlacedObjectData> GetPlacedObjects()
     {

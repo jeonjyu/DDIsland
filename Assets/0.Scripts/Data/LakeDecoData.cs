@@ -2,45 +2,6 @@ using UnityEngine;
 using System.Collections.Generic;
 using System;
 
-#region 데이터테이블 BuildingItem.cs 상점에서 
-// 1=MainHouse, 2=Floor, 3=Fix, 4=Free, 5=LakeFloor, 6=LakeFix, 7=LakeFree
-//public enum InteriorType // BuildingItem.cs에 이미 있음 
-//{
-//    None = 0,
-//    MainHouse = 1,
-//    Floor = 2,
-//    Fix = 3,
-//    Free = 4,
-//    LakeFloor = 5,  // 바닥재 (모래, 자갈, 얼음 등 등)
-//    LakeFix = 6,   /// 고정 장식물 (유저가 수정 불가)
-//    LakeFree = 7    // 자유 배치물 (유저가 배치/이동/회수)
-//}
-
-//// Interior 데이터테이블 // 상점에서 하는 거 같음
-//[Serializable]
-//public class InteriorData
-//{
-//    public int ID;   // 인테리어 id  
-//    public InteriorType InteriorType;
-//    public int NumPurchase;    // 구매가능횟수          
-//    public bool IsSaleable; // 판매가능여부              
-//    public int PurchasePrice;  // 구매가격        
-//    public int SellPrice;     // 판매 가격     
-//    public string InteriorImg;   //이미지 리소스    
-//    public string InteriorName; // 이름
-//    public string InteriorDesc; // 설명 
-//}
-#endregion
-
-///  호수 전용 데이터 
-//public enum LakeObjectType
-//{
-//    none = 0,
-//    LakeFloor = 5, // 바닥재 (모래, 자갈, 얼음 등)
-//    LakeFix = 6,   // 고정 장식물 (유저가 수정 불가)
-//    LakeFree = 7   // 자유 배치물 (유저가 배치/이동/회수)
-//}
-
 // 호수전용데이터 
 // [편집 모드] 타일 상태 
 public enum LakeTileState

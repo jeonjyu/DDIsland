@@ -4,16 +4,19 @@ using System;
 using System.Collections.Generic;
 using TMPro;
 
-/// [호수 편집 모드] 인벤 관리 
-public class LakeItemListManager : MonoBehaviour
+/// [꾸미기 모드] 인벤 관리 
+/// 호수, 섬 둘다 SetupInventory()로 데이터만 넣어주면 됨
+public enum DecoMode { Lake = 0, Island = 1 }
+
+public class DecoItemListManager : MonoBehaviour
 {
     [Header("UI 연결")]
-    public RectTransform itemContent; // ItemContent (슬롯들의 부모)
+    public RectTransform itemContent; // 슬롯들의 부모
     public Button btnArrowLeft;       // 좌측 화살표
     public Button btnArrowRight;      // 우측 화살표
 
     [Header("슬롯 템플릿")]
-    public GameObject slotTemplate;   // 하나의 슬롯이 복사되어 생성
+    public GameObject slotTemplate;   // 슬롯 하나 복사하여 생성
 
     [Header("페이지 카운트")]
     public RectTransform pageCountParent;   // 점들의 부모 오브젝트
@@ -24,9 +27,13 @@ public class LakeItemListManager : MonoBehaviour
     public int slotsPerPage = 6; // 한 페이지에 보이는 최대 슬롯 수
     public int maxPages = 3;     // 최대 페이지 수
 
+    public DecoMode currentMode = DecoMode.Lake; // 현재 편집 모드, 디폴트는 호수 
+
+
     // 내부 변수
     List<LakeInvenSlot> inventoryData = new List<LakeInvenSlot>();
     List<GameObject> slotObjects = new List<GameObject>();
+    List<DecoSlotUI> slotUIs = new List<DecoSlotUI>();
     List<GameObject> pageCountDots = new List<GameObject>();
     int selectedIndex = -1;  // 현재 선택된 슬롯 인덱스 (-1이면 선택 없음)
     int currentPage = 0;     // 현재 페이지 (0부터)
@@ -48,6 +55,20 @@ public class LakeItemListManager : MonoBehaviour
         // 템플릿 슬롯 비활성화 (복제용으로만 사용)
         if (slotTemplate != null)
             slotTemplate.SetActive(false);
+    }
+
+    // 테스트용 (데이터 연결 전까지 빈 인벤으로 세팅)
+    public void SetupTestInventory()
+    {
+        // 테스트용 (데이터 연결 전까지 LakeDecoTestData의 더미 인벤 사용)
+        if (currentMode == DecoMode.Lake)
+            SetupInventory(LakeDecoTestData.CreateTestInventory());
+        // TODO: 외부에서 SetupInventory() 직접 호출 
+        // else if (currentMode == DecoMode.Island)
+        //     SetupInventory(IslandDecoTestData.CreateTestInventory());
+        else
+            SetupInventory(new List<LakeInvenSlot>()); // 없으면 빈 인벤
+ 
     }
 
     // 인벤토리 세팅 
@@ -72,6 +93,7 @@ public class LakeItemListManager : MonoBehaviour
             Destroy(slotObjects[i]);
         }
         slotObjects.Clear();
+        slotUIs.Clear();
     }
 
     // 인벤토리 데이터 기반으로 슬롯 동적 생성 (수량 0인건 안 만듦)
@@ -89,41 +111,51 @@ public class LakeItemListManager : MonoBehaviour
             slotObj.SetActive(false); // 페이지 전환에서 켜줌
             slotObj.name = "ItemSlot_" + i;
 
+            // DecoSlotUI 컴포넌트에서 내용 참조 
+            DecoSlotUI slotUI = slotObj.GetComponent<DecoSlotUI>(); 
             // 슬롯 내용 채우기
-            SetupSlotUI(slotObj, slotData, i);
+            SetupSlotUI(slotUI, slotData);
 
-         
             // 클릭 이벤트 연결용
             int slotIndex = i; // 클로저 캡처용
-            Button btn = slotObj.GetComponent<Button>();
-            if (btn == null)
-                btn = slotObj.AddComponent<Button>();
-
-            btn.onClick.AddListener(() => OnSlotClicked(slotIndex));
+            if (slotUI != null && slotUI.itemButton != null)
+                slotUI.itemButton.onClick.AddListener(() => OnSlotClicked(slotIndex));
 
             slotObjects.Add(slotObj);
+            slotUIs.Add(slotUI);
         }
     }
 
-    // 슬롯 하나의 UI 내용 채우기
-    void SetupSlotUI(GameObject slotObj, LakeInvenSlot slotData, int index)
+    // 슬롯 UI 
+    void SetupSlotUI(DecoSlotUI slotUI, LakeInvenSlot slotData)
     {
+        if (slotUI == null) return;
         // 수량 텍스트
-        TMP_Text quantityText = FindChildTMP(slotObj, "QuantityText");
-        if (quantityText != null)
-            quantityText.text = "x" + slotData.quantity;
+        if (slotUI.quantityText != null)
+            slotUI.quantityText.text = "x" + slotData.quantity;
 
-        // 아이템 이름 (나중에 InteriorData 테이블에서 가져올 것, 지금은 더미)
-        TMP_Text nameText = FindChildTMP(slotObj, "ItemNameText");
-        if (nameText != null)
-            nameText.text = GetItemName(slotData.itemId);
-
-        // 아이콘 (나중에 리소스에서 로드)
-        Image icon = FindChildImage(slotObj, "ItemIcon");
-        if (icon != null)
+        // 아이템 이름
+        if (slotUI.nameText != null)
         {
-            // TODO: 실제 아이콘 로드 
-            icon.color = GetDummyColor(slotData.itemId);
+            if (currentMode == DecoMode.Lake)
+                slotUI.nameText.text = LakeDecoTestData.GetItemName(slotData.itemId);
+            // else if (currentMode == DecoMode.Island)
+            // slotUI.nameText.text = IslandDecoTestData.GetItemName(slotData.itemId);
+        }
+
+        // 오브젝트 이미지 
+        if (slotUI.itemButton != null) 
+        {
+            Sprite sprite = null;
+
+            if (currentMode == DecoMode.Lake)
+                sprite = LakeDecoTestData.GetIconSprite(slotData.itemId);
+            // else if (currentMode == DecoMode.Island)
+            //     sprite = IslandDecoTestData.GetIconSprite(slotData.itemId);
+
+            if (sprite != null)
+                slotUI.itemImage.sprite = sprite;
+          
         }
     }
 
@@ -136,10 +168,7 @@ public class LakeItemListManager : MonoBehaviour
 
         // 슬롯 표시/숨기기
         for (int i = 0; i < slotObjects.Count; i++)
-        {
-            bool visible = (i >= startIndex && i < endIndex);
-            slotObjects[i].SetActive(visible);
-        }
+            slotObjects[i].SetActive(i >= startIndex && i < endIndex);
 
         // 화살표 활성/비활성 (1페이지뿐이면 둘 다 비활성)
         if (btnArrowLeft != null)
@@ -152,6 +181,7 @@ public class LakeItemListManager : MonoBehaviour
         UpdateIndicators();
     }
 
+    // 페이지수 변경 
     void GoToPrevPage()
     {
         if (currentPage <= 0) return;
@@ -166,7 +196,7 @@ public class LakeItemListManager : MonoBehaviour
         UpdatePageDisplay();
     }
 
- 
+
 
     // 페이지 수 점 생성/갱신
     void UpdateIndicators()
@@ -198,7 +228,7 @@ public class LakeItemListManager : MonoBehaviour
         }
     }
 
-    // 슬롯 클릭
+    // 슬롯 선택 
     void OnSlotClicked(int index)
     {
         // 같은 슬롯 다시 클릭 시 선택 해제
@@ -256,12 +286,8 @@ public class LakeItemListManager : MonoBehaviour
                 inventoryData[i].quantity--;
 
                 // 수량 UI 갱신
-                if (i < slotObjects.Count)
-                {
-                    TMP_Text qty = FindChildTMP(slotObjects[i], "QuantityText");
-                    if (qty != null)
-                        qty.text = "x" + inventoryData[i].quantity;
-                }
+                if (i < slotUIs.Count && slotUIs[i] != null && slotUIs[i].quantityText != null)
+                    slotUIs[i].quantityText.text = "x" + inventoryData[i].quantity;
 
                 // 수량 0이면 슬롯 제거
                 if (inventoryData[i].quantity <= 0)
@@ -291,9 +317,7 @@ public class LakeItemListManager : MonoBehaviour
                 }
                 else if (i < slotObjects.Count)
                 {
-                    TMP_Text qty = FindChildTMP(slotObjects[i], "QuantityText");
-                    if (qty != null)
-                        qty.text = "x" + inventoryData[i].quantity;
+                    slotUIs[i].quantityText.text = "x" + inventoryData[i].quantity;
                 }
                 break;
             }
@@ -309,6 +333,7 @@ public class LakeItemListManager : MonoBehaviour
             {
                 Destroy(slotObjects[i]);
                 slotObjects.RemoveAt(i);
+                slotUIs.RemoveAt(i);
                 break;
             }
         }
@@ -323,15 +348,15 @@ public class LakeItemListManager : MonoBehaviour
         slotObj.SetActive(false);
         slotObj.name = "ItemSlot_" + dataIndex;
 
-        SetupSlotUI(slotObj, slotData, dataIndex);
+        DecoSlotUI slotUI = slotObj.GetComponent<DecoSlotUI>();
+        SetupSlotUI(slotUI, slotData);
 
         int slotIndex = dataIndex;
-        Button btn = slotObj.GetComponent<Button>();
-        if (btn == null)
-            btn = slotObj.AddComponent<Button>();
+        if (slotUI != null && slotUI.itemButton != null)
+            slotUI.itemButton.onClick.AddListener(() => OnSlotClicked(slotIndex));
 
-        btn.onClick.AddListener(() => OnSlotClicked(slotIndex));
         slotObjects.Add(slotObj);
+        slotUIs.Add(slotUI);
 
         RecalcPages();
         UpdatePageDisplay();
@@ -347,51 +372,6 @@ public class LakeItemListManager : MonoBehaviour
             currentPage = totalPages - 1;
     }
 
-    // 헬퍼 함수 
-    TMP_Text FindChildTMP(GameObject parent, string childName)
-    {
-        Transform child = parent.transform.Find(childName);
-        if (child == null) return null;
-        return child.GetComponent<TMP_Text>();
-    }
-
-    Image FindChildImage(GameObject parent, string childName)
-    {
-        Transform child = parent.transform.Find(childName);
-        if (child == null) return null;
-        return child.GetComponent<Image>();
-    }
-
-    // 더미 아이템 (나중에 InteriorData 테이블로 교체)
-    string GetItemName(int itemId)
-    {
-        switch (itemId)
-        {
-            case 10001: return "수초";
-            case 10002: return "조약돌";
-            case 10003: return "산호 조각";
-            case 10004: return "바위";
-            case 10005: return "수초 군락";
-            case 10006: return "작은 구조물";
-            case 10007: return "대형 구조물";
-            default: return "아이템 " + itemId;
-        }
-    }
-
-    // 더미 아이콘 색깔 (나중에 실제 스프라이트로 교체)
-    Color GetDummyColor(int itemId)
-    {
-        switch (itemId % 5)
-        {
-            case 0: return new Color(0.4f, 0.8f, 0.4f, 1f);
-            case 1: return new Color(0.6f, 0.6f, 0.9f, 1f);
-            case 2: return new Color(0.9f, 0.7f, 0.3f, 1f);
-            case 3: return new Color(0.8f, 0.4f, 0.6f, 1f);
-            case 4: return new Color(0.5f, 0.9f, 0.9f, 1f);
-            default: return Color.white;
-        }
-    }
-
     public int GetSelectedItemId()
     {
         if (selectedIndex < 0 || selectedIndex >= inventoryData.Count)
@@ -404,29 +384,5 @@ public class LakeItemListManager : MonoBehaviour
         return selectedIndex;
     }
 
-    // 테스트용 더미 데이터
-    public void SetupTestInventory()
-    {
-        List<LakeInvenSlot> testData = new List<LakeInvenSlot>();
 
-        // 1×1
-        testData.Add(new LakeInvenSlot { itemId = 10001, quantity = 5 });
-        testData.Add(new LakeInvenSlot { itemId = 10002, quantity = 3 });
-        testData.Add(new LakeInvenSlot { itemId = 10003, quantity = 2 });
-
-        // 2×1
-        testData.Add(new LakeInvenSlot { itemId = 10004, quantity = 4 });
-        testData.Add(new LakeInvenSlot { itemId = 10005, quantity = 1 });
-        testData.Add(new LakeInvenSlot { itemId = 10006, quantity = 2 });
-
-        // 4×2
-        testData.Add(new LakeInvenSlot { itemId = 10007, quantity = 1 });
-
-        // 2페이지 확인용
-        testData.Add(new LakeInvenSlot { itemId = 10008, quantity = 3 });
-        testData.Add(new LakeInvenSlot { itemId = 10009, quantity = 6 });
-        testData.Add(new LakeInvenSlot { itemId = 10010, quantity = 2 });
-
-        SetupInventory(testData);
-    }
 }
