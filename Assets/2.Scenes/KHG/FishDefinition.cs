@@ -3,26 +3,27 @@ using System.Collections.Generic;
 using System.Globalization;
 using UnityEngine;
 
+
 [Serializable]
 public class FishDefinition
 {
-    public int ID;                  
-    public string NameKey;          
-    public string DescKey;          
+    public int ID;
+    public string FishName_String;        
+    public string FishDesc_String;        
 
-    public int FishType;            
-    public int Grade;               
-    public int ArriveSeason;    
+    public int FishType;                  
+    public int Grade;                     
+    public int ArriveSeason;              
 
     public bool IsSpecial;
     public bool UseCrowdingAlgorithm;
 
-    public float MinLength;         
-    public float MaxLength;         
-    public float Measure;           
+    public float MinLength;
+    public float MaxLength;
+    public float Measure;
 
-    public int Price;               
-    public string SpritePath;       
+    public int Price;
+    public string FishImgPath_Sprite;   
 }
 
 public static class FishCsvLoader
@@ -53,10 +54,12 @@ public static class FishCsvLoader
             string line = lines[i].Trim();
             if (string.IsNullOrWhiteSpace(line)) continue;
 
+            // 주석 줄(#)은 스킵
             if (line.StartsWith("#")) continue;
 
             string[] cols = line.Split(',');
             if (cols.Length < 14) continue;
+
 
             if (!int.TryParse(cols[0].Trim(), out int id))
                 continue;
@@ -65,8 +68,8 @@ public static class FishCsvLoader
             {
                 ID = id,
 
-                NameKey = cols[2].Trim(),
-                DescKey = cols[3].Trim(),
+                FishName_String = cols[2].Trim(),
+                FishDesc_String = cols[3].Trim(),
 
                 FishType = ToInt(cols[4]),
                 Grade = ToInt(cols[5]),
@@ -80,7 +83,7 @@ public static class FishCsvLoader
                 Measure = ToFloat(cols[11], ci),
 
                 Price = ToInt(cols[12]),
-                SpritePath = cols[13].Trim(),
+                FishImgPath_Sprite = cols[13].Trim(),
             };
 
             list.Add(def);
