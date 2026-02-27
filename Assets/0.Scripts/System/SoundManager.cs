@@ -174,7 +174,7 @@ public class SoundManager : Singleton<SoundManager>
 
     private void SetVolume(string mixerParam, float volume)
     {
-        MasterAudioMixer.SetFloat(mixerParam, Mathf.Log10(volume) * 20);
+        MasterAudioMixer.SetFloat(mixerParam, volume < Mathf.Epsilon ? -80f : Mathf.Log10(volume) * 20);
     }
     #endregion
 

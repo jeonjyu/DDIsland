@@ -8,16 +8,19 @@ using UnityEngine;
 public static class PlayerPrefsDataManager
 {
     #region PlayerPrefs Key
-    private const string KEY_LANGUAGE = "Language";                  // 언어 설정 키
-    private const string KEY_BGMVOLUME = "BgmVolume";                // BGM 볼륨 키
-    private const string KEY_SFXVOLUME = "SfxVolume";                // SFX 볼륨 키
-    private const string KEY_BGSVOLUME = "BgsVolume";                // BGS 볼륨 키
-    private const string KEY_GRAPHICQUALITY = "GraphicQuality";      // 그래픽 품질 설정 키
-    private const string KEY_RESOLUTIONWIDTH = "ResolutionWidth";    // 가로 해상도 수치 키
-    private const string KEY_RESOLUTIONHEIGHT = "ResolutionHeight";  // 세로 해상도 수치 키
-    private const string KEY_RESOLUTIONWINDOW = "ResolutionWindow";  // 세로 해상도 수치 키
-    private const string KEY_RESOLUTIONHZ = "ResolutionHz";          // 주사율
-    private const string KEY_MouseSensivity = "MouseSensitivity";    // 마우스 감도 키
+    private const string KEY_LANGUAGE = "Language";                     // 언어 설정 키
+    private const string KEY_BGMVOLUME = "BgmVolume";                   // BGM 볼륨 키
+    private const string KEY_SFXVOLUME = "SfxVolume";                   // SFX 볼륨 키
+    private const string KEY_BGSVOLUME = "BgsVolume";                   // BGS 볼륨 키
+    private const string KEY_BGMVOLUME_MUTE = "BGMVolumeMute";          // BGM 뮤트 키
+    private const string KEY_SFXVOLUME_MUTE = "SFXVolumeMute";          // SFX 뮤트 키
+    private const string KEY_BGSVOLUME_MUTE = "BGSVolumeMute";          // BGS 뮤트 키
+    private const string KEY_GRAPHICQUALITY = "GraphicQuality";         // 그래픽 품질 설정 키
+    private const string KEY_RESOLUTIONWIDTH = "ResolutionWidth";       // 가로 해상도 수치 키
+    private const string KEY_RESOLUTIONHEIGHT = "ResolutionHeight";     // 세로 해상도 수치 키
+    private const string KEY_RESOLUTIONWINDOW = "ResolutionWindow";     // 세로 해상도 수치 키
+    private const string KEY_RESOLUTIONHZ = "ResolutionHz";             // 주사율
+    private const string KEY_MouseSensivity = "MouseSensitivity";       // 마우스 감도 키
     #endregion
 
     public static int Language   // StringDataSO 타입과 호환
@@ -61,6 +64,43 @@ public static class PlayerPrefsDataManager
             PlayerPrefs.SetFloat(KEY_SFXVOLUME, vol);
         }
     }
+
+    public static bool BgmVolumeMute
+    {
+        get
+        {
+            return PlayerPrefs.GetInt(KEY_BGMVOLUME_MUTE, 0) == 1 ? true : false;
+        }
+        set
+        {
+            PlayerPrefs.SetInt(KEY_BGMVOLUME_MUTE, value == true ? 1 : 0);
+        }
+    }
+
+    public static bool SFXVolumeMute
+    {
+        get
+        {
+            return PlayerPrefs.GetInt(KEY_SFXVOLUME_MUTE, 0) == 1 ? true : false;
+        }
+        set
+        {
+            PlayerPrefs.SetInt(KEY_SFXVOLUME_MUTE, value == true ? 1 : 0);
+        }
+    }
+
+    public static bool BGSVolumeMute
+    {
+        get
+        {
+            return PlayerPrefs.GetInt(KEY_BGSVOLUME_MUTE, 0) == 1 ? true : false;
+        }
+        set
+        {
+            PlayerPrefs.SetInt(KEY_BGSVOLUME_MUTE, value == true ? 1 : 0);
+        }
+    }
+
     public static int GraphicQuality
     {
         get { return PlayerPrefs.GetInt(KEY_GRAPHICQUALITY, QualitySettings.GetQualityLevel()); }
