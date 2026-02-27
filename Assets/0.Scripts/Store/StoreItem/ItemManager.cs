@@ -8,11 +8,9 @@ public class ItemManager : Singleton<ItemManager>
     public Dictionary<StoreCat, Dictionary<int, IStoreItem>> _storeCategories = new Dictionary<StoreCat, Dictionary<int, IStoreItem>>();
 
     // 플레이어가 소유한 아이템 딕셔너리 모음
-    //public List<StoreCategory<StoreCat>> _playerOwnedItems = new List<StoreCategory<StoreCat>>();
     public Dictionary<StoreCat, Dictionary<int, IStoreItem>> _playerOwnedItems = new Dictionary<StoreCat, Dictionary<int, IStoreItem>>();
 
     // 현재 카탈로그 
-    //public Dictionary<int, IStoreItem> _currentCategory = new Dictionary<int, IStoreItem>();
     public List<StoreItem> currentCategory = new List<StoreItem>();
 
     // 슬롯으로 보여줄 아이템
@@ -51,11 +49,6 @@ public class ItemManager : Singleton<ItemManager>
         _storeCategories.Add(StoreCat.costume, keyValues1);
 
         Debug.Log("[ItemManger] 딕셔너리 생성");
-    }
-
-    public void CreateCatalog()
-    {
-        //foreach()
     }
 
 
@@ -103,6 +96,6 @@ public class ItemManager : Singleton<ItemManager>
 
         displayItems = displayItems.OrderByDescending((StoreItem x) => x.IsGained).ThenBy(x => x.PurchasePrice).ThenBy(x => x.ItemId).ToList();
 
-        Debug.Log("정렬 완료: " + string.Join(", ", ItemManager.Instance.displayItems.Select(x => x.ItemName + "(" + x.ItemId + "):" + x.PurchasePrice)));
+        //Debug.Log("정렬 완료: " + string.Join(", ", ItemManager.Instance.displayItems.Select(x => x.ItemName + "(" + x.ItemId + "):" + x.PurchasePrice)));
     }
 }

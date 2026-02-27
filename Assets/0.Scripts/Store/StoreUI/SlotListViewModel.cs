@@ -58,8 +58,6 @@ public class StoreListViewModel : MonoBehaviour, INotifyPropertyChanged
 
     void Start()
     {
-        Debug.Log("[ItemListViewModel] Start");
-
         UpdateCurrentCat(1);
     }
 
@@ -126,7 +124,7 @@ public class StoreListViewModel : MonoBehaviour, INotifyPropertyChanged
             //Debug.Log("[ItemListViewModel] UpdateSlotList | 슬롯 " + ItemManager.Instance.displayItems.IndexOf(item));
         }
 
-        Debug.Log("[ItemListViewModel] UpdateSlotList | 슬롯 로딩 완료");
+        //Debug.Log("[ItemListViewModel] UpdateSlotList | 슬롯 로딩 완료");
     }
 
     // itemList 변경되면 그에 맞춰 초기화
@@ -140,14 +138,14 @@ public class StoreListViewModel : MonoBehaviour, INotifyPropertyChanged
             item.Reset();
         }
 
-        Debug.Log("[ItemListViewModel] ResetSlotList | 슬롯 반납 완료");
+        //Debug.Log("[ItemListViewModel] ResetSlotList | 슬롯 반납 완료");
     }
 
     // 슬롯 모델 바꾸려면 SetModel로 변경해줘야 함
 
     protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
     {
-        Debug.Log("[ItemListViewModel] OnPropertyChanged 실행");
+        //Debug.Log("[ItemListViewModel] OnPropertyChanged 실행");
 
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         filterDropdown.UpdateFilter((Filter)CurrentCat);

@@ -68,7 +68,7 @@ public class SortDropdown : StoreDropdownBase
                     items = items.AppendOrderBy(x => x.ItemId);
                     break;
             }
-            Debug.Log("[SortDropdown] 정렬 기준 " + comp);
+            //Debug.Log("[SortDropdown] 정렬 기준 " + comp);
         }
 
         ItemManager.Instance.displayItems = items.ToList();

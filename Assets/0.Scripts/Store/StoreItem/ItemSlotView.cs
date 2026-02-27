@@ -31,7 +31,7 @@ public class ItemSlotView : MonoBehaviour, IStoreItemView, IPointerClickHandler
     }
     void Start()
     {
-        Debug.Log("[ItemSlotView] Start");
+        //Debug.Log("[ItemSlotView] Start");
         //modelData = viewModel.Model;
 
 
@@ -59,7 +59,7 @@ public class ItemSlotView : MonoBehaviour, IStoreItemView, IPointerClickHandler
 
         if (!modelData)
         {
-            Debug.Log("model이 없음");
+            //Debug.Log("model이 없음");
             ResetSlot();
             return;
         }
