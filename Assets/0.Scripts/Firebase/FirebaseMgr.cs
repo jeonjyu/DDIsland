@@ -33,11 +33,11 @@ public class FirebaseMgr : MonoBehaviour
             {
                 _database = FirebaseDatabase.DefaultInstance;
                 _isInitialized = true;
-                Debug.Log("<color=green>Firebase ÃÊ±âÈ­ ¼º°ø</color>");
+                Debug.Log("<color=green>Firebase ì´ˆê¸°í™” ì„±ê³µ</color>");
             }
             else
             {
-                Debug.LogError($"Firebase ÃÊ±âÈ­ ½ÇÆĞ: {task.Result}");
+                Debug.LogError($"Firebase ì´ˆê¸°í™” ì‹¤íŒ¨: {task.Result}");
             }
         });
     }
@@ -46,7 +46,7 @@ public class FirebaseMgr : MonoBehaviour
     {
         if (!_isInitialized && _database == null)
         {
-            Debug.LogError("<color=red>Firebase Database°¡ ÃÊ±âÈ­µÇÁö ¾Ê¾Ò½À´Ï´Ù.</color>");
+            Debug.LogError("<color=red>Firebase Databaseê°€ ì´ˆê¸°í™”ë˜ì§€ ì•Šì•˜ìŠµë‹ˆë‹¤.</color>");
             return;
         }
 
@@ -59,14 +59,14 @@ public class FirebaseMgr : MonoBehaviour
 
         dbRef.SetRawJsonValueAsync(json).ContinueWithOnMainThread(task =>
         {
-            Debug.Log($"<color=yellow>µ¥ÀÌÅÍ Àü¼Û ½Ãµµ</color>");
+            Debug.Log($"<color=yellow>ë°ì´í„° ì „ì†¡ ì‹œë„</color>");
             if (task.IsCompleted)
             {
-                Debug.Log("<color=green>ÆÄÀÌ¾îº£ÀÌ½º¿¡ ÀúÀå ¿Ï·á!</color>");
+                Debug.Log("<color=green>íŒŒì´ì–´ë² ì´ìŠ¤ì— ì €ì¥ ì™„ë£Œ!</color>");
             }
             else
             {
-                Debug.LogError("<color=red>ÀúÀå ½ÇÆĞ</color>");
+                Debug.LogError("<color=red>ì €ì¥ ì‹¤íŒ¨</color>");
             }
         });
 
@@ -75,7 +75,7 @@ public class FirebaseMgr : MonoBehaviour
     {
         if (!_isInitialized && _database == null)
         {
-            Debug.LogWarning("Firebase°¡ ¾ÆÁ÷ ÃÊ±âÈ­µÇÁö ¾Ê¾Ò½À´Ï´Ù.");
+            Debug.LogWarning("Firebaseê°€ ì•„ì§ ì´ˆê¸°í™”ë˜ì§€ ì•Šì•˜ìŠµë‹ˆë‹¤.");
             return null;
         }
 
@@ -92,10 +92,10 @@ public class FirebaseMgr : MonoBehaviour
 
         if (snapshot != null && snapshot.Exists)
         {
-            // JSON ¹®ÀÚ¿­À» ¹İÈ¯
+            // JSON ë¬¸ìì—´ì„ ë°˜í™˜
             return snapshot.GetRawJsonValue();
         }
 
-        return null; // µ¥ÀÌÅÍ°¡ ¾øÀ¸¸é null ¹İÈ¯
+        return null; // ë°ì´í„°ê°€ ì—†ìœ¼ë©´ null ë°˜í™˜
     }
 }

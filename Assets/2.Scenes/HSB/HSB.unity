@@ -145,14 +145,14 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 198835504}
   m_Enabled: 1
-  serializedVersion: 11
+  serializedVersion: 12
   m_Type: 1
   m_Color: {r: 1, g: 0.95686275, b: 0.8392157, a: 1}
   m_Intensity: 1
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
-  m_CookieSize: 10
+  m_CookieSize2D: {x: 10, y: 10}
   m_Shadows:
     m_Type: 2
     m_Resolution: -1
@@ -607,7 +607,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1053374438
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -747,6 +747,10 @@ PrefabInstance:
     - target: {fileID: 4728262087290977974, guid: 176da03993ea90d48a925d62d01fecd1, type: 3}
       propertyPath: m_Name
       value: AquariumMgr
+      objectReference: {fileID: 0}
+    - target: {fileID: 4728262087290977974, guid: 176da03993ea90d48a925d62d01fecd1, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6618808809231701058, guid: 176da03993ea90d48a925d62d01fecd1, type: 3}
       propertyPath: m_LocalPosition.x

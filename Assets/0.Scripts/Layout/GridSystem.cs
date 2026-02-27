@@ -21,6 +21,7 @@ public class GridSystem : MonoBehaviour
     #region 프로퍼티
     public int Width => _width;   
     public int Height => _height;
+    public float CellSize => _cellSize;
     #endregion
 
     private void Awake()
@@ -37,7 +38,6 @@ public class GridSystem : MonoBehaviour
             filterMode = FilterMode.Point,
             wrapMode = TextureWrapMode.Clamp
         };
-
         ApplyGridToShader();
     }
     public void SetGridActive(bool isActive)
@@ -134,6 +134,7 @@ public class GridSystem : MonoBehaviour
         float halfWidth = (_width * _cellSize) * 0.5f;
         float halfHeight = (_height * _cellSize) * 0.5f;
         Vector3 origin = _cell.position - new Vector3(halfWidth, 0, halfHeight);
+
         // 셀의 좌표를 실제 월드 좌표로 전환
 
         float centerX = x + (sizeX * 0.5f);
@@ -164,8 +165,9 @@ public class GridSystem : MonoBehaviour
         {
             for (int y = 0; y < _height; y++)
             {
-                Color color = _grid[x, y] != null ? Color.red : new Color(0, 0, 0, 0); //하나하나 전부 색을 바꿔주는 방식, 추후 개선 할 수 있으면 개선 필요
+                Color color = _grid[x, y] != null ? Color.red : Color.clear; //하나하나 전부 색을 바꿔주는 방식, 추후 개선 할 수 있으면 개선 필요
                 _gridDataTexture.SetPixel(x, y, color); // 1인 경우 빨간색, 0인 경우 투명색으로 설정
+                //new Color(0, 0, 0, 0)
             }
         }
         // 텍스쳐 업데이트
@@ -177,6 +179,6 @@ public class GridSystem : MonoBehaviour
     {
         if (_gridRenderer == null) return;
         _gridRenderer.material.SetFloat("_IsBuilding", 0f); //만약 건물을 배치하는 중이 아니라면 셰이더에서 색 제거
-        _gridRenderer.material.SetVector("_Hoverinfo", new Vector4(-10, -10, 0, 0)); // 좌표 초기화
+        _gridRenderer.material.SetVector("_Hoverinfo", new Vector4(-100, -100, 0, 0)); // 좌표 초기화
     }
 }

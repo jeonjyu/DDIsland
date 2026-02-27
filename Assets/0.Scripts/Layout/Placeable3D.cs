@@ -14,7 +14,8 @@ public class Placeable3D : Placeable
     Camera _mainCamera;
     MeshRenderer _selectedRenderer;
     private float _currentYRotation = 0f; // 현재 유지 중인 회전값
-    private bool _isRotated;
+    private int _isRotated;
+    private bool _isPlaced;
     private Color _originalColor;
 
     private Vector2Int _lastPlacedIndex;
@@ -34,8 +35,9 @@ public class Placeable3D : Placeable
     #region 프로퍼티
     public Vector2Int PlacedIndex => _lastPlacedIndex;
     public Vector2Int PlacedSize => _lastPlacedSize;
-    public bool IsRotated => _isRotated;
+    public int IsRotated => _isRotated;
     public float CurrentYRotation => _currentYRotation;
+    public bool IsPlaced => _isPlaced;
     #endregion
 
     public void Initialize(GridSystem grid)
@@ -55,20 +57,31 @@ public class Placeable3D : Placeable
         if (_editMenuUI != null)
         {
             _editMenuUI.SetActive(isActive);
+            VisualFeedback();
         }
     }
 
+        //일단 회전 로직부터 제대로 잡고가야해서 의사코드로 작성
+
+        //여기서 미래에 회전할 부분을 탐색하여 변수로 저장
+        //그 회전 값 사이즈를 계산해서 어떻게 될지 bool값으로 IscellEmpty를 받아옴
+
+        //만약 잘 들어가면 그냥 밑으로 진행하면 되고
+        //만약 안되면 이동모드로 강제 전환 시키기
     public void ObjectRotate()
     {
+
         if (ItemState == ItemState.Placed)
         {
             _targetGrid.RemoveItem(_lastPlacedIndex.x, _lastPlacedIndex.y, _lastPlacedSize.x, _lastPlacedSize.y);
         }
 
-        _currentYRotation = (_currentYRotation + _rotationStep) % 360;
-        _isRotated = !_isRotated;
 
+        _isRotated = (_isRotated + 1) % 4;
+        _currentYRotation = _isRotated * _rotationStep;
         Vector2Int newSize = GetRotatedSize();
+
+
         if (ItemState == ItemState.Placed) _cachedIndex = _lastPlacedIndex;
 
         Vector3 snapPos = _targetGrid.GetWorldPosition(_cachedIndex.x, _cachedIndex.y, newSize.x, newSize.y);
@@ -95,8 +108,8 @@ public class Placeable3D : Placeable
             Vector2Int size = GetRotatedSize(); // 사이즈 계산
 
             // 아이템의 중심이 마우스 위치에 오도록 시작 좌표 계산
-            int startX = mouseIndex.x - (size.x - 1) / 2;
-            int startY = mouseIndex.y - (size.y - 1) / 2;
+            int startX = Mathf.RoundToInt(mouseIndex.x - (size.x - 1) * 0.5f);
+            int startY = Mathf.RoundToInt(mouseIndex.y - (size.y - 1) * 0.5f);
 
             // 그리드 범위를 벗어나지 않도록 좌표 조정
             return new Vector2Int(
@@ -107,6 +120,7 @@ public class Placeable3D : Placeable
 
         return new Vector2Int(-1, -1);
     }
+
     // 아이템을 그리드에 배치
     public override void Placement()
     {
@@ -116,6 +130,7 @@ public class Placeable3D : Placeable
         //현재 데이터가 없어서 사이즈 고정. 추후에 SO데이터 받아서 변경 필요
         if (index.x != -1 && _targetGrid.IsCellEmpty(index.x, index.y, size.x, size.y, this))
         {
+            //만약 아이템이 설치 되어 있다면 이동을 위해서 설치되어 있는 걸 제거
             if (ItemState == ItemState.Placed)
             {
                 _targetGrid.RemoveItem(_lastPlacedIndex.x, _lastPlacedIndex.y, _lastPlacedSize.x, _lastPlacedSize.y);
@@ -131,6 +146,7 @@ public class Placeable3D : Placeable
 
             _targetGrid.ClearGrid(); // 셰이더 하이라이트 초기화
 
+            _isPlaced = true;
             ItemState = ItemState.Placed;
         }
     }
@@ -141,6 +157,7 @@ public class Placeable3D : Placeable
 
         if (index.x == -1)
         {
+            _targetGrid.ClearGrid();
             return;
         }
 
@@ -150,19 +167,28 @@ public class Placeable3D : Placeable
         {
             // 배치 중일 때는 물체 색상도 변경
             _selectedRenderer.material.color = placeAble ? _succees : _fail;
-            _targetGrid.UpdateShaderHover(index, size, placeAble);
         }
         else
         {
             _selectedRenderer.material.color = _originalColor;
-            _targetGrid.UpdateShaderHover(index, size, false);
+            //_targetGrid.UpdateShaderHover(index, size, false);
         }
+        _targetGrid.UpdateShaderHover(index, size, placeAble);
 
     }
     //회전된 상태에서의 사이즈 계산
     private Vector2Int GetRotatedSize()
     {
-        return _isRotated ? new Vector2Int(_sizeY, _sizeX) : new Vector2Int(_sizeX, _sizeY);
+        bool isOddRotation = (_isRotated % 2 != 0);
+
+        if (isOddRotation)
+        {
+            return new Vector2Int(_sizeY, _sizeX);
+        }
+        else
+        {
+            return new Vector2Int(_sizeX, _sizeY);
+        }
     }
     private void Update()
     {
@@ -174,19 +200,23 @@ public class Placeable3D : Placeable
         _cachedIndex = ConvertedIndex();
         Vector2Int size = GetRotatedSize();
 
-        VisualFeedback();
         if (_cachedIndex.x != -1)
         {
             Vector3 snapPos = _targetGrid.GetWorldPosition(_cachedIndex.x, _cachedIndex.y, size.x, size.y);
 
             transform.SetPositionAndRotation(snapPos, Quaternion.Euler(0, _currentYRotation, 0));
 
+            VisualFeedback();
+
             Debug.Log($"현재 칸 좌표: {_cachedIndex}");
         }
+        else
+        {
+            _targetGrid.ClearGrid();
+        }
     }
-    public void RestoreState(Vector3 worldPos, float yRotation, bool isRotated)
+    public void RestoreState(Vector3 worldPos, float yRotation, int isRotated)
     {
-
         transform.SetPositionAndRotation(worldPos, Quaternion.Euler(0, yRotation, 0));
 
         // 저장된 회전값과 회전 상태 복원
@@ -197,6 +227,6 @@ public class Placeable3D : Placeable
         ItemState = ItemState.Placed;
         _selectedRenderer.material.color = _originalColor;
         _targetGrid.ClearGrid();
-        enabled = false;
+        //enabled = false;
     }
 }
