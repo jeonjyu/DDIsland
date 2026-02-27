@@ -4,11 +4,11 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class ItemSlotView : MonoBehaviour, IStoreItemView
+public class ItemSlotView : MonoBehaviour, IStoreItemView, IPointerClickHandler
 {
     ItemSlotViewModel viewModel;
     StoreItem modelData;
-
+    Image slotImage;
 
     // 인테리어 타입에 따라 다른 UI 테두리 표시
     [SerializeField] private Image _slotBackground;
@@ -25,16 +25,15 @@ public class ItemSlotView : MonoBehaviour, IStoreItemView
     public TMP_Text ItemCount => _itemCount;
     public Image ItemImage => _itemImage;
 
-
+    void Awake()
+    {
+        viewModel = GetComponent<ItemSlotViewModel>();
+    }
     void Start()
     {
         Debug.Log("[ItemSlotView] Start");
-        viewModel = GetComponent<ItemSlotViewModel>();
         //modelData = viewModel.Model;
-        eventTrigger = gameObject.GetComponent<EventTrigger>();
-        //eventTrigger.OnPointerClick(() => { }); 
-        // 버튼 팝업 띄우고
-        // 해당 뷰의 모델을 전달하는 메서드 
+
 
         viewModel.PropertyChanged += OnViewModelPropChanged;
         Init();
@@ -44,6 +43,7 @@ public class ItemSlotView : MonoBehaviour, IStoreItemView
     {
         if (viewModel != null)
             viewModel.PropertyChanged += OnViewModelPropChanged;
+
     }
 
     void OnDisable()
@@ -88,6 +88,15 @@ public class ItemSlotView : MonoBehaviour, IStoreItemView
             _slotBackground.color = Color.grey;
         else
             _slotBackground.color = Color.white;
+    }
+
+    // 버튼 팝업 띄우고
+    // 해당 뷰의 모델을 전달하는 메서드 
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        // 구매보다 카테고리 변경을 더 자주하니까 구매창 킬 때 카테고리에 따라 다른 구매창 열도록 설정
+        StoreManager.Instance.BuyAndSellPanel.SetActive(true);
+        viewModel.SetPopupModel();
     }
 
     private void OnViewModelPropChanged(object sender, PropertyChangedEventArgs e)
