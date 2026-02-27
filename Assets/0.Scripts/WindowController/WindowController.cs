@@ -31,6 +31,8 @@ public class WindowController : Singleton<WindowController>
     private int hitLayerMask;                       // 레이캐스트에서 사용할 레이어 정보
     [SerializeField] private float hitTick = 0.1f;  // 마우스 클릭 통과 여부 판단 주기
     private WaitForSecondsRealtime hitTime;
+    public event Action MouseHitAction;             // 마우스가 3D 오브젝트에 Hit 판정이 들어갈 때 실행할 액션
+
 
     private HitType hitType = HitType.None;
     private Coroutine hitMouseCoroutine;
@@ -235,6 +237,8 @@ public class WindowController : Singleton<WindowController>
             if(Physics.Raycast(ray, out _, 100f))
             {
                 onObject = true;
+
+                MouseHitAction?.Invoke();
                 return;
             }
 

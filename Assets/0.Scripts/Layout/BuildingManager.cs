@@ -13,7 +13,7 @@ public class BuildingManager : MonoBehaviour
         public Vector2Int Pos;
         public Vector2Int Size;
         public float Rotation;
-        public bool IsRotated;
+        public int IsRotated;
     }
 
     [SerializeField] private GridSystem _gridSystem;
@@ -29,7 +29,7 @@ public class BuildingManager : MonoBehaviour
     {
         _activePlaceable = target;
 
-        // 현재 건물의 상태를 스냅샷으로 저장
+        // 현재 건물의 상태를 저장
         _currentSnapshot = new()
         {
             Target = target,
@@ -45,9 +45,11 @@ public class BuildingManager : MonoBehaviour
 
         target.ItemState = ItemState.Preview;
     }
+    // 오브젝트(건물) 제거
     public void DeleteBuilding(Placeable3D target)
     {
         if (target == null) return;
+        _gridSystem.ClearGrid();
         RemoveBuildingFromGrid(target);
         Destroy(target.gameObject);
     }
@@ -60,7 +62,7 @@ public class BuildingManager : MonoBehaviour
     public void StartPlacement(GameObject prefab)
     {
 
-        //현재 배치 중인 물건이 있으면 제거
+        //현재 배치 중인 물건이 있으면 들고 있는 물체를 제거
         if (_activePlaceable != null && _activePlaceable.ItemState == ItemState.Preview)
         {
             Destroy(_activePlaceable.gameObject);
@@ -72,7 +74,7 @@ public class BuildingManager : MonoBehaviour
         {
             _currentSnapshot = new() { Pos = new Vector2Int(-1, -1) };
 
-            _activePlaceable.Initialize(_gridSystem); //배치할 물건 초기화
+            _activePlaceable.Initialize(_gridSystem,this); //배치할 물건 초기화
         }
         else
         {
