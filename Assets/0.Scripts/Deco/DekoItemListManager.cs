@@ -20,8 +20,8 @@ public class DecoItemListManager : MonoBehaviour
 
     [Header("페이지 카운트")]
     public RectTransform pageCountParent;   // 점들의 부모 오브젝트
-    public Color pageCountOn = Color.white;               // 현재 페이지 ●
-    public Color pageCountOff = new Color(1, 1, 1, 0.3f); // 다른 페이지 ○
+    public GameObject NowCount;   // 현재 페이지
+    public GameObject WaitCount;  // 다른 페이지
 
     [Header("페이지 설정")]
     public int slotsPerPage = 6; // 한 페이지에 보이는 최대 슬롯 수
@@ -68,7 +68,7 @@ public class DecoItemListManager : MonoBehaviour
         //     SetupInventory(IslandDecoTestData.CreateTestInventory());
         else
             SetupInventory(new List<LakeInvenSlot>()); // 없으면 빈 인벤
- 
+
     }
 
     // 인벤토리 세팅 
@@ -112,7 +112,7 @@ public class DecoItemListManager : MonoBehaviour
             slotObj.name = "ItemSlot_" + i;
 
             // DecoSlotUI 컴포넌트에서 내용 참조 
-            DecoSlotUI slotUI = slotObj.GetComponent<DecoSlotUI>(); 
+            DecoSlotUI slotUI = slotObj.GetComponent<DecoSlotUI>();
             // 슬롯 내용 채우기
             SetupSlotUI(slotUI, slotData);
 
@@ -144,7 +144,7 @@ public class DecoItemListManager : MonoBehaviour
         }
 
         // 오브젝트 이미지 
-        if (slotUI.itemButton != null) 
+        if (slotUI.itemImage != null)
         {
             Sprite sprite = null;
 
@@ -155,7 +155,7 @@ public class DecoItemListManager : MonoBehaviour
 
             if (sprite != null)
                 slotUI.itemImage.sprite = sprite;
-          
+
         }
     }
 
@@ -214,16 +214,11 @@ public class DecoItemListManager : MonoBehaviour
         // 페이지 수만큼 점 생성
         for (int i = 0; i < totalPages; i++)
         {
-            GameObject dot = new GameObject("Dot_" + i);
-            dot.transform.SetParent(pageCountParent, false);
-
-            RectTransform rt = dot.AddComponent<RectTransform>();
-            rt.sizeDelta = new Vector2(12f, 12f);
-
-            Image img = dot.AddComponent<Image>();
-            img.color = (i == currentPage) ? pageCountOn : pageCountOff;
-            img.raycastTarget = false;
-
+            // 현재 프리팹 = NowCount, 나머지 프리팹 = WaitCount
+            GameObject dot = Instantiate(
+                (i == currentPage) ? NowCount : WaitCount,
+                pageCountParent
+            );
             pageCountDots.Add(dot);
         }
     }

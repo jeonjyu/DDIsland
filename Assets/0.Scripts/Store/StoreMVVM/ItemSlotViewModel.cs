@@ -89,6 +89,12 @@ public class ItemSlotViewModel : MonoBehaviour, INotifyPropertyChanged
         ItemId = -1;
     }
 
+
+    public void SetPopupModel()
+    {
+        TradeManager.Instance.model = Model;
+    }
+
     public event PropertyChangedEventHandler PropertyChanged;
 
     protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)

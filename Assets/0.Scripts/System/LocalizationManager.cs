@@ -24,7 +24,7 @@ public class LocalizationManager : Singleton<LocalizationManager>
     {
         if(StringDataSO.StringDic.ContainsKey(key))
         {
-            return StringDataSO.StringDic[key][0];
+            return StringDataSO.StringDic[key][PlayerPrefsDataManager.Language];
         }
 
         return null;

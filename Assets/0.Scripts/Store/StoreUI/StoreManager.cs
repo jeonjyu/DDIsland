@@ -12,10 +12,13 @@ public class StoreManager : Singleton<StoreManager>
     List<Enum> category = new List<Enum>();
 
     [SerializeField] GameObject storeListPanel;
+    [SerializeField] GameObject buyAndSellPanel;
 
     List<GameObject> stores = new List<GameObject>();
 
     public StoreCat currentCat;
+
+    public GameObject BuyAndSellPanel => buyAndSellPanel;
 
     void Start() 
     {
@@ -42,4 +45,6 @@ public class StoreManager : Singleton<StoreManager>
 
         return description.Description;
     }
+
+
 }
