@@ -16,7 +16,8 @@ public class LakePlaceController : MonoBehaviour
     public GameObject objectActionPanel; 
     public Button btnRecall;  // 회수            
     public Button btnMove;    // 이동            
-
+    public Button btnCancel;  // 취소
+  
     // 내부 변수
     bool isPlacing = false; // 지금 배치 모드인지
     GameObject previewObj;  // 마우스 따라다니는 프리뷰 오브젝트
@@ -38,11 +39,12 @@ public class LakePlaceController : MonoBehaviour
         }
 
         // 액션 버튼 연결
-        if (btnRecall != null)
+        if (btnRecall != null) // 옵젝 회수
             btnRecall.onClick.AddListener(OnRecallClicked);
-
-        if (btnMove != null)
+        if (btnMove != null)  // 옵젝 이동 
             btnMove.onClick.AddListener(OnMoveClicked);
+        if (btnCancel != null) // 패널 닫기 
+            btnCancel.onClick.AddListener(HideActionPanel); 
     }
 
     void OnDestroy()
@@ -78,7 +80,13 @@ public class LakePlaceController : MonoBehaviour
 
             // 좌클릭 시 배치 시도
             if (Mouse.current.leftButton.wasPressedThisFrame)
-            {
+            {   
+                // 그리드 밖이면 클릭취소 
+                if (gridManager.IsOutOfBounds(gridPos.x, gridPos.y))
+                {
+                    CancelPlacing();
+                    return;
+                }
                 TryPlace(gridPos);
                 return; // 배치 시도 후 이번 프레임은 끝
             }
@@ -219,8 +227,12 @@ public class LakePlaceController : MonoBehaviour
         isPlacing = true;
         skipNextClick = true; 
         CreatePreviewObject();
+        
+        // 상단 버튼 클릭 막기 
+        if (editModeManager != null)
+            editModeManager.LockTopButtons(false);
     }
-
+  
     void OnItemDeselected()
     {
         CancelPlacing();
@@ -248,6 +260,10 @@ public class LakePlaceController : MonoBehaviour
             // 선택 해제
             if (itemListManager != null)
                 itemListManager.DeselectSlot();
+            
+            // 상단 버튼 복원
+            if (editModeManager != null)
+                editModeManager.LockTopButtons(true);
         }
         else
         {
@@ -268,6 +284,10 @@ public class LakePlaceController : MonoBehaviour
         // 슬롯 선택 해제
         if (itemListManager != null)
             itemListManager.DeselectSlot();
+
+        // 상단 버튼 다시 활성화
+        if (editModeManager != null)
+            editModeManager.LockTopButtons(true);
     }
 
     // 마우스 따라다니는 오브젝트 생성

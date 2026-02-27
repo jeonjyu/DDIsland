@@ -8,7 +8,7 @@ public class DecoEditModeManager : MonoBehaviour
     [Header("2D그리드 전용")]
     public RectTransform gridPanel;
     public LakeGridManager gridManager;
-    public GameObject objectActionPanel; // 배치, 취소
+    public GameObject objectActionPanel; // 회수, 이동, 취소
 
     [Header("UI 연결")]
     public Image dimBackground;
@@ -49,24 +49,20 @@ public class DecoEditModeManager : MonoBehaviour
         // 처음에는 편집 모드 OFF 상태로 세팅
         SetEditModeOff();
 
-        // 드롭다운 내부 버튼 (선택후 드롭다운 닫기)
+        // 드롭다운 내부 버튼 
         if (btnLakeDecoMode != null)
-            btnLakeDecoMode.onClick.AddListener(() => { EnterEditMode(DecoMode.Lake); HideDropdown(); });
+            btnLakeDecoMode.onClick.AddListener(OnLakeDecoClicked);
         if (btnIslandDecoMode != null)
-            btnIslandDecoMode.onClick.AddListener(() => { EnterEditMode(DecoMode.Island); HideDropdown(); });
-
-        // 버튼 연결
-        if (btnLakeDecoMode != null)
-            btnLakeDecoMode.onClick.AddListener(() => EnterEditMode(DecoMode.Lake));
-
-        if (btnIslandDecoMode != null)
-            btnIslandDecoMode.onClick.AddListener(() => EnterEditMode(DecoMode.Island));
+            btnIslandDecoMode.onClick.AddListener(OnIslandDecoClicked);
 
         if (btnSave != null)
             btnSave.onClick.AddListener(OnSave);
-
         if (btnExit != null)
             btnExit.onClick.AddListener(OnExit);
+        if (btnRecallAll != null)
+            btnRecallAll.onClick.AddListener(OnRecallAll);
+        if (btnReset != null)
+            btnReset.onClick.AddListener(OnReset);
 
         // 드롭다운 메인 버튼 
         if (btnDecoMode != null)
@@ -74,20 +70,36 @@ public class DecoEditModeManager : MonoBehaviour
         if (dropdownPanel != null)
             dropdownPanel.SetActive(false); // 초기화
     }
+    void OnLakeDecoClicked()
+    {
+        EnterEditMode(DecoMode.Lake);
+        HideDropdown();
+    }
 
+    void OnIslandDecoClicked()
+    {
+        EnterEditMode(DecoMode.Island);
+        HideDropdown();
+    }
     // 드롭다운 
     void ToggleDropdown()
     {
         if (dropdownPanel != null)
             dropdownPanel.SetActive(!dropdownPanel.activeSelf);
     }
-
     void HideDropdown()
     {
         if (dropdownPanel != null)
             dropdownPanel.SetActive(false);
     }
-
+    // 배치 모드 중 상단버튼 잠금 
+    public void LockTopButtons(bool active)
+    {
+        if (btnSave != null) btnSave.interactable = active;
+        if (btnReset != null) btnReset.interactable = active;
+        if (btnRecallAll != null) btnRecallAll.interactable = active;
+        if (btnExit != null) btnExit.interactable = active;
+    }
     // 편집 모드 토글
     public void ToggleEditMode()
     {
@@ -187,7 +199,7 @@ public class DecoEditModeManager : MonoBehaviour
         if (currentMode == DecoMode.Lake)
         {
             // 나가면 들고있는 오브젝트 정리
-            var placeController = FindObjectOfType<LakePlaceController>();
+            var placeController = FindFirstObjectByType<LakePlaceController>();
             if (placeController != null)
                 placeController.ForceCancel();
 

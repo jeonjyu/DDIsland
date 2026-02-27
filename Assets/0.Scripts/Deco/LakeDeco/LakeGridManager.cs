@@ -432,10 +432,10 @@ public class LakeGridManager : MonoBehaviour
         }
 
         // 배치된 오브젝트 보이기
-        foreach (var visual in placedVisuals.Values)
-        {
-            if (visual != null) visual.SetActive(true);
-        }
+        //foreach (var visual in placedVisuals.Values)
+        //{
+        //    if (visual != null) visual.SetActive(true);
+        //}
     }
 
     // 격자 숨기기 (편집 모드 OFF)
@@ -457,11 +457,12 @@ public class LakeGridManager : MonoBehaviour
                 img.color = new Color(0, 0, 0, 0);
             }
         }
-        // 배치된 오브젝트 숨기기 (편집 모드 아닐 땐 안 보이게)
-        foreach (var visual in placedVisuals.Values)
-        {
-            if (visual != null) visual.SetActive(false);
-        }
+        // TODO : 이 구문은 나중에 섬쪽 편집모드 들어가면 타일 안보이게 가져다 쓰면 될 듯
+        //// 배치된 오브젝트 숨기기 (편집 모드 아닐 땐 안 보이게) 
+        //foreach (var visual in placedVisuals.Values)
+        //{
+        //    if (visual != null) visual.SetActive(false);
+        //}
     }
 
     // 마우스 위치를 그리드 좌표 변환
@@ -493,7 +494,7 @@ public class LakeGridManager : MonoBehaviour
 
     // 헬퍼 함수
     // 그리드 범위 밖인지 확인
-    bool IsOutOfBounds(int x, int y)
+    public bool IsOutOfBounds(int x, int y)
     {
         if (x < 0) return true;            // 왼쪽 밖
         if (x >= gridWidth) return true;    // 오른쪽 밖
