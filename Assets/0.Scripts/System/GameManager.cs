@@ -12,9 +12,11 @@ public class GameManager : Singleton<GameManager>
 
     public void SetGold(int gold)
     {
-        if (gold < 0)
-            playerGold += playerGold > gold ? gold : 0;
-        else
-            playerGold += gold;
+        if(gold < 0 && playerGold < gold)
+        {
+            Debug.LogWarning("[GameManager] 들어온 골드가 현재 골드보다 큼");
+            return;
+        }
+        playerGold += gold;
     }
 }
