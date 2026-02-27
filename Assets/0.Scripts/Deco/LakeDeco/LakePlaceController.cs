@@ -143,9 +143,9 @@ public class LakePlaceController : MonoBehaviour
         {
             GameObject visual = gridManager.GetVisual(selectedObjectId);
             if (visual != null)
-            {
+            {    // 두트윈으로 올리기 
                 RectTransform vrt = visual.GetComponent<RectTransform>();
-                vrt.DOAnchorPosY(vrt.anchoredPosition.y + 20f, 0.2f)
+                vrt.DOAnchorPosY(vrt.anchoredPosition.y + 20f, 0.2f) 
                     .SetEase(Ease.OutBack);
             }
         }

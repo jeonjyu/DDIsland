@@ -23,6 +23,8 @@ public class DecoEditModeManager : MonoBehaviour
     public Button btnExit;      // 나가기
 
     [Header("꾸미기 버튼")]
+    public Button btnDecoMode;
+    public GameObject dropdownPanel;
     public Button btnLakeDecoMode;      // 꾸미기 모드 (편집 모드 토글) 
     public Button btnIslandDecoMode;    // 섬 꾸미기 진입
     
@@ -54,17 +56,34 @@ public class DecoEditModeManager : MonoBehaviour
         if (btnIslandDecoMode != null)
             btnIslandDecoMode.onClick.AddListener(() => EnterEditMode(DecoMode.Island));
 
-
         if (btnSave != null)
             btnSave.onClick.AddListener(OnSave);
 
         if (btnExit != null)
             btnExit.onClick.AddListener(OnExit);
-
+        // 드롭다운 내부 버튼 
         if (btnRecallAll != null)
             btnRecallAll.onClick.AddListener(OnRecallAll);
         if (btnReset != null)
             btnReset.onClick.AddListener(OnReset);
+        // 드롭다운 버튼 
+        if (btnDecoMode != null)
+            btnDecoMode.onClick.AddListener(ToggleDropdown);
+        if (dropdownPanel != null)
+            dropdownPanel.SetActive(false); // 초기화
+    }
+
+    // 드롭다운 
+    void ToggleDropdown()
+    {
+        if (dropdownPanel != null)
+            dropdownPanel.SetActive(!dropdownPanel.activeSelf);
+    }
+
+    void HideDropdown()
+    {
+        if (dropdownPanel != null)
+            dropdownPanel.SetActive(false);
     }
 
     // 편집 모드 토글
@@ -145,6 +164,9 @@ public class DecoEditModeManager : MonoBehaviour
             btnLakeDecoMode.gameObject.SetActive(false);
         if (btnIslandDecoMode != null)
             btnIslandDecoMode.gameObject.SetActive(false);
+        // 드롭다운 버튼 숨기기 
+        if (btnDecoMode != null)
+            btnDecoMode.gameObject.SetActive(false);
     }
 
     //  편집 모드 나가기
@@ -209,7 +231,8 @@ public class DecoEditModeManager : MonoBehaviour
             btnLakeDecoMode.gameObject.SetActive(true);
         if (btnIslandDecoMode != null)
             btnIslandDecoMode.gameObject.SetActive(true);
-
+        if (btnDecoMode != null)
+            btnDecoMode.gameObject.SetActive(true);
     }
 
     // 처음 시작시 off 
