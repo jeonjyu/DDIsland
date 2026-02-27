@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 /// <summary>
@@ -7,41 +8,27 @@ using UnityEngine;
 public static class PlayerPrefsDataManager
 {
     #region PlayerPrefs Key
-    public const string KEY_LANGUAGE = "Language";                  // 언어 설정 키
-    public const string KEY_BGMVOLUME = "BgmVolume";                // BGM 볼륨 키
-    public const string KEY_SFXVOLUME = "SfxVolume";                // SFX 볼륨 키
-    public const string KEY_GRAPHICQUALITY = "GraphicQuality";      // 그래픽 품질 설정 키
-    public const string KEY_RESOLUTIONWIDTH = "ResolutionWidth";    // 가로 해상도 수치 키
-    public const string KEY_RESOLUTIONHEIGHT = "ResolutionHeight";  // 세로 해상도 수치 키
-    public const string KEY_RESOLUTIONWINDOW = "ResolutionWindow";  // 세로 해상도 수치 키
-    public const string KEY_RESOLUTIONHZ = "ResolutionHz";          // 주사율
-    public const string KEY_MouseSensivity = "MouseSensitivity";    // 마우스 감도 키
+    private const string KEY_LANGUAGE = "Language";                  // 언어 설정 키
+    private const string KEY_BGMVOLUME = "BgmVolume";                // BGM 볼륨 키
+    private const string KEY_SFXVOLUME = "SfxVolume";                // SFX 볼륨 키
+    private const string KEY_GRAPHICQUALITY = "GraphicQuality";      // 그래픽 품질 설정 키
+    private const string KEY_RESOLUTIONWIDTH = "ResolutionWidth";    // 가로 해상도 수치 키
+    private const string KEY_RESOLUTIONHEIGHT = "ResolutionHeight";  // 세로 해상도 수치 키
+    private const string KEY_RESOLUTIONWINDOW = "ResolutionWindow";  // 세로 해상도 수치 키
+    private const string KEY_RESOLUTIONHZ = "ResolutionHz";          // 주사율
+    private const string KEY_MouseSensivity = "MouseSensitivity";    // 마우스 감도 키
 
-    public const string KEY_BGMVOLUME_MUTE = "BGMVolumeMute";
-    public const string KEY_SFXVOLUME_MUTE = "SFXVolumeMute";
+    private const string KEY_BGMVOLUME_MUTE = "BGMVolumeMute";
+    private const string KEY_SFXVOLUME_MUTE = "SFXVolumeMute";
     #endregion
 
-    public static string Language   // 국제 표준 언어 코드를 사용 (ex. "ko", "en")
+    public static int Language   // StringDataSO 타입과 호환
     {
-        get { return PlayerPrefs.GetString(KEY_LANGUAGE, "ko"); }
+        get { return PlayerPrefs.GetInt(KEY_LANGUAGE, 0); }
 
         set
         {
-            string language;
-
-            // 오타 위험 등을 방지하기 위해 잘못된 값이거나 지정되지 않은 경우일 경우 기본값으로 한국어 지정
-            switch (value.ToLower())
-            {
-                case "ko":
-                case "en":
-                    language = value.ToLower();
-                    break;
-                default:
-                    language = "ko";
-                    break;
-            }
-
-            PlayerPrefs.SetString(KEY_LANGUAGE, language);
+            PlayerPrefs.SetInt(KEY_LANGUAGE, value);
         }
     }
 
