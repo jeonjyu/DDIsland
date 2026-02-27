@@ -18,6 +18,8 @@ public class StoreManager : Singleton<StoreManager>
 
     public StoreCat currentCat;
 
+    [SerializeField] public StoreItem tradeModel;
+
     public GameObject BuyAndSellPanel => buyAndSellPanel;
 
     void Start() 

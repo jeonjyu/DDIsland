@@ -119,51 +119,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &105697723
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 105697725}
-  - component: {fileID: 105697724}
-  m_Layer: 0
-  m_Name: TradeManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &105697724
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 105697723}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 67ff5492d32d79c439e33bb9efd8be62, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TradeManager
-  model: {fileID: 0}
---- !u!4 &105697725
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 105697723}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &244244950
 GameObject:
   m_ObjectHideFlags: 0
@@ -210,11 +165,33 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &327053117 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5892867603599718781, guid: 76369fa9474e68845aae1d442cd586a8, type: 3}
+  m_PrefabInstance: {fileID: 1685845601283299132}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!1 &385899313 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8370458612437154502, guid: 76369fa9474e68845aae1d442cd586a8, type: 3}
   m_PrefabInstance: {fileID: 1685845601283299132}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1243830575 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 9203431393690743551, guid: 76369fa9474e68845aae1d442cd586a8, type: 3}
+  m_PrefabInstance: {fileID: 1685845601283299132}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!1 &1523866578
 GameObject:
   m_ObjectHideFlags: 0
@@ -384,6 +361,7 @@ MonoBehaviour:
   storeListPanel: {fileID: 1574743981}
   buyAndSellPanel: {fileID: 385899313}
   currentCat: 0
+  tradeModel: {fileID: 0}
 --- !u!4 &1543916710
 Transform:
   m_ObjectHideFlags: 0
@@ -747,6 +725,14 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1578737114444340009, guid: 76369fa9474e68845aae1d442cd586a8, type: 3}
+      propertyPath: itemDesc
+      value: 
+      objectReference: {fileID: 1243830575}
+    - target: {fileID: 1578737114444340009, guid: 76369fa9474e68845aae1d442cd586a8, type: 3}
+      propertyPath: itemName
+      value: 
+      objectReference: {fileID: 327053117}
     - target: {fileID: 2938351529393243525, guid: 76369fa9474e68845aae1d442cd586a8, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -1059,6 +1045,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8370458612437154502, guid: 76369fa9474e68845aae1d442cd586a8, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8666702687521919291, guid: 76369fa9474e68845aae1d442cd586a8, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -0.000045520246
@@ -1103,5 +1093,4 @@ SceneRoots:
   - {fileID: 244244952}
   - {fileID: 1543916710}
   - {fileID: 1589856231}
-  - {fileID: 105697725}
   - {fileID: 1917259254}

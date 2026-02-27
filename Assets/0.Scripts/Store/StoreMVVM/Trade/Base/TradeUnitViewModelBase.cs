@@ -18,10 +18,10 @@ public class TradeUnitViewModelBase : MonoBehaviour, INotifyPropertyChanged
 
     public StoreItem Model
     {
-        get => TradeManager.Instance.model;
+        get => StoreManager.Instance.tradeModel;
         set 
         {
-            TradeManager.Instance.model = value; 
+            StoreManager.Instance.tradeModel = value; 
             OnPropertyChanged(null); 
         }
     }
