@@ -2,21 +2,31 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 
-public abstract class TradeUnitViewModelBase : MonoBehaviour, INotifyPropertyChanged, ITradeStategy
+//[RequireComponent(typeof(TradeViewBase))]
+public class TradeUnitViewModelBase : MonoBehaviour, INotifyPropertyChanged
 {
     [SerializeField] private StoreItem model;
+    protected TradeUnitViewBase view;
+
+    [SerializeField] protected GameObject TradeConfirmPanel;
+    [SerializeField] GameObject GoldWarningPanel;
+
+
+    public ITradeStrategy purchaseStrategy;
+    public ITradeStrategy sellStrategy;
+
 
     public StoreItem Model
     {
-        get => model;
+        get => TradeManager.Instance.model;
         set 
-        { 
-            model = value; 
+        {
+            TradeManager.Instance.model = value; 
             OnPropertyChanged(null); 
         }
     }
 
-    int tradeCount;
+    protected int tradeCount = 1;
     public int TradeCount
     {
         get => tradeCount;
@@ -30,41 +40,60 @@ public abstract class TradeUnitViewModelBase : MonoBehaviour, INotifyPropertyCha
         }
     }
 
-    int totalPrice;
+    //protected int totalPrice;
 
-    public int TotalPrice
+    //public int TotalPrice
+    //{
+    //    get => totalPrice;
+    //    set
+    //    {
+    //        if (totalPrice != value)
+    //        {
+    //            totalPrice = value;
+    //            OnPropertyChanged(nameof(totalPrice));
+    //        }
+    //    }
+    //}
+
+    void Start()
     {
-        get => totalPrice;
-        set
-        {
-            if (totalPrice != value)
-            {
-                totalPrice = value;
-                OnPropertyChanged(nameof(totalPrice));
-            }
-        }
+        Debug.Log("[TradeUnitViewModelBase] Start");
+        view = GetComponent<TradeUnitViewBase>();
+        purchaseStrategy = GetComponent<PurchaseStrategy>();
+        sellStrategy = GetComponent<SellStrategy>();
     }
 
-
-    public abstract void Trade(int tradeCount);
-
-    // 판매/구매 금액 불러오는 메서드
-    public abstract int GetPrice();
+    public void ExcuteTrade(ITradeStrategy tradeStrategy)
+    {
+        if (tradeStrategy.Trade(TradeCount, Model))
+        {
+            TradeConfirmPanel.SetActive(true);
+        }
+        else
+        {
+            GoldWarningPanel.SetActive(false);
+        }
+    }
 
     // 아이템 갯수 변경
     // max를 넘거나 0 이하로 못가게 해야 한다
     public void ChangeCount(int tradeCount)
     {
-        if (TradeCount > 0 && TradeCount < model.MaxCount)
+        if (TradeCount > 0 && TradeCount < view.GetTradeStrategy().GetMaxCount(Model))
         {
             TradeCount += tradeCount;
+            return;
+        }
+        else
+        {
+            Debug.LogWarning("[TradeUnitViewModelBase] 아이템 갯수가 범위를 벗어남");
+            return;
         }
     }
 
-    // 구매 후 보유 여부가 변경되어야 할 경우 변경
-    public virtual void ChangeIsGained(bool isGained)
+    public void SetTotalPrice()
     {
-        Model.IsGained = isGained;
+        view.SetTotalPriceText(TradeCount * view.GetTradeStrategy().GetPrice(Model));
     }
 
     public event PropertyChangedEventHandler PropertyChanged;
