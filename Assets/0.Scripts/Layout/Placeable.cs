@@ -17,6 +17,8 @@ public abstract class Placeable : MonoBehaviour
 
     protected ItemState _itemState = ItemState.Preview;
 
+    protected Vector2Int _pivot;
+
     public ItemState ItemState
     {
         get => _itemState;

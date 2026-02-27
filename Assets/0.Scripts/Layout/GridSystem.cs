@@ -1,4 +1,6 @@
+using System;
 using UnityEngine;
+using static UnityEditor.Progress;
 /// <summary>
 /// 그리드 시스템을 관리하는 클래스
 /// </summary>
@@ -17,10 +19,13 @@ public class GridSystem : MonoBehaviour
     private Placeable[,] _grid; //셀의 상태를 나타내는 2차원 배열, 0은 빈 셀, 1은 채워진 셀
 
     private float _cellSize; //셀의 실제 크기
+    private bool _rotation = false;
 
     #region 프로퍼티
     public int Width => _width;   
     public int Height => _height;
+    public float CellSize => _cellSize;
+    public bool Rotaion => _rotation;
     #endregion
 
     private void Awake()
@@ -37,7 +42,6 @@ public class GridSystem : MonoBehaviour
             filterMode = FilterMode.Point,
             wrapMode = TextureWrapMode.Clamp
         };
-
         ApplyGridToShader();
     }
     public void SetGridActive(bool isActive)
@@ -57,54 +61,82 @@ public class GridSystem : MonoBehaviour
         }
     }
     // 해당 오브젝트가 그리드에 배치 될 수 있는지 확인하는 메서드
-    public bool IsCellEmpty(int startX, int startY, int itemWidth, int itemHeight, Placeable self) 
+    public bool IsCellEmpty(int startX, int startY, int itemWidth, int itemHeight, Placeable self)
     {
-        if (startX < 0 || startY < 0 || startX + itemWidth > _width || startY + itemHeight > _height)
+
+        int minX = Math.Min(startX, startX + itemWidth);
+        int maxX = Math.Max(startX, startX + itemWidth);
+        int minY = Math.Min(startY, startY + itemHeight);
+        int maxY = Math.Max(startY, startY + itemHeight);
+
+        if (minX < 0 || minY < 0 || maxX > _width || maxY > _height)
         {
+            Debug.LogError("그리드 범위를 벗어났습니다");
             return false;
         }
-        for (int i = 0; i < itemWidth; i++)
+       
+        // 음수쪽 경계 처리하기
+        // 양수쪽 확장 처리
+        for (int i = minX; i < maxX; i++)
         {
-            for (int j = 0; j < itemHeight; j++)
+            for (int j = minY; j < maxY; j++)
             {
-                int checkX = startX + i;
-                int checkY = startY + j;
-
-                if (_grid[checkX, checkY] != null && _grid[checkX, checkY] != self)
+                if (_grid[i, j] != null && _grid[i, j] != self)
                 {
                     return false;
                 }
             }
         }
+        // 음수쪽 확장 처리
         return true;
     }
     // 그리드에 오브젝트를 배치하는 메서드
     public void PlaceItem(int startX, int startY, int itemWidth, int itemHeight, Placeable item)
     {
-        if (startX < 0 || startY < 0 || startX + itemWidth > _width || startY + itemHeight > _height)
+
+        // 각 시작점의 최소, 최대 거리
+        int minX = Math.Min(startX, startX + itemWidth);
+        int maxX = Math.Max(startX, startX + itemWidth);
+        int minY = Math.Min(startY, startY + itemHeight);
+        int maxY = Math.Max(startY, startY + itemHeight);
+        
+        if (minX < 0 || minY < 0 || maxX > _width || maxY > _height)
         {
+            Debug.LogError("그리드 범위를 벗어나 배치할 수 없습니다.");
             return;
         }
-        for (int i = 0; i < itemWidth; i++)
+
+        // 둘다 양수일 때 하나만 음수일 때(세로 음수, 가로 음수) 둘다 음수일 때
+        for (int i = minX; i < maxX; i++)
         {
-            for (int j = 0; j < itemHeight; j++)
+            for (int j = minY; j < maxY; j++)
             {
-                _grid[startX + i, startY + j] = item; // 해당 셀이 채워졌음을 나타냄
+                _grid[i, j] = item;
             }
         }
+
         UpdateGridTexture();
     }
     public void RemoveItem(int startX, int startY, int itemWidth, int itemHeight)
     {
-        if (startX < 0 || startY < 0 || startX + itemWidth > _width || startY + itemHeight > _height)
+        // 각 시작점의 최소, 최대 거리
+        int minX = Math.Min(startX, startX + itemWidth);
+        int maxX = Math.Max(startX, startX + itemWidth);
+        int minY = Math.Min(startY, startY + itemHeight);
+        int maxY = Math.Max(startY, startY + itemHeight);
+
+        if (minX < 0 || minY < 0 || maxX > _width || maxY > _height)
         {
+            Debug.LogError("그리드 범위를 벗어났습니다");
             return;
         }
-        for (int i = 0; i < itemWidth; i++)
+
+        // 둘다 양수일 때 하나만 음수일 때(세로 음수, 가로 음수) 둘다 음수일 때
+        for (int i = minX; i < maxX; i++)
         {
-            for (int j = 0; j < itemHeight; j++)
+            for (int j = minY; j < maxY; j++)
             {
-                _grid[startX + i, startY + j] = null; // 해당 셀을 비움
+                _grid[i, j] = null;
             }
         }
         UpdateGridTexture();
@@ -134,6 +166,7 @@ public class GridSystem : MonoBehaviour
         float halfWidth = (_width * _cellSize) * 0.5f;
         float halfHeight = (_height * _cellSize) * 0.5f;
         Vector3 origin = _cell.position - new Vector3(halfWidth, 0, halfHeight);
+
         // 셀의 좌표를 실제 월드 좌표로 전환
 
         float centerX = x + (sizeX * 0.5f);
@@ -164,8 +197,9 @@ public class GridSystem : MonoBehaviour
         {
             for (int y = 0; y < _height; y++)
             {
-                Color color = _grid[x, y] != null ? Color.red : new Color(0, 0, 0, 0); //하나하나 전부 색을 바꿔주는 방식, 추후 개선 할 수 있으면 개선 필요
+                Color color = _grid[x, y] != null ? Color.red : Color.clear; //하나하나 전부 색을 바꿔주는 방식, 추후 개선 할 수 있으면 개선 필요
                 _gridDataTexture.SetPixel(x, y, color); // 1인 경우 빨간색, 0인 경우 투명색으로 설정
+                //new Color(0, 0, 0, 0)
             }
         }
         // 텍스쳐 업데이트
@@ -177,6 +211,6 @@ public class GridSystem : MonoBehaviour
     {
         if (_gridRenderer == null) return;
         _gridRenderer.material.SetFloat("_IsBuilding", 0f); //만약 건물을 배치하는 중이 아니라면 셰이더에서 색 제거
-        _gridRenderer.material.SetVector("_Hoverinfo", new Vector4(-10, -10, 0, 0)); // 좌표 초기화
+        _gridRenderer.material.SetVector("_Hoverinfo", new Vector4(-100, -100, 0, 0)); // 좌표 초기화
     }
 }

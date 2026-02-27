@@ -144,7 +144,7 @@ public class PlacementMgr : MonoBehaviour
         }
         _selectedTarget = null;
     }
-    public void OnClickMove() // '이동' 버튼에 연결
+    public void OnClickMove() // 이동 버튼에 연결
     {
         if (_selectedTarget == null) return;
 
@@ -152,17 +152,20 @@ public class PlacementMgr : MonoBehaviour
 
         CloseEditMenu();
     }
-    public void OnClickRotate() // '회전' 버튼에 연결
+    public void OnClickRotate() // 회전 버튼에 연결
     {
         if (_selectedTarget == null) return;
 
         _selectedTarget.ObjectRotate();
+        //여기서 회전이 안됐다고 하면
+        //PickUp을 불러오기
     }
-    public void OnClickDelete() // '삭제' 버튼에 연결
+    public void OnClickDelete() // 삭제 버튼에 연결
     {
         if (_selectedTarget == null) return;
 
         _buildingManager.DeleteBuilding(_selectedTarget);
+
 
         CloseEditMenu();
     }
