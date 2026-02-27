@@ -68,7 +68,7 @@ public class DecoItemListManager : MonoBehaviour
         //     SetupInventory(IslandDecoTestData.CreateTestInventory());
         else
             SetupInventory(new List<LakeInvenSlot>()); // 없으면 빈 인벤
- 
+
     }
 
     // 인벤토리 세팅 
@@ -112,7 +112,7 @@ public class DecoItemListManager : MonoBehaviour
             slotObj.name = "ItemSlot_" + i;
 
             // DecoSlotUI 컴포넌트에서 내용 참조 
-            DecoSlotUI slotUI = slotObj.GetComponent<DecoSlotUI>(); 
+            DecoSlotUI slotUI = slotObj.GetComponent<DecoSlotUI>();
             // 슬롯 내용 채우기
             SetupSlotUI(slotUI, slotData);
 
@@ -144,7 +144,7 @@ public class DecoItemListManager : MonoBehaviour
         }
 
         // 오브젝트 이미지 
-        if (slotUI.itemButton != null) 
+        if (slotUI.itemButton != null)
         {
             Sprite sprite = null;
 
@@ -155,7 +155,7 @@ public class DecoItemListManager : MonoBehaviour
 
             if (sprite != null)
                 slotUI.itemImage.sprite = sprite;
-          
+
         }
     }
 

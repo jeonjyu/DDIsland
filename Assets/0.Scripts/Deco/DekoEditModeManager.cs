@@ -12,8 +12,8 @@ public class DecoEditModeManager : MonoBehaviour
 
     [Header("UI 연결")]
     public Image dimBackground;
-    public RectTransform topButtonPanel; 
-    public RectTransform bottomPanel; 
+    public RectTransform topButtonPanel;
+    public RectTransform bottomPanel;
     public DecoItemListManager itemListManager;  // 하단에 인벤 (호수/섬 공용)
 
     [Header("상단 버튼")]
@@ -27,7 +27,7 @@ public class DecoEditModeManager : MonoBehaviour
     public GameObject dropdownPanel;
     public Button btnLakeDecoMode;      // 꾸미기 모드 (편집 모드 토글) 
     public Button btnIslandDecoMode;    // 섬 꾸미기 진입
-    
+
     [Header("하단 인벤")]
     public float animTime = 0.3f;           // 애니메이션 시간
     public float bottomPanelHeight = 240f;  // 인벤 패널 높이
@@ -49,6 +49,12 @@ public class DecoEditModeManager : MonoBehaviour
         // 처음에는 편집 모드 OFF 상태로 세팅
         SetEditModeOff();
 
+        // 드롭다운 내부 버튼 (선택후 드롭다운 닫기)
+        if (btnLakeDecoMode != null)
+            btnLakeDecoMode.onClick.AddListener(() => { EnterEditMode(DecoMode.Lake); HideDropdown(); });
+        if (btnIslandDecoMode != null)
+            btnIslandDecoMode.onClick.AddListener(() => { EnterEditMode(DecoMode.Island); HideDropdown(); });
+
         // 버튼 연결
         if (btnLakeDecoMode != null)
             btnLakeDecoMode.onClick.AddListener(() => EnterEditMode(DecoMode.Lake));
@@ -61,12 +67,8 @@ public class DecoEditModeManager : MonoBehaviour
 
         if (btnExit != null)
             btnExit.onClick.AddListener(OnExit);
-        // 드롭다운 내부 버튼 
-        if (btnRecallAll != null)
-            btnRecallAll.onClick.AddListener(OnRecallAll);
-        if (btnReset != null)
-            btnReset.onClick.AddListener(OnReset);
-        // 드롭다운 버튼 
+
+        // 드롭다운 메인 버튼 
         if (btnDecoMode != null)
             btnDecoMode.onClick.AddListener(ToggleDropdown);
         if (dropdownPanel != null)
@@ -116,7 +118,7 @@ public class DecoEditModeManager : MonoBehaviour
                 gridPanel.gameObject.SetActive(true);
             if (gridManager != null)
                 gridManager.ShowGrid(2f);  // 이미지에 격자가 있는게 아니라, 중간중간 띄워서 백그라운드가 보이게 하는 방식
-          
+
             // 그리드 타일 위로 밀기
             if (gridPanel != null)
             {
@@ -247,11 +249,11 @@ public class DecoEditModeManager : MonoBehaviour
             dimBackground.gameObject.SetActive(false);
         }
         // 하단 패널 숨기기
-        if (bottomPanel != null) 
+        if (bottomPanel != null)
             bottomPanel.gameObject.SetActive(false);
 
         // 상단 버튼 숨기기
-        if (topButtonPanel != null) 
+        if (topButtonPanel != null)
             topButtonPanel.gameObject.SetActive(false);
 
         // 오브젝트 액션 패널 숨기기 (배치, 취소)
@@ -282,7 +284,7 @@ public class DecoEditModeManager : MonoBehaviour
 
     void OnExit() // 나가기 
     {
-       ExitEditMode();
+        ExitEditMode();
     }
 
 
