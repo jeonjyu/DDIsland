@@ -7,7 +7,7 @@ using UnityEngine.Rendering.Universal;
 /// </summary>
 public class Placeable3D : Placeable
 {
-
+    // todo: 아무것도 안하기
     [SerializeField] private LayerMask _groundLayer;
     [SerializeField] private float _rotationStep = 90f; // 한 번 누를 때 회전할 각도 
     [SerializeField] private GameObject _editMenuUI; // 현재 선택된 건물의 편집 UI
@@ -92,7 +92,7 @@ public class Placeable3D : Placeable
         {
             _isRotated = originalRotated;
 
-            // [복구] 원래 있던 자리에 다시 나를 채워넣음 (Placed 상태였다면)
+            // 원래 있던 자리에 다시 나를 채워넣음
             if (ItemState == ItemState.Placed)
             {
                 _targetGrid.PlaceItem(_lastPlacedIndex.x, _lastPlacedIndex.y, _lastPlacedSize.x, _lastPlacedSize.y, this);
@@ -217,28 +217,7 @@ public class Placeable3D : Placeable
         _targetGrid.UpdateShaderHover(index, size, placeAble);
 
     }
-    //회전된 상태에서의 사이즈 계산
-    //private Vector2Int GetRotatedSize()
-    //{
-
-    //    switch (_isRotated)
-    //    {
-    //        case 0:
-    //            return new Vector2Int(_sizeX, _sizeY);
-
-    //        case 1:
-    //            return new Vector2Int(-_sizeY, _sizeX);
-
-    //        case 2:
-    //            return new Vector2Int(-_sizeX, -_sizeY);
-
-    //        case 3:
-    //            return new Vector2Int(_sizeY, -_sizeX);
-
-    //        default:
-    //            return new Vector2Int(_sizeX, _sizeY);
-    //    }
-    //}
+    
     private Vector2Int GetRotatedSize()
     {
         return (_isRotated % 2 == 1) ? new Vector2Int(_sizeY, _sizeX) : new Vector2Int(_sizeX, _sizeY);
@@ -265,8 +244,6 @@ public class Placeable3D : Placeable
 
             //계속해서 밑에 그리드는 색칠해주고
             VisualFeedback();
-
-            Debug.Log($"현재 칸 좌표: {_cachedIndex}");
         }
         else
         {
