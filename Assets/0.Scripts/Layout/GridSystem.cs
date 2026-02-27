@@ -1,6 +1,5 @@
 using System;
 using UnityEngine;
-using static UnityEditor.Progress;
 /// <summary>
 /// 그리드 시스템을 관리하는 클래스
 /// </summary>
