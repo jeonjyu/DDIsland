@@ -74,7 +74,7 @@ public class BuildingManager : MonoBehaviour
         {
             _currentSnapshot = new() { Pos = new Vector2Int(-1, -1) };
 
-            _activePlaceable.Initialize(_gridSystem); //배치할 물건 초기화
+            _activePlaceable.Initialize(_gridSystem,this); //배치할 물건 초기화
         }
         else
         {

@@ -1,4 +1,6 @@
+using System;
 using UnityEngine;
+using static UnityEditor.Progress;
 /// <summary>
 /// 그리드 시스템을 관리하는 클래스
 /// </summary>
@@ -17,11 +19,13 @@ public class GridSystem : MonoBehaviour
     private Placeable[,] _grid; //셀의 상태를 나타내는 2차원 배열, 0은 빈 셀, 1은 채워진 셀
 
     private float _cellSize; //셀의 실제 크기
+    private bool _rotation = false;
 
     #region 프로퍼티
     public int Width => _width;   
     public int Height => _height;
     public float CellSize => _cellSize;
+    public bool Rotaion => _rotation;
     #endregion
 
     private void Awake()
@@ -57,54 +61,82 @@ public class GridSystem : MonoBehaviour
         }
     }
     // 해당 오브젝트가 그리드에 배치 될 수 있는지 확인하는 메서드
-    public bool IsCellEmpty(int startX, int startY, int itemWidth, int itemHeight, Placeable self) 
+    public bool IsCellEmpty(int startX, int startY, int itemWidth, int itemHeight, Placeable self)
     {
-        if (startX < 0 || startY < 0 || startX + itemWidth > _width || startY + itemHeight > _height)
+
+        int minX = Math.Min(startX, startX + itemWidth);
+        int maxX = Math.Max(startX, startX + itemWidth);
+        int minY = Math.Min(startY, startY + itemHeight);
+        int maxY = Math.Max(startY, startY + itemHeight);
+
+        if (minX < 0 || minY < 0 || maxX > _width || maxY > _height)
         {
+            Debug.LogError("그리드 범위를 벗어났습니다");
             return false;
         }
-        for (int i = 0; i < itemWidth; i++)
+       
+        // 음수쪽 경계 처리하기
+        // 양수쪽 확장 처리
+        for (int i = minX; i < maxX; i++)
         {
-            for (int j = 0; j < itemHeight; j++)
+            for (int j = minY; j < maxY; j++)
             {
-                int checkX = startX + i;
-                int checkY = startY + j;
-
-                if (_grid[checkX, checkY] != null && _grid[checkX, checkY] != self)
+                if (_grid[i, j] != null && _grid[i, j] != self)
                 {
                     return false;
                 }
             }
         }
+        // 음수쪽 확장 처리
         return true;
     }
     // 그리드에 오브젝트를 배치하는 메서드
     public void PlaceItem(int startX, int startY, int itemWidth, int itemHeight, Placeable item)
     {
-        if (startX < 0 || startY < 0 || startX + itemWidth > _width || startY + itemHeight > _height)
+
+        // 각 시작점의 최소, 최대 거리
+        int minX = Math.Min(startX, startX + itemWidth);
+        int maxX = Math.Max(startX, startX + itemWidth);
+        int minY = Math.Min(startY, startY + itemHeight);
+        int maxY = Math.Max(startY, startY + itemHeight);
+        
+        if (minX < 0 || minY < 0 || maxX > _width || maxY > _height)
         {
+            Debug.LogError("그리드 범위를 벗어나 배치할 수 없습니다.");
             return;
         }
-        for (int i = 0; i < itemWidth; i++)
+
+        // 둘다 양수일 때 하나만 음수일 때(세로 음수, 가로 음수) 둘다 음수일 때
+        for (int i = minX; i < maxX; i++)
         {
-            for (int j = 0; j < itemHeight; j++)
+            for (int j = minY; j < maxY; j++)
             {
-                _grid[startX + i, startY + j] = item; // 해당 셀이 채워졌음을 나타냄
+                _grid[i, j] = item;
             }
         }
+
         UpdateGridTexture();
     }
     public void RemoveItem(int startX, int startY, int itemWidth, int itemHeight)
     {
-        if (startX < 0 || startY < 0 || startX + itemWidth > _width || startY + itemHeight > _height)
+        // 각 시작점의 최소, 최대 거리
+        int minX = Math.Min(startX, startX + itemWidth);
+        int maxX = Math.Max(startX, startX + itemWidth);
+        int minY = Math.Min(startY, startY + itemHeight);
+        int maxY = Math.Max(startY, startY + itemHeight);
+
+        if (minX < 0 || minY < 0 || maxX > _width || maxY > _height)
         {
+            Debug.LogError("그리드 범위를 벗어났습니다");
             return;
         }
-        for (int i = 0; i < itemWidth; i++)
+
+        // 둘다 양수일 때 하나만 음수일 때(세로 음수, 가로 음수) 둘다 음수일 때
+        for (int i = minX; i < maxX; i++)
         {
-            for (int j = 0; j < itemHeight; j++)
+            for (int j = minY; j < maxY; j++)
             {
-                _grid[startX + i, startY + j] = null; // 해당 셀을 비움
+                _grid[i, j] = null;
             }
         }
         UpdateGridTexture();

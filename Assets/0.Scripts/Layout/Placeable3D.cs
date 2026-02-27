@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering.Universal;
 
 /// <summary>
 /// 3D 오브젝트의 배치 기능을 구현하는 클래스
@@ -10,6 +11,7 @@ public class Placeable3D : Placeable
     [SerializeField] private LayerMask _groundLayer;
     [SerializeField] private float _rotationStep = 90f; // 한 번 누를 때 회전할 각도 
     [SerializeField] private GameObject _editMenuUI; // 현재 선택된 건물의 편집 UI
+    private BuildingManager _build;
 
     Camera _mainCamera;
     MeshRenderer _selectedRenderer;
@@ -40,8 +42,9 @@ public class Placeable3D : Placeable
     public bool IsPlaced => _isPlaced;
     #endregion
 
-    public void Initialize(GridSystem grid)
+    public void Initialize(GridSystem grid, BuildingManager build)
     {
+        _build = build;
         _targetGrid = grid;
         _mainCamera = Camera.main;
         _selectedRenderer = GetComponentInChildren<MeshRenderer>();
@@ -61,28 +64,53 @@ public class Placeable3D : Placeable
         }
     }
 
-        //일단 회전 로직부터 제대로 잡고가야해서 의사코드로 작성
+    //일단 회전 로직부터 제대로 잡고가야해서 의사코드로 작성
 
-        //여기서 미래에 회전할 부분을 탐색하여 변수로 저장
-        //그 회전 값 사이즈를 계산해서 어떻게 될지 bool값으로 IscellEmpty를 받아옴
+    //여기서 미래에 회전할 부분을 탐색하여 변수로 저장
+    //그 회전 값 사이즈를 계산해서 어떻게 될지 bool값으로 IscellEmpty를 받아옴
 
-        //만약 잘 들어가면 그냥 밑으로 진행하면 되고
-        //만약 안되면 이동모드로 강제 전환 시키기
+    //만약 잘 들어가면 그냥 밑으로 진행하면 되고
+    //만약 안되면 이동모드로 강제 전환 시키기
     public void ObjectRotate()
     {
-
         if (ItemState == ItemState.Placed)
         {
             _targetGrid.RemoveItem(_lastPlacedIndex.x, _lastPlacedIndex.y, _lastPlacedSize.x, _lastPlacedSize.y);
         }
 
+        Vector2Int currentPivotCell = _cachedIndex + GetRotatedPivot();
 
-        _isRotated = (_isRotated + 1) % 4;
-        _currentYRotation = _isRotated * _rotationStep;
+        int next = (_isRotated + 1) % 4;
+        int originalRotated = _isRotated;
+
+        _isRotated = next;
         Vector2Int newSize = GetRotatedSize();
+        Vector2Int newIndex = currentPivotCell - GetRotatedPivot();
 
+        bool canRotate = _targetGrid.IsCellEmpty(newIndex.x, newIndex.y, newSize.x, newSize.y, this);
+        if (!canRotate)
+        {
+            _isRotated = originalRotated;
 
-        if (ItemState == ItemState.Placed) _cachedIndex = _lastPlacedIndex;
+            // [복구] 원래 있던 자리에 다시 나를 채워넣음 (Placed 상태였다면)
+            if (ItemState == ItemState.Placed)
+            {
+                _targetGrid.PlaceItem(_lastPlacedIndex.x, _lastPlacedIndex.y, _lastPlacedSize.x, _lastPlacedSize.y, this);
+            }
+            Debug.Log("공간 부족! 건물을 들어올립니다.");
+            _build.PickUpBuilding(this);
+            return;
+        }
+
+        _currentYRotation = _isRotated * _rotationStep;
+        _cachedIndex = newIndex;
+
+        if (ItemState == ItemState.Placed)
+        {
+            _lastPlacedIndex = _cachedIndex;
+            _lastPlacedSize = newSize;
+        }
+
 
         Vector3 snapPos = _targetGrid.GetWorldPosition(_cachedIndex.x, _cachedIndex.y, newSize.x, newSize.y);
         transform.SetPositionAndRotation(snapPos, Quaternion.Euler(0, _currentYRotation, 0));
@@ -90,9 +118,7 @@ public class Placeable3D : Placeable
         if (ItemState == ItemState.Placed)
         {
             _targetGrid.PlaceItem(_cachedIndex.x, _cachedIndex.y, newSize.x, newSize.y, this);
-            _lastPlacedSize = newSize;
         }
-
         VisualFeedback();
     }
     // 마우스 위치를 그리드 좌표로 변환
@@ -104,12 +130,12 @@ public class Placeable3D : Placeable
         {
             // 레이캐스트가 그라운드에 닿았을 때, 해당 위치를 그리드 좌표로 변환
             Vector2Int mouseIndex = _targetGrid.GetGridIndex(hit.point);
-
-            Vector2Int size = GetRotatedSize(); // 사이즈 계산
+            Vector2Int rotatedPivot = GetRotatedPivot();
+            Vector2Int size = GetRotatedSize();
 
             // 아이템의 중심이 마우스 위치에 오도록 시작 좌표 계산
-            int startX = Mathf.RoundToInt(mouseIndex.x - (size.x - 1) * 0.5f);
-            int startY = Mathf.RoundToInt(mouseIndex.y - (size.y - 1) * 0.5f);
+            int startX = mouseIndex.x - rotatedPivot.x;
+            int startY = mouseIndex.y - rotatedPivot.y;
 
             // 그리드 범위를 벗어나지 않도록 좌표 조정
             return new Vector2Int(
@@ -119,6 +145,21 @@ public class Placeable3D : Placeable
         }
 
         return new Vector2Int(-1, -1);
+    }
+    private Vector2Int GetRotatedPivot()
+    {
+        int px = (_sizeX - 1) / 2;
+        int py = (_sizeY - 1) / 2;
+
+        // 시계 방향 90도 회전 기준 (사용자님의 GetRotatedSize 로직과 맞춤)
+        switch (_isRotated)
+        {
+            case 0: return new Vector2Int(px, py);                                 // 0도
+            case 1: return new Vector2Int(py, (_sizeX - 1) - px);                // 90도
+            case 2: return new Vector2Int((_sizeX - 1) - px, (_sizeY - 1) - py); // 180도
+            case 3: return new Vector2Int((_sizeY - 1) - py, px);                // 270도
+            default: return _pivot;
+        }
     }
 
     // 아이템을 그리드에 배치
@@ -177,35 +218,52 @@ public class Placeable3D : Placeable
 
     }
     //회전된 상태에서의 사이즈 계산
+    //private Vector2Int GetRotatedSize()
+    //{
+
+    //    switch (_isRotated)
+    //    {
+    //        case 0:
+    //            return new Vector2Int(_sizeX, _sizeY);
+
+    //        case 1:
+    //            return new Vector2Int(-_sizeY, _sizeX);
+
+    //        case 2:
+    //            return new Vector2Int(-_sizeX, -_sizeY);
+
+    //        case 3:
+    //            return new Vector2Int(_sizeY, -_sizeX);
+
+    //        default:
+    //            return new Vector2Int(_sizeX, _sizeY);
+    //    }
+    //}
     private Vector2Int GetRotatedSize()
     {
-        bool isOddRotation = (_isRotated % 2 != 0);
-
-        if (isOddRotation)
-        {
-            return new Vector2Int(_sizeY, _sizeX);
-        }
-        else
-        {
-            return new Vector2Int(_sizeX, _sizeY);
-        }
+        return (_isRotated % 2 == 1) ? new Vector2Int(_sizeY, _sizeX) : new Vector2Int(_sizeX, _sizeY);
     }
+
     private void Update()
     {
         if (ItemState == ItemState.Placed) return;
 
         if (_mainCamera == null || _targetGrid == null) return;
 
-
+        // 마우스 좌표 따오는거
         _cachedIndex = ConvertedIndex();
+        // 회전 사이즈 계산하는거
         Vector2Int size = GetRotatedSize();
 
+        // 만약 마우스에 좌표가 있다면
         if (_cachedIndex.x != -1)
         {
             Vector3 snapPos = _targetGrid.GetWorldPosition(_cachedIndex.x, _cachedIndex.y, size.x, size.y);
 
+            //위에서 좌표를 계산해서 거기다가 따라감
             transform.SetPositionAndRotation(snapPos, Quaternion.Euler(0, _currentYRotation, 0));
 
+            //계속해서 밑에 그리드는 색칠해주고
             VisualFeedback();
 
             Debug.Log($"현재 칸 좌표: {_cachedIndex}");
