@@ -35,7 +35,7 @@ public class TradeUnitViewModelBase : MonoBehaviour, INotifyPropertyChanged
             if (tradeCount != value) 
             { 
                 tradeCount = value; 
-                OnPropertyChanged(null); 
+                OnPropertyChanged(nameof(TradeCount)); 
             }
         }
     }
@@ -55,12 +55,24 @@ public class TradeUnitViewModelBase : MonoBehaviour, INotifyPropertyChanged
     //    }
     //}
 
-    void Start()
+    void Awake()
     {
-        Debug.Log("[TradeUnitViewModelBase] Start");
+        //Debug.Log("[TradeUnitViewModelBase] Awake");
         view = GetComponent<TradeUnitViewBase>();
         purchaseStrategy = GetComponent<PurchaseStrategy>();
         sellStrategy = GetComponent<SellStrategy>();
+    }
+
+    private void OnEnable()
+    {
+        InitUnit();
+    }
+
+    // 팝업 껐다 켰다, 거래완료 팝업 끝나고 호출
+    public void InitUnit()
+    {
+        TradeCount = 1;
+        view.SetItemCount(1);
     }
 
     public void ExcuteTrade(ITradeStrategy tradeStrategy)
@@ -73,20 +85,30 @@ public class TradeUnitViewModelBase : MonoBehaviour, INotifyPropertyChanged
         {
             GoldWarningPanel.SetActive(false);
         }
+        // todo: 구매 완료/골드 부족 팝업 닫기 이후 실행하도록 이동
+        InitUnit(); 
     }
 
     // 아이템 갯수 변경
     // max를 넘거나 0 이하로 못가게 해야 한다
     public void ChangeCount(int tradeCount)
     {
-        if (TradeCount > 0 && TradeCount < view.GetTradeStrategy().GetMaxCount(Model))
+        if (tradeCount > 0 && tradeCount < view.GetTradeStrategy().GetMaxCount(Model))
         {
             TradeCount += tradeCount;
             return;
         }
-        else
+        else if (TradeCount < 1)
         {
-            Debug.LogWarning("[TradeUnitViewModelBase] 아이템 갯수가 범위를 벗어남");
+            Debug.LogWarning("[TradeUnitViewModelBase] 아이템 최소 범위 미만");
+            TradeCount = 1;
+            return;
+        }
+        else // 최대를 넘어가는 경우
+        {
+            Debug.LogWarning("[TradeUnitViewModelBase] 아이템 최대 범위 초과");
+            TradeCount = view.GetTradeStrategy().GetMaxCount(Model);
+            //TradeCount = tradeCount;
             return;
         }
     }
