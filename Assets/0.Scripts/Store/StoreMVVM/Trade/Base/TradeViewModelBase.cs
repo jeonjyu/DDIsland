@@ -48,12 +48,6 @@ public class TradeViewModelBase : MonoBehaviour, INotifyPropertyChanged
     void Start()
     {
         view = GetComponent<TradeViewBase>();
-        Init(TradeManager.Instance.model);
-    }
-
-    public void OnEnable()
-    {
-        Init(TradeManager.Instance.model);
     }
 
     public void Init(StoreItem model)

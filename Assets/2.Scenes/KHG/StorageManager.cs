@@ -1,63 +1,124 @@
 using System;
-using System.Collections.Generic;
-using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
+/*
+ * 주말 팀원들을 위한 설명서
+ * StorageManager (창고 데이터 관리자)
+ *
+ * 역할
+ * - FishStackSlot?[] 배열로 슬롯 기반 창고를 관리한다.
+ * - 같은 물고기(FishId)는 한 슬롯에 스택(Count)으로 쌓는다.
+ * - 추가/삭제 시 OnSlotChanged(index) 이벤트로 UI에게 알려준다.
+ *
+ * 포인트
+ * - FishSlots[i] == null 이면 빈 슬롯
+ * - TryAddToStorage:
+ *   1) 같은 FishId 슬롯 있으면 count++ / maxPrice 갱신 / lastAcquired 갱신
+ *   2) 없으면 빈 슬롯 찾아 새로 생성
+ * - TryRemoveAt:
+ *   count--, 0이 되면 슬롯 비우기(null)
+ */
+public struct FishInstance
+{
+    public int FishId;
+    public float Length;
+    public int Price;
+}
+
+public struct FishStackSlot
+{
+    public int FishId;
+    public int Count;
+    public long LastAcquiredOrder;
+    public int MaxPrice;
+}
 
 public class StorageManager : Singleton<StorageManager>
 {
-    FishInstance?[] fishSlots;  //현재는 물고기만 요리는 상정아직 안함
-    [SerializeField] int storageCapacity = 20;  //창고 업글하면 이거 늘리면돰 현재는 물고기만 다룸
+    FishStackSlot?[] FishSlots;
 
+    [SerializeField] int _storageCapacity = 20;  //인벤크기
+    long _acquireCounter = 0;
 
-    public event Action<int> OnSlotChanged;
+    public event Action<int> OnSlotChanged; // 특정 슬롯이 바뀌었음을 알림(UI는 보통 RefreshAll)
 
-
-    public int Capacity => fishSlots?.Length ?? 0;
+    public int Capacity => FishSlots?.Length ?? 0;
 
     private void Awake()
     {
         base.Awake();
-        fishSlots = new FishInstance?[storageCapacity];
+        FishSlots = new FishStackSlot?[_storageCapacity];
     }
 
-    private void Start()
+    public bool TryAddToStorage(FishInstance fish)
     {
+        if (FishSlots == null || FishSlots.Length == 0)
+            return false;
 
-    }
-    public bool TryAddToStorage(FishInstance fish)  //첫 빈칸에 넣기
-    {
-        if (fishSlots == null || fishSlots.Length == 0) return false;
-
-        for (int i = 0; i < fishSlots.Length; i++)
+        // 1 같은 FishId 있으면 스택 증가
+        for (int i = 0; i < FishSlots.Length; i++) 
         {
-            if (!fishSlots[i].HasValue)
+            if (FishSlots[i].HasValue && FishSlots[i].Value.FishId == fish.FishId)
             {
-                fishSlots[i] = fish;
+                var slot = FishSlots[i].Value;
+
+                slot.Count += 1;
+                //slot.lastLength = fish.length;
+                slot.MaxPrice = Mathf.Max(slot.MaxPrice, fish.Price);
+                slot.LastAcquiredOrder = ++_acquireCounter;
+
+                FishSlots[i] = slot;
                 OnSlotChanged?.Invoke(i);
                 return true;
             }
         }
+        // 2 빈 슬롯에 새로 추가
+        for (int i = 0; i < FishSlots.Length; i++)
+        {
+            if (!FishSlots[i].HasValue)
+            {
+                FishSlots[i] = new FishStackSlot
+                {
+                    FishId = fish.FishId,
+                    Count = 1,
+                    MaxPrice = fish.Price,
+                    LastAcquiredOrder = ++_acquireCounter,
+                };
+
+                OnSlotChanged?.Invoke(i);
+                return true;
+            }
+        }
+        // 꽉 참
         return false;
     }
-    public bool TryRemoveAt(int slotIndex) //해당 칸만 비우기
-    {
-        if (fishSlots == null) return false;
-        if (slotIndex < 0 || slotIndex >= fishSlots.Length) return false;
-        if (!fishSlots[slotIndex].HasValue) return false;
 
-        //대강 여기쯤에 돈더하기/판매 처리기능 
-        fishSlots[slotIndex] = null;
+    public bool TryRemoveAt(int slotIndex)
+    {
+        if (FishSlots == null) return false;
+        if (slotIndex < 0 || slotIndex >= FishSlots.Length) return false;
+        if (!FishSlots[slotIndex].HasValue) return false;
+
+        var slot = FishSlots[slotIndex].Value;
+        slot.Count--;
+
+        if (slot.Count <= 0)
+        {
+            FishSlots[slotIndex] = null;
+        }
+        else
+        {
+            FishSlots[slotIndex] = slot;
+        }
+
         OnSlotChanged?.Invoke(slotIndex);
         return true;
     }
 
-    public FishInstance? GetSlot(int index)  //조회용
+    public FishStackSlot? GetSlot(int index)
     {
-        if (fishSlots == null || index < 0 || index >= fishSlots.Length)
+        if (FishSlots == null || index < 0 || index >= FishSlots.Length)
             return null;
-        return fishSlots[index];
+
+        return FishSlots[index];
     }
-
-
-    //나중에 업그레이드 기능 넣기 
 }
