@@ -36,10 +36,14 @@ public class DecoEditModeManager : MonoBehaviour
     // 내부 변수
     bool isEditMode = false;
     DecoMode currentMode = DecoMode.Lake;   // 현재 편집 모드
+    DecoMode lastMode = DecoMode.Lake;
     Vector2 gridOriginPos;    // 그리드 원래 위치 저장
     float dimAlpha = 0.5f;  // 백그라운드 배경 알파값
 
-    //  초기화
+    int holdItemId = -1;   // 배치 대기 중인 아이템 ID
+    BuildingManager buildingMgr; 
+    
+    //  초기화   
     void Start()
     {
         // 그리드 원래 위치 저장
@@ -69,6 +73,46 @@ public class DecoEditModeManager : MonoBehaviour
             btnDecoMode.onClick.AddListener(ToggleDropdown);
         if (dropdownPanel != null)
             dropdownPanel.SetActive(false); // 초기화
+
+        if (itemListManager != null) // 섬 편집모드 인벤 템 클릭 
+            itemListManager.OnSlotPick += OnIslandPick;
+
+        // 빌딩매니저의 이벤트 구독 (섬 배치 성공/취소)
+        buildingMgr = FindFirstObjectByType<BuildingManager>();
+        if (buildingMgr != null)
+        {
+            buildingMgr.OnPlaceSuccess += OnIslandPlaceSuccess;
+            buildingMgr.OnPlaceCancel += OnIslandPlaceCancel;
+        }
+    }
+    // 섬 전용 인벤 템 보이기
+    void OnIslandPick(int itemId, int slotIndex)
+    {
+        if (currentMode != DecoMode.Island) return;
+
+        GameObject prefab = IslandDecoTestData.GetPrefab(itemId);
+        if (prefab == null) return;
+
+        holdItemId = itemId; // 배치 대기 아이템 저장
+
+        // PlacementMgr.cs 싱글톤으로 프리팹 전달
+        if (PlacementMgr.Instance != null)
+            PlacementMgr.Instance.OnClickConstructionButton(prefab);
+    }
+    // 배치 성공 시 수량 차감
+    void OnIslandPlaceSuccess(GameObject obj)
+    {
+        if (holdItemId >= 0 && itemListManager != null)
+        {
+            itemListManager.ConsumeItem(holdItemId);
+            holdItemId = -1;
+        }
+    }
+
+    // 배치 취소 시 차감 안 했으니 초기화만
+    void OnIslandPlaceCancel(GameObject obj)
+    {
+        holdItemId = -1;
     }
     void OnLakeDecoClicked()
     {
@@ -149,6 +193,13 @@ public class DecoEditModeManager : MonoBehaviour
                 gridManager.HideGrid();
 
             // TODO: 섬 전용 로직, 섬 3d그리드 켜기 
+            // 3D 그리드 편집모드 진입
+            if (PlacementMgr.Instance != null)
+            {
+                // PlacementMgr가 View상태일때만 편집모드로 전환
+                if (PlacementMgr.Instance.CurrentState == PlacementState.View)
+                    PlacementMgr.Instance.ToggleEditMode();
+            }
         }
 
         // 이하 공용 
@@ -213,13 +264,20 @@ public class DecoEditModeManager : MonoBehaviour
             }
         }
 
-        // 섬 전용
+        // 섬 전용 편집모드 퇴장
         if (currentMode == DecoMode.Island)
         {
             if (gridPanel != null) // 섬 편집 모드 나갈때, 호수 2d그리드 복구 
                 gridPanel.gameObject.SetActive(true);
 
             // TODO: 섬 보이는거 비활성화 
+            if (PlacementMgr.Instance != null)
+            {
+                // PlacementMgr가 Edit상태일때만 편집모드로 전환
+                if (PlacementMgr.Instance.CurrentState == PlacementState.Edit)
+                    PlacementMgr.Instance.ToggleEditMode();
+            }
+            holdItemId = -1; // 나갈때 배치 대기 아이템 초기화 
         }
 
         // 인벤 
@@ -299,7 +357,17 @@ public class DecoEditModeManager : MonoBehaviour
         ExitEditMode();
     }
 
+    void OnDestroy() // 이벤트 해제 
+    {
+        if (itemListManager != null)
+            itemListManager.OnSlotPick -= OnIslandPick;
 
+        if (buildingMgr != null)
+        {
+            buildingMgr.OnPlaceSuccess -= OnIslandPlaceSuccess;
+            buildingMgr.OnPlaceCancel -= OnIslandPlaceCancel;
+        }
+    }
 
     //  외부에서 상태 확인용
     public bool IsEditMode()

@@ -1,5 +1,5 @@
 using UnityEngine;
-
+using System;
 
 /// <summary>
 /// 오브젝트 배치를 관리하는 클래스
@@ -21,6 +21,10 @@ public class BuildingManager : MonoBehaviour
     private Placeable3D _activePlaceable;
     private BuildingSnapshot _currentSnapshot;
 
+    #region 배치 결과 이벤트
+    public event Action<GameObject> OnPlaceSuccess;
+    public event Action<GameObject> OnPlaceCancel;
+    #endregion
     #region 프로퍼티
     public Placeable3D ActivePlaceable => _activePlaceable;
     public GridSystem GridSystem => _gridSystem;
@@ -104,6 +108,7 @@ public class BuildingManager : MonoBehaviour
             _activePlaceable.RestoreState(originWorldPos, _currentSnapshot.Rotation, _currentSnapshot.IsRotated);
         }
 
+        OnPlaceCancel?.Invoke(null); // 배치 취소 알림 
         _activePlaceable = null;
     }
     private void Update()
@@ -111,6 +116,7 @@ public class BuildingManager : MonoBehaviour
         //배치 가능한 물건이 배치되었으면
         if (_activePlaceable != null && _activePlaceable.ItemState == ItemState.Placed)
         {
+            OnPlaceSuccess?.Invoke(_activePlaceable.gameObject); // 배치 성공 알림
             // 매니저의 관리 대상에서 해제
             _activePlaceable = null;
         }
