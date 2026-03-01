@@ -65,6 +65,7 @@ public class UI_Storage : MonoBehaviour
 
     private void Start()
     {
+        gameObject.SetActive(false);
         _slotCount = StorageManager.Instance.Capacity;
         _fishSlots = new UI_StorageSlot[_slotCount];
 
@@ -252,5 +253,10 @@ public class UI_Storage : MonoBehaviour
     {
         _currentSort = SortMode.Name;
         RefreshAll();
+    }
+
+    public void ExitStorageUI()
+    {
+        gameObject.SetActive(false);
     }
 }
