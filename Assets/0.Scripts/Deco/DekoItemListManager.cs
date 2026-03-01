@@ -31,17 +31,19 @@ public class DecoItemListManager : MonoBehaviour
 
 
     // 내부 변수
-    List<LakeInvenSlot> inventoryData = new List<LakeInvenSlot>();
+    List<LakeInvenSlot> invenData = new List<LakeInvenSlot>();
     List<GameObject> slotObjects = new List<GameObject>();
     List<DecoSlotUI> slotUIs = new List<DecoSlotUI>();
     List<GameObject> pageCountDots = new List<GameObject>();
     int selectedIndex = -1;  // 현재 선택된 슬롯 인덱스 (-1이면 선택 없음)
     int currentPage = 0;     // 현재 페이지 (0부터)
     int totalPages = 1;      // 전체 페이지 수
-
+    DecoMode lastMode = DecoMode.Lake;
+    List<LakeInvenSlot> lakeInvenSave = null;   
+    List<LakeInvenSlot> islandInvenSave = null;
     // 아이템 선택 이벤트
-    public event Action<int, int> OnItemSelected;   // (itemId, slotIndex)
-    public event Action OnItemDeselected;           // 선택 해제
+    public event Action<int, int> OnSlotPick;   // (itemId, slotIndex)
+    public event Action OnSlotCancel;           // 선택 해제
 
     void Start()
     {
@@ -52,7 +54,7 @@ public class DecoItemListManager : MonoBehaviour
         if (btnArrowRight != null)
             btnArrowRight.onClick.AddListener(GoToNextPage);
 
-        // 템플릿 슬롯 비활성화 (복제용으로만 사용)
+        // 템플릿 더미 슬롯 비활성화 (복제용으로만 사용)
         if (slotTemplate != null)
             slotTemplate.SetActive(false);
     }
@@ -60,22 +62,28 @@ public class DecoItemListManager : MonoBehaviour
     // 테스트용 (데이터 연결 전까지 빈 인벤으로 세팅)
     public void SetupTestInventory()
     {
+        // 이전 모드 인벤 저장 
+        if (lastMode == DecoMode.Lake && invenData.Count > 0)
+            lakeInvenSave = invenData;
+        else if (lastMode == DecoMode.Island && invenData.Count > 0)
+            islandInvenSave = invenData;
+        lastMode = currentMode;
+
         // 테스트용 (데이터 연결 전까지 LakeDecoTestData의 더미 인벤 사용)
         if (currentMode == DecoMode.Lake)
-            SetupInventory(LakeDecoTestData.CreateTestInventory());
-        // TODO: 외부에서 SetupInventory() 직접 호출 
-        // else if (currentMode == DecoMode.Island)
-        //     SetupInventory(IslandDecoTestData.CreateTestInventory());
+            SetupInventory(lakeInvenSave ?? LakeDecoTestData.CreateTestInventory());
+        else if (currentMode == DecoMode.Island)
+            SetupInventory(islandInvenSave ?? IslandDecoTestData.CreateTestInventory());
         else
-            SetupInventory(new List<LakeInvenSlot>()); // 없으면 빈 인벤
+            SetupInventory(new List<LakeInvenSlot>()); // 빈 인벤 
 
     }
 
-    // 인벤토리 세팅 
+    #region 인벤토리 세팅 
     // 인벤토리 데이터 넣고 슬롯 생성 (편집 모드 진입 시 호출)
     public void SetupInventory(List<LakeInvenSlot> inventory)
     {
-        inventoryData = inventory;
+        invenData = inventory;
         selectedIndex = -1;
         currentPage = 0;
 
@@ -84,7 +92,6 @@ public class DecoItemListManager : MonoBehaviour
         RecalcPages();
         UpdatePageDisplay();
     }
-
     // 기존 슬롯 전부 삭제
     void ClearSlots()
     {
@@ -99,9 +106,9 @@ public class DecoItemListManager : MonoBehaviour
     // 인벤토리 데이터 기반으로 슬롯 동적 생성 (수량 0인건 안 만듦)
     void CreateSlots()
     {
-        for (int i = 0; i < inventoryData.Count; i++)
+        for (int i = 0; i < invenData.Count; i++)
         {
-            LakeInvenSlot slotData = inventoryData[i];
+            LakeInvenSlot slotData = invenData[i];
 
             // 수량 0이면 생성 안함
             if (slotData.quantity <= 0) continue;
@@ -139,26 +146,25 @@ public class DecoItemListManager : MonoBehaviour
         {
             if (currentMode == DecoMode.Lake)
                 slotUI.nameText.text = LakeDecoTestData.GetItemName(slotData.itemId);
-            // else if (currentMode == DecoMode.Island)
-            // slotUI.nameText.text = IslandDecoTestData.GetItemName(slotData.itemId);
+            else if (currentMode == DecoMode.Island)
+                slotUI.nameText.text = IslandDecoTestData.GetItemName(slotData.itemId);
         }
 
-        // 오브젝트 이미지 
+        // 아이템 슬롯 이미지 
         if (slotUI.itemImage != null)
         {
             Sprite sprite = null;
 
             if (currentMode == DecoMode.Lake)
                 sprite = LakeDecoTestData.GetIconSprite(slotData.itemId);
-            // else if (currentMode == DecoMode.Island)
-            //     sprite = IslandDecoTestData.GetIconSprite(slotData.itemId);
+            else if (currentMode == DecoMode.Island)
+                sprite = IslandDecoTestData.GetIconSprite(slotData.itemId);
 
             if (sprite != null)
                 slotUI.itemImage.sprite = sprite;
 
         }
     }
-
 
     // 페이지 표시 
     void UpdatePageDisplay()
@@ -180,7 +186,9 @@ public class DecoItemListManager : MonoBehaviour
         // 페이지 수 갱신
         UpdateIndicators();
     }
-
+    #endregion
+    
+    #region 인디케이터 
     // 페이지수 변경 
     void GoToPrevPage()
     {
@@ -195,8 +203,6 @@ public class DecoItemListManager : MonoBehaviour
         currentPage++;
         UpdatePageDisplay();
     }
-
-
 
     // 페이지 수 점 생성/갱신
     void UpdateIndicators()
@@ -222,7 +228,8 @@ public class DecoItemListManager : MonoBehaviour
             pageCountDots.Add(dot);
         }
     }
-
+    #endregion
+    
     // 슬롯 선택 
     void OnSlotClicked(int index)
     {
@@ -242,8 +249,8 @@ public class DecoItemListManager : MonoBehaviour
         SetSlotHighlight(index, true);
 
         // 이벤트 발생
-        if (index < inventoryData.Count)
-            OnItemSelected?.Invoke(inventoryData[index].itemId, index);
+        if (index < invenData.Count)
+            OnSlotPick?.Invoke(invenData[index].itemId, index);
     }
 
     // 선택 해제
@@ -253,7 +260,7 @@ public class DecoItemListManager : MonoBehaviour
             SetSlotHighlight(selectedIndex, false);
 
         selectedIndex = -1;
-        OnItemDeselected?.Invoke();
+        OnSlotCancel?.Invoke();
     }
 
     // 슬롯 선택 하이라이트 표시
@@ -274,18 +281,18 @@ public class DecoItemListManager : MonoBehaviour
     // 아이템 배치 성공 시 수량 차감
     public void ConsumeItem(int itemId)
     {
-        for (int i = 0; i < inventoryData.Count; i++)
+        for (int i = 0; i < invenData.Count; i++)
         {
-            if (inventoryData[i].itemId == itemId)
+            if (invenData[i].itemId == itemId)
             {
-                inventoryData[i].quantity--;
+                invenData[i].quantity--;
 
                 // 수량 UI 갱신
                 if (i < slotUIs.Count && slotUIs[i] != null && slotUIs[i].quantityText != null)
-                    slotUIs[i].quantityText.text = "x" + inventoryData[i].quantity;
+                    slotUIs[i].quantityText.text = "x" + invenData[i].quantity;
 
                 // 수량 0이면 슬롯 제거
-                if (inventoryData[i].quantity <= 0)
+                if (invenData[i].quantity <= 0)
                 {
                     if (selectedIndex == i)
                         DeselectSlot();
@@ -299,20 +306,20 @@ public class DecoItemListManager : MonoBehaviour
     // 아이템 회수 시 수량 복구
     public void RestoreItem(int itemId)
     {
-        for (int i = 0; i < inventoryData.Count; i++)
+        for (int i = 0; i < invenData.Count; i++)
         {
-            if (inventoryData[i].itemId == itemId)
+            if (invenData[i].itemId == itemId)
             {
-                bool wasZero = (inventoryData[i].quantity <= 0);
-                inventoryData[i].quantity++;
+                bool wasZero = (invenData[i].quantity <= 0);
+                invenData[i].quantity++;
 
                 if (wasZero)
                 {
-                    AddSlot(inventoryData[i], i);
+                    AddSlot(invenData[i], i);
                 }
                 else if (i < slotObjects.Count)
                 {
-                    slotUIs[i].quantityText.text = "x" + inventoryData[i].quantity;
+                    slotUIs[i].quantityText.text = "x" + invenData[i].quantity;
                 }
                 break;
             }
@@ -369,9 +376,9 @@ public class DecoItemListManager : MonoBehaviour
 
     public int GetSelectedItemId()
     {
-        if (selectedIndex < 0 || selectedIndex >= inventoryData.Count)
+        if (selectedIndex < 0 || selectedIndex >= invenData.Count)
             return -1;
-        return inventoryData[selectedIndex].itemId;
+        return invenData[selectedIndex].itemId;
     }
 
     public int GetSelectedIndex()

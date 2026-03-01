@@ -20,6 +20,8 @@ public class GridSystem : MonoBehaviour
     private float _cellSize; //셀의 실제 크기
     private bool _rotation = false;
 
+    Bounds bounds;
+
     #region 프로퍼티
     public int Width => _width;   
     public int Height => _height;
@@ -31,7 +33,8 @@ public class GridSystem : MonoBehaviour
     {
         _grid = new Placeable[_width, _height];
 
-        _cellSize = (_cell.localScale.x * 10f) / _width; //셀의 크기를 Transform의 스케일에서 가져옴
+        //Plane에서 기준점을 잡기위한 용도
+        bounds = _gridRenderer.GetComponent<MeshFilter>().sharedMesh.bounds;
     }
     private void Start()
     {
@@ -143,41 +146,32 @@ public class GridSystem : MonoBehaviour
     // 월드 좌표를 셀 좌표로 번역
     public Vector2Int GetGridIndex(Vector3 worldPosition)
     {
-        float halfWidth = (_width * _cellSize) * 0.5f;
-        float halfHeight = (_height * _cellSize) * 0.5f;
-        Vector3 origin = _cell.position - new Vector3(halfWidth, 0, halfHeight);
+        //바닥에 있는 월드 좌표를 로컬 좌표로 가져옴
+        Vector3 localPos = _gridRenderer.transform.InverseTransformPoint(worldPosition);
 
-        // worldPosition이 셀의 중심으로부터 떨어진 거리를 계산
-        float diffX = worldPosition.x - origin.x;
-        float diffZ = worldPosition.z - origin.z;
+        float xPos = (localPos.x - bounds.min.x) / bounds.size.x;
+        float zPos = (localPos.z - bounds.min.z) / bounds.size.z;
 
-        // 위에서 계산한 거리를 셀의 크기로 나누어 몇 번째 셀에 해당되는지 계산
-        int x = Mathf.FloorToInt(diffX / _cellSize);
-        int y = Mathf.FloorToInt(diffZ / _cellSize);
+        int x = Mathf.FloorToInt(xPos * _width);
+        int y = Mathf.FloorToInt(zPos * _height);
 
-        // 소수점 버림
         return new Vector2Int(Mathf.Clamp(x, 0, _width - 1), Mathf.Clamp(y, 0, _height - 1));
     }
 
     // 셀 좌표를 실제 월드 좌표로 번역
     public Vector3 GetWorldPosition(int x, int y, int sizeX, int sizeY)
     {
-        float halfWidth = (_width * _cellSize) * 0.5f;
-        float halfHeight = (_height * _cellSize) * 0.5f;
-        Vector3 origin = _cell.position - new Vector3(halfWidth, 0, halfHeight);
+        float xPos = (x + sizeX * 0.5f) / _width;
+        float ZPos = (y + sizeY * 0.5f) / _height;
 
-        // 셀의 좌표를 실제 월드 좌표로 전환
+        float localX = bounds.min.x + (xPos * bounds.size.x);
+        float localZ = bounds.min.z + (ZPos * bounds.size.z);
 
-        float centerX = x + (sizeX * 0.5f);
-        float centerY = y + (sizeY * 0.5f);
+        Vector3 localPos = new (localX, 0, localZ);
 
-        return new Vector3
-        (
-            origin.x + (centerX * _cellSize),
-            _cell.position.y,
-            origin.z + (centerY * _cellSize)
-        );
+        return _gridRenderer.transform.TransformPoint(localPos);
     }
+
     // 셰이더의 색을 바꿔주기 위해 
     public void UpdateShaderHover(Vector2Int index, Vector2Int size, bool canPlace)
     {
@@ -197,8 +191,8 @@ public class GridSystem : MonoBehaviour
             for (int y = 0; y < _height; y++)
             {
                 Color color = _grid[x, y] != null ? Color.red : Color.clear; //하나하나 전부 색을 바꿔주는 방식, 추후 개선 할 수 있으면 개선 필요
-                _gridDataTexture.SetPixel(x, y, color); // 1인 경우 빨간색, 0인 경우 투명색으로 설정
-                //new Color(0, 0, 0, 0)
+                _gridDataTexture.SetPixel(_width - 1 - x, (_height - 1) - y, color); // 1인 경우 빨간색, 0인 경우 투명색으로 설정
+                //추가로 Plane에 맞춰 x,y값을 반대로 적용시켜 하이라이트가 대칭점에 나오는 문제를 수정
             }
         }
         // 텍스쳐 업데이트

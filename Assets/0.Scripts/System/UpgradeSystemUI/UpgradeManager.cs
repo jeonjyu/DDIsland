@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using TMPro;
 public class UpgradeManager : MonoBehaviour
 {
@@ -10,8 +11,8 @@ public class UpgradeManager : MonoBehaviour
     public TextMeshProUGUI goldText; // 레거시 > tmp로 변경 
 
     [Header("플레이어 캐릭터 프리팹")]
-    public GameObject playerCharacter; // 테스트용 
-    //public PlayerController playerController; // 나중에
+    //public GameObject playerCharacter; // 테스트용 
+    public PlayerController playerController; // 나중에
 
     [Header("현재 스탯 표시")]
     public Text hungerStatText;
@@ -49,10 +50,14 @@ public class UpgradeManager : MonoBehaviour
 
     void Start()
     {
-        // 테스트용 임시 (나중에 PlayerContoller에서 받아와야 함)
-        playerData = new PlayerData();
-        //playerData = playerController.PlayerData;
-
+        if (playerController != null)
+        {
+            playerData = playerController.PlayerData;
+        }
+        else // 플레이어컨트롤러가 없으면 로컬데이터 생성 
+        {
+            playerData = new PlayerData();
+        }
         InitTempTable(); // 테이블 임시 나중에 CSV로 교체 
 
         hungerButton.onClick.AddListener(BuyHunger);

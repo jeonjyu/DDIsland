@@ -1,0 +1,12 @@
+id,낚시 아이템 이름 참고용,이름,설명,"타입
+1:Pole(낚싯대)
+2:Bait(미끼)
+3:Bobber(낚시찌)",최대 보유 개수,판매 가능 여부,구매 가격,판매 가격,낚시 속도 상승량,물고기 풀,물고기 크기 상승량,기본 제공 여부,UI 미니 이미지 리소스
+ID,,ItemName_String,ItemDesc_String,ItemType,MaxCount,IsSaleable,PurchasePrice,SellPrice,FishingSpeed,FishPool,FishLength,IsDefault,ItemImgPath_Sprite
+Int,,String,String,Enum,Int,Bool,Int,Int,Float,Int,Float,Bool,String
+40001,1단계 미끼,ItemNameLowBait_String,ItemDescLowBait_String,2,999,FALSE,1,0,0,101,0,TRUE,경로들이 들어갈거고
+40002,2단계 미끼,ItemNameMiddleBait_String,ItemDescMiddleBait_String,2,999,FALSE,2,0,0,102,0,FALSE,
+40003,기본 낚싯대,ItemNameBasicPole_String,ItemDescBasicPole_String,1,1,FALSE,0,0,1,0,0,TRUE,
+40004,강화된 낚싯대,ItemNameGoodPole_String,ItemDescGoodPole_String,1,1,TRUE,100,40,5,0,0,FALSE,
+40005,기본 낚시찌,ItemNameBasicBobber_String,ItemDescBasicBobber_String,3,1,FALSE,0,0,0,0,1,TRUE,
+40006,강화된 낚시찌,ItemNameGoodBobber_String,ItemDescGoodPole_String,3,1,TRUE,100,40,0,0,5,FALSE,
