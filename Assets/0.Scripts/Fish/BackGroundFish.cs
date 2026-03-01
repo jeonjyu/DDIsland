@@ -10,9 +10,10 @@ public class BackGroundFish : MonoBehaviour
     private RectTransform _rectTransform;
     private Vector2 _velocity;
 
-    [Header("물고기 이동 관련")]
+    [Header("물고기 관련")]
     public float _speed = 15f;
     private float _rotationSpeed = 5f;
+    private float _height;
 
     [Header("물고기 군집 관련")]
     private float _neighborDistance = 200f; // 근처 물고기와의 거리
@@ -40,20 +41,44 @@ public class BackGroundFish : MonoBehaviour
     private void Awake()
     {
         _rectTransform = GetComponent<RectTransform>();
+        _height = _rectTransform.rect.height;
     }
+    
     public void InitManager(AquariumMgr mgr)
     {
         Manager = mgr;
+        _yLimit = (Manager.SpawnArea.rect.height / 2f) - _height;
     }
 
     private void Update()
     {
         _rectTransform.anchoredPosition += _velocity * Time.deltaTime;
 
-        float targetAngle = Mathf.Atan2(_velocity.y, _velocity.x) * Mathf.Rad2Deg;
-        Quaternion targetRotation = Quaternion.Euler(0, 0, targetAngle);
-        _rectTransform.rotation = Quaternion.Lerp(_rectTransform.rotation, targetRotation, Time.deltaTime * _rotationSpeed);
+        //float targetAngle = Mathf.Atan2(_velocity.y, _velocity.x) * Mathf.Rad2Deg;
+        //Quaternion targetRotation = Quaternion.Euler(0, 0, targetAngle);
+        //_rectTransform.rotation = Quaternion.Lerp(_rectTransform.rotation, targetRotation, Time.deltaTime * _rotationSpeed);
 
+        //Atan2 방식에서 벡터 방식으로 변경
+        if (_velocity.sqrMagnitude > 0.01f)
+        {
+            if (_velocity.x < 0)
+            {
+                _rectTransform.localScale = new Vector3(-1, 1, 1);
+            }
+            else
+            {
+                _rectTransform.localScale = new Vector3(1, 1, 1);
+            }
+
+            // 현재 방향
+            Vector2 currentDir = _rectTransform.right;
+            // 목표 방향
+            Vector2 targetDir = (_velocity.x < 0) ? -_velocity.normalized : _velocity.normalized;
+            // 다음 방향
+            Vector2 nextDir = Vector2.Lerp(currentDir, targetDir, Time.deltaTime * _rotationSpeed);
+
+            _rectTransform.right = nextDir;
+        }
 
         if (_isGoingRight && _rectTransform.anchoredPosition.x > _screenLimit)
         {
@@ -143,9 +168,9 @@ public class BackGroundFish : MonoBehaviour
             Vector2 desiredVelocity =
                 (separationForce.normalized * 1.2f) + // 겹치지 않게
                 (alignmentForce.normalized * 1.0f) +  // 같은 방향으로
-                (cohesionForce.normalized * 1.2f) +   // 뭉치도록
+                (cohesionForce.normalized * 1.5f) +   // 뭉치도록
                 (attendantsDir * 0.8f) +              // 오른쪽 또는 왼쪽으로 이동
-                (boundForce * 1.5f); ;                // 경계에서 멀어지도록
+                (boundForce * 1.3f); ;                // 경계에서 멀어지도록
 
             // 최종 속도에 반영
             _velocity = Vector2.Lerp(_velocity, desiredVelocity.normalized * _speed, Time.deltaTime * 3f);

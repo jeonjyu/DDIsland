@@ -48,8 +48,8 @@ public class Placeable3D : Placeable
         _targetGrid = grid;
         _mainCamera = Camera.main;
         _selectedRenderer = GetComponentInChildren<MeshRenderer>();
-        _groundLayer = LayerMask.GetMask("Water"); //레이어 추가 설정하지 않아서 우선적으로 Water로 설정
-                                                   //추후 레이아웃에 맞는 레이어로 변경 필요
+        _groundLayer = LayerMask.GetMask("Ground");
+
         _originalColor = _selectedRenderer.material.color;
 
         ItemState = ItemState.Preview;
@@ -64,13 +64,6 @@ public class Placeable3D : Placeable
         }
     }
 
-    //일단 회전 로직부터 제대로 잡고가야해서 의사코드로 작성
-
-    //여기서 미래에 회전할 부분을 탐색하여 변수로 저장
-    //그 회전 값 사이즈를 계산해서 어떻게 될지 bool값으로 IscellEmpty를 받아옴
-
-    //만약 잘 들어가면 그냥 밑으로 진행하면 되고
-    //만약 안되면 이동모드로 강제 전환 시키기
     public void ObjectRotate()
     {
         if (ItemState == ItemState.Placed)

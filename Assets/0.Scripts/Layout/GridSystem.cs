@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 /// <summary>
 /// 그리드 시스템을 관리하는 클래스
@@ -198,6 +199,22 @@ public class GridSystem : MonoBehaviour
         // 텍스쳐 업데이트
         _gridDataTexture.Apply();
         _gridRenderer.material.SetTexture("_GridDataTex", _gridDataTexture); // 업데이트된 텍스쳐를 셰이더에 전달
+    }
+
+    public void ClearAllItems()
+    {
+        for (int x = 0; x < _width; x++)
+        {
+            for (int y = 0; y < _height; y++)
+            {
+                if (_grid[x, y] != null)
+                {
+                    _grid[x, y] = null;
+                }
+            }
+        }
+      
+        UpdateGridTexture();
     }
 
     public void ClearGrid()
