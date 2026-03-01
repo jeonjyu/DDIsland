@@ -4,36 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
-/*
- * 주말 팀원들을 위한 설명서
- * UI_Storage (창고 UI 컨트롤러)
- *
- * 역할
- * - StorageManager(데이터) => UI 슬롯들(화면)로 표시해주는 역할
- * - 정렬(최근/등급/이름)을 적용해서 화면에 보이는 순서를 만든다
- * - 슬롯 클릭 시, 우측/상단 상세 패널(이름/등급/최고가/이미지)을 갱신한다
- *
- * 흐름
- * 1 Start()
- *    - StorageManager.Capacity 만큼 슬롯 UI를 미리 생성(풀링처럼 사용) 추후 풀링전용 매니저같은게 있으면 그거쓰면될듯
- * 2 RefreshAll()
- *    - 실제 데이터(StorageManager 슬롯)에서 값 있는 슬롯의 인덱스만 모음
- *    - SortMode 기준으로 _viewIndices를 정렬
- *    - UI 슬롯 0..N에 정렬된 realIndex를 매핑(BindRealIndex)
- *    - 각 UI 슬롯은 realIndex의 데이터를 Refresh로 그림
- * 3 StorageManager.OnSlotChanged 이벤트
- *    - 물고기 추가/삭제가 일어나면 UpdateSlot() 호출됨 => RefreshAll()로 화면 재정렬+갱신
- *
- * 용어 정리
- * - realIndex : StorageManager 내부 배열(FishSlots)의 실제 인덱스
- * - uiIndex   : 화면에 보이는 슬롯의 인덱스(0번째 칸, 1번째 칸...)
- *   => 정렬 때문에 uiIndex와 realIndex는 다를 수 있음!
- *   슬롯 클릭할 때는 uiIndex 말고 realIndex를 넘겨야 데이터가 안 꼬임
- *   for (int ui = 0; ui < _slotCount; ui++)   // ui == (uiIndex)
- *   int realIndex = _viewIndices[ui];    // realIndex == 실제 Storage 인덱스
- *   
- *   아직 UI마감 안됨
- */
+
 enum SortMode
 {
     Recent,
@@ -46,7 +17,6 @@ public class UI_Storage : MonoBehaviour
 {
     int _slotCount;    // 슬롯 총 개수(= StorageManager의 Capacity)
     UI_StorageSlot[] _fishSlots;  // 화면에 실제로 표시되는 슬롯 UI 배열 (풀링)
-    List<UI_StorageSlot> _storageSlots; 
 
     [SerializeField] GameObject _slotPrefab;
 
@@ -60,7 +30,6 @@ public class UI_Storage : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _bestPriceText;
     [SerializeField] private Image _detailIcon;
 
-    [SerializeField] private FishAtlasProvider _provider;  // 스프라이트 찾기 담당자(AtlasProvider)
     [SerializeField] private Transform _slotParent;  // 슬롯 프리팹(원본은 꺼두고 복제해서 사용)
 
     private void Start()
@@ -76,7 +45,7 @@ public class UI_Storage : MonoBehaviour
             var hi = Instantiate(_slotPrefab, _slotParent, false);
             var slot = hi.GetComponent<UI_StorageSlot>();
             _fishSlots[i] = slot;  
-            slot.Init(this, i);// 슬롯이 자기 부모(UI_Storage)랑 인덱스를 알게 함
+            slot.Init(this);// 슬롯이 자기 부모(UI_Storage)
         }
 
         RefreshAll();
@@ -157,8 +126,8 @@ public class UI_Storage : MonoBehaviour
         if (!sb.HasValue) return -1;
 
         // fishId로 정의 데이터(등급/이름 등)를 찾는다
-        var defA = FishManager.Instance.GetDefinition(sa.Value.FishId);
-        var defB = FishManager.Instance.GetDefinition(sb.Value.FishId);
+        var defA = DataManager.Instance.FishingDatabase.FishData[sa.Value.FishId];
+        var defB = DataManager.Instance.FishingDatabase.FishData[sb.Value.FishId];
 
         // def가 없으면 뒤로
         if (defA == null && defB == null) return 0;
@@ -174,11 +143,15 @@ public class UI_Storage : MonoBehaviour
                 break;
 
             case SortMode.GradeHigh:
-                primary = defB.Grade.CompareTo(defA.Grade); // 높은 등급 먼저
+                {
+                    primary = defB.gradeType.CompareTo(defA.gradeType); // 높은 등급 먼저
+                }
                 break;
 
             case SortMode.GradeLow:
-                primary = defA.Grade.CompareTo(defB.Grade); // 낮은 등급 먼저
+                {
+                   primary = defA.gradeType.CompareTo(defB.gradeType); // 낮은 등급 먼저
+                }
                 break;
 
             case SortMode.Name:  // 이름 오름차순
@@ -192,7 +165,17 @@ public class UI_Storage : MonoBehaviour
         // 기본 정렬(최근 획득)
         return sb.Value.LastAcquiredOrder.CompareTo(sa.Value.LastAcquiredOrder);
     }
-
+   // public int SeasonToBit(Grade fish) // 등급 enum 플래그
+   // {
+   //     return fish switch 
+   //     {
+   //         fish. => 1,
+   //         Season.Summer => 2,
+   //         Season.Autumn => 4,
+   //         Season.Winter => 8,
+   //         _ => 0 
+   //     }; 
+   // }
     public void OnSlotClicked(int realIndex) // 슬롯 클릭(= realIndex를 전달받음)
     {
         _selectedRealIndex = realIndex;
@@ -200,10 +183,10 @@ public class UI_Storage : MonoBehaviour
         var slot = StorageManager.Instance.GetSlot(realIndex);
         if (!slot.HasValue) return;
 
-        var def = FishManager.Instance.GetDefinition(slot.Value.FishId);
+        var def = DataManager.Instance.FishingDatabase.FishData[slot.Value.FishId];
         if (def == null) return;
 
-        var sp = (_provider != null) ? _provider.GetFishSprite(def) : null;
+        var sp = def.FishImgPath_Sprite;
 
         if (_detailIcon != null)
         {
@@ -215,7 +198,7 @@ public class UI_Storage : MonoBehaviour
         string name = def.FishName_String;
         _nameText.text = name;
 
-        int grade = def.Grade;
+        var grade = def.gradeType;
         _gradeText.text = grade.ToString();
 
         int bestPrice = slot.Value.MaxPrice;

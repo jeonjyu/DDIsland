@@ -1,30 +1,26 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
-/*
- * FishManager
- *
- * 역할
- * - CSV에서 물고기 정의(FishDefinition)를 로드한다.
- * - ID로 빠르게 찾기 위해 Dictionary<int, FishDefinition>을 만든다.
- * - 계절이 바뀌면 해당 시즌에 등장 가능한 물고기 리스트(_seasonFish)를 다시 구성한다.
- * - 낚시 결과로 FishInstance(실제 획득 개체)를 만들고 StorageManager에 저장한다.
- *
- * 용어
- * - FishDefinition : 종(species) 정보(이름,등급,스프라이트키,길이범위 등)
- * - FishInstance   : 획득 개체(instance) 정보(어느 종인지, 길이, 가격 등)
- */
+public struct FishingContext 
+{
+    public ArriveSeason Season;
+    public bool IsMorning;
+    public bool IsAfternoon;
+    public bool IsNight;
+    public bool IsLake;
+    public bool IsSea;
+    public bool IsRain;
+    public bool IsCherryblossom;
+    public bool IsMaple;
+    public bool IsSnow;
+}
 public class FishManager : Singleton<FishManager>
 {
-    Dictionary<int, FishDefinition> _fishById; //도감용
-    List<FishDefinition> _allFish;
-    List<FishDefinition> _seasonFish; //계절별 나올 물고기
+    Dictionary<int, FishDataSO> _fishById;
+    List<FishDataSO> _allFish;
 
     [SerializeField] private EnvironmentModel _environment;
 
-    private Season _season;
-    int _seasonBit;
+    private ArriveSeason _currentSeason = ArriveSeason.Spring;
 
     private void Awake()
     {
@@ -33,19 +29,18 @@ public class FishManager : Singleton<FishManager>
 
     private void Start()
     {
-        // season = environment.CurrentSeason;
-        _season = Season.Spring; //테스트
+        _allFish = new List<FishDataSO>(DataManager.Instance.FishingDatabase.FishData.datas);
 
-        _allFish = FishCsvLoader.LoadFromResources("Data/fish");
-        _seasonFish = new List<FishDefinition>();
-        _fishById = new Dictionary<int, FishDefinition>();
-
-        // HandleSeasonChanged(environment.CurrentSeason);
-        HandleSeasonChanged(Season.Spring); //테스트
+        _fishById = new Dictionary<int, FishDataSO>();
 
         foreach (var fish in _allFish)
         {
             _fishById[fish.ID] = fish;
+        }
+
+        if (_environment != null)
+        {
+            _currentSeason = ConvertSeason(_environment.CurrentSeason);
         }
     }
 
@@ -60,46 +55,82 @@ public class FishManager : Singleton<FishManager>
         if (_environment != null)
             _environment.OnSeasonChanged -= HandleSeasonChanged;
     }
-
-    private void Update()
-    {
-    }
-
-    public int SeasonToBit(Season season)  // 계절 enum 플래그
+    private ArriveSeason ConvertSeason(Season season)
     {
         return season switch
         {
-            Season.Spring => 1,
-            Season.Summer => 2,
-            Season.Autumn => 4,
-            Season.Winter => 8,
-            _ => 0
+            Season.Spring => ArriveSeason.Spring,
+            Season.Summer => ArriveSeason.Summer,
+            Season.Autumn => ArriveSeason.Autumn,
+            Season.Winter => ArriveSeason.Winter,
+            _ => ArriveSeason.Spring
         };
     }
-
-    public void HandleSeasonChanged(Season newSeason)    // 계절 변경 시 시즌 물고기 리스트 재구성
+    //환경에서 계절 바뀔 때 호출될 함수
+    private void HandleSeasonChanged(Season newSeason)
     {
-        _season = newSeason;
-        _seasonBit = SeasonToBit(_season);
-
-        _seasonFish.Clear();
-
-        foreach (var fish in _allFish)
-            if ((fish.ArriveSeason & _seasonBit) != 0)
-                _seasonFish.Add(fish);
+        _currentSeason = ConvertSeason(newSeason);
+        Debug.Log($"[FishManager] Season Converted => {_currentSeason}");
     }
 
-    //public void RandomFish()
-    //{
-    //    if (seasonFish.Count == 0) return;
-    //    FishDefinition randomFish = seasonFish[UnityEngine.Random.Range(0, seasonFish.Count)];
-    //    float length = UnityEngine.Random.Range(randomFish.MinLength, randomFish.MaxLength);
-    //    int price = randomFish.Price;
-    //    FishToStorage(randomFish, length, price);
-    //    Debug.Log($"Name: {randomFish.NameKey}, price: {price}, Length: {length}");
-    //}
+    public void PickRandomSeasonFish()
+    {
+        FishingContext ctx = BuildContextFromCurrentState();
+        PickRandomSeasonFish(ctx);
+    }
 
-    public void FishToStorage(FishDefinition randomFish, float length, int price)    // StorageManager에 넣기 위한 FishInstance 생성
+    //ctx.Season에 현재 계절 넣어줌
+    private FishingContext BuildContextFromCurrentState()
+    {
+        FishingContext ctx = new FishingContext();
+        ctx.Season = _currentSeason;
+
+        // 일단 테스트용 기본값
+        ctx.IsMorning = true;
+        ctx.IsLake = true;
+
+        return ctx;
+    }
+
+    public void PickRandomSeasonFish(FishingContext ctx)  //낚시 결과 뽑기
+    {
+        var candidates = BuildCandidates(ctx);  //후보 선정
+        if (candidates == null || candidates.Count == 0)
+        {
+            Debug.LogWarning("[FishManager] 후보가 없음");
+            return;
+        }
+
+        var pickedDrop = PickWeighted(candidates);  //확률 뽑기
+        if (pickedDrop == null)
+        {
+            Debug.LogWarning("[FishManager] PickWeighted 실패");
+            return;
+        }
+
+        int fishId = pickedDrop.RewardItem;  //뽑힌 드랍의 RewardItem을 fishId로 사용
+
+        var fishSO = GetFishSO(fishId);  //뽑힌 드랍의 RewardItem을 fishId로 사용
+        if (fishSO == null)
+        {
+            Debug.LogWarning($"[FishManager] FishDataSO 못찾음 fishId={fishId}");
+            return;
+        }
+
+        CreateInstance(fishSO);  //길이,가격 계산 후 저장
+    }
+
+    public void CreateInstance(FishDataSO fish)
+    {
+        float length = Random.Range(fish.MinLength, fish.MaxLength);
+        int price = fish.Price;
+
+        Debug.Log($"Name: {fish.FishName_String}, price: {price}, Length: {length}");
+
+        FishToStorage(fish, length, price);
+    }
+
+    public void FishToStorage(FishDataSO randomFish, float length, int price)
     {
         FishInstance fish = new FishInstance
         {
@@ -115,36 +146,67 @@ public class FishManager : Singleton<FishManager>
         }
     }
 
-    public void PickRandomSeasonFish()    // 시즌 리스트에서 랜덤 선택 => 인스턴스 생성 => 창고 저장
-    { 
-        if (_seasonFish.Count == 0) return;
-
-        FishDefinition randomFish =
-            _seasonFish[UnityEngine.Random.Range(0, _seasonFish.Count)];
-
-        CreateInstance(randomFish);
-    }
-
-    public void CreateInstance(FishDefinition fish) // 획득 개체 만들기(길이 랜덤, 가격 설정 등)
+    private FishDataSO GetFishSO(int fishId)
     {
-        float length = UnityEngine.Random.Range(fish.MinLength, fish.MaxLength);
-        int price = fish.Price;
-
-        Debug.Log($"Name: {fish.FishName_String}, price: {price}, Length: {length}");
-
-        FishToStorage(fish, length, price);
-    }
-
-    public FishDefinition GetDefinition(int id)     // 도감/정렬/표시용: ID로 정의 찾기
-    {
-        if (_fishById != null && _fishById.TryGetValue(id, out var def))
-            return def;
-
+        if (_fishById != null && _fishById.TryGetValue(fishId, out var fish))
+            return fish;
         return null;
     }
 
-    public void SpecialConditions()
+    private List<FishingDropDataSO> BuildCandidates(FishingContext ctx)
     {
-        // FishDefinition specialFish = allFish.Find(f => f.ID == 10001);
+        var db = DataManager.Instance.FishingDatabase.FishingDropData;
+        var result = new List<FishingDropDataSO>();
+
+        foreach (var drop in db.datas)
+        {
+            if (drop == null) continue;
+
+            //계절 조건
+            if (ctx.Season == ArriveSeason.Spring && !drop.IsSpring) continue;
+            if (ctx.Season == ArriveSeason.Summer && !drop.IsSummer) continue;
+            if (ctx.Season == ArriveSeason.Autumn && !drop.IsAutumn) continue;
+            if (ctx.Season == ArriveSeason.Winter && !drop.IsWinter) continue;
+
+            //시간 조건
+            if (ctx.IsMorning && !drop.IsMorning) continue;
+            if (ctx.IsAfternoon && !drop.IsAfternoon) continue;
+            if (ctx.IsNight && !drop.IsNight) continue;
+
+            //장소 조건
+            if (ctx.IsLake && !drop.IsLake) continue;
+            if (ctx.IsSea && !drop.IsSea) continue;
+
+            result.Add(drop);
+        }
+
+        return result;
+    }
+
+    private FishingDropDataSO PickWeighted(List<FishingDropDataSO> candidates)  //가중치랜덤
+    {
+        if (candidates == null || candidates.Count == 0) return null;
+
+        float total = 0;
+        for (int i = 0; i < candidates.Count; i++)
+        {
+            total += Mathf.Max(0, candidates[i].Probability);
+        }
+
+        if (total <= 0)
+        {
+            return candidates[Random.Range(0, candidates.Count)];
+        }
+
+        float r = Random.Range(0, total);
+        float acc = 0;
+
+        for (int i = 0; i < candidates.Count; i++)
+        {
+            acc += Mathf.Max(0, candidates[i].Probability);
+            if (r < acc) return candidates[i];
+        }
+
+        return candidates[candidates.Count - 1];
     }
 }
