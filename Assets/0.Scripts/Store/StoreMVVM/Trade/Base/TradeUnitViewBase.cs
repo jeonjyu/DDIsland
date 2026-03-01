@@ -20,8 +20,9 @@ public abstract class TradeUnitViewBase : MonoBehaviour
         Debug.Log("[TradeUnitViewBase] Start");
 
         viewModel = GetComponent<TradeUnitViewModelBase>();
+        viewModel.PropertyChanged += OnViewModelPropChanged;
 
-        SetEventListener();
+        //SetEventListener();
     }
 
     private void OnEnable()
@@ -51,17 +52,24 @@ public abstract class TradeUnitViewBase : MonoBehaviour
 
     public abstract ITradeStrategy GetTradeStrategy();
 
-    // 들어온 값으로 최종 가격 설정
-    public void SetTotalPriceText(int price)
-    {
-        countTxt.text = price.ToString();
-    }
-
     // 거래 버튼 활성화 여부 설정
     // 팝업 끄기 전까지 클릭 불가능
     public void SetButtonAvailable(bool available)
     {
         tradeBtn.enabled = available;
+    }
+
+
+    // 들어온 값으로 최종 가격 설정
+    public void SetTotalPriceText(int price)
+    {
+        priceTxt.text = price.ToString();
+    }
+
+    public void SetItemCount(int count)
+    {
+        Debug.Log("itemcount : " + count );
+        countTxt.text = count.ToString(); 
     }
 
     private void OnViewModelPropChanged(object sender, PropertyChangedEventArgs e)
@@ -70,10 +78,15 @@ public abstract class TradeUnitViewBase : MonoBehaviour
         {
             case null: case " ":
                 // 유닛 초기화
+                Debug.Log("[TradeUnitViewBase] 유닛 초기화");
+                viewModel.SetTotalPrice();
+                
                 break;
             case nameof(viewModel.TradeCount) :
+                //viewModel.ChangeCount(viewModel.TradeCount);
+                SetItemCount(viewModel.TradeCount);
                 viewModel.SetTotalPrice();
-                viewModel.ChangeCount(viewModel.TradeCount);
+                //SetTotalPriceText(viewModel.);
                 break;
 
         }
