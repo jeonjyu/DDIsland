@@ -22,11 +22,8 @@ public class StoreListViewModel : MonoBehaviour, INotifyPropertyChanged
         get => StoreManager.Instance.currentCat;
         set
         {
-            if(value != StoreManager.Instance.currentCat)
-            {
-                StoreManager.Instance.currentCat = value;
-                OnPropertyChanged(null);
-            }
+            StoreManager.Instance.currentCat = value;
+            OnPropertyChanged(null);
         }
     }
 
@@ -66,11 +63,14 @@ public class StoreListViewModel : MonoBehaviour, INotifyPropertyChanged
 
     public void OnEnable()
     {
-        StoreManager.Instance.currentCat = StoreCat.costume;
-        CurrentCat = StoreCat.interior;
+        StoreManager.Instance.currentCat = StoreCat.interior;
         ItemManager.Instance.SetCurrentCategory();
     }
 
+    public void OnDisable()
+    {
+
+    }
 
     public void UpdateCurrentCat(int catIdx)
     {
