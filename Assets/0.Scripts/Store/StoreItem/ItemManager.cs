@@ -19,6 +19,8 @@ public class ItemManager : Singleton<ItemManager>
     // 정렬 우선순위 리스트
     //public List<Comparer> sortPriority = new List<Comparer>();
 
+    [Header("슬롯 아이템 풀")]
+    [SerializeField] public ItemSlotPool itemSlotPool;
 
     [Header("테스트용 아이템 리스트")]
     [SerializeField] List<StoreItem> interiorItem = new List<StoreItem>();
