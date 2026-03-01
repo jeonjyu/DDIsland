@@ -1,10 +1,5 @@
-﻿using System;
+using System;
 using UnityEngine;
-
-enum InteriorType
-{
-    MainHouse, Floor, Fix, Free, LakeFloor, LakeFix, LakeFree
-}
 
 [Serializable]
 public class BuildingItem : StoreItemBase
