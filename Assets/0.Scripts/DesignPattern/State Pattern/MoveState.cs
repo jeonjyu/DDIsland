@@ -17,9 +17,9 @@ public class MoveState : IState
                 //  case Point.Store:
                 //      target = _player.StorePoint;
                 //      break;
-                // case Point.Kitchen:
-                //     target = _player.KitchenPoint;
-                //      break;
+                 case Point.Kitchen:
+                     target = _player.KitchenPoint;
+                      break;
                  case Point.Acorn:
                     target = _player.AcornPoint;
                 break;
@@ -52,9 +52,9 @@ public class MoveState : IState
                 // case Point.Store:
                 //     _player.SetState(new SalesState(_player));
                 //     break;
-                // case Point.Kitchen:
-                //     //_player.SetState(new CookState(_player));  
-                //    break;
+                 case Point.Kitchen:
+                     _player.SetState(new CookState(_player));  
+                    break;
                 case Point.Acorn:
                     _player.SetState(new EatState(_player));  
                    break;

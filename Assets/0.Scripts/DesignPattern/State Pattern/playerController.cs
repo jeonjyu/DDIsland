@@ -19,6 +19,7 @@ public class PlayerController : MonoBehaviour
 
     private bool _ishungery = false;
     private bool _canCook = false;  
+    private bool _isCooking = false;
     private bool _shouldSell = false;
     private bool _isFishing = false;
     private bool _isAcornFalling = false;
@@ -60,6 +61,8 @@ public class PlayerController : MonoBehaviour
     public bool IsResting => _isResting;
     public bool HasYawn => _hasYawned;
     public bool IsYawning => _isYawning;
+    public bool IsCookuing => _isCooking;
+    public bool CanCook => _canCook;
     public Point Point => _currentPoint;
     public Transform FishPoint => _fishPoint;
     public Transform StorePoint => _storePoint;
@@ -167,11 +170,33 @@ public class PlayerController : MonoBehaviour
         // 음식 섭취 로직
     }
 
-    public void AddFishToStorage()
+    public void TryCooking()
     {
-        // 물고기 보관 로직
+        if (!_canCook) return;
+        if (_isCooking) return;
+        if (PlayerData.Stamina < 10)
+        {
+            _canCook = false;
+            return;
+        }
+        _isCooking = true;
+        PlayerData.SetStamina(PlayerData.Stamina - 10);
+        _animator.SetBool("isCook", true);
     }
-
+    public void AnimEvent_CookingEnd()  //이함수를 Cook_FryingPan_Mix@loop 애니의 끝부분에 넣기
+    {
+        //요리 결과 보관
+        //레시피대로 재료 소비
+        //재료 남았나 체크해서 _canCook 갱신
+        _isCooking = false;
+        _animator.SetBool("isCook", false);
+        if (_canCook && _currentState is CookState)
+        {
+            TryCooking();
+            return;
+        }
+         SetState(new IdleState(this));  //재료없으면
+    }  
     public void ExhaustionMovement()  //피로도에 따른 이동속도 감소 및 애니메이션 변화
     {
         //로그창 폭발로 주석처리
@@ -223,7 +248,7 @@ public class PlayerController : MonoBehaviour
     private void UpdateConditionFlags()  //상태 업데이트
     {
         _ishungery = PlayerData.Hunger <= 25;
-
+        
         if (_isAcornFalling) return;
         if (!_canCook && !_shouldSell && PlayerData.Hunger <= 20)
         {
@@ -374,11 +399,11 @@ public class PlayerController : MonoBehaviour
             return new MoveState(this, _currentPoint);
         }
 
-       // if (_canCook)
-       // {
-       //     _currentPoint = Point.Kitchen;
-       //     return new MoveState(this, _currentPoint);
-       // }
+        if (_canCook)
+        {
+            _currentPoint = Point.Kitchen;
+            return new MoveState(this, _currentPoint);
+        }
 
        // if (_shouldSell)
        // {
