@@ -20,7 +20,6 @@ public class BuildingManager : MonoBehaviour
 
     private Placeable3D _activePlaceable;
     private BuildingSnapshot _currentSnapshot;
-    private Transform _grid;
 
     [Header("오브젝트 저장 담당")]
     private List<Placeable3D> _newBuildings = new(); // 새로 생긴 건물 담당
@@ -37,10 +36,7 @@ public class BuildingManager : MonoBehaviour
     public GridSystem GridSystem => _gridSystem;
     #endregion
 
-    private void Awake()
-    {
-        _grid = _gridSystem.transform.GetChild(0);
-    }
+    
     public void PickUpBuilding(Placeable3D target)
     {
         // 편집모드 딱 들어왔을 때 저장한 값이 있다면 (기존 건물)
@@ -107,7 +103,7 @@ public class BuildingManager : MonoBehaviour
             Destroy(_activePlaceable.gameObject);
         }
         //배치할 물건 등록
-        GameObject go = Instantiate(prefab, _grid);
+        GameObject go = Instantiate(prefab, _gridSystem.transform);
 
         if (go.TryGetComponent(out _activePlaceable))
         {
@@ -215,7 +211,7 @@ public class BuildingManager : MonoBehaviour
         {
             Destroy(_activePlaceable.gameObject);
         }
-        foreach (Transform child in _grid)
+        foreach (Transform child in _gridSystem.transform)
         {
             Destroy(child.gameObject);
         }
