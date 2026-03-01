@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using static UnityEditor.Progress;
 /// <summary>
@@ -199,6 +200,33 @@ public class GridSystem : MonoBehaviour
         // 텍스쳐 업데이트
         _gridDataTexture.Apply();
         _gridRenderer.material.SetTexture("_GridDataTex", _gridDataTexture); // 업데이트된 텍스쳐를 셰이더에 전달
+    }
+
+    public void ClearAllItems()
+    {
+        HashSet<Placeable> itemsToRemove = new();
+
+        for (int x = 0; x < _width; x++)
+        {
+            for (int y = 0; y < _height; y++)
+            {
+                if (_grid[x, y] != null)
+                {
+                    itemsToRemove.Add(_grid[x, y]);
+
+                    _grid[x, y] = null;
+                }
+            }
+        }
+        foreach (Placeable item in itemsToRemove)
+        {
+            if (item != null)
+            {
+                Destroy(item.gameObject);
+            }
+        }
+        UpdateGridTexture();
+        Debug.Log("모든 오브젝트 파괴 및 그리드 초기화 완료!");
     }
 
     public void ClearGrid()

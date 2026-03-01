@@ -39,7 +39,7 @@ public class PlacementMgr : MonoBehaviour
 
     private void OnDisable()
     {
-        _clickAction.performed -= OnClickInput; 
+        _clickAction.performed -= OnClickInput;
         _clickAction.Disable();
     }
     public void ToggleEditMode()
@@ -78,7 +78,7 @@ public class PlacementMgr : MonoBehaviour
         if (_buildingManager.ActivePlaceable != null)
         {
             _buildingManager.ActivePlaceable.Placement(); // 건물의 Placement 실행
-            return; 
+            return;
         }
 
         TrySelectBuildingForMove();
@@ -118,7 +118,7 @@ public class PlacementMgr : MonoBehaviour
             position = Mouse.current.position.ReadValue()
         };
 
-        List<RaycastResult> results = new ();
+        List<RaycastResult> results = new();
 
         EventSystem.current.RaycastAll(eventData, results);
 
@@ -133,7 +133,7 @@ public class PlacementMgr : MonoBehaviour
         }
 
         _selectedTarget = target;
-        _selectedTarget.ToggleUI(true); 
+        _selectedTarget.ToggleUI(true);
     }
     // 편집 메뉴를 닫는 메서드
     public void CloseEditMenu()
@@ -169,4 +169,12 @@ public class PlacementMgr : MonoBehaviour
 
         CloseEditMenu();
     }
+    public void OnClickAllDelete()
+    {
+        CloseEditMenu();
+        _buildingManager.ClearAll();
+
+        Debug.Log("전체 회수 버튼 클릭: 모든 건물을 삭제했습니다.");
+    }
+
 }

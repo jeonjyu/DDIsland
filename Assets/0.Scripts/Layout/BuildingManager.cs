@@ -106,6 +106,18 @@ public class BuildingManager : MonoBehaviour
 
         _activePlaceable = null;
     }
+    public void ClearAll()
+    {
+        if (_activePlaceable != null && _activePlaceable.ItemState == ItemState.Preview)
+        {
+            Destroy(_activePlaceable.gameObject);
+            _activePlaceable = null;
+        }
+
+        _gridSystem.ClearAllItems();
+
+        _gridSystem.ClearGrid();
+    }
     private void Update()
     {
         //배치 가능한 물건이 배치되었으면
