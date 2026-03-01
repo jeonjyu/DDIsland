@@ -68,7 +68,6 @@ public abstract class TradeUnitViewBase : MonoBehaviour
 
     public void SetItemCount(int count)
     {
-        Debug.Log("itemcount : " + count );
         countTxt.text = count.ToString(); 
     }
 
@@ -78,14 +77,12 @@ public abstract class TradeUnitViewBase : MonoBehaviour
         {
             case null: case " ":
                 // 유닛 초기화
-                Debug.Log("[TradeUnitViewBase] 유닛 초기화");
+                //Debug.Log("[TradeUnitViewBase] 유닛 초기화");
                 viewModel.SetTotalPrice();
                 break;
             case nameof(viewModel.TradeCount) :
-                //viewModel.ChangeCount(viewModel.TradeCount);
                 SetItemCount(viewModel.TradeCount);
                 viewModel.SetTotalPrice();
-                //SetTotalPriceText(viewModel.);
                 break;
 
         }
