@@ -31,7 +31,7 @@ public class ItemSlotView : MonoBehaviour, IStoreItemView, IPointerClickHandler
     }
     void Start()
     {
-        Debug.Log("[ItemSlotView] Start");
+        //Debug.Log("[ItemSlotView] Start");
         //modelData = viewModel.Model;
 
 
@@ -59,7 +59,7 @@ public class ItemSlotView : MonoBehaviour, IStoreItemView, IPointerClickHandler
 
         if (!modelData)
         {
-            Debug.Log("model이 없음");
+            //Debug.Log("model이 없음");
             ResetSlot();
             return;
         }
@@ -95,8 +95,8 @@ public class ItemSlotView : MonoBehaviour, IStoreItemView, IPointerClickHandler
     public void OnPointerClick(PointerEventData eventData)
     {
         // 구매보다 카테고리 변경을 더 자주하니까 구매창 킬 때 카테고리에 따라 다른 구매창 열도록 설정
-        StoreManager.Instance.BuyAndSellPanel.SetActive(true);
         viewModel.SetPopupModel();
+        StoreManager.Instance.BuyAndSellPanel.SetActive(true);
     }
 
     private void OnViewModelPropChanged(object sender, PropertyChangedEventArgs e)

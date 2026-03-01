@@ -14,7 +14,14 @@ using UnityEngine;
 
 public class TradeViewModelBase : MonoBehaviour, INotifyPropertyChanged
 {
-    public StoreItem model;
+    public StoreItem Model
+    {
+        get => StoreManager.Instance.tradeModel;
+        set 
+        {  
+            StoreManager.Instance.tradeModel = value;
+        }
+    }
     public TradeViewBase view;
 
     public int Gold
@@ -27,8 +34,9 @@ public class TradeViewModelBase : MonoBehaviour, INotifyPropertyChanged
         }
     }
 
-    int totalPrice;
 
+
+    int totalPrice;
 
     public int TotalPrice
     {
@@ -48,17 +56,17 @@ public class TradeViewModelBase : MonoBehaviour, INotifyPropertyChanged
     void Start()
     {
         view = GetComponent<TradeViewBase>();
-        Init(TradeManager.Instance.model);
+        //Init(StoreManager.Instance.tradeModel);
     }
 
     public void OnEnable()
     {
-        Init(TradeManager.Instance.model);
+        //Init(StoreManager.Instance.tradeModel);
     }
 
     public void Init(StoreItem model)
     {
-        this.model = model;
+        this.Model = model;
     }
 
     protected void OnPropertyChanged([CallerMemberName] string propertyName = null)

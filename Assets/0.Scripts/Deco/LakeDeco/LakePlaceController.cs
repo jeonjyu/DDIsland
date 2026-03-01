@@ -34,8 +34,8 @@ public class LakePlaceController : MonoBehaviour
         // 아이템 리스트 이벤트 연결
         if (itemListManager != null)
         {
-            itemListManager.OnItemSelected += OnItemSelected;
-            itemListManager.OnItemDeselected += OnItemDeselected;
+            itemListManager.OnSlotPick += OnSlotPick;
+            itemListManager.OnSlotCancel += OnSlotCancel;
         }
 
         // 액션 버튼 연결
@@ -52,8 +52,8 @@ public class LakePlaceController : MonoBehaviour
         // 이벤트 해제 (메모리 누수 방지)
         if (itemListManager != null)
         {
-            itemListManager.OnItemSelected -= OnItemSelected;
-            itemListManager.OnItemDeselected -= OnItemDeselected;
+            itemListManager.OnSlotPick -= OnSlotPick;
+            itemListManager.OnSlotCancel -= OnSlotCancel;
         }
     }
 
@@ -211,7 +211,7 @@ public class LakePlaceController : MonoBehaviour
     
     
     // 아이템 리스트에서 슬롯 클릭했을 때
-    void OnItemSelected(int itemId, int slotIndex)
+    void OnSlotPick(int itemId, int slotIndex)
     {
         // 이미 배치 중이면 이전 것 정리
         if (isPlacing)
@@ -233,7 +233,7 @@ public class LakePlaceController : MonoBehaviour
             editModeManager.LockTopButtons(false);
     }
   
-    void OnItemDeselected()
+    void OnSlotCancel()
     {
         CancelPlacing();
     }

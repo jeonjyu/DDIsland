@@ -28,7 +28,7 @@ public class StoreDropdownBase : MonoBehaviour
 
     public void SetOptions()
     {
-        Debug.Log("[StoreDropdownBase] SetOptions");
+        //Debug.Log("[StoreDropdownBase] SetOptions");
 
         if (dropdown != null)
         {
