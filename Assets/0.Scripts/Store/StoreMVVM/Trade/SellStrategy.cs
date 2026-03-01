@@ -5,9 +5,15 @@ public class SellStrategy : MonoBehaviour, ITradeStrategy
     public bool Trade(int tradeCount, StoreItem item)
     {
         GameManager.Instance.SetGold(tradeCount * item.SellPrice);
-        item.ItemCount -= tradeCount;
-        if(item.ItemCount == 0 && item.IsGained == true)
+        //item.ItemCount -= tradeCount;
+        StoreManager.Instance.ItemCountChanged(item.ItemCount - tradeCount);
+
+        if (item.ItemCount == 0 && item.IsGained == true)
+        {
             item.IsGained = false;
+            //ItemManager.Instance.RemoveFromPlayerItem(StoreManager.Instance.tradeModel, StoreManager.Instance.currentCat);
+
+        }
         return true;
     }
 
