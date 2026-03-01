@@ -203,29 +203,18 @@ public class GridSystem : MonoBehaviour
 
     public void ClearAllItems()
     {
-        HashSet<Placeable> itemsToRemove = new();
-
         for (int x = 0; x < _width; x++)
         {
             for (int y = 0; y < _height; y++)
             {
                 if (_grid[x, y] != null)
                 {
-                    itemsToRemove.Add(_grid[x, y]);
-
                     _grid[x, y] = null;
                 }
             }
         }
-        foreach (Placeable item in itemsToRemove)
-        {
-            if (item != null)
-            {
-                Destroy(item.gameObject);
-            }
-        }
+      
         UpdateGridTexture();
-        Debug.Log("모든 오브젝트 파괴 및 그리드 초기화 완료!");
     }
 
     public void ClearGrid()
