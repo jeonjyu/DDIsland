@@ -19,6 +19,7 @@ public class StoreManager : Singleton<StoreManager>
     public StoreCat currentCat;
 
     [SerializeField] public StoreItem tradeModel;
+    public ItemSlotViewModel currentTradeItem;
 
     public GameObject BuyAndSellPanel => buyAndSellPanel;
 
@@ -48,5 +49,23 @@ public class StoreManager : Singleton<StoreManager>
         return description.Description;
     }
 
-
+    public void ItemCountChanged(int inCount)
+    {
+        if (currentTradeItem != null)
+        {
+            currentTradeItem.ItemCount = inCount;
+            if (currentTradeItem.ItemCount > 0 && !currentTradeItem.IsGained)
+            {
+                currentTradeItem.IsGained = true;
+                ItemManager.Instance.AddToPlayerItem(tradeModel, currentCat);
+            }
+            else if (currentTradeItem.ItemCount == 0 && currentTradeItem.IsGained)
+            {
+                currentTradeItem.IsGained = false;
+                ItemManager.Instance.RemoveFromPlayerItem(tradeModel, currentCat);
+            }
+            else
+                return;
+        }
+    }
 }
