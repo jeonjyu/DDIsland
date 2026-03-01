@@ -5,9 +5,8 @@ public class SellUnitView : TradeUnitViewBase
 {
     SellStrategy strategy;
 
-    protected override void Start()
+    void Awake()
     {
-        base.Start();
         strategy = GetComponent<SellStrategy>();
     }
 

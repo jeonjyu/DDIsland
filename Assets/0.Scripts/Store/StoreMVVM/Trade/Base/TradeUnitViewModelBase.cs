@@ -77,7 +77,8 @@ public class TradeUnitViewModelBase : MonoBehaviour, INotifyPropertyChanged
     {
         Model = StoreManager.Instance.tradeModel;
         TradeCount = 1;
-        view.SetItemCount(1);
+        view.SetItemCount(TradeCount);
+        SetTotalPrice();
     }
 
     public void ExcuteTrade(ITradeStrategy tradeStrategy)
