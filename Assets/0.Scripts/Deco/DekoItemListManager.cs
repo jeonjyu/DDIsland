@@ -27,6 +27,9 @@ public class DecoItemListManager : MonoBehaviour
     public int slotsPerPage = 6; // 한 페이지에 보이는 최대 슬롯 수
     public int maxPages = 3;     // 최대 페이지 수
 
+    [Header("SO데이터 관련")]
+    [SerializeField] InteriorDatabaseSO _interiorDatabaseSO;
+
     public DecoMode currentMode = DecoMode.Lake; // 현재 편집 모드, 디폴트는 호수 
 
 
@@ -46,6 +49,11 @@ public class DecoItemListManager : MonoBehaviour
     public event Action<int, int> OnSlotPick;   // (itemId, slotIndex)
     public event Action OnSlotCancel;           // 선택 해제
 
+
+    private void Awake()
+    {
+        IslandDecoTestData.Initialize(_interiorDatabaseSO);
+    }
     void Start()
     {
         // 화살표 버튼 연결
@@ -74,7 +82,7 @@ public class DecoItemListManager : MonoBehaviour
         if (currentMode == DecoMode.Lake)
             SetupInventory(lakeInvenSave ?? LakeDecoTestData.CreateTestInventory());
         else if (currentMode == DecoMode.Island)
-            SetupInventory(islandInvenSave ?? IslandDecoTestData.CreateTestInventory());
+            SetupInventory(islandInvenSave ?? IslandDecoTestData.CreateInventory());
         else
             SetupInventory(new List<LakeInvenSlot>()); // 빈 인벤 
 
@@ -147,8 +155,9 @@ public class DecoItemListManager : MonoBehaviour
         {
             if (currentMode == DecoMode.Lake)
                 slotUI.nameText.text = LakeDecoTestData.GetItemName(slotData.itemId);
+            // 어짜피 GetData로 한꺼번에 가져오기 때문에 GetItemName이라는 함수는 삭제하고 GetData에서 문자열 값을 직접 들고옴
             else if (currentMode == DecoMode.Island)
-                slotUI.nameText.text = IslandDecoTestData.GetItemName(slotData.itemId);
+                slotUI.nameText.text = IslandDecoTestData.GetData(slotData.itemId).InteriorName_String;
         }
 
         // 아이템 슬롯 이미지 
