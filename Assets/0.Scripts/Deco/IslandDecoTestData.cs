@@ -5,17 +5,34 @@ using System.Collections.Generic;
 /// 나중에 파베/CSV 연결하면 이 파일만 교체하면 됨
 public static class IslandDecoTestData
 {
-    public static string GetItemName(int itemId)
+
+    private static Dictionary<int, InteriorDataSO> _data;
+
+    public static void Initialize(InteriorDatabaseSO database)
     {
-        switch (itemId)
+        if (database == null) return;
+
+        _data = new Dictionary<int, InteriorDataSO>();
+
+        foreach (var d in database.datas)
         {
-            case 2001: return "큐브 건물";
-            case 2002: return "구체 건물";
-            case 2003: return "캡슐 건물";
-            default: return "섬아이템 " + itemId;
+            if (d != null && !_data.ContainsKey(d.InteriorID))
+                _data.Add(d.InteriorID, d);
         }
+
+        Debug.Log($"SO 연동: {_data.Count}개 로드됨");
+    }
+    /// 핵심: itemId에서 들고온 데이터 반환
+    public static InteriorDataSO GetData(int itemId)
+    {
+        if (_data != null && _data.TryGetValue(itemId, out var so))
+        {
+            return so;
+        }
+        return null;
     }
 
+    //아직 스프라이트 없어서 기본 로직 유지 중
     public static Sprite GetIconSprite(int itemId)
     {
         // TODO: 나중에 실제 스프라이트 로드
@@ -28,25 +45,17 @@ public static class IslandDecoTestData
         }
     }
 
-    /// 핵심: itemId에 3D프리팹 매핑
-    /// Resources 폴더에 프리팹이 있어야 함
-    public static GameObject GetPrefab(int itemId)
-    {
-        switch (itemId)
-        {
-            case 2001: return Resources.Load<GameObject>("TestBuild/TestBuild Copy");
-            case 2002: return Resources.Load<GameObject>("TestBuild/TestBuild Variant1 Copy");
-            case 2003: return Resources.Load<GameObject>("TestBuild/TestBuild Variant2 Copy");
-            default: return null;
-        }
-    }
+    
+   
 
-    public static List<LakeInvenSlot> CreateTestInventory()
+    public static List<LakeInvenSlot> CreateInventory()
     {
-        List<LakeInvenSlot> list = new List<LakeInvenSlot>();
-        list.Add(new LakeInvenSlot { itemId = 2001, quantity = 3 });
-        list.Add(new LakeInvenSlot { itemId = 2002, quantity = 2 });
-        list.Add(new LakeInvenSlot { itemId = 2003, quantity = 1 });
+        List<LakeInvenSlot> list = new()
+        {
+            new LakeInvenSlot { itemId = 2001, quantity = 3 },
+            new LakeInvenSlot { itemId = 2002, quantity = 2 },
+            new LakeInvenSlot { itemId = 2003, quantity = 1 }
+        };
         return list;
     }
 }

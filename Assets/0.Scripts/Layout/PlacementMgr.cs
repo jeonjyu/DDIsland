@@ -73,6 +73,7 @@ public class PlacementMgr : MonoBehaviour
             CloseEditMenu();
         }
     }
+    // ToDo: 배치중 회전 방식을 추가해야하는데 아직 추가 안함
     private void OnRotate(InputAction.CallbackContext ctx)
     {
         OnClickRotate();
@@ -106,13 +107,25 @@ public class PlacementMgr : MonoBehaviour
 
             if (target != null && target.ItemState == ItemState.Placed)
             {
-                ShowEditMenu(target); // 편집 메뉴 표시
+                if(target.IsEditable)
+                {
+                    ShowEditMenu(target); // 편집 메뉴 표시
+                }
+                else
+                {   
+                    //TODO : 프리팹 교체 UI 추가
+                }
             }
             else
             {
                 // 빈 땅을 클릭하면 메뉴 닫기
                 CloseEditMenu();
             }
+        }
+        else
+        {
+            //여긴 빈 땅 뿐만이 아니라 아무데나 입력해도 창 닫히게 해놓음
+            CloseEditMenu();
         }
     }
     // UI 요소 위에서 클릭이 발생했는지 확인하는 메서드
@@ -164,8 +177,6 @@ public class PlacementMgr : MonoBehaviour
         if (_selectedTarget == null) return;
 
         _selectedTarget.ObjectRotate();
-        //여기서 회전이 안됐다고 하면
-        //PickUp을 불러오기
     }
     public void OnClickDelete() // 삭제 버튼에 연결
     {
@@ -203,7 +214,9 @@ public class PlacementMgr : MonoBehaviour
 
         Debug.Log("모든 변경 사항이 취소되고 편집 전으로 되돌아갔습니다.");
     }
-    public void OnClickConstructionButton(GameObject prefab)
+
+    // 인테리어 데이터 SO로 바꿔야함
+    public void OnClickConstructionButton(InteriorDataSO data)
     {
         // 편집 모드일 때만 건설 시작 가능
         if (CurrentState != PlacementState.Edit)
@@ -212,7 +225,8 @@ public class PlacementMgr : MonoBehaviour
             return;
         }
 
-        _buildingManager.StartPlacement(prefab);
+        
+        _buildingManager.StartPlacement(data);
     }
 
 }

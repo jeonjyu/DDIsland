@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.Rendering.Universal;
 
 /// <summary>
 /// 3D 오브젝트의 배치 기능을 구현하는 클래스
@@ -11,7 +10,9 @@ public class Placeable3D : Placeable
     [SerializeField] private LayerMask _groundLayer;
     [SerializeField] private float _rotationStep = 90f; // 한 번 누를 때 회전할 각도 
     [SerializeField] private GameObject _editMenuUI; // 현재 선택된 건물의 편집 UI
-    private BuildingManager _build;
+
+    protected BuildingManager _build;
+    protected InteriorDataSO _data;
 
     Camera _mainCamera;
     MeshRenderer _selectedRenderer;
@@ -40,17 +41,25 @@ public class Placeable3D : Placeable
     public int IsRotated => _isRotated;
     public float CurrentYRotation => _currentYRotation;
     public bool IsPlaced => _isPlaced;
+    public bool IsEditable => _data != null && _data.interiorType != InteriorType.Fix;
     #endregion
 
-    public void Initialize(GridSystem grid, BuildingManager build)
+    // 이곳에 data라는 인테리어SO를 추가시켜야함
+    public void Initialize(GridSystem grid, BuildingManager build, InteriorDataSO data)
     {
         _build = build;
         _targetGrid = grid;
+        _data = data;
         _mainCamera = Camera.main;
         _selectedRenderer = GetComponentInChildren<MeshRenderer>();
         _groundLayer = LayerMask.GetMask("Ground");
 
         _originalColor = _selectedRenderer.material.color;
+
+        _sizeX = _data.GridSizeX;
+        _sizeY = _data.GridSizeY;
+
+
 
         ItemState = ItemState.Preview;
         enabled = true;
@@ -60,12 +69,21 @@ public class Placeable3D : Placeable
         if (_editMenuUI != null)
         {
             _editMenuUI.SetActive(isActive);
-            VisualFeedback();
+            if (isActive)
+            {
+                VisualFeedback();
+            }
+            else
+            {
+                _targetGrid.ClearGrid();
+            }
         }
     }
 
     public void ObjectRotate()
     {
+        if (IsEditable == false) return;
+
         if (ItemState == ItemState.Placed)
         {
             _targetGrid.RemoveItem(_lastPlacedIndex.x, _lastPlacedIndex.y, _lastPlacedSize.x, _lastPlacedSize.y);

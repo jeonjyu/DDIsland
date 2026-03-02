@@ -26,6 +26,7 @@ public class BuildingManager : MonoBehaviour
     private Dictionary<Placeable3D, BuildingSnapshot> _movedSnapshots = new();
     // 건물을 이동시켰을 때 원복시키기 위한 딕셔너리
     private List<Placeable3D> _deletedBuildings = new(); // 삭제 취소용
+    private List<Placeable3D> _allBuildings = new();
 
     #region 배치 결과 이벤트
     public event Action<GameObject> OnPlaceSuccess; // 배치 성공
@@ -58,6 +59,12 @@ public class BuildingManager : MonoBehaviour
 
         _activePlaceable = target;
 
+        // 이동 시작 시 배치되어 있는 곳에서는 제거
+        if (_allBuildings.Contains(target))
+        {
+            _allBuildings.Remove(target);
+        }
+
         // 현재 건물의 상태를 임시적으로 저장 (편집모드의 이동중 취소가 가능하게)
         _currentSnapshot = new()
         {
@@ -83,12 +90,21 @@ public class BuildingManager : MonoBehaviour
         }
 
         _gridSystem.ClearGrid();
+
         // 그리드에서 삭제
         RemoveBuildingFromGrid(target);
+
         // 먼저 삭제하지 않고 나중에 되돌리기 될 수 있기 때문에 비활성화 처리
         target.gameObject.SetActive(false);
+
         // 삭제 대기열에 추가
         _deletedBuildings.Add(target);
+
+        // 설치 되어 있는걸 지웠으니 일단 관리 목록에서 제거
+        if (_allBuildings.Contains(target))
+        {
+            _allBuildings.Remove(target);
+        }
     }
     private void RemoveBuildingFromGrid(Placeable3D target)
     {
@@ -96,31 +112,38 @@ public class BuildingManager : MonoBehaviour
                                target.PlacedSize.x, target.PlacedSize.y);
     }
 
-    public void StartPlacement(GameObject prefab)
+    // 인테리어 데이터 SO를 받게 바꿔야함
+    public void StartPlacement(InteriorDataSO data)
     {
 
         //현재 배치 중인 물건이 있으면 들고 있는 물체를 제거
         if (_activePlaceable != null && _activePlaceable.ItemState == ItemState.Preview)
         {
             _newBuildings.Remove(_activePlaceable);
+            _allBuildings.Remove(_activePlaceable);
             Destroy(_activePlaceable.gameObject);
         }
         //배치할 물건 등록
-        GameObject go = Instantiate(prefab, _gridSystem.transform);
+        GameObject go = Instantiate(data.InteriorPath_GameObject, _gridSystem.transform);
 
         if (go.TryGetComponent(out _activePlaceable))
         {
             _currentSnapshot = new() { Pos = new Vector2Int(-1, -1) };
 
-            _activePlaceable.Initialize(_gridSystem, this); //배치할 물건 초기화
+            // 인테리어 데이터 SO 추가해야함
+            _activePlaceable.Initialize(_gridSystem, this,data); //배치할 물건 초기화
         }
 
         else
         {
-            Debug.LogError($"{prefab.name}에 스크립트가 없습니다!");
+            Debug.LogError($"{go.name}에 스크립트가 없습니다!");
+            Destroy(go);
         }
 
+        //저장용
         _newBuildings.Add(_activePlaceable);
+        //건물 관리용
+        _allBuildings.Add(_activePlaceable);
     }
     public void CancelCurrentAction()
     {
@@ -129,6 +152,8 @@ public class BuildingManager : MonoBehaviour
         //만약 기존 위치가 -1(배치 안됨)이라면 그냥 제거
         if (_currentSnapshot.Pos.x == -1)
         {
+            _newBuildings.Remove(_activePlaceable);
+            _allBuildings.Remove(_activePlaceable);
             Destroy(_activePlaceable.gameObject);
         }
         else
@@ -141,6 +166,12 @@ public class BuildingManager : MonoBehaviour
             Vector3 originWorldPos = _gridSystem.GetWorldPosition(
                 _currentSnapshot.Pos.x, _currentSnapshot.Pos.y,
                 _currentSnapshot.Size.x, _currentSnapshot.Size.y);
+
+            // 이동을 취소 했을 경우 다시 배치된 건물 관리 목록에 추가
+            if (!_allBuildings.Contains(_activePlaceable))
+            {
+                _allBuildings.Add(_activePlaceable);
+            }
 
             _activePlaceable.RestoreState(originWorldPos, _currentSnapshot.Rotation, _currentSnapshot.IsRotated);
         }
@@ -173,11 +204,13 @@ public class BuildingManager : MonoBehaviour
     public void RevertAll()
     {
         // 새로 만든 건물들 전부 삭제
-        foreach (var b in _newBuildings)
+        for (int i = _newBuildings.Count - 1; i >= 0; i--)
         {
+            var b = _newBuildings[i];
             if (b != null)
             {
                 RemoveBuildingFromGrid(b);
+                _allBuildings.Remove(b);
                 Destroy(b.gameObject);
             }
         }
@@ -195,16 +228,30 @@ public class BuildingManager : MonoBehaviour
 
                 Vector3 worldPos = _gridSystem.GetWorldPosition(snap.Pos.x, snap.Pos.y, snap.Size.x, snap.Size.y);
                 snap.Target.RestoreState(worldPos, snap.Rotation, snap.IsRotated);
+
+                if (!_allBuildings.Contains(snap.Target))
+                {
+                    _allBuildings.Add(snap.Target);
+                }
             }
         }
         // 삭제한 건물 부활 시키기
         foreach (var b in _deletedBuildings)
         {
-            b.gameObject.SetActive(true);
-            _gridSystem.PlaceItem(b.PlacedIndex.x, b.PlacedIndex.y, b.PlacedSize.x, b.PlacedSize.y, b);
+            if(b!=null)
+            {
+                b.gameObject.SetActive(true);
+                _gridSystem.PlaceItem(b.PlacedIndex.x, b.PlacedIndex.y, b.PlacedSize.x, b.PlacedSize.y, b);
+                if (!_allBuildings.Contains(b))
+                {
+                    _allBuildings.Add(b);
+                }
+            }
+
         }
 
         ClearSession();
+
         OnRevert?.Invoke(); // 전체 회수 알림 
         _activePlaceable = null;
     }
@@ -214,17 +261,35 @@ public class BuildingManager : MonoBehaviour
         if (_activePlaceable != null)
         {
             Destroy(_activePlaceable.gameObject);
+            _activePlaceable = null;
         }
-        //foreach (Transform child in _gridSystem.transform)
-        //{
-        //    Destroy(child.gameObject);
-        //}
+        for (int i = _allBuildings.Count - 1; i >= 0; i--)
+        {
+
+            var b = _allBuildings[i];
+            if (b != null)
+            {
+                if (!b.IsEditable) continue;
+
+                RemoveBuildingFromGrid(b);
+                Destroy(b.gameObject);
+            }
+        }
+        _allBuildings.Clear();
+
+        foreach (var b in _deletedBuildings)
+        {
+            if (b != null)
+            {
+                Destroy(b.gameObject);
+            }
+        }
 
         _gridSystem.ClearAllItems();
         _gridSystem.ClearGrid();
-
-        OnClearAll?.Invoke(); // 초기화 알림
+        
         ClearSession();
+        OnClearAll?.Invoke(); // 초기화 알림
     }
     private void Update()
     {
