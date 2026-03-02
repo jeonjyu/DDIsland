@@ -36,8 +36,6 @@ public class ItemSlotViewModel : MonoBehaviour, INotifyPropertyChanged
         }
     }
 
-    private int _itemCount;
-
     public int ItemCount
     {
         get => _model.ItemCount;
@@ -47,8 +45,6 @@ public class ItemSlotViewModel : MonoBehaviour, INotifyPropertyChanged
             OnPropertyChanged(nameof(_model.ItemCount));
         }
     }
-
-    private bool _isGained;
 
     public bool IsGained
     {
@@ -93,6 +89,7 @@ public class ItemSlotViewModel : MonoBehaviour, INotifyPropertyChanged
     public void SetPopupModel()
     {
         StoreManager.Instance.tradeModel = Model;
+        StoreManager.Instance.currentTradeItem = this;
     }
 
     public event PropertyChangedEventHandler PropertyChanged;

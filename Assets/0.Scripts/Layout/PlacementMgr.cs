@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -16,7 +17,13 @@ public class PlacementMgr : MonoBehaviour
     private InputAction _clickAction; // 클릭 입력 액션
     private InputAction _rotation;
 
+    [Header("Cinemachine Cameras")]
+    [SerializeField] private CinemachineCamera _viewCamera;
+    [SerializeField] private CinemachineCamera _editCamera;
+
     [SerializeField] private BuildingManager _buildingManager;
+
+    DecoMode _islandMode = DecoMode.Island;
 
     #region 프로퍼티
     static public PlacementMgr Instance => _instance;
@@ -33,12 +40,13 @@ public class PlacementMgr : MonoBehaviour
     {
         _clickAction.Enable();
         _clickAction.performed += OnClickInput;
-        //_rotation.performed += OnRoation;
+        //_rotation.performed += OnRotate;
     }
 
     private void OnDisable()
     {
-        _clickAction.performed -= OnClickInput; 
+        _clickAction.performed -= OnClickInput;
+        //_clickAction.performed -= OnRotate;
         _clickAction.Disable();
     }
     public void ToggleEditMode()
@@ -51,24 +59,24 @@ public class PlacementMgr : MonoBehaviour
 
         Debug.Log($"현재 모드: {CurrentState}");
 
-        if (CurrentState == PlacementState.View)
+        if (isEditMode)
         {
-            _buildingManager.CancelCurrentAction(); // 모드 나갈 때 들고 있던 거 취소
+            _editCamera.Priority = 100;
+            _viewCamera.Priority = 10;
+        }
+        else
+        {
+            _editCamera.Priority = 10;
+            _viewCamera.Priority = 100;
+
+            _buildingManager.CancelCurrentAction();
             CloseEditMenu();
         }
     }
-    public void OnClickConstructionButton(GameObject prefab)
+    private void OnRotate(InputAction.CallbackContext ctx)
     {
-        // 편집 모드일 때만 건설 시작 가능
-        if (CurrentState != PlacementState.Edit)
-        {
-            Debug.LogWarning("편집 모드에서만 건물을 배치할 수 있습니다.");
-            return;
-        }
-
-        _buildingManager.StartPlacement(prefab);
+        OnClickRotate();
     }
-
     private void OnClickInput(InputAction.CallbackContext ctx)
     {
         //현재 상태가 편집모드가 아니라면 넘기기
@@ -77,7 +85,7 @@ public class PlacementMgr : MonoBehaviour
         if (_buildingManager.ActivePlaceable != null)
         {
             _buildingManager.ActivePlaceable.Placement(); // 건물의 Placement 실행
-            return; 
+            return;
         }
 
         TrySelectBuildingForMove();
@@ -117,7 +125,7 @@ public class PlacementMgr : MonoBehaviour
             position = Mouse.current.position.ReadValue()
         };
 
-        List<RaycastResult> results = new ();
+        List<RaycastResult> results = new();
 
         EventSystem.current.RaycastAll(eventData, results);
 
@@ -132,7 +140,7 @@ public class PlacementMgr : MonoBehaviour
         }
 
         _selectedTarget = target;
-        _selectedTarget.ToggleUI(true); 
+        _selectedTarget.ToggleUI(true);
     }
     // 편집 메뉴를 닫는 메서드
     public void CloseEditMenu()
@@ -168,4 +176,43 @@ public class PlacementMgr : MonoBehaviour
 
         CloseEditMenu();
     }
+    public void OnClickAllDelete()
+    {
+        CloseEditMenu();
+        _buildingManager.ClearAll();
+
+        Debug.Log("전체 회수 버튼 클릭: 모든 건물을 삭제했습니다.");
+    }
+    public void OnClickConfirmSession()
+    {
+        _buildingManager.ConfirmAll();
+
+        CloseEditMenu();
+        ToggleEditMode();
+
+        Debug.Log("모든 변경 사항이 확정되어 저장되었습니다.");
+    }
+    public void OnClickCancelSession()
+    {
+        _buildingManager.RevertAll();
+
+        _buildingManager.CancelCurrentAction();
+
+        CloseEditMenu();
+        ToggleEditMode();
+
+        Debug.Log("모든 변경 사항이 취소되고 편집 전으로 되돌아갔습니다.");
+    }
+    public void OnClickConstructionButton(GameObject prefab)
+    {
+        // 편집 모드일 때만 건설 시작 가능
+        if (CurrentState != PlacementState.Edit)
+        {
+            Debug.LogWarning("편집 모드에서만 건물을 배치할 수 있습니다.");
+            return;
+        }
+
+        _buildingManager.StartPlacement(prefab);
+    }
+
 }

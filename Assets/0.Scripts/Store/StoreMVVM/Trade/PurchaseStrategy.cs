@@ -10,10 +10,14 @@ public class PurchaseStrategy : MonoBehaviour, ITradeStrategy
         }
 
         GameManager.Instance.SetGold(-(tradeCount * item.PurchasePrice));
-        item.ItemCount += tradeCount;
+        //item.ItemCount += tradeCount;
+        StoreManager.Instance.ItemCountChanged(item.ItemCount + tradeCount);
 
-        if(!item.IsGained) item.IsGained = true;
-
+        if (!item.IsGained)
+        {
+            item.IsGained = true;
+            //ItemManager.Instance.AddToPlayerItem(StoreManager.Instance.tradeModel, StoreManager.Instance.currentCat);
+        }
         return true;
     }
 

@@ -41,6 +41,7 @@ public class DecoItemListManager : MonoBehaviour
     DecoMode lastMode = DecoMode.Lake;
     List<LakeInvenSlot> lakeInvenSave = null;   
     List<LakeInvenSlot> islandInvenSave = null;
+    List<LakeInvenSlot> snapshotData = null;
     // 아이템 선택 이벤트
     public event Action<int, int> OnSlotPick;   // (itemId, slotIndex)
     public event Action OnSlotCancel;           // 선택 해제
@@ -279,7 +280,7 @@ public class DecoItemListManager : MonoBehaviour
 
     // 배치 후 수량 갱신 
     // 아이템 배치 성공 시 수량 차감
-    public void ConsumeItem(int itemId)
+    public void UseItem(int itemId)
     {
         for (int i = 0; i < invenData.Count; i++)
         {
@@ -325,7 +326,44 @@ public class DecoItemListManager : MonoBehaviour
             }
         }
     }
+    // 초기화용  
+    public void ReturnAllItems()
+    {
+        if (snapshotData == null) return; 
+        LoadSnapshot();
+    }
+    #region 스냅샷 (저장/복구)
+    // 현재 인벤 상태 스냅샷 저장
+    public void SaveSnapshot()
+    {
+        snapshotData = new List<LakeInvenSlot>();
+        for (int i = 0; i < invenData.Count; i++)
+        {
+            snapshotData.Add(new LakeInvenSlot
+            {
+                itemId = invenData[i].itemId,
+                quantity = invenData[i].quantity
+            });
+        }
+    }
 
+    // 스냅샷으로 인벤 복원
+    public void LoadSnapshot()
+    {
+        if (snapshotData == null) return;
+
+        var restored = new List<LakeInvenSlot>();
+        for (int i = 0; i < snapshotData.Count; i++)
+        {
+            restored.Add(new LakeInvenSlot
+            {
+                itemId = snapshotData[i].itemId,
+                quantity = snapshotData[i].quantity
+            });
+        }
+        SetupInventory(restored);
+    }
+    #endregion
     // 슬롯 제거 (수량 0 됐을 때)
     void RemoveSlot(int dataIndex)
     {

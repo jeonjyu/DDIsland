@@ -38,9 +38,9 @@ public abstract class TradeUnitViewBase : MonoBehaviour
     protected void SetEventListener()
     {
         tradeBtn.onClick.AddListener(() => viewModel.ExcuteTrade(GetTradeStrategy()));
-        countIncBtn.onClick.AddListener(() => viewModel.ChangeCount(1));
-        countDecBtn.onClick.AddListener(() => viewModel.ChangeCount(-1));
-        //countMaxBtn.onClick.AddListener(() => viewModel.ChangeCount(-1));
+        countIncBtn.onClick.AddListener(() => viewModel.IncreaseCount());
+        countDecBtn.onClick.AddListener(() => viewModel.DecreaseCount());
+        countMaxBtn.onClick.AddListener(() => viewModel.SetMaxCount());
     }
 
     protected void UnsetEventListener()
@@ -68,7 +68,6 @@ public abstract class TradeUnitViewBase : MonoBehaviour
 
     public void SetItemCount(int count)
     {
-        Debug.Log("itemcount : " + count );
         countTxt.text = count.ToString(); 
     }
 
@@ -78,15 +77,12 @@ public abstract class TradeUnitViewBase : MonoBehaviour
         {
             case null: case " ":
                 // 유닛 초기화
-                Debug.Log("[TradeUnitViewBase] 유닛 초기화");
+                //Debug.Log("[TradeUnitViewBase] 유닛 초기화");
                 viewModel.SetTotalPrice();
-                
                 break;
             case nameof(viewModel.TradeCount) :
-                //viewModel.ChangeCount(viewModel.TradeCount);
                 SetItemCount(viewModel.TradeCount);
                 viewModel.SetTotalPrice();
-                //SetTotalPriceText(viewModel.);
                 break;
 
         }

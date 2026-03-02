@@ -177,6 +177,9 @@ public class LakePlaceController : MonoBehaviour
 
         if (itemId >= 0 && itemListManager != null)
             itemListManager.RestoreItem(itemId); // 복원
+    
+        if (editModeManager != null)
+            editModeManager.SetChanged();   
 
         HideActionPanel();
     }
@@ -206,10 +209,13 @@ public class LakePlaceController : MonoBehaviour
         skipNextClick = true;
         CreatePreviewObject();
         HideActionPanel();
+
+        if (editModeManager != null)
+            editModeManager.SetChanged();
     }
-    #endregion 
-    
-    
+    #endregion
+
+
     // 아이템 리스트에서 슬롯 클릭했을 때
     void OnSlotPick(int itemId, int slotIndex)
     {
@@ -251,7 +257,7 @@ public class LakePlaceController : MonoBehaviour
         {
             // 배치 성공 시 수량 차감
             if (itemListManager != null)
-                itemListManager.ConsumeItem(currentItemId);
+                itemListManager.UseItem(currentItemId);
 
             // 프리뷰 정리
             CleanupPreview();
@@ -264,6 +270,9 @@ public class LakePlaceController : MonoBehaviour
             // 상단 버튼 복원
             if (editModeManager != null)
                 editModeManager.LockTopButtons(true);
+
+            if (editModeManager != null)
+                editModeManager.SetChanged();
         }
         else
         {

@@ -19,6 +19,8 @@ public class ItemManager : Singleton<ItemManager>
     // 정렬 우선순위 리스트
     //public List<Comparer> sortPriority = new List<Comparer>();
 
+    [Header("슬롯 아이템 풀")]
+    [SerializeField] public ItemSlotPool itemSlotPool;
 
     [Header("테스트용 아이템 리스트")]
     [SerializeField] List<StoreItem> interiorItem = new List<StoreItem>();
@@ -63,7 +65,11 @@ public class ItemManager : Singleton<ItemManager>
         }
         // 아이템이 딕셔너리에 존재하는지 검색
         if (!_playerOwnedItems[storeCat].ContainsKey(item.ItemId))
+        {
             _playerOwnedItems[storeCat].Add(item.ItemId, item);
+            Debug.LogWarning($"[ItemManager] 플레이어 아이템 딕셔너리에 {item.ItemName}({item.ItemId}) 추가");
+
+        }
     }
 
     public void RemoveFromPlayerItem(StoreItem item, StoreCat storeCat)
@@ -78,8 +84,10 @@ public class ItemManager : Singleton<ItemManager>
         {
             // 아이템이 딕셔너리에 존재하는지 검색
             if (!_playerOwnedItems[storeCat].ContainsKey(item.ItemId))
+            {
                 _playerOwnedItems[storeCat].Remove(item.ItemId);
-            Debug.LogWarning($"[ItemManager] 플레이어 아이템 딕셔너리에서 {item.ItemName}({item.ItemId}) 제거");
+                Debug.LogWarning($"[ItemManager] 플레이어 아이템 딕셔너리에서 {item.ItemName}({item.ItemId}) 제거");
+            }
         }
     }
 

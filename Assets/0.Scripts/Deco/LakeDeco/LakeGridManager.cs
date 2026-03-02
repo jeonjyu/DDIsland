@@ -29,6 +29,7 @@ public class LakeGridManager : MonoBehaviour
     List<GameObject> blockedIcons = new List<GameObject>();
     public GameObject blockedIconPrefab; // 접근금지 이미지 프리팹 
     int placedIdCounter = 0; // 배치 ID
+    List<LakePlacedObjectData> gridSnapshot = null; // 배치 스냅샷 
 
     // 타일 크기 (부모에 맞게 자동 계산, 가로세로 다를 수 있음 = 직사각형)
     float tileWidth;
@@ -490,6 +491,38 @@ public class LakeGridManager : MonoBehaviour
         Vector2Int pos = MouseToGridPos();
         if (IsOutOfBounds(pos.x, pos.y)) return "";
         return tileDataArray[pos.x, pos.y].placedObjectId;
+    }
+    // 배치 스냅샷 저장 
+    public void SavePlacementSnapshot()
+    {
+        gridSnapshot = new List<LakePlacedObjectData>();
+        for (int i = 0; i < placedObjects.Count; i++)
+        {
+            var src = placedObjects[i];
+            gridSnapshot.Add(new LakePlacedObjectData
+            {
+                objectId = src.objectId,
+                itemId = src.itemId,
+                gridPos = src.gridPos,
+                size = src.size
+            });
+        }
+    }
+  
+    //  배치 스냅샷으로 복원 
+    public void LoadPlacementSnapshot()
+    {
+        // 현재 배치된 거 전부 제거
+        RecallAll();
+
+        if (gridSnapshot == null) return;
+
+        // 스냅샷에서 다시 배치
+        for (int i = 0; i < gridSnapshot.Count; i++)
+        {
+            var snap = gridSnapshot[i];
+            PlaceObject(snap.itemId, snap.gridPos.x, snap.gridPos.y, snap.size.x, snap.size.y);
+        }
     }
 
     // 헬퍼 함수

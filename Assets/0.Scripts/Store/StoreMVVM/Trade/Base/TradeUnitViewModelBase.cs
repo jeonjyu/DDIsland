@@ -2,10 +2,11 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 
+using System;
+
 //[RequireComponent(typeof(TradeViewBase))]
 public class TradeUnitViewModelBase : MonoBehaviour, INotifyPropertyChanged
 {
-    [SerializeField] private StoreItem model;
     protected TradeUnitViewBase view;
 
     [SerializeField] protected GameObject TradeConfirmPanel;
@@ -15,13 +16,16 @@ public class TradeUnitViewModelBase : MonoBehaviour, INotifyPropertyChanged
     public ITradeStrategy purchaseStrategy;
     public ITradeStrategy sellStrategy;
 
+    private StoreItem model;
 
     public StoreItem Model
     {
-        get => StoreManager.Instance.tradeModel;
+        //get => StoreManager.Instance.tradeModel;
+        get => model;
         set 
         {
-            StoreManager.Instance.tradeModel = value; 
+            model = value;
+            //StoreManager.Instance.tradeModel = model; 
             OnPropertyChanged(null); 
         }
     }
@@ -71,12 +75,16 @@ public class TradeUnitViewModelBase : MonoBehaviour, INotifyPropertyChanged
     // 팝업 껐다 켰다, 거래완료 팝업 끝나고 호출
     public void InitUnit()
     {
+        Model = StoreManager.Instance.tradeModel;
         TradeCount = 1;
-        view.SetItemCount(1);
+        view.SetItemCount(TradeCount);
+        SetTotalPrice();
     }
 
     public void ExcuteTrade(ITradeStrategy tradeStrategy)
     {
+        Debug.Log(tradeStrategy.ToString());
+
         if (tradeStrategy.Trade(TradeCount, Model))
         {
             TradeConfirmPanel.SetActive(true);
@@ -85,31 +93,51 @@ public class TradeUnitViewModelBase : MonoBehaviour, INotifyPropertyChanged
         {
             GoldWarningPanel.SetActive(false);
         }
-        // todo: 구매 완료/골드 부족 팝업 닫기 이후 실행하도록 이동
         InitUnit(); 
     }
 
     // 아이템 갯수 변경
     // max를 넘거나 0 이하로 못가게 해야 한다
-    public void ChangeCount(int tradeCount)
+    public void IncreaseCount()
     {
-        if (tradeCount > 0 && tradeCount < view.GetTradeStrategy().GetMaxCount(Model))
+        if(TradeCount >= view.GetTradeStrategy().GetMaxCount(Model))
         {
-            TradeCount += tradeCount;
+            Debug.LogWarning("[TradeUnitViewModelBase] 아이템 최대 범위 초과");
             return;
         }
-        else if (TradeCount < 1)
+        else
+        {
+            TradeCount++;
+            return;
+        }
+    }
+
+    public void DecreaseCount()
+    {
+        // 0보다 낮을 때
+        if(TradeCount <= 1)
         {
             Debug.LogWarning("[TradeUnitViewModelBase] 아이템 최소 범위 미만");
             TradeCount = 1;
             return;
         }
-        else // 최대를 넘어가는 경우
+        else
         {
-            Debug.LogWarning("[TradeUnitViewModelBase] 아이템 최대 범위 초과");
-            TradeCount = view.GetTradeStrategy().GetMaxCount(Model);
-            //TradeCount = tradeCount;
+            TradeCount--;
             return;
+        }
+    }
+
+
+    public void SetMaxCount()
+    {
+        if(view.GetTradeStrategy() is PurchaseStrategy)
+        {
+            TradeCount = Math.Min(GameManager.Instance.PlayerGold / Model.PurchasePrice, Model.MaxCount - Model.ItemCount);
+        }
+        else
+        {
+            TradeCount = Model.ItemCount;
         }
     }
 

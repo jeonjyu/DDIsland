@@ -112,7 +112,7 @@ public class ItemSlotView : MonoBehaviour, IStoreItemView, IPointerClickHandler
             case "IsGained":
             case "ItemCount":
                 UpdateItemCount(modelData.ItemCount);
-                UpdateSlotColor(modelData.IsGained);
+                UpdateSlotColor(modelData.IsGained); // itemCount 증가하면 itemGained 변경되어야 함
                 break;
         }
     }

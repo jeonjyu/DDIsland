@@ -11,8 +11,8 @@ public class StoreListViewModel : MonoBehaviour, INotifyPropertyChanged
     [Tooltip("슬롯을 채워줄 아이템 그리드")]
     [SerializeField] GameObject itemContents;
 
-// test
-    //[SerializeField] List<StoreItem> itemList = new List<StoreItem>();
+    [Header("슬롯 프리팹")]
+    [SerializeField] ItemSlotViewModel itemSlot;
 
     List<ItemSlotViewModel> storeItemViewModels = new List<ItemSlotViewModel>();
     [SerializeField] FilterDropdown filterDropdown;
@@ -22,11 +22,8 @@ public class StoreListViewModel : MonoBehaviour, INotifyPropertyChanged
         get => StoreManager.Instance.currentCat;
         set
         {
-            if(value != StoreManager.Instance.currentCat)
-            {
-                StoreManager.Instance.currentCat = value;
-                OnPropertyChanged(null);
-            }
+            StoreManager.Instance.currentCat = value;
+            OnPropertyChanged(null);
         }
     }
 
@@ -66,11 +63,9 @@ public class StoreListViewModel : MonoBehaviour, INotifyPropertyChanged
 
     public void OnEnable()
     {
-        StoreManager.Instance.currentCat = StoreCat.costume;
-        CurrentCat = StoreCat.interior;
+        StoreManager.Instance.currentCat = StoreCat.interior;
         ItemManager.Instance.SetCurrentCategory();
     }
-
 
     public void UpdateCurrentCat(int catIdx)
     {
@@ -79,20 +74,6 @@ public class StoreListViewModel : MonoBehaviour, INotifyPropertyChanged
 
         // 카탈로그 변경
         ItemManager.Instance.SetCurrentCategory(CurrentCat);
-
-        // test 
-        //ItemManager.Instance.displayItems.Clear();
-        //foreach (IStoreItem item in ItemManager.Instance._currentCategory.Values.ToList())
-        //{
-        //    ItemManager.Instance.displayItems.Add(item as StoreItem);
-        //    Debug.Log($"{(item as StoreItem).ItemName}");
-        //}
-        // test - end 
-
-        // 필터 기준 변경
-        // 재정렬
-
-
 
         // 아이템 리스트 업데이트
         Debug.Log("[StoreListViewModel] UpdateCurrentCat LoatSlotList 시작");
@@ -103,24 +84,16 @@ public class StoreListViewModel : MonoBehaviour, INotifyPropertyChanged
     // 로드
     public void LoadSlotList()
     {
-        // test
-        storeItemViewModels = itemContents.GetComponentsInChildren<ItemSlotViewModel>().ToList();
+        if(storeItemViewModels.Count > 0)
+            ResetSlotList();
+
         // 오브젝트풀에서 가져온 뒤 자동으로 storeItemViewModels에 추가하기
-
-        ResetSlotList();
-        // test-end
-
-        // itemList에 선택된 상점 유형 아이템들로 설정
-        // StoreManager 메서드 호출
-        // 아니면 이벤트 구독해서 모두 설정
-
-        // 아이템 매니저의 아이템 리스트 
-        // 
-
-        // 슬롯 프리팹에 모델 넣어주기
-        foreach (StoreItem item in ItemManager.Instance.displayItems)
+        foreach(StoreItem item in ItemManager.Instance.displayItems)
         {
-            storeItemViewModels[ItemManager.Instance.displayItems.IndexOf(item)].SetModel(item);
+            ItemSlotViewModel itemViewmodel = ItemManager.Instance.itemSlotPool.Get(itemSlot);
+            itemViewmodel.transform.SetParent(itemContents.transform);
+            itemViewmodel.SetModel(item);
+            storeItemViewModels.Add(itemViewmodel);
             //Debug.Log("[ItemListViewModel] UpdateSlotList | 슬롯 " + ItemManager.Instance.displayItems.IndexOf(item));
         }
 
@@ -133,11 +106,22 @@ public class StoreListViewModel : MonoBehaviour, INotifyPropertyChanged
     // 오브젝트 풀로 반납 > 반납 메서드에서 비활성화
     public void ResetSlotList()
     {
-        foreach (var item in storeItemViewModels)
+        foreach (ItemSlotViewModel item in storeItemViewModels)
         {
-            item.Reset();
+            if (item == null)
+            {
+                Debug.Log("슬롯이 비었음");
+                return;
+            }
+            else
+            {
+                item.Reset();
+                item.transform.SetParent(ItemManager.Instance.itemSlotPool.transform);
+                ItemManager.Instance.itemSlotPool.Release(item);
+            }
         }
 
+        storeItemViewModels.Clear();
         //Debug.Log("[ItemListViewModel] ResetSlotList | 슬롯 반납 완료");
     }
 
