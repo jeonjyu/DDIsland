@@ -41,7 +41,7 @@ public class Placeable3D : Placeable
     public int IsRotated => _isRotated;
     public float CurrentYRotation => _currentYRotation;
     public bool IsPlaced => _isPlaced;
-    public bool IsEditable => _data != null && _data.interiorType != InteriorType.Fix;
+    public bool IsEditable => _data != null && _data.interior_itemType != Interior_ItemType.Fix;
     #endregion
 
     // 이곳에 data라는 인테리어SO를 추가시켜야함
