@@ -102,7 +102,7 @@ public class ItemManager : Singleton<ItemManager>
         displayItems = new List<StoreItem>(currentCategory);
         Debug.Log("[ItemManger] 현재 카테고리 딕셔너리 : " + storeCat.ToString());
 
-        displayItems = displayItems.OrderByDescending((StoreItem x) => x.IsGained).ThenBy(x => x.PurchasePrice).ThenBy(x => x.ItemId).ToList();
+        displayItems = displayItems.OrderBy((StoreItem x) => x.IsGained).ThenBy(x => x.PurchasePrice).ThenBy(x => x.ItemId).ToList();
 
         //Debug.Log("정렬 완료: " + string.Join(", ", ItemManager.Instance.displayItems.Select(x => x.ItemName + "(" + x.ItemId + "):" + x.PurchasePrice)));
     }

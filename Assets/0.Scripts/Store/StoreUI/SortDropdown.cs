@@ -62,17 +62,17 @@ public class SortDropdown : StoreDropdownBase
             switch (comp)
             {
                 case Comparer.Gain: // 기본적으로 오름차순
-                    if((StoreSort)SelectedOption == StoreSort.gain)
-                        items = items.AppendOrderBy(x => x.IsGained);
-                    else
+                    if ((StoreSort)SelectedOption == StoreSort.gain)
                         items = items.AppendOrderByDescending(x => x.IsGained);
+                    else
+                        items = items.AppendOrderBy(x => x.IsGained);
                     break;
                 case Comparer.Price: // 기본적으로 오름차순
                     if ((StoreSort)SelectedOption == StoreSort.highToLow)
-                        items = items.AppendOrderBy(x => x.PurchasePrice);
-                    else 
                         items = items.AppendOrderByDescending(x => x.PurchasePrice);
-                        break;
+                    else 
+                        items = items.AppendOrderBy(x => x.PurchasePrice);
+                    break;
                 //case Comparer.Name:
                 //    items = items.AppendOrderBy(x => x.ItemName);
                 //    break;
