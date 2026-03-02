@@ -675,7 +675,7 @@ public class TableSOGenerator
                     if (columnName.Contains("path_"))
                     {
                         // value(주소)를 바탕으로 파일명만 추출
-                        string fileName = Path.GetFileName(value);
+                        string fileName = Path.GetFileNameWithoutExtension(value);
                         // value(주소)를 바탕으로 폴더 경로만 추출
                         string directory = Path.GetDirectoryName(value);
 

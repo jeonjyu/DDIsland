@@ -1,8 +1,15 @@
 using UnityEngine;
 
+[RequireComponent(typeof(InputHandler))]
 public class GameManager : Singleton<GameManager>
 {
-    [SerializeField] int playerGold = 10000000;
+    [Header("InputHandler 클래스")]
+    [field: SerializeField] public InputHandler InputManager { get; private set; }
+
+    [Header("StageControl 클래스")]
+    [field: SerializeField] public StageControl StageController { get; set; }
+
+    [SerializeField] private int playerGold = 10000000;
     public int PlayerGold => playerGold;
 
     protected override void Awake()

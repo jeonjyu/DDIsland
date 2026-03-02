@@ -31,7 +31,6 @@ public class WindowController : Singleton<WindowController>
     private int hitLayerMask;                       // 레이캐스트에서 사용할 레이어 정보
     [SerializeField] private float hitTick = 0.1f;  // 마우스 클릭 통과 여부 판단 주기
     private WaitForSecondsRealtime hitTime;
-    public event Action MouseHitAction;             // 마우스가 3D 오브젝트에 Hit 판정이 들어갈 때 실행할 액션
 
 
     private HitType hitType = HitType.None;
@@ -71,9 +70,9 @@ public class WindowController : Singleton<WindowController>
             core?.EnableClickThrough(value);
             isClickThrough = value;
 
-            if(value)
+            if (value)
             {
-                if(hitMouseCoroutine != null)
+                if (hitMouseCoroutine != null)
                 {
                     StopCoroutine(hitMouseCoroutine);
                     hitMouseCoroutine = null;
@@ -174,10 +173,10 @@ public class WindowController : Singleton<WindowController>
     {
         if (hitType == HitType.None) return;
 
-        if(isClickThrough)
+        if (isClickThrough)
         {
             // 마우스 통과 상태일 때 오브젝트 위에 있다면 클릭을 막아둠
-            if(onObject)
+            if (onObject)
             {
                 IsClickThrough = false;
             }
@@ -185,7 +184,7 @@ public class WindowController : Singleton<WindowController>
         else
         {
             // 투명 배경 + 마우스 위치에 오브젝트가 없을 경우 클릭 통과
-            if(IsTransparent && !onObject)
+            if (IsTransparent && !onObject)
             {
                 IsClickThrough = true;
             }
@@ -219,9 +218,9 @@ public class WindowController : Singleton<WindowController>
         var raycastResults = new List<RaycastResult>();
         pointerEventData.position = position;
         EventSystem.current.RaycastAll(pointerEventData, raycastResults);
-        foreach(var result in raycastResults)
+        foreach (var result in raycastResults)
         {
-            if(((1 << result.gameObject.layer) & hitLayerMask) > 0)
+            if (((1 << result.gameObject.layer) & hitLayerMask) > 0)
             {
                 onObject = true;
                 return;
@@ -229,22 +228,41 @@ public class WindowController : Singleton<WindowController>
         }
 
         // 마우스 위치에 게임 오브젝트가 있는지 검사
-        if(currentCamera != null && currentCamera.isActiveAndEnabled)
+        if (currentCamera != null && currentCamera.isActiveAndEnabled)
         {
             Ray ray = currentCamera.ScreenPointToRay(position);
 
             // 3D 오브젝트 검사
-            if(Physics.Raycast(ray, out _, 100f))
+            if (Physics.Raycast(ray, out RaycastHit hit, 100f))
             {
                 onObject = true;
 
-                MouseHitAction?.Invoke();
+                if (GameManager.Instance.StageController != null)
+                {
+                    // 상호작용 오브젝트 검사
+                    if (hit.collider.TryGetComponent<IInteract>(out var interactObj))
+                    {
+                        GameManager.Instance.StageController.InteractObj = interactObj;
+                    }
+                    else
+                    {
+                        GameManager.Instance.StageController.InteractObj = null;
+                    }
+                }
+
                 return;
+            }
+            else if (GameManager.Instance.StageController != null)
+            {
+                if (GameManager.Instance.StageController.InteractObj != null)
+                {
+                    GameManager.Instance.StageController.InteractObj = null;
+                }
             }
 
             // 2D 오브젝트 검사
             var rayHit2D = Physics2D.GetRayIntersection(ray);
-            if(rayHit2D.collider != null)
+            if (rayHit2D.collider != null)
             {
                 onObject = true;
                 return;

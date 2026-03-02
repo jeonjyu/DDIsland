@@ -3,7 +3,7 @@ using UnityEngine;
 
 // 타입
 [Serializable]
-public enum ItemType
+public enum FishingCategory
 {
     None = 0,
     Pole = 1,         //낚싯대
@@ -15,19 +15,14 @@ public enum ItemType
 [CreateAssetMenu(fileName = "FishingStoreDataSO", menuName = "Scriptable Objects/Data/FishingStoreDataSO")]
 public class FishingStoreDataSO : TableBase<int>
 {
-    // id
+    // 낚시 상점id
     [field: SerializeField] public int ID { get; private set; }
 
-    // 이름
-    [SerializeField] private string itemName;
-    public string ItemName_String => LocalizationManager.Instance.GetString(itemName);
-
-    // 설명
-    [SerializeField] private string itemDesc;
-    public string ItemDesc_String => LocalizationManager.Instance.GetString(itemDesc);
+    // 낚시 아이템 id
+    [field: SerializeField] public int FishingItemId { get; private set; }
 
     // 타입
-    [field: SerializeField] public ItemType itemType { get; private set; }
+    [field: SerializeField] public FishingCategory fishingcategoryType { get; private set; }
 
     // 최대 보유 개수
     [field: SerializeField] public int MaxCount { get; private set; }
@@ -40,18 +35,6 @@ public class FishingStoreDataSO : TableBase<int>
 
     // 판매 가격
     [field: SerializeField] public int SellPrice { get; private set; }
-
-    // 낚시 속도 상승량
-    [field: SerializeField] public float FishingSpeed { get; private set; }
-
-    // 물고기 풀
-    [field: SerializeField] public int FishPool { get; private set; }
-
-    // 물고기 크기 상승량
-    [field: SerializeField] public float FishLength { get; private set; }
-
-    // 기본 제공 여부
-    [field: SerializeField] public bool IsDefault { get; private set; }
 
     // UI 미니 이미지 리소스
     [field: SerializeField] public Sprite ItemImgPath_Sprite { get; private set; }

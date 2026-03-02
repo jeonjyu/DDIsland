@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using UnityEngine;
 
 // 상호작용 종류
@@ -24,7 +24,7 @@ public enum LocationType
 
 // 배치 방식
 [Serializable]
-public enum InteriorType
+public enum Interior_ItemType
 {
     None = 0,
     Floor = 1,        //바닥
@@ -63,7 +63,7 @@ public class InteriorDataSO : TableBase<int>
     [field: SerializeField] public LocationType locationType { get; private set; }
 
     // 배치 방식
-    [field: SerializeField] public InteriorType interiorType { get; private set; }
+    [field: SerializeField] public Interior_ItemType interior_itemType { get; private set; }
 
     // 리소스 경로
     [field: SerializeField] public GameObject InteriorPath_GameObject { get; private set; }

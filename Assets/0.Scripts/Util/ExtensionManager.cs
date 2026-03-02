@@ -1,14 +1,6 @@
-using UnityEngine;
+using System;
 
-public class ExtensionManager : MonoBehaviour
+public static class ExtensionManager
 {
-    private void Start()
-    {
-        
-    }
 
-    private void Update()
-    {
-        
-    }
 }
