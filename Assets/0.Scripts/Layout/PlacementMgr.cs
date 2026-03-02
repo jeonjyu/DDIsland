@@ -23,6 +23,8 @@ public class PlacementMgr : MonoBehaviour
 
     [SerializeField] private BuildingManager _buildingManager;
 
+    DecoMode _islandMode = DecoMode.Island;
+
     #region 프로퍼티
     static public PlacementMgr Instance => _instance;
     public PlacementState CurrentState { get; private set; } = PlacementState.View;
