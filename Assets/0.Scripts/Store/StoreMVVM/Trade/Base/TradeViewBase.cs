@@ -1,7 +1,6 @@
 using System.ComponentModel;
 using TMPro;
 using UnityEngine;
-using static UnityEditor.Profiling.HierarchyFrameDataView;
 
 // 구매/판매 시 모델 외에 모든 요소 초기화
 // 모델 이름, 설명 띄우기
