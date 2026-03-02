@@ -38,8 +38,8 @@ public class EnvironmentView : MonoBehaviour
     {
         targetColor = dayily switch //색상은 언제든지 변경 가능합니다
         {
-            DayilyCycle.Morning => new Color(1f, 0.9568627f, 0.8392157f),
-            DayilyCycle.Day => new Color(0.5294118f, 0.8078431f, 0.9215686f), 
+            DayilyCycle.Day => new Color(1f, 0.9568627f, 0.8392157f),
+            DayilyCycle.Sunset => new Color(0.5294118f, 0.8078431f, 0.9215686f), 
             DayilyCycle.Night => new Color(0.05098039f, 0.05098039f, 0.2f),
             _ => _background.color
         };

@@ -107,15 +107,15 @@ public class EnvironmentModel
         float currentSeconds = (now.Minute * 60) + now.Second; //분과 초를 종합해서 계산 ex)3600초
         float[] mult = _seasonWeights[CurrentSeason]; //딕셔너리에 있는 가중치 들고옴
 
-        float morningEnd = _dayDuration * mult[0];
-        float dayEnd = _dayDuration * mult[1];
+        float dayEnd = _dayDuration * mult[0];
+        float SunsetEnd = _dayDuration * mult[1];
 
         //스위치문으로 변경 시켰는데 더 깔끔해보이고 좋네요
         //그리고 굳이 Night는 조건 안줘도 되니까 그냥 없앴습니다
         CurrentDay = currentSeconds switch
         {
-            _ when currentSeconds < morningEnd => DayilyCycle.Morning,
             _ when currentSeconds < dayEnd => DayilyCycle.Day,
+            _ when currentSeconds < dayEnd + SunsetEnd => DayilyCycle.Sunset,
             _ => DayilyCycle.Night
         };
     }
