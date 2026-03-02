@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
-
+using System.Collections.Generic; 
 /// [호수 꾸미기 편집 모드 전환 관리]
 public class DecoEditModeManager : MonoBehaviour
 {
@@ -48,7 +48,8 @@ public class DecoEditModeManager : MonoBehaviour
     int holdItemId = -1;   // 배치 대기 중인 아이템 ID
     BuildingManager buildingMgr;
 
-    bool isChanged = false; // 런타임 저장에서 마지막 변경이후 변경이 또 있었는지 
+    bool isChanged = false; // 저장 안 한 변경이 있었는지 
+ 
 
     //  초기화   
     void Start()
@@ -203,6 +204,7 @@ public class DecoEditModeManager : MonoBehaviour
     {
         currentMode = mode; // 받은 모드 저장
         isEditMode = true;
+        isChanged = false;
 
         // 공용 백그라운드 
         if (dimBackground != null)
@@ -273,9 +275,9 @@ public class DecoEditModeManager : MonoBehaviour
         // 호수 그리드 스냅샷 저장
         if (currentMode == DecoMode.Lake && gridManager != null)
         {
-            gridManager.SavePlacementSnapshot();
+            gridManager.SaveSnapshot();
         }
- 
+     
         // 편집 모드 들어가면 꾸미기 버튼 숨기기
         if (btnLakeDecoMode != null)
             btnLakeDecoMode.gameObject.SetActive(false);
@@ -385,18 +387,17 @@ public class DecoEditModeManager : MonoBehaviour
 
     }
 
-    //  상단 버튼 기능
-    void OnSave()
+    #region 상단 버튼 기능
+
+    void OnSave() // 저장
     {
-        // TODO: 저장 로직 (나중에 구현)
+        // TODO: 파베에 저장
         if (currentMode == DecoMode.Lake)
         {
-            // TODO: 파베에 호수 저장
-          //  gridManager.RecallAll(); // 그리드에서 배치된거 전부 제거 
             if (itemListManager != null)
                 itemListManager.SaveSnapshot(); // 인벤을 스냅샷 저장
             if (gridManager != null)
-                gridManager.SavePlacementSnapshot(); // 배치도 스냅샷으로 저장
+                gridManager.SaveSnapshot(); // 배치도 스냅샷으로 저장
             isChanged = false;
         }
         else if (currentMode == DecoMode.Island)
@@ -405,48 +406,37 @@ public class DecoEditModeManager : MonoBehaviour
             isChanged = false;
         }
     }
-    void OnReset()
+    void OnReset() // 초기화, 저장한 상태로 불러오기
     {
-        // TODO: 편집 전 상태로 복원 (파베 연결 후에 나중에 구현)
+        // TODO:  (파베 연결 후에 나중에 구현)
         if (currentMode == DecoMode.Lake)
         {
-            //foreach (var placed in gridManager.GetPlacedObjects())
-            //{
-            //    if (itemListManager != null)
-            //        itemListManager.RestoreItem(placed.itemId); // 인벤에 수량복구
-            //}
-            //gridManager.RecallAll(); // 그리드에서 배치된거 전부 제거 
-            
             // 인벤을 마지막 저장 시점으로 복구
             if (itemListManager != null)
                 itemListManager.LoadSnapshot();
             // 배치를 마지막 저장 시점으로 복구
             if (gridManager != null)
-                gridManager.LoadPlacementSnapshot();
-
+                gridManager.LoadSnapshot();
             isChanged = false;
         }
         else if (currentMode == DecoMode.Island)
         {
             PlacementMgr.Instance?.OnClickAllDelete();
         }
-    }
-
-    // 전체회수 : 배치된 거 전부 인벤으로 회수 
-    void OnRecallAll()
+    } 
+    void OnRecallAll()  // 전체회수 : 배치된 거 전부 인벤으로 회수 
     {
         if (currentMode == DecoMode.Lake)
         {
             // 배치된 모든 오브젝트를 인벤에 복구
             var placedList = gridManager.GetPlacedObjects();
-            for (int i = placedList.Count - 1; i >= 0; i--)
+            foreach (var p in placedList)
             {
                 if (itemListManager != null)
-                    itemListManager.RestoreItem(placedList[i].itemId);
+                    itemListManager.RestoreItem(p.itemId);
             }
-            // 그리드에서 전부 제거
-            gridManager.RecallAll();
 
+            gridManager.RecallAll();  // 그리드에서 전부 제거
             isChanged = true;
         }
         else if (currentMode == DecoMode.Island)
@@ -454,22 +444,20 @@ public class DecoEditModeManager : MonoBehaviour
             PlacementMgr.Instance?.OnClickCancelSession();
         }
     }
-
-    // 나가기
-    void OnExit()
+    void OnExit() // 나가기
     {
-        // TODO: 팝업창 (저장 후 나가기/저장하지 않고 나가기/취소)
         if (isChanged)  // 미저장 변경사항이 있으면 팝업 표시
         {
             ShowExitPopup();
         }
         else // 변경사항 없으면 바로 나가기
         {
+            isChanged = false;
             ExitEditMode();
         }
     }
-
-    // 나가기 팝업
+    #endregion
+    #region 나가기 팝업
     void ShowExitPopup()
     {
         if (exitPopupPanel != null)
@@ -482,9 +470,7 @@ public class DecoEditModeManager : MonoBehaviour
         {  
             ExitEditMode();
         }
-    }
-
-    // 저장하고 나가기
+    } // 팝업 패널 
     void OnExitWithSave()
     {
         OnSave(); // 저장 먼저
@@ -492,10 +478,8 @@ public class DecoEditModeManager : MonoBehaviour
             exitPopupPanel.SetActive(false);
         LockTopButtons(true);
         ExitEditMode();
-    }
-
-    // 저장하지 않고 나가기 (마지막 저장 시점으로 복구 후 나가기)
-    void OnExitWithoutSave()
+    } // 저장하고 나가기
+    void OnExitWithoutSave()  // 저장하지 않고 나가기 (마지막 저장 시점으로 복구 후 나가기)
     {
         // 마지막 저장 상태로 되돌리고 나가기
         if (currentMode == DecoMode.Lake)
@@ -503,7 +487,7 @@ public class DecoEditModeManager : MonoBehaviour
             if (itemListManager != null)
                 itemListManager.LoadSnapshot();
             if (gridManager != null)
-                gridManager.LoadPlacementSnapshot();
+                gridManager.LoadSnapshot();
         }
         else if (currentMode == DecoMode.Island)
         {
@@ -515,20 +499,18 @@ public class DecoEditModeManager : MonoBehaviour
         LockTopButtons(true);
         ExitEditMode();
     }
-
-    // 팝업 취소 (팝업만 닫기)
     void OnExitPopupCancel()
     {
         if (exitPopupPanel != null)
             exitPopupPanel.SetActive(false);
         LockTopButtons(true);
-    }
-
+    } // 팝업만 닫기 
+    #endregion
+   
     public void SetChanged()
     {
         isChanged = true;
     }
-
 
     void OnDestroy() // 이벤트 해제 
     {

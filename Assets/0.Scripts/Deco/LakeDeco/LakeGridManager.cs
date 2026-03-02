@@ -493,7 +493,7 @@ public class LakeGridManager : MonoBehaviour
         return tileDataArray[pos.x, pos.y].placedObjectId;
     }
     // 배치 스냅샷 저장 
-    public void SavePlacementSnapshot()
+    public void SaveSnapshot()
     {
         gridSnapshot = new List<LakePlacedObjectData>();
         for (int i = 0; i < placedObjects.Count; i++)
@@ -510,7 +510,7 @@ public class LakeGridManager : MonoBehaviour
     }
   
     //  배치 스냅샷으로 복원 
-    public void LoadPlacementSnapshot()
+    public void LoadSnapshot()
     {
         // 현재 배치된 거 전부 제거
         RecallAll();

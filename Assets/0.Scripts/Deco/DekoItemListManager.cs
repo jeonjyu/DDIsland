@@ -332,7 +332,7 @@ public class DecoItemListManager : MonoBehaviour
         if (snapshotData == null) return; 
         LoadSnapshot();
     }
-    #region 스냅샷 (저장/복구)
+
     // 현재 인벤 상태 스냅샷 저장
     public void SaveSnapshot()
     {
@@ -363,7 +363,6 @@ public class DecoItemListManager : MonoBehaviour
         }
         SetupInventory(restored);
     }
-    #endregion
     // 슬롯 제거 (수량 0 됐을 때)
     void RemoveSlot(int dataIndex)
     {
