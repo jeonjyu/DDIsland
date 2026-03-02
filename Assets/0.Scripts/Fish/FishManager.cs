@@ -192,7 +192,7 @@ public class FishManager : Singleton<FishManager>
         return null;
     }
 
-    private List<FishingDropDataSO> BuildCandidates(FishingContext ctx)
+    private List<FishingDropDataSO> BuildCandidates(FishingContext ctx)  
     {
         var db = DataManager.Instance.FishingDatabase.FishingDropData;
         var result = new List<FishingDropDataSO>();
