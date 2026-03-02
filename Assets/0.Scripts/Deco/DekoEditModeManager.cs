@@ -5,6 +5,7 @@ using System.Collections.Generic;
 /// [호수 꾸미기 편집 모드 전환 관리]
 public class DecoEditModeManager : MonoBehaviour
 {
+    #region
     [Header("2D그리드 전용")]
     public RectTransform gridPanel;
     public LakeGridManager gridManager;
@@ -49,7 +50,7 @@ public class DecoEditModeManager : MonoBehaviour
     BuildingManager buildingMgr;
 
     bool isChanged = false; // 저장 안 한 변경이 있었는지 
- 
+    #endregion
 
     //  초기화   
     void Start()
@@ -129,12 +130,19 @@ public class DecoEditModeManager : MonoBehaviour
             itemListManager.UseItem(holdItemId);
             holdItemId = -1;
         }
+        if (itemListManager != null)
+            itemListManager.DeselectSlot();
+        LockTopButtons(true);
+        isChanged = true;
     }
 
     // 배치 취소 시 차감 안 했으니 초기화만
     void OnIslandPlaceCancel(GameObject obj)
     {
         holdItemId = -1;
+        if (itemListManager != null)
+            itemListManager.DeselectSlot();
+        LockTopButtons(true);
     }
 
     // 섬 저장 
@@ -402,7 +410,9 @@ public class DecoEditModeManager : MonoBehaviour
         }
         else if (currentMode == DecoMode.Island)
         {
-            PlacementMgr.Instance?.OnClickConfirmSession();
+            // PlacementMgr.Instance?.OnClickConfirmSession();
+            if (buildingMgr != null)
+                buildingMgr.ConfirmAll();
             isChanged = false;
         }
     }
@@ -421,7 +431,12 @@ public class DecoEditModeManager : MonoBehaviour
         }
         else if (currentMode == DecoMode.Island)
         {
-            PlacementMgr.Instance?.OnClickAllDelete();
+            // PlacementMgr.Instance?.OnClickAllDelete();
+            if (buildingMgr != null)
+            {
+                buildingMgr.RevertAll();          // 되돌리기
+                buildingMgr.CancelCurrentAction(); // 들고있는 거 취소
+            }
         }
     } 
     void OnRecallAll()  // 전체회수 : 배치된 거 전부 인벤으로 회수 
@@ -440,8 +455,13 @@ public class DecoEditModeManager : MonoBehaviour
             isChanged = true;
         }
         else if (currentMode == DecoMode.Island)
-        { 
-            PlacementMgr.Instance?.OnClickCancelSession();
+        {
+            //  PlacementMgr.Instance?.OnClickCancelSession();
+            if (buildingMgr != null)
+            {
+                buildingMgr.ClearAll();
+            }
+            isChanged = true;
         }
     }
     void OnExit() // 나가기
@@ -471,14 +491,14 @@ public class DecoEditModeManager : MonoBehaviour
             ExitEditMode();
         }
     } // 팝업 패널 
-    void OnExitWithSave()
+    void OnExitWithSave()  // 저장하고 나가기
     {
         OnSave(); // 저장 먼저
         if (exitPopupPanel != null)
             exitPopupPanel.SetActive(false);
         LockTopButtons(true);
         ExitEditMode();
-    } // 저장하고 나가기
+    }
     void OnExitWithoutSave()  // 저장하지 않고 나가기 (마지막 저장 시점으로 복구 후 나가기)
     {
         // 마지막 저장 상태로 되돌리고 나가기
@@ -491,7 +511,12 @@ public class DecoEditModeManager : MonoBehaviour
         }
         else if (currentMode == DecoMode.Island)
         {
-            PlacementMgr.Instance?.OnClickCancelSession();
+            // PlacementMgr.Instance?.OnClickCancelSession();
+            if (buildingMgr != null)
+            {
+                buildingMgr.RevertAll();          // 되돌리기
+                buildingMgr.CancelCurrentAction(); // 들고있는 거 취소
+            }
         }
 
         if (exitPopupPanel != null)
@@ -499,12 +524,12 @@ public class DecoEditModeManager : MonoBehaviour
         LockTopButtons(true);
         ExitEditMode();
     }
-    void OnExitPopupCancel()
+    void OnExitPopupCancel() // 팝업만 닫기 
     {
         if (exitPopupPanel != null)
             exitPopupPanel.SetActive(false);
         LockTopButtons(true);
-    } // 팝업만 닫기 
+    } 
     #endregion
    
     public void SetChanged()
