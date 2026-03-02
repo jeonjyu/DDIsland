@@ -33,7 +33,7 @@ public class StoreListViewModel : MonoBehaviour, INotifyPropertyChanged
         set
         {
             filterDropdown = value;
-            OnPropertyChanged(null);
+            OnPropertyChanged(nameof(filterDropdown));
         }
     }
 
@@ -45,7 +45,7 @@ public class StoreListViewModel : MonoBehaviour, INotifyPropertyChanged
             if (sortDropdown != value)
             {
                 sortDropdown = value;
-                OnPropertyChanged(null);
+                OnPropertyChanged(nameof(sortDropdown));
             }
         }
     }
@@ -53,10 +53,10 @@ public class StoreListViewModel : MonoBehaviour, INotifyPropertyChanged
     public event PropertyChangedEventHandler PropertyChanged;
 
 
-    void Start()
-    {
-        UpdateCurrentCat(1);
-    }
+    //void Start()
+    //{
+    //    UpdateCurrentCat(0);
+    //}
 
     // 바뀐 항목 갯수에 따라 아이템 슬롯 풀링해옴
     // 풀링해오면서 storeItemViewModels 리스트에 추가
@@ -64,19 +64,24 @@ public class StoreListViewModel : MonoBehaviour, INotifyPropertyChanged
     public void OnEnable()
     {
         StoreManager.Instance.currentCat = StoreCat.interior;
-        ItemManager.Instance.SetCurrentCategory();
+        UpdateCurrentCat(0);
+
+        //ItemManager.Instance.SetCurrentCategory();
     }
 
     public void UpdateCurrentCat(int catIdx)
     {
-    // 현재 카테고리 변경
+        Debug.Log("슬롯 리스트: " + string.Join(", ", ItemManager.Instance.displayItems.Select(x => x.ItemName + "(" + x.IsGained + "):" + x.PurchasePrice)));
+
+        Debug.Log("[ItemListViewModel] UpdateCurrentCat");
+
+        // 현재 카테고리 변경
         CurrentCat = (StoreCat)catIdx;
 
         // 카탈로그 변경
         ItemManager.Instance.SetCurrentCategory(CurrentCat);
 
         // 아이템 리스트 업데이트
-        Debug.Log("[StoreListViewModel] UpdateCurrentCat LoatSlotList 시작");
         LoadSlotList();
     }
 
@@ -84,7 +89,10 @@ public class StoreListViewModel : MonoBehaviour, INotifyPropertyChanged
     // 로드
     public void LoadSlotList()
     {
-        if(storeItemViewModels.Count > 0)
+        Debug.Log("[ItemListViewModel] LoadSlotList");
+        Debug.Log("슬롯 리스트: " + string.Join(", ", ItemManager.Instance.displayItems.Select(x => x.ItemName + "(" + x.IsGained + "):" + x.PurchasePrice)));
+
+        if (storeItemViewModels.Count > 0)
             ResetSlotList();
 
         // 오브젝트풀에서 가져온 뒤 자동으로 storeItemViewModels에 추가하기
@@ -94,8 +102,9 @@ public class StoreListViewModel : MonoBehaviour, INotifyPropertyChanged
             itemViewmodel.transform.SetParent(itemContents.transform);
             itemViewmodel.SetModel(item);
             storeItemViewModels.Add(itemViewmodel);
-            //Debug.Log("[ItemListViewModel] UpdateSlotList | 슬롯 " + ItemManager.Instance.displayItems.IndexOf(item));
+            //Debug.Log("[ItemListViewModel] UpdateSlotList | 슬롯 " + ItemManager.Instance.displayItems.IndexOf(item) + " " + item.ItemName);
         }
+        Debug.Log("슬롯 리스트: " + string.Join(", ", ItemManager.Instance.displayItems.Select(x => x.ItemName + "(" + x.IsGained + "):" + x.PurchasePrice)));
 
         //Debug.Log("[ItemListViewModel] UpdateSlotList | 슬롯 로딩 완료");
     }
@@ -130,11 +139,12 @@ public class StoreListViewModel : MonoBehaviour, INotifyPropertyChanged
     protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
     {
         //Debug.Log("[ItemListViewModel] OnPropertyChanged 실행");
-
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        filterDropdown.UpdateFilter((Filter)CurrentCat);
-        sortDropdown.SetOptions();
-        LoadSlotList();
+        //filterDropdown.UpdateFilter((Filter)CurrentCat);
+        ////filterDropdown.FilterSlots(0); // 카테고리가 변할때만 
+        //sortDropdown.SetOptions();
+        //sortDropdown.ApplySortPriority();
+        //LoadSlotList();
     }
 
 }

@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class FilterDropdown : StoreDropdownBase
 {
     Type currentFilter;
     List<Enum> filters;
+    [SerializeField] SortDropdown sortDropdown;
+
 
     void Start()
     {
@@ -44,34 +47,27 @@ public class FilterDropdown : StoreDropdownBase
     // 
     public void FilterSlots(int idx)
     {
+        if (idx > 0)
+            ItemManager.Instance.displayItems = ItemManager.Instance.currentCategory.Where(i => i.GetFilter().ToString() == filters[SelectedOption].ToString()).ToList();
+        else
+            ItemManager.Instance.displayItems = ItemManager.Instance.currentCategory;
 
-        ItemManager.Instance.displayItems = ItemManager.Instance.currentCategory.Where(i => /*i.GetFilter().GetType() == currentFilter.GetType() &&*/ i.GetFilter().ToString() == filters[SelectedOption].ToString()).ToList();
-
-        //ItemManager.Instance.displayItems.Clear();
-        //List<StoreItem> itemlist = new List<StoreItem>();
-        //Debug.Log(filters[idx]);
-        //var filterType = ItemManager.Instance.currentCategory.FirstOrDefault().GetType();
-        //foreach (var item in ItemManager.Instance.currentCategory)
-        //{
-        //Debug.Log(item.GetFilter().ToString().Equals(filters[idx].ToString()));
-
-        //    if(item.GetFilter().ToString().Equals(filters[idx].ToString()))
-        //    {
-        //        itemlist.Add(item);
-        //        Debug.Log("[FilterDropdwon] 필터에 해당하는 아이템 : " + item.ItemName);
-        //    }
-        //        //ItemManager.Instance.displayItems.Add(item);
-        //}
-        
-
-        if(ItemManager.Instance.displayItems != null)
+        if (ItemManager.Instance.displayItems != null)
             Debug.Log("[FilterDropdown] 필터링 완료 : " + string.Join(", ", ItemManager.Instance.displayItems.Select(x => x.ItemName + "(" + x.ItemId + ")" + x.GetFilter().ToString())));
+    }
+
+    public override void SetOptions()
+    {
+        base.SetOptions();
+        dropdown.value = 0;
+        if (optionList.Count > 0) dropdown.captionText.text = optionList[0];
     }
 
     // 필터 드롭다운 값이 변경되면 필터링
     public override void OnDropdownValueChagned(int index)
     {
         FilterSlots(index);
+        sortDropdown.ApplySortPriority();
         storeListViewModel.LoadSlotList();
     }
 

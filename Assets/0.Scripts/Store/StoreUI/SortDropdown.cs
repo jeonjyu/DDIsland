@@ -26,9 +26,19 @@ public class SortDropdown : StoreDropdownBase
     void Start()
     {
         // 드롭다운 옵션 리스트 전달
-        optionList = StoreManager.Instance.GetEnumList<StoreSort>(Enum.GetValues(typeof(StoreSort)));
         comparers = (Enum.GetValues(typeof(Comparer)) as Comparer[]).ToList();
+        optionList = StoreManager.Instance.GetEnumList<StoreSort>(Enum.GetValues(typeof(StoreSort)));
         SetOptions();
+    }
+
+    public override void SetOptions()
+    {
+        base.SetOptions();
+        if (optionList.Count > 0)
+        {
+            dropdown.value = 1;
+            //dropdown.captionText.text = optionList[1];
+        }
     }
 
     // 정렬 우선순위 리스트화
@@ -44,6 +54,8 @@ public class SortDropdown : StoreDropdownBase
         comparers.Insert(0, comparer);
 
         IEnumerable<StoreItem> items = ItemManager.Instance.displayItems;
+
+        Debug.Log("[SortDropdown] SortSlots | SelectedOption 1 : " + (StoreSort)SelectedOption);
 
         foreach (Comparer comp in comparers)
         {
@@ -68,34 +80,39 @@ public class SortDropdown : StoreDropdownBase
                     items = items.AppendOrderBy(x => x.ItemId);
                     break;
             }
-            //Debug.Log("[SortDropdown] 정렬 기준 " + comp);
         }
-
         ItemManager.Instance.displayItems = items.ToList();
+        Debug.Log("[SortDropdown] SortSlots | SelectedOption 2 : " + (StoreSort)SelectedOption);
 
-        Debug.Log("정렬 완료: " + string.Join(", ", ItemManager.Instance.displayItems.Select(x => x.ItemName + "(" + x.ItemId + "):" + x.PurchasePrice)));
+        Debug.Log("정렬 기준 : " + string.Join(" > ", comparers.Select(x => x)));
+        Debug.Log("정렬 완료: " + string.Join(", ", ItemManager.Instance.displayItems.Select(x => x.ItemName + "(" + x.IsGained + "):" + x.PurchasePrice)));
     }
 
+    public void ApplySortPriority()
+    {
+        Debug.Log("[SortDropdown] ApplySortPriority | SelectedOption : " + (StoreSort)SelectedOption);
+        // 선택된 옵션에 따라 StoreSort 적용 후 정렬
+        switch ((StoreSort)(SelectedOption))
+        {
+            case StoreSort.gain:
+            case StoreSort.unGain:
+                SortSlots(Comparer.Gain);
+                break;
+            case StoreSort.highToLow:
+            case StoreSort.lowToHigh:
+                SortSlots(Comparer.Price);
+                break;
+                //case StoreSort.name:
+                //    SortSlots(Comparer.Name);
+                //    storeListViewModel.LoadSlotList();
+                //    break;
+        }
+    }
 
     public override void OnDropdownValueChagned(int index)
     {
         base.OnDropdownValueChagned(index);
-
-        // 선택된 옵션에 따라 StoreSort 적용 후 정렬
-        switch((StoreSort)(SelectedOption + 1))
-        {
-            case StoreSort.gain:  case StoreSort.unGain:
-                SortSlots(Comparer.Gain);
-                storeListViewModel.LoadSlotList();
-                break;
-            case StoreSort.highToLow: case StoreSort.lowToHigh:
-                SortSlots(Comparer.Price);
-                storeListViewModel.LoadSlotList();
-                break;
-            //case StoreSort.name:
-            //    SortSlots(Comparer.Name);
-            //    storeListViewModel.LoadSlotList();
-            //    break;
-        }
+        ApplySortPriority();
+        storeListViewModel.LoadSlotList();
     }
 }

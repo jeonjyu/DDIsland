@@ -26,7 +26,7 @@ public class StoreManager : Singleton<StoreManager>
     void Start() 
     {
         // 초기 카테고리 설정
-        currentCat = (StoreCat)1;
+        currentCat = (StoreCat)0;
     }
 
     // 각 enum에 설정된 Description으로 리스트 반환

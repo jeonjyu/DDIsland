@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,7 +17,7 @@ public class StoreListView : MonoBehaviour
     void Start()
     {
         viewModel = GetComponent<StoreListViewModel>();
-
+        viewModel.PropertyChanged += OnStoreListViewModelChanged;
         SetStoreCat();
     }
 
@@ -39,8 +40,25 @@ public class StoreListView : MonoBehaviour
             // 버튼에 모델을 현재 상점 카테고리로 설정하도록 하는 로직 추가
             stores[idx].GetComponent<Button>().onClick.AddListener(() =>
             {
-                viewModel.UpdateCurrentCat(idx+1);
+                viewModel. UpdateCurrentCat(idx);
             });
         }
+    }
+
+    private void OnStoreListViewModelChanged(object sender, PropertyChangedEventArgs e)
+    {
+        viewModel.Filter.UpdateFilter((Filter)viewModel.CurrentCat);
+        switch (e.PropertyName)
+        {
+            case null:
+            case "":
+                Debug.Log("전체 변경");
+                viewModel.Filter.FilterSlots(0); // 카테고리가 변할때만 
+                viewModel.Sort.SetOptions();
+                viewModel.Sort.ApplySortPriority();
+                break;
+        }
+        //viewModel.LoadSlotList();
+        Debug.Log("변경끝");
     }
 }

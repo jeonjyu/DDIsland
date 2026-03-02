@@ -15,18 +15,12 @@ public class StoreDropdownBase : MonoBehaviour
 
     public int SelectedOption => dropdown.value;
 
-    void Awake()
-    {
-
-        //dropdown.onValueChanged.AddListener(OnDropdownValueChagned);
-    }
-
     public void OnEnable()
     {
         dropdown.onValueChanged.AddListener(OnDropdownValueChagned);
     }
 
-    public void SetOptions()
+    public virtual void SetOptions()
     {
         //Debug.Log("[StoreDropdownBase] SetOptions");
 
@@ -41,7 +35,7 @@ public class StoreDropdownBase : MonoBehaviour
             dropdown.options.Add(new TMP_Dropdown.OptionData(option.ToString()));
         }
 
-        if(optionList.Count > 0) dropdown.captionText.text = optionList[0];
+        //if(optionList.Count > 0) dropdown.captionText.text = optionList[0];
     }
 
     // 드롭다운 값이 변경될 경우 실행되어야 할 메서드

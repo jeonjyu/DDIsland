@@ -4,7 +4,7 @@ using System.ComponentModel;
 
 public enum StoreCat
 {
-    [Description("인테리어")] interior = 1,
+    [Description("인테리어")] interior,
     [Description("코스튬")] costume,
     [Description("낚시")] fishing,
     [Description("레시피")] recipe
@@ -13,7 +13,7 @@ public enum StoreCat
 // 드롭다운 옵션으로 설정해줄 enum들
 public enum StoreSort
 {
-    [Description("보유 아이템 순")] gain = 1,
+    [Description("보유 아이템 순")] gain,
     [Description("미보유 아이템순")] unGain,
     [Description("높은 가격 순")] highToLow,
     [Description("낮은 가격 순")] lowToHigh,
@@ -23,14 +23,15 @@ public enum StoreSort
 
 public enum Filter
 {
-    InteriorFilter = 1,
+    InteriorFilter,
     CostumeFilter,
     FishingFilter
 }
 
 public enum InteriorFilter
 {
-    [Description("메인 하우스")] mainHouse = 1,
+    [Description("모든 아이템")] all,
+    [Description("메인 하우스")] mainHouse,
     [Description("섬 바닥")] floor,
     [Description("섬 고정 장식물")] fix,
     [Description("섬 자유 배치물")] free,
@@ -41,13 +42,15 @@ public enum InteriorFilter
 
 public enum CostumeFilter 
 {
-    [Description("머리 장식")] head = 1,
+    [Description("모든 아이템")] all,
+    [Description("머리 장식")] head,
     [Description("한벌옷")] body
 }
 
 public enum FishingFilter
 {
-    [Description("낚싯대")] pole = 1,
+    [Description("모든 아이템")] all,
+    [Description("낚싯대")] pole,
     [Description("낚시찌")] bait,
     [Description("미끼")] bobber
 }
