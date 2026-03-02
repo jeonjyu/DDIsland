@@ -6,5 +6,5 @@ public enum Season
 }
 public enum DayilyCycle
 {
-    Morning, Day, Night
+    Day, Sunset, Night
 }
