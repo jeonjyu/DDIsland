@@ -1,22 +1,6 @@
 using System;
 using UnityEngine;
-/*
- * 주말 팀원들을 위한 설명서
- * StorageManager (창고 데이터 관리자)
- *
- * 역할
- * - FishStackSlot?[] 배열로 슬롯 기반 창고를 관리한다.
- * - 같은 물고기(FishId)는 한 슬롯에 스택(Count)으로 쌓는다.
- * - 추가/삭제 시 OnSlotChanged(index) 이벤트로 UI에게 알려준다.
- *
- * 포인트
- * - FishSlots[i] == null 이면 빈 슬롯
- * - TryAddToStorage:
- *   1) 같은 FishId 슬롯 있으면 count++ / maxPrice 갱신 / lastAcquired 갱신
- *   2) 없으면 빈 슬롯 찾아 새로 생성
- * - TryRemoveAt:
- *   count--, 0이 되면 슬롯 비우기(null)
- */
+
 public struct FishInstance
 {
     public int FishId;

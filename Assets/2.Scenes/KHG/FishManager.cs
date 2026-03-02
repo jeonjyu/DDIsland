@@ -1,105 +1,175 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
-/*
- * FishManager
- *
- * 역할
- * - CSV에서 물고기 정의(FishDefinition)를 로드한다.
- * - ID로 빠르게 찾기 위해 Dictionary<int, FishDefinition>을 만든다.
- * - 계절이 바뀌면 해당 시즌에 등장 가능한 물고기 리스트(_seasonFish)를 다시 구성한다.
- * - 낚시 결과로 FishInstance(실제 획득 개체)를 만들고 StorageManager에 저장한다.
- *
- * 용어
- * - FishDefinition : 종(species) 정보(이름,등급,스프라이트키,길이범위 등)
- * - FishInstance   : 획득 개체(instance) 정보(어느 종인지, 길이, 가격 등)
- */
+public struct FishingContext 
+{
+    public ArriveSeason Season;
+    public bool IsMorning;
+    public bool IsAfternoon;
+    public bool IsNight;
+    public bool IsLake;
+    public bool IsSea;
+    public bool IsRain;
+    public bool IsCherryblossom;
+    public bool IsMaple;
+    public bool IsSnow;
+    public int GoldAmount;
+    public int SeasonChange;
+}
+
+public enum SpecialType
+{
+    None,
+    GoldenMandarin = 10018,
+    Oarfish = 10019,
+    WhiteShark = 10020,
+    SpermWhale = 10021,
+    Coelacanth = 10022,
+    Piraruku = 10025
+}
 public class FishManager : Singleton<FishManager>
 {
-    Dictionary<int, FishDefinition> _fishById; //도감용
-    List<FishDefinition> _allFish;
-    List<FishDefinition> _seasonFish; //계절별 나올 물고기
+    Dictionary<int, FishDataSO> _fishById;
+    List<FishDataSO> _allFish;
 
-    [SerializeField] private EnvironmentModel _environment;
+    private EnvironmentModel _environment;
 
-    private Season _season;
-    int _seasonBit;
+    private ArriveSeason _currentSeason = ArriveSeason.Spring;
+
+     int _seasonChangeCount;  //실러캔스
+    bool _canCoelacanth =  false;
+    float _pirarukuTimer; 
+    bool _canCanPiraruque = false;  
 
     private void Awake()
     {
         base.Awake();
+        _environment = new EnvironmentModel();
     }
 
     private void Start()
     {
-        // season = environment.CurrentSeason;
-        _season = Season.Spring; //테스트
-
-        _allFish = FishCsvLoader.LoadFromResources("Data/fish");
-        _seasonFish = new List<FishDefinition>();
-        _fishById = new Dictionary<int, FishDefinition>();
-
-        // HandleSeasonChanged(environment.CurrentSeason);
-        HandleSeasonChanged(Season.Spring); //테스트
-
+        _allFish = new List<FishDataSO>(DataManager.Instance.FishingDatabase.FishData.datas);
+        _fishById = new Dictionary<int, FishDataSO>();
+        _seasonChangeCount = 0;
         foreach (var fish in _allFish)
         {
             _fishById[fish.ID] = fish;
         }
-    }
 
+        if (_environment != null)
+        {
+            _currentSeason = ConvertSeason(_environment.CurrentSeason);
+        }
+    }
+    private void Update()
+    {
+        if (_canCanPiraruque)
+        {
+            _pirarukuTimer += Time.deltaTime;
+            if (_pirarukuTimer >= 60f)
+            {
+                _canCanPiraruque = false;
+            }
+        }
+    }
     private void OnEnable()
     {
         if (_environment != null)
+        {
             _environment.OnSeasonChanged += HandleSeasonChanged;
+            _environment.OnDailyChanged += OpenPiraruku;
+        }
     }
 
     private void OnDisable()
     {
         if (_environment != null)
+        {
             _environment.OnSeasonChanged -= HandleSeasonChanged;
+            _environment.OnDailyChanged -= OpenPiraruku;
+        }
     }
-
-    private void Update()
-    {
-    }
-
-    public int SeasonToBit(Season season)  // 계절 enum 플래그
+    private ArriveSeason ConvertSeason(Season season)
     {
         return season switch
         {
-            Season.Spring => 1,
-            Season.Summer => 2,
-            Season.Autumn => 4,
-            Season.Winter => 8,
-            _ => 0
+            Season.Spring => ArriveSeason.Spring,
+            Season.Summer => ArriveSeason.Summer,
+            Season.Autumn => ArriveSeason.Autumn,
+            Season.Winter => ArriveSeason.Winter,
+            _ => ArriveSeason.Spring
         };
     }
-
-    public void HandleSeasonChanged(Season newSeason)    // 계절 변경 시 시즌 물고기 리스트 재구성
+    //환경에서 계절 바뀔 때 호출될 함수
+    private void HandleSeasonChanged(Season newSeason)
     {
-        _season = newSeason;
-        _seasonBit = SeasonToBit(_season);
-
-        _seasonFish.Clear();
-
-        foreach (var fish in _allFish)
-            if ((fish.ArriveSeason & _seasonBit) != 0)
-                _seasonFish.Add(fish);
+        _currentSeason = ConvertSeason(newSeason);
+        _seasonChangeCount++;
+        _canCoelacanth = (_seasonChangeCount >= 24);
+        Debug.Log($"[FishManager] Season Converted => {_currentSeason}");
     }
 
-    //public void RandomFish()
-    //{
-    //    if (seasonFish.Count == 0) return;
-    //    FishDefinition randomFish = seasonFish[UnityEngine.Random.Range(0, seasonFish.Count)];
-    //    float length = UnityEngine.Random.Range(randomFish.MinLength, randomFish.MaxLength);
-    //    int price = randomFish.Price;
-    //    FishToStorage(randomFish, length, price);
-    //    Debug.Log($"Name: {randomFish.NameKey}, price: {price}, Length: {length}");
-    //}
+    public void PickRandomSeasonFish()
+    {
+        FishingContext ctx = BuildContextFromCurrentState();
+        PickRandomSeasonFish(ctx);
+    }
 
-    public void FishToStorage(FishDefinition randomFish, float length, int price)    // StorageManager에 넣기 위한 FishInstance 생성
+    //ctx.Season에 현재 계절 넣어줌
+    private FishingContext BuildContextFromCurrentState()
+    {
+        FishingContext ctx = new FishingContext();
+        //ctx.Season = _currentSeason;
+        ctx.Season = ArriveSeason.Spring; //황금쏘가리 테스트
+        ctx.IsMorning = _environment.CurrentDay == DayilyCycle.Morning;
+        ctx.IsAfternoon = _environment.CurrentDay == DayilyCycle.Day;
+        ctx.IsNight = _environment.CurrentDay == DayilyCycle.Night;
+        //날씨, 골드도 필요함 일단테스트
+        ctx.GoldAmount = 500;
+        ctx.IsNight = true;
+        ctx.IsCherryblossom = true;
+        return ctx;
+    }
+
+    public void PickRandomSeasonFish(FishingContext ctx)  //낚시 결과 뽑기
+    {
+        var candidates = BuildCandidates(ctx);  //후보 선정
+        if (candidates == null || candidates.Count == 0)
+        {
+            Debug.LogWarning("[FishManager] 후보가 없음");
+            return;
+        }
+
+        var pickedDrop = PickWeighted(candidates, ctx);  //확률 뽑기
+        if (pickedDrop == null)
+        {
+            Debug.LogWarning("[FishManager] PickWeighted 실패");
+            return;
+        }
+
+        int fishId = pickedDrop.RewardItem;  //뽑힌 드랍의 RewardItem을 fishId로 사용
+
+        var fishSO = GetFishSO(fishId);  //뽑힌 드랍의 RewardItem을 fishId로 사용
+        if (fishSO == null)
+        {
+            Debug.LogWarning($"[FishManager] FishDataSO 못찾음 fishId={fishId}");
+            return;
+        }
+
+        CreateInstance(fishSO);  //길이,가격 계산 후 저장
+    }
+
+    public void CreateInstance(FishDataSO fish)
+    {
+        float length = Random.Range(fish.MinLength, fish.MaxLength);
+        int price = fish.Price;
+
+        Debug.Log($"Name: {fish.FishName_String}, price: {price}, Length: {length}");
+
+        FishToStorage(fish, length, price);
+    }
+
+    public void FishToStorage(FishDataSO randomFish, float length, int price)
     {
         FishInstance fish = new FishInstance
         {
@@ -115,36 +185,125 @@ public class FishManager : Singleton<FishManager>
         }
     }
 
-    public void PickRandomSeasonFish()    // 시즌 리스트에서 랜덤 선택 => 인스턴스 생성 => 창고 저장
-    { 
-        if (_seasonFish.Count == 0) return;
-
-        FishDefinition randomFish =
-            _seasonFish[UnityEngine.Random.Range(0, _seasonFish.Count)];
-
-        CreateInstance(randomFish);
-    }
-
-    public void CreateInstance(FishDefinition fish) // 획득 개체 만들기(길이 랜덤, 가격 설정 등)
+    private FishDataSO GetFishSO(int fishId)
     {
-        float length = UnityEngine.Random.Range(fish.MinLength, fish.MaxLength);
-        int price = fish.Price;
-
-        Debug.Log($"Name: {fish.FishName_String}, price: {price}, Length: {length}");
-
-        FishToStorage(fish, length, price);
-    }
-
-    public FishDefinition GetDefinition(int id)     // 도감/정렬/표시용: ID로 정의 찾기
-    {
-        if (_fishById != null && _fishById.TryGetValue(id, out var def))
-            return def;
-
+        if (_fishById != null && _fishById.TryGetValue(fishId, out var fish))
+            return fish;
         return null;
     }
 
-    public void SpecialConditions()
+    private List<FishingDropDataSO> BuildCandidates(FishingContext ctx)
     {
-        // FishDefinition specialFish = allFish.Find(f => f.ID == 10001);
+        var db = DataManager.Instance.FishingDatabase.FishingDropData;
+        var result = new List<FishingDropDataSO>();
+
+        foreach (var drop in db.datas)
+        {
+            if (drop == null) continue;
+
+            //계절 조건
+            if (ctx.Season == ArriveSeason.Spring && !drop.IsSpring) continue;
+            if (ctx.Season == ArriveSeason.Summer && !drop.IsSummer) continue;
+            if (ctx.Season == ArriveSeason.Autumn && !drop.IsAutumn) continue;
+            if (ctx.Season == ArriveSeason.Winter && !drop.IsWinter) continue;
+
+            //시간 조건
+            if (ctx.IsMorning && !drop.IsMorning) continue;
+            if (ctx.IsAfternoon && !drop.IsAfternoon) continue;
+            if (ctx.IsNight && !drop.IsNight) continue;
+
+            //장소 조건
+            if (ctx.IsLake && !drop.IsLake) continue;
+            if (ctx.IsSea && !drop.IsSea) continue;
+
+            int fishId = drop.RewardItem;
+            if (!PassSpecialRuleByFishId(fishId, ctx)) continue;
+            result.Add(drop);
+        }
+
+
+        return result;
+    }
+    private bool PassSpecialRuleByFishId(int fishId, FishingContext ctx)  //특별한물고기들조건
+    {
+        if (fishId != ((int)SpecialType.GoldenMandarin) &&
+               fishId != (int)SpecialType.Oarfish &&
+               fishId != (int)SpecialType.WhiteShark &&
+               fishId != (int)SpecialType.SpermWhale &&
+               fishId != (int)SpecialType.Coelacanth &&
+               fishId != (int)SpecialType.Piraruku)
+        {
+            return true;
+        }
+        switch (fishId)
+        {
+            case (int)SpecialType.GoldenMandarin:
+                if (ctx.GoldAmount < 100) return false;
+                if (!ctx.IsNight) return false;
+                bool anyWeather = ctx.IsCherryblossom || ctx.IsRain || ctx.IsMaple || ctx.IsSnow;
+                if (!anyWeather) return false;
+                return true;
+            case (int)SpecialType.Oarfish:
+                return (ctx.Season == ArriveSeason.Spring);
+
+            case (int)SpecialType.WhiteShark:
+                if (ctx.Season != ArriveSeason.Summer) return false;
+                if (!ctx.IsRain) return false;
+                return true;
+
+            case (int)SpecialType.SpermWhale:
+                return ctx.IsNight;
+
+            case (int)SpecialType.Coelacanth:
+                if (!_canCoelacanth) return false;
+                if (!ctx.IsNight) return false;
+                return true;
+
+            case (int)SpecialType.Piraruku:
+                return _canCanPiraruque;
+
+            default:
+                return true;
+        }
+    }
+    private FishingDropDataSO PickWeighted(List<FishingDropDataSO> candidates, FishingContext ctx)  //가중치랜덤
+    {
+        if (candidates == null || candidates.Count == 0) return null;
+        float total = 0;
+        for (int i = 0; i < candidates.Count; i++)
+        {
+            total += GetWeight(candidates[i], ctx);
+        }
+
+        if (total <= 0)
+        {
+            return candidates[Random.Range(0, candidates.Count)];
+        }
+
+        float r = Random.Range(0, total);
+        float acc = 0;
+
+        for (int i = 0; i < candidates.Count; i++)
+        {
+            acc += GetWeight(candidates[i], ctx);
+            if (r < acc) return candidates[i];
+        }
+
+        return candidates[candidates.Count - 1];
+    }
+    public float GetWeight(FishingDropDataSO drop, FishingContext ctx)
+    {
+        float weight = Mathf.Max(0f, drop.Probability);
+
+        if (drop.RewardItem == (int)SpecialType.Oarfish && ctx.IsCherryblossom)
+        {
+            weight *= 1.5f;
+        }
+        return weight;
+    }
+    public void OpenPiraruku(DayilyCycle dayilyCycle)  
+    {
+        _pirarukuTimer = 0f;
+        _canCanPiraruque = true;
     }
 }
