@@ -42,14 +42,6 @@ public class StageControl : MonoBehaviour
         GameManager.Instance.StageController = this;
     }
 
-    private void Update()
-    {
-        if (Keyboard.current.gKey.wasPressedThisFrame)
-        {
-            GameManager.Instance.InputManager.OnLeftClick_Started -= OnInteractObject;
-        }
-    }
-
     private void OnInteractObject(InputAction.CallbackContext ctx)
     {
         if (interactObj == null || !GameManager.Instance.InputManager.InputStateType.HasFlag(InputState.ObjectInteraction)) return;

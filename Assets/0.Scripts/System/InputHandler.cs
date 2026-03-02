@@ -35,14 +35,6 @@ public class InputHandler : MonoBehaviour
         leftClickAction = playerInput.actions["LeftMouseClick"];
     }
 
-    private void Update()
-    {
-        if(Keyboard.current.fKey.wasPressedThisFrame)
-        {
-            ClearMapping();
-        }
-    }
-
     private void OnMapping_LeftClick()
     {
         OnMapping(leftClickAction, "LeftMouseClick", startedAction: OnLeftClick_Started);
