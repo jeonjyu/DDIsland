@@ -28,15 +28,18 @@ public class BuildingManager : MonoBehaviour
     private List<Placeable3D> _deletedBuildings = new(); // 삭제 취소용
 
     #region 배치 결과 이벤트
-    public event Action<GameObject> OnPlaceSuccess;
-    public event Action<GameObject> OnPlaceCancel;
+    public event Action<GameObject> OnPlaceSuccess; // 배치 성공
+    public event Action<GameObject> OnPlaceCancel; // 배치 실패 
+    public event Action OnConfirm;   // 저장 
+    public event Action OnRevert;    // 전체회수 
+    public event Action OnClearAll;  // 초기화 
     #endregion
     #region 프로퍼티
     public Placeable3D ActivePlaceable => _activePlaceable;
     public GridSystem GridSystem => _gridSystem;
     #endregion
 
-    
+
     public void PickUpBuilding(Placeable3D target)
     {
         // 편집모드 딱 들어왔을 때 저장한 값이 있다면 (기존 건물)
@@ -155,6 +158,7 @@ public class BuildingManager : MonoBehaviour
                 Destroy(b.gameObject);
             }
         }
+        OnConfirm?.Invoke(); // 저장 알림 
         ClearSession();
     }
 
@@ -177,7 +181,7 @@ public class BuildingManager : MonoBehaviour
                 Destroy(b.gameObject);
             }
         }
-        
+
 
         // 이동 시켰던거 원래대로 되돌려 놓기
         foreach (var snap in _movedSnapshots.Values)
@@ -201,7 +205,7 @@ public class BuildingManager : MonoBehaviour
         }
 
         ClearSession();
-
+        OnRevert?.Invoke(); // 전체 회수 알림 
         _activePlaceable = null;
     }
 
@@ -211,15 +215,15 @@ public class BuildingManager : MonoBehaviour
         {
             Destroy(_activePlaceable.gameObject);
         }
-        foreach (Transform child in _gridSystem.transform)
-        {
-            Destroy(child.gameObject);
-        }
+        //foreach (Transform child in _gridSystem.transform)
+        //{
+        //    Destroy(child.gameObject);
+        //}
 
         _gridSystem.ClearAllItems();
-
         _gridSystem.ClearGrid();
 
+        OnClearAll?.Invoke(); // 초기화 알림
         ClearSession();
     }
     private void Update()
