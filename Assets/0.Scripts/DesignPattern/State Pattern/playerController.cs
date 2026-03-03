@@ -55,6 +55,8 @@ public class PlayerController : MonoBehaviour
     private readonly List<GameObject> _acorns = new();
     private int _acornIndex = 0; //도토리 프리팹 인덱스
 
+    private Coroutine _recoverRoutine;
+
     public Rigidbody2D Rigid => _rigid;
     public NavMeshAgent Agent => _agent;
     public Animator Animator => _animator;
@@ -82,7 +84,7 @@ public class PlayerController : MonoBehaviour
         if (PlayerData == null) PlayerData = new PlayerData();
         //테스트용
         PlayerData.SetHunger(100);
-        PlayerData.SetStamina(100);
+        PlayerData.SetStamina(0);
         PlayerData.SetMoveSpeed(1);
         PlayerData.SetDoongDoongStat(1000);
     }
@@ -331,6 +333,10 @@ public class PlayerController : MonoBehaviour
     {
         _fishingRod.SetActive(true);
     }
+    public void HandOffFishingRod()
+    {
+        _fishingRod.SetActive(false);
+    }
     public void HasYawned()
     {
         if (_isYawning) return;
@@ -352,24 +358,43 @@ public class PlayerController : MonoBehaviour
         _isYawning = false;
         _yawnRoutine = null;
     }
-    public void FullyRecovered()  //휴식이 다찰때까지 어떤 상태로도 전환 불가
-    {
-        if (_isResting) return;
-        _isResting = true;
 
-        InvokeRepeating("WaitRecovered", 0f, 1f);
-    }
-    private void WaitRecovered()
+    public void StartRecover()
     {
-        float increase = PlayerData.Stamina * 0.02f;
-        PlayerData.SetStamina(PlayerData.Stamina + increase);
-        if (PlayerData.Stamina >= 100)
+        if (_recoverRoutine != null) return;
+        _isResting = true;
+        _recoverRoutine = StartCoroutine(RecoverRoutine());
+    }
+    public void StopRecover()
+    {
+        if (_recoverRoutine != null)
         {
-            CancelInvoke("WaitRecovered");
-            _isResting = false;
-            SetState(new IdleState(this));
+            StopCoroutine(_recoverRoutine);
+            _recoverRoutine = null;
+        }
+        _isResting = false;
+    }
+    private IEnumerator RecoverRoutine()
+    {
+        while (true)
+        {
+            float next = PlayerData.Stamina + (100f * 0.02f);
+            PlayerData.SetStamina(next);
+            Debug.Log(PlayerData.Stamina );
+            if (PlayerData.Stamina >= 100f)
+            {
+                PlayerData.SetStamina(100f);
+                _recoverRoutine = null;
+                _isResting = false;
+                SetState(new IdleState(this));
+                yield break;
+            }
+
+            yield return new WaitForSeconds(1f);
         }
     }
+
+
     public void ApplyMoveSpeed()
     {
         float baseSpeed = PlayerData.MoveSpeed;
