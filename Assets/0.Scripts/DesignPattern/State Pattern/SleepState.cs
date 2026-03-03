@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 public class SleepState : IState
 {
@@ -12,16 +12,17 @@ public class SleepState : IState
     {
         Debug.Log("수면진입");
         _player.Animator.SetBool("isSleep", true);
+        _player.StartRecover();
     }
 
     public void Execute()
     {
-        _player.FullyRecovered();
+
     }
 
     public void Exit()
     {
-        _player.CancelInvoke("WaitRecovered");
+        _player.StopRecover();
         _player.Animator.SetBool("isSleep", false);
     }
 

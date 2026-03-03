@@ -26,6 +26,7 @@ public class FishingState : IState
 
     public void Exit()
     {
+        _player.HandOffFishingRod();
         _player.StopFishing();
         _player.Animator.SetBool("isFish", false);
     }

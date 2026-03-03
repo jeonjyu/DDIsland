@@ -33,6 +33,24 @@ public class MoveState : IState
     {
         Debug.Log("무브진입");
         _player.Agent.stoppingDistance = 0.6f;
+        _player.Animator.applyRootMotion = false;
+        float dist = Vector3.Distance(_player.transform.position, target.position);
+        if (dist <= _player.Agent.stoppingDistance + 0.05f)  //이미도착한 거리면 바로 그상태 보내버리기
+        {
+            _player.Agent.isStopped = true;
+            _player.Agent.ResetPath();
+            _player.Agent.velocity = Vector3.zero;
+
+            switch (_desPoint)
+            {
+                case Point.Fish: _player.SetState(new FishingState(_player)); break;
+                case Point.Kitchen: _player.SetState(new CookState(_player)); break;
+                case Point.Acorn: _player.SetState(new EatState(_player)); break;
+                case Point.Rest: _player.SetState(new SleepState(_player)); break;
+            }
+            return;
+        }
+
         _player.Agent.isStopped = false;
         _player.Agent.SetDestination(target.position);
         _player.Animator.SetBool("isMove", true);
@@ -68,7 +86,7 @@ public class MoveState : IState
     public void Exit()
     {
         _player.Animator.SetBool("isMove", false);
-
+        _player.Animator.applyRootMotion = false;
     }
 
     public void FixedExecute()
