@@ -90,7 +90,7 @@ public class StoreListViewModel : MonoBehaviour, INotifyPropertyChanged
     public void LoadSlotList()
     {
         Debug.Log("[ItemListViewModel] LoadSlotList");
-        Debug.Log("슬롯 리스트: " + string.Join(", ", ItemManager.Instance.displayItems.Select(x => x.ItemName + "(" + x.IsGained + "):" + x.PurchasePrice)));
+        //Debug.Log("슬롯 리스트: " + string.Join(", ", ItemManager.Instance.displayItems.Select(x => x.ItemName + "(" + x.IsGained + "):" + x.PurchasePrice)));
 
         if (storeItemViewModels.Count > 0)
             ResetSlotList();

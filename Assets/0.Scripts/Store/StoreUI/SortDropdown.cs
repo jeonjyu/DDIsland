@@ -48,14 +48,14 @@ public class SortDropdown : StoreDropdownBase
         // 정렬 enum에 따라 해당 enum을 맨 앞으로 가져옴
         // 리스트가 있고 순서를 지키지만 특정한 하나를 1순위로 >
         // 해당 리스트 요소를 널으로 만들고 0 위치에 insert, 빈 거 제거/무시 후 리스트화 
-        Debug.Log("[SortDropdown] 정렬 시작");
+        //Debug.Log("[SortDropdown] 정렬 시작");
         comparers = comparers.OrderBy(x => x).ToList();
         comparers.Remove(comparer);
         comparers.Insert(0, comparer);
 
         IEnumerable<StoreItem> items = ItemManager.Instance.displayItems;
 
-        Debug.Log("[SortDropdown] SortSlots | SelectedOption 1 : " + (StoreSort)SelectedOption);
+        //Debug.Log("[SortDropdown] SortSlots | SelectedOption 1 : " + (StoreSort)SelectedOption);
 
         foreach (Comparer comp in comparers)
         {
@@ -82,15 +82,15 @@ public class SortDropdown : StoreDropdownBase
             }
         }
         ItemManager.Instance.displayItems = items.ToList();
-        Debug.Log("[SortDropdown] SortSlots | SelectedOption 2 : " + (StoreSort)SelectedOption);
+        //Debug.Log("[SortDropdown] SortSlots | SelectedOption 2 : " + (StoreSort)SelectedOption);
 
-        Debug.Log("정렬 기준 : " + string.Join(" > ", comparers.Select(x => x)));
+        //Debug.Log("정렬 기준 : " + string.Join(" > ", comparers.Select(x => x)));
         Debug.Log("정렬 완료: " + string.Join(", ", ItemManager.Instance.displayItems.Select(x => x.ItemName + "(" + x.IsGained + "):" + x.PurchasePrice)));
     }
 
     public void ApplySortPriority()
     {
-        Debug.Log("[SortDropdown] ApplySortPriority | SelectedOption : " + (StoreSort)SelectedOption);
+        //Debug.Log("[SortDropdown] ApplySortPriority | SelectedOption : " + (StoreSort)SelectedOption);
         // 선택된 옵션에 따라 StoreSort 적용 후 정렬
         switch ((StoreSort)(SelectedOption))
         {

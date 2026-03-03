@@ -32,7 +32,7 @@ public class ItemManager : Singleton<ItemManager>
     protected override void Awake()
     {
         base.Awake();
-        Debug.Log("[ItemManager] Awake");
+        //Debug.Log("[ItemManager] Awake");
         //_storeCategories.Add(StoreCat.interior, StoreManager.Instance.interiorItem);
         CreateDictionary();
     }
@@ -50,7 +50,7 @@ public class ItemManager : Singleton<ItemManager>
             keyValues1.Add(item.ItemId, item);
         _storeCategories.Add(StoreCat.costume, keyValues1);
 
-        Debug.Log("[ItemManger] 딕셔너리 생성");
+        //Debug.Log("[ItemManger] 딕셔너리 생성");
     }
 
 
@@ -100,7 +100,7 @@ public class ItemManager : Singleton<ItemManager>
 
         currentCategory = _storeCategories[storeCat].Values.Cast<StoreItem>().ToList();
         displayItems = new List<StoreItem>(currentCategory);
-        Debug.Log("[ItemManger] 현재 카테고리 딕셔너리 : " + storeCat.ToString());
+        //Debug.Log("[ItemManger] 현재 카테고리 딕셔너리 : " + storeCat.ToString());
 
         displayItems = displayItems.OrderBy((StoreItem x) => x.IsGained).ThenBy(x => x.PurchasePrice).ThenBy(x => x.ItemId).ToList();
 
