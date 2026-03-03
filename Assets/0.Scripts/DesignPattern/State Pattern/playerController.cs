@@ -45,6 +45,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private SkinnedMeshRenderer _roundSource;
     [SerializeField] private SkinnedMeshRenderer _chubbySource;
 
+    [SerializeField] private GameObject _fishingRod;
+
     private float _hungerTickTimer;
     private float _baseMoveSpeed;  
     private bool _slowApplied;
@@ -87,6 +89,7 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         _baseMoveSpeed = PlayerData.MoveSpeed;
+        _fishingRod.gameObject.SetActive(false);
     }
     private void Update()
     {
@@ -323,6 +326,10 @@ public class PlayerController : MonoBehaviour
     public void ResetFishingCount()
     {
         _fishingCount = 5;
+    }
+    public void HandOnFishingRod()
+    {
+        _fishingRod.SetActive(true);
     }
     public void HasYawned()
     {
