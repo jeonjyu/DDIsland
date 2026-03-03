@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -6,6 +8,7 @@ public class EnvironmentView : MonoBehaviour
 {
     [SerializeField] private Image _background;
     [SerializeField] private ParticleSystem[] _particles; //반드시 봄, 여름, 가을, 겨울 순서대로 넣어줄 것
+    [SerializeField] private TextMeshProUGUI _timeText;
     private ParticleSystem _currentParticle;
     private Color targetColor;
 
@@ -17,7 +20,7 @@ public class EnvironmentView : MonoBehaviour
         //미리 계절을 정수로 변환
         int seasonIndex = (int)season;
 
-        int rnd = Random.Range(1, 101);
+        int rnd = UnityEngine.Random.Range(1, 101);
 
         if (rnd <= 35)
         {
@@ -43,5 +46,10 @@ public class EnvironmentView : MonoBehaviour
             DayilyCycle.Night => new Color(0.05098039f, 0.05098039f, 0.2f),
             _ => _background.color
         };
+    }
+
+    public void TextedTimer(DateTime now)
+    {
+        _timeText.text = now.ToString("yyyy - MM - dd HH: mm:ss");
     }
 }
