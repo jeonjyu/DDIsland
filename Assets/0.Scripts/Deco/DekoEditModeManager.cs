@@ -114,15 +114,14 @@ public class DecoEditModeManager : MonoBehaviour
         if (currentMode != DecoMode.Island) return;
 
 
-        var database = DataManager.Instance.DecorationDatabase.InteriorData[itemId];
-       
-        if (database == null) return;
+        InteriorDataSO data = DataManager.Instance.DecorationDatabase.InteriorData[itemId];
+        if (data == null) return;
 
         holdItemId = itemId; // 배치 대기 아이템 저장
 
         // PlacementMgr.cs 싱글톤으로 프리팹 전달
         if (PlacementMgr.Instance != null)
-            PlacementMgr.Instance.OnClickConstructionButton(itemId);
+            PlacementMgr.Instance.OnClickConstructionButton(data.InteriorID);
     }
     // 배치 성공 시 수량 차감
     void OnIslandPlaceSuccess(GameObject obj)
