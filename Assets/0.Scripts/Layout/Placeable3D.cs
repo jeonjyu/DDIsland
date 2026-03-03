@@ -162,7 +162,6 @@ public class Placeable3D : Placeable
         int px = (_sizeX - 1) / 2;
         int py = (_sizeY - 1) / 2;
 
-        // 시계 방향 90도 회전 기준 (사용자님의 GetRotatedSize 로직과 맞춤)
         switch (_isRotated)
         {
             case 0: return new Vector2Int(px, py);                                 // 0도
@@ -176,6 +175,7 @@ public class Placeable3D : Placeable
     // 아이템을 그리드에 배치
     public override void Placement()
     {
+        if (IsEditable == false && ItemState == ItemState.Placed) return;
         Vector2Int index = _cachedIndex;
         Vector2Int size = GetRotatedSize();
 

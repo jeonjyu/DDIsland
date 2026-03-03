@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using TMPro;
+
 public class UpgradeManager : MonoBehaviour
 {
     #region UI 변수
@@ -40,9 +41,7 @@ public class UpgradeManager : MonoBehaviour
     #endregion
 
 
-
-    public int BitCoin = 99999; // 테스트용 임시 골드 가상화폐 
-    //업그레이드 테이블 나중에 교체 
+    // TODO: 업그레이드 테이블 나중에 교체 
     private List<UpgradeData> upgradeTable = new List<UpgradeData>();
 
 
@@ -50,6 +49,8 @@ public class UpgradeManager : MonoBehaviour
 
     void Start()
     {
+        if (playerController == null)
+            playerController = FindObjectOfType<PlayerController>();
         if (playerController != null)
         {
             playerData = playerController.PlayerData;
@@ -64,6 +65,7 @@ public class UpgradeManager : MonoBehaviour
         staminaButton.onClick.AddListener(BuyStamina);
         moveSpeedButton.onClick.AddListener(BuyMoveSpeed);
         fishingSpeedButton.onClick.AddListener(BuyFishingSpeed);
+        UpdateAllUI();
     }
 
 
@@ -90,15 +92,16 @@ public class UpgradeManager : MonoBehaviour
     #region // 구매 함수들
     void BuyHunger()
     {
+        if (playerData == null) return;
         int currentLevel = playerData.HungerLevel;
         UpgradeData currentLevelData = FindCurrentLevelData(StatType.BaseHunger, currentLevel);
         UpgradeData nextLevelData = FindNextLevelData(StatType.BaseHunger, currentLevel);
 
         if (currentLevelData == null || nextLevelData == null) return;
         if (currentLevelData.IsMax) return;
-        if (BitCoin < currentLevelData.Cost) return;
+        if (GameManager.Instance.PlayerGold < currentLevelData.Cost) return;
 
-        BitCoin -= currentLevelData.Cost;
+        GameManager.Instance.SetGold(-currentLevelData.Cost);
 
         // Add 방식: 벨류만큼 최대치와 현재치 둘다 증가 
         playerData.MaxHunger += currentLevelData.Value;
@@ -111,16 +114,17 @@ public class UpgradeManager : MonoBehaviour
 
     void BuyStamina()
     {
+        if (playerData == null) return;
         int currentLevel = playerData.StaminaLevel;
         UpgradeData currentLevelData = FindCurrentLevelData(StatType.BaseStamina, currentLevel);
         UpgradeData nextLevelData = FindNextLevelData(StatType.BaseStamina, currentLevel);
 
         if (currentLevelData == null || nextLevelData == null) return;
         if (currentLevelData.IsMax) return;
-        if (BitCoin < currentLevelData.Cost) return;
+        if (GameManager.Instance.PlayerGold < currentLevelData.Cost) return;
 
-        BitCoin -= currentLevelData.Cost;
-
+        GameManager.Instance.SetGold(-currentLevelData.Cost);
+        
         // Add 방식: 벨류만큼 최대치와 현재치 둘다 증가 
         playerData.MaxStamina += currentLevelData.Value;
         playerData.SetStamina(playerData.Stamina + currentLevelData.Value);
@@ -131,15 +135,17 @@ public class UpgradeManager : MonoBehaviour
 
     void BuyMoveSpeed()
     {
+        if (playerData == null) return;
+
         int currentLevel = playerData.MoveSpeedLevel;
         UpgradeData currentLevelData = FindCurrentLevelData(StatType.BaseMoveSpeed, currentLevel);
         UpgradeData nextLevelData = FindNextLevelData(StatType.BaseMoveSpeed, currentLevel);
 
         if (currentLevelData == null || nextLevelData == null) return;
         if (currentLevelData.IsMax) return;
-        if (BitCoin < currentLevelData.Cost) return;
+        if (GameManager.Instance.PlayerGold < currentLevelData.Cost) return;
 
-        BitCoin -= currentLevelData.Cost;
+        GameManager.Instance.SetGold(-currentLevelData.Cost);
         // Set 방식 : 다음 레벨 벨류로 덮어씌우기 
         playerData.SetMoveSpeed(nextLevelData.Value);
 
@@ -150,15 +156,16 @@ public class UpgradeManager : MonoBehaviour
 
     void BuyFishingSpeed()
     {
+        if (playerData == null) return;
         int currentLevel = playerData.FishingSpeedLevel;
         UpgradeData currentLevelData = FindCurrentLevelData(StatType.BaseFishingSpeed, currentLevel);
         UpgradeData nextLevelData = FindNextLevelData(StatType.BaseFishingSpeed, currentLevel);
 
         if (currentLevelData == null || nextLevelData == null) return;
         if (currentLevelData.IsMax) return;
-        if (BitCoin < currentLevelData.Cost) return;
+        if (GameManager.Instance.PlayerGold < currentLevelData.Cost) return;
 
-        BitCoin -= currentLevelData.Cost;
+        GameManager.Instance.SetGold(-currentLevelData.Cost);
         // Set 방식 : 다음 레벨 벨류로 덮어씌우기 
         playerData.SetFishingSpeed(nextLevelData.Value);
 
@@ -176,7 +183,7 @@ public class UpgradeManager : MonoBehaviour
     // UI 업데이트
     void UpdateAllUI()
     {
-        goldText.text = BitCoin.ToString();
+        goldText.text = GameManager.Instance.PlayerGold.ToString();
 
         UpdateStatUI(StatType.BaseHunger, playerData.HungerLevel, hungerLevelText, hungerStatText, hungerButtonText, hungerButton);
         UpdateStatUI(StatType.BaseStamina, playerData.StaminaLevel, staminaLevelText, staminaStatText, staminaButtonText, staminaButton);
@@ -222,7 +229,7 @@ public class UpgradeManager : MonoBehaviour
             }
 
             buttonText.text = currentLevelData.Cost.ToString();
-            button.interactable = (BitCoin >= currentLevelData.Cost); // 구매버튼 활성화 
+            button.interactable = (GameManager.Instance.PlayerGold >= currentLevelData.Cost); // 구매버튼 활성화 
         }
     }
 
