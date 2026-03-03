@@ -34,7 +34,6 @@ public class UI_Storage : MonoBehaviour
 
     private void Start()
     {
-        gameObject.SetActive(false);
         _slotCount = StorageManager.Instance.Capacity;
         _fishSlots = new UI_StorageSlot[_slotCount];
 
@@ -241,5 +240,9 @@ public class UI_Storage : MonoBehaviour
     public void ExitStorageUI()
     {
         gameObject.SetActive(false);
+    }
+    public void OpenStorageUI()
+    {
+        gameObject.SetActive(true);
     }
 }
