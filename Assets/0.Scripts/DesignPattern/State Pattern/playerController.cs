@@ -84,9 +84,9 @@ public class PlayerController : MonoBehaviour
         if (PlayerData == null) PlayerData = new PlayerData();
         //테스트용
         PlayerData.SetHunger(100);
-        PlayerData.SetStamina(0);
+        PlayerData.SetStamina(100);
         PlayerData.SetMoveSpeed(1);
-        PlayerData.SetDoongDoongStat(1000);
+        PlayerData.SetDoongDoongStat(100);
     }
     private void Start()
     {
