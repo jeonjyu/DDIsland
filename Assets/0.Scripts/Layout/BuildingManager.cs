@@ -127,15 +127,17 @@ public class BuildingManager : MonoBehaviour
         //배치할 물건 등록
         GameObject go = Instantiate(obj.InteriorPath_GameObject, _gridSystem.transform);
 
-        if (go.TryGetComponent(out _activePlaceable))
+
+        if (!go.TryGetComponent(out _activePlaceable))
         {
+            _activePlaceable = go.AddComponent<Placeable3D>();
+        }
+
             _currentSnapshot = new() { Pos = new Vector2Int(-1, -1) };
 
             // 인테리어 데이터 SO 추가해야함
             _activePlaceable.Initialize(_gridSystem, this,obj); //배치할 물건 초기화
-        }
-
-        else
+        if(!go.TryGetComponent(out _activePlaceable))
         {
             Debug.LogError($"{go.name}에 스크립트가 없습니다!");
             Destroy(go);
