@@ -6,6 +6,9 @@ public class EnvironmentPresenter : MonoBehaviour
     private EnvironmentModel _model;
     [SerializeField] private EnvironmentView _view;
 
+    //여기서 미리 지정해줍니다
+    private DateTime now = DateTime.UtcNow.AddHours(9);
+
     private void Awake()
     {
         _model = new EnvironmentModel();
@@ -48,7 +51,9 @@ public class EnvironmentPresenter : MonoBehaviour
 
     private void Update()
     {
-        DateTime now = DateTime.UtcNow.AddHours(9);
+        //여기서 초를 추가해 줬습니다 10분 마다요!
+        
+        now = now.AddSeconds(Time.deltaTime * 600f);
         _model.UpdateTimeSet(now);
     }
     //이 친구 인스펙터에서 우클릭 후 해당 메서드 이름 누르시면 실행돼요!
