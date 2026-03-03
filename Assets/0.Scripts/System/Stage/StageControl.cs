@@ -37,7 +37,7 @@ public class StageControl : MonoBehaviour
     private void Start()
     {
         SoundManager.Instance.PlayBGM(stageBgmClip);
-        SoundManager.Instance.SetSoundVolume(Soundtype.BGM, stageBgmVolume);
+        SoundManager.Instance.SetSoundVolume(Soundtype.BGM, stageBgmVolume, false);
 
         GameManager.Instance.StageController = this;
     }

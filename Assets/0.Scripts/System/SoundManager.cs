@@ -15,8 +15,6 @@ public enum Soundtype
 
 public class SoundManager : Singleton<SoundManager>
 {
-    [SerializeField] private AudioClip test;
-
     [Header("오디오 믹서")]
     [field: SerializeField] public AudioMixer MasterAudioMixer { get; private set; }
 
@@ -50,10 +48,11 @@ public class SoundManager : Singleton<SoundManager>
         InitData();
     }
 
-    private void Update()
+    private void Start()
     {
-        if (Keyboard.current.jKey.wasPressedThisFrame)
-            PlaySFX(test);
+        SetSoundVolume(Soundtype.BGM, PlayerPrefsDataManager.BgmVolume, PlayerPrefsDataManager.BgmVolumeMute);
+        SetSoundVolume(Soundtype.SFX, PlayerPrefsDataManager.SFXVolume, PlayerPrefsDataManager.SFXVolumeMute);
+        SetSoundVolume(Soundtype.BGS, PlayerPrefsDataManager.BGSVolume, PlayerPrefsDataManager.BGSVolumeMute);
     }
 
     #region Init
@@ -148,33 +147,33 @@ public class SoundManager : Singleton<SoundManager>
     #endregion
 
     #region 오디오 소스 설정
-    public void SetSoundVolume(Soundtype type, float volume, bool mute = false)
+    public void SetSoundVolume(Soundtype type, float volume, bool isMute)
     {
         if (MasterAudioMixer == null) return;
 
         switch (type)
         {
             case Soundtype.BGM:
-                SetVolume("BGM", volume);
-                if (!mute)
-                    PlayerPrefsDataManager.BgmVolume = volume;
+                SetVolume("BGM", volume, isMute);
+                PlayerPrefsDataManager.BgmVolume = volume;
+                PlayerPrefsDataManager.BgmVolumeMute = isMute;
                 break;
             case Soundtype.SFX:
-                SetVolume("SFX", volume);
-                if (!mute)
-                    PlayerPrefsDataManager.SFXVolume = volume;
+                SetVolume("SFX", volume, isMute);
+                PlayerPrefsDataManager.SFXVolume = volume;
+                PlayerPrefsDataManager.SFXVolumeMute = isMute;
                 break;
             case Soundtype.BGS:
-                SetVolume("BGS", volume);
-                if (!mute)
-                    PlayerPrefsDataManager.BGSVolume = volume;
+                SetVolume("BGS", volume, isMute);
+                PlayerPrefsDataManager.BGSVolume = volume;
+                PlayerPrefsDataManager.BGSVolumeMute = isMute;
                 break;
         }
     }
 
-    private void SetVolume(string mixerParam, float volume)
+    private void SetVolume(string mixerParam, float volume, bool isMute)
     {
-        MasterAudioMixer.SetFloat(mixerParam, volume < Mathf.Epsilon ? -80f : Mathf.Log10(volume) * 20);
+        MasterAudioMixer.SetFloat(mixerParam, (volume < Mathf.Epsilon || isMute) ? -80f : Mathf.Log10(volume) * 20);
     }
     #endregion
 
