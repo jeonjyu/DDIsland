@@ -17,7 +17,7 @@ public abstract class TradeUnitViewBase : MonoBehaviour
 
     protected virtual void Start()
     {
-        Debug.Log("[TradeUnitViewBase] Start");
+        //Debug.Log("[TradeUnitViewBase] Start");
 
         viewModel = GetComponent<TradeUnitViewModelBase>();
         viewModel.PropertyChanged += OnViewModelPropChanged;

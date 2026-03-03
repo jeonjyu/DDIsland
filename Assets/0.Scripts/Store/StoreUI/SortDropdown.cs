@@ -85,7 +85,7 @@ public class SortDropdown : StoreDropdownBase
         //Debug.Log("[SortDropdown] SortSlots | SelectedOption 2 : " + (StoreSort)SelectedOption);
 
         //Debug.Log("정렬 기준 : " + string.Join(" > ", comparers.Select(x => x)));
-        Debug.Log("정렬 완료: " + string.Join(", ", ItemManager.Instance.displayItems.Select(x => x.ItemName + "(" + x.IsGained + "):" + x.PurchasePrice)));
+        //Debug.Log("정렬 완료: " + string.Join(", ", ItemManager.Instance.displayItems.Select(x => x.ItemName + "(" + x.IsGained + "):" + x.PurchasePrice)));
     }
 
     public void ApplySortPriority()
