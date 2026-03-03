@@ -55,6 +55,8 @@ public class EnvironmentPresenter : MonoBehaviour
         
         now = now.AddSeconds(Time.deltaTime * 600f);
         _model.UpdateTimeSet(now);
+        _view.TextedTimer(now);
+
     }
     //이 친구 인스펙터에서 우클릭 후 해당 메서드 이름 누르시면 실행돼요!
     //현 기능은 JSON 저장용입니다
