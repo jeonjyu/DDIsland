@@ -50,6 +50,6 @@ public class EnvironmentView : MonoBehaviour
 
     public void TextedTimer(DateTime now)
     {
-        _timeText.text = now.ToString("yyyy - MM - dd HH: mm:ss");
+        _timeText.text = now.ToString("yyyy - MM - dd HH : mm : ss");
     }
 }
