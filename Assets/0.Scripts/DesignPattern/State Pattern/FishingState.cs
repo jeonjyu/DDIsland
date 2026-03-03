@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 public class FishingState : IState
 {
@@ -12,6 +12,7 @@ public class FishingState : IState
     {
         Debug.Log("낚시진입");
         _player.Animator.SetBool("isFish", true);
+        _player.HandOnFishingRod();
         _player.ResetFishingCount();
         _player.Agent.isStopped = true;
         _player.Agent.ResetPath();
