@@ -98,6 +98,8 @@ public class ItemManager : Singleton<ItemManager>
         //    displayItems = currentCategory.Values.Cast<StoreItem>().ToList();
 
 
+        // StorePanel 활성화 한 채 실행하면 에러 발생
+        if(!_storeCategories.ContainsKey(StoreCat.interior)) Debug.LogError("아이템 딕셔너리 생성 전에 StorePanel 활성화 한 채 실행하면 에러 발생, 비활성화한 뒤 재시작해주세요");
         currentCategory = _storeCategories[storeCat].Values.Cast<StoreItem>().ToList();
         displayItems = new List<StoreItem>(currentCategory);
         //Debug.Log("[ItemManger] 현재 카테고리 딕셔너리 : " + storeCat.ToString());
