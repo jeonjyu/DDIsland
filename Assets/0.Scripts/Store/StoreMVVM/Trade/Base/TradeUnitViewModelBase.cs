@@ -83,7 +83,7 @@ public class TradeUnitViewModelBase : MonoBehaviour, INotifyPropertyChanged
 
     public void ExcuteTrade(ITradeStrategy tradeStrategy)
     {
-        Debug.Log(tradeStrategy.ToString());
+        //Debug.Log(tradeStrategy.ToString());
 
         if (tradeStrategy.Trade(TradeCount, Model))
         {

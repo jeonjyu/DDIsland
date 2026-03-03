@@ -67,7 +67,7 @@ public class ItemManager : Singleton<ItemManager>
         if (!_playerOwnedItems[storeCat].ContainsKey(item.ItemId))
         {
             _playerOwnedItems[storeCat].Add(item.ItemId, item);
-            Debug.LogWarning($"[ItemManager] 플레이어 아이템 딕셔너리에 {item.ItemName}({item.ItemId}) 추가");
+            Debug.Log($"[ItemManager] 플레이어 아이템 딕셔너리에 {item.ItemName}({item.ItemId}) 추가");
 
         }
     }
@@ -86,7 +86,7 @@ public class ItemManager : Singleton<ItemManager>
             if (!_playerOwnedItems[storeCat].ContainsKey(item.ItemId))
             {
                 _playerOwnedItems[storeCat].Remove(item.ItemId);
-                Debug.LogWarning($"[ItemManager] 플레이어 아이템 딕셔너리에서 {item.ItemName}({item.ItemId}) 제거");
+                Debug.Log($"[ItemManager] 플레이어 아이템 딕셔너리에서 {item.ItemName}({item.ItemId}) 제거");
             }
         }
     }
