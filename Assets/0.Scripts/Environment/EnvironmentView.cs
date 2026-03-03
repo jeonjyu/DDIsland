@@ -44,8 +44,4 @@ public class EnvironmentView : MonoBehaviour
             _ => _background.color
         };
     }
-    private void Update()
-    {
-        _background.color = Color.Lerp(_background.color, targetColor, Time.deltaTime *  _transitionDuration); //배경 색상 부드럽게 변화
-    }
 }
