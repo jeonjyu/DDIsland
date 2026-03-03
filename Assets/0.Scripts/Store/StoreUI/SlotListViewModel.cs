@@ -71,9 +71,9 @@ public class StoreListViewModel : MonoBehaviour, INotifyPropertyChanged
 
     public void UpdateCurrentCat(int catIdx)
     {
-        Debug.Log("슬롯 리스트: " + string.Join(", ", ItemManager.Instance.displayItems.Select(x => x.ItemName + "(" + x.IsGained + "):" + x.PurchasePrice)));
+        //Debug.Log("슬롯 리스트: " + string.Join(", ", ItemManager.Instance.displayItems.Select(x => x.ItemName + "(" + x.IsGained + "):" + x.PurchasePrice)));
 
-        Debug.Log("[ItemListViewModel] UpdateCurrentCat");
+        //Debug.Log("[ItemListViewModel] UpdateCurrentCat");
 
         // 현재 카테고리 변경
         CurrentCat = (StoreCat)catIdx;
@@ -89,7 +89,7 @@ public class StoreListViewModel : MonoBehaviour, INotifyPropertyChanged
     // 로드
     public void LoadSlotList()
     {
-        Debug.Log("[ItemListViewModel] LoadSlotList");
+        //Debug.Log("[ItemListViewModel] LoadSlotList");
         //Debug.Log("슬롯 리스트: " + string.Join(", ", ItemManager.Instance.displayItems.Select(x => x.ItemName + "(" + x.IsGained + "):" + x.PurchasePrice)));
 
         if (storeItemViewModels.Count > 0)
@@ -104,7 +104,7 @@ public class StoreListViewModel : MonoBehaviour, INotifyPropertyChanged
             storeItemViewModels.Add(itemViewmodel);
             //Debug.Log("[ItemListViewModel] UpdateSlotList | 슬롯 " + ItemManager.Instance.displayItems.IndexOf(item) + " " + item.ItemName);
         }
-        Debug.Log("슬롯 리스트: " + string.Join(", ", ItemManager.Instance.displayItems.Select(x => x.ItemName + "(" + x.IsGained + "):" + x.PurchasePrice)));
+        //Debug.Log("슬롯 리스트: " + string.Join(", ", ItemManager.Instance.displayItems.Select(x => x.ItemName + "(" + x.IsGained + "):" + x.PurchasePrice)));
 
         //Debug.Log("[ItemListViewModel] UpdateSlotList | 슬롯 로딩 완료");
     }

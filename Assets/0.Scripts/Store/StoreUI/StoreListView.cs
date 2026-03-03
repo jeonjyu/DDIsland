@@ -52,13 +52,13 @@ public class StoreListView : MonoBehaviour
         {
             case null:
             case "":
-                Debug.Log("전체 변경");
+                //Debug.Log("전체 변경");
                 viewModel.Filter.FilterSlots(0); // 카테고리가 변할때만 
                 viewModel.Sort.SetOptions();
                 viewModel.Sort.ApplySortPriority();
                 break;
         }
         //viewModel.LoadSlotList();
-        Debug.Log("변경끝");
+        //Debug.Log("변경끝");
     }
 }
