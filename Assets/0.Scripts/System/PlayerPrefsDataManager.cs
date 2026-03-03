@@ -23,13 +23,18 @@ public static class PlayerPrefsDataManager
     private const string KEY_MouseSensivity = "MouseSensitivity";       // 마우스 감도 키
     #endregion
 
+    public static event Action OnLanguageChanged;
+
     public static int Language   // StringDataSO 타입과 호환
     {
         get { return PlayerPrefs.GetInt(KEY_LANGUAGE, 0); }
 
         set
         {
+            if (value == PlayerPrefs.GetInt(KEY_LANGUAGE, 0)) return;
+
             PlayerPrefs.SetInt(KEY_LANGUAGE, value);
+            OnLanguageChanged?.Invoke();
         }
     }
 
