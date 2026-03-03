@@ -50,6 +50,8 @@ public class SoundManager : Singleton<SoundManager>
 
     private void Start()
     {
+
+        Debug.Log(PlayerPrefsDataManager.BgmVolumeMute);
         SetSoundVolume(Soundtype.BGM, PlayerPrefsDataManager.BgmVolume, PlayerPrefsDataManager.BgmVolumeMute);
         SetSoundVolume(Soundtype.SFX, PlayerPrefsDataManager.SFXVolume, PlayerPrefsDataManager.SFXVolumeMute);
         SetSoundVolume(Soundtype.BGS, PlayerPrefsDataManager.BGSVolume, PlayerPrefsDataManager.BGSVolumeMute);

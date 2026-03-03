@@ -717,7 +717,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StageControl
   stageBgmClip: {fileID: 8300000, guid: 68c38b9f74cd1b14e928b8977d735c74, type: 3}
-  stageBgmVolume: 0.5
 --- !u!4 &279707396
 Transform:
   m_ObjectHideFlags: 0
@@ -2072,10 +2071,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 5580852822338592836, guid: 8cac0394475196e498b55204116ab437, type: 3}
+      propertyPath: OutputAudioMixerGroup
+      value: 
+      objectReference: {fileID: -3194663321402234714, guid: 4ecad429d4aa3bb40829f5980f6549e7, type: 2}
     - target: {fileID: 5585252686884537396, guid: 8cac0394475196e498b55204116ab437, type: 3}
       propertyPath: m_Name
       value: SoundManager
       objectReference: {fileID: 0}
+    - target: {fileID: 6008171141178244349, guid: 8cac0394475196e498b55204116ab437, type: 3}
+      propertyPath: OutputAudioMixerGroup
+      value: 
+      objectReference: {fileID: 2455008226573752239, guid: 4ecad429d4aa3bb40829f5980f6549e7, type: 2}
     - target: {fileID: 8730853794056733738, guid: 8cac0394475196e498b55204116ab437, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -4389,6 +4396,10 @@ PrefabInstance:
       propertyPath: playerController
       value: 
       objectReference: {fileID: 673764088}
+    - target: {fileID: 6415569378704147141, guid: 16a0de7974b112843b54dfee1aa8e727, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6654404660309008842, guid: 16a0de7974b112843b54dfee1aa8e727, type: 3}
       propertyPath: playerCharacter
       value: 

@@ -57,7 +57,7 @@ public class UI_Settings : MonoBehaviour
     #region 사운드 볼륨 설정
     public void OnValueChangedVolume(Slider slider, TMP_Text text)
     {
-        text.text = Mathf.RoundToInt(slider.value * 100f).ToString();
+        text.text = $"{Mathf.RoundToInt(slider.value * 100f).ToString()}%";
     }
 
     public void OnValueChangedBGMVolume()

@@ -6,10 +6,6 @@ public class StageControl : MonoBehaviour
     [Header("현재 씬이 시작할 때 재생할 bgm")]
     [SerializeField] private AudioClip stageBgmClip;
 
-    [Header("현재 씬 bgm의 볼륨 수치")]
-    [Range(0f, 1f)]
-    [SerializeField] private float stageBgmVolume = 1f;
-
     private IInteract interactObj;      // 현재 마우스가 올라가있는 상호작용 오브젝트 (null이면 호버중인 오브젝트가 없는 상태)
     public IInteract InteractObj
     {
@@ -37,7 +33,6 @@ public class StageControl : MonoBehaviour
     private void Start()
     {
         SoundManager.Instance.PlayBGM(stageBgmClip);
-        SoundManager.Instance.SetSoundVolume(Soundtype.BGM, stageBgmVolume, false);
 
         GameManager.Instance.StageController = this;
     }
@@ -51,11 +46,13 @@ public class StageControl : MonoBehaviour
 
     private void OnEnable()
     {
-        GameManager.Instance.InputManager.OnLeftClick_Started += OnInteractObject;
+        if (GameManager.Instance.InputManager != null)
+            GameManager.Instance.InputManager.OnLeftClick_Started += OnInteractObject;
     }
 
     private void OnDisable()
     {
-        GameManager.Instance.InputManager.OnLeftClick_Started -= OnInteractObject;
+        if(GameManager.Instance.InputManager != null)
+            GameManager.Instance.InputManager.OnLeftClick_Started -= OnInteractObject;
     }
 }
