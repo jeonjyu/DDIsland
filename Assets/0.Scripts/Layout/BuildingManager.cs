@@ -113,9 +113,10 @@ public class BuildingManager : MonoBehaviour
     }
 
     // 인테리어 데이터 SO를 받게 바꿔야함
-    public void StartPlacement(InteriorDataSO data)
+    public void StartPlacement(int itemId)
     {
-
+        var obj = DataManager.Instance.DecorationDatabase.InteriorData[itemId];
+        
         //현재 배치 중인 물건이 있으면 들고 있는 물체를 제거
         if (_activePlaceable != null && _activePlaceable.ItemState == ItemState.Preview)
         {
@@ -124,14 +125,14 @@ public class BuildingManager : MonoBehaviour
             Destroy(_activePlaceable.gameObject);
         }
         //배치할 물건 등록
-        GameObject go = Instantiate(data.InteriorPath_GameObject, _gridSystem.transform);
+        GameObject go = Instantiate(obj.InteriorPath_GameObject, _gridSystem.transform);
 
         if (go.TryGetComponent(out _activePlaceable))
         {
             _currentSnapshot = new() { Pos = new Vector2Int(-1, -1) };
 
             // 인테리어 데이터 SO 추가해야함
-            _activePlaceable.Initialize(_gridSystem, this,data); //배치할 물건 초기화
+            _activePlaceable.Initialize(_gridSystem, this,obj); //배치할 물건 초기화
         }
 
         else
