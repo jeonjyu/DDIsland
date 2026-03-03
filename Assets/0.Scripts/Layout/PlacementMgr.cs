@@ -216,7 +216,7 @@ public class PlacementMgr : MonoBehaviour
     }
 
     // 인테리어 데이터 SO로 바꿔야함
-    public void OnClickConstructionButton(InteriorDataSO data)
+    public void OnClickConstructionButton(int itemId)
     {
         // 편집 모드일 때만 건설 시작 가능
         if (CurrentState != PlacementState.Edit)
@@ -226,7 +226,7 @@ public class PlacementMgr : MonoBehaviour
         }
 
         
-        _buildingManager.StartPlacement(data);
+        _buildingManager.StartPlacement(itemId);
     }
 
 }
