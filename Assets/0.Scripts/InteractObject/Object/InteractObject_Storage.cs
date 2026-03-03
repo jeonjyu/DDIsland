@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class InteractObject_Storage : InteractObject
 {
+    [SerializeField] private UI_Storage ui_Storage;
+
     protected override void Awake()
     {
         base.Awake();
@@ -26,6 +28,7 @@ public class InteractObject_Storage : InteractObject
     {
         // todo: 보관함 UI 키기
 
-        Debug.Log("보관함 열기");
+        if (ui_Storage != null && !ui_Storage.gameObject.activeSelf)
+            ui_Storage.OpenStorageUI();
     }
 }
