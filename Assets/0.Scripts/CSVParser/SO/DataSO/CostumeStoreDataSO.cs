@@ -3,7 +3,7 @@ using UnityEngine;
 
 // 타입
 [Serializable]
-public enum CostumeType
+public enum CostumeCategory
 {
     None = 0,
     Head = 1,      //머리
@@ -21,7 +21,7 @@ public class CostumeStoreDataSO : TableBase<int>
     [field: SerializeField] public int CostumeId { get; private set; }
 
     // 타입
-    [field: SerializeField] public CostumeType costumeType { get; private set; }
+    [field: SerializeField] public CostumeCategory costumecategoryType { get; private set; }
 
     // 최대 보유 가능 갯수
     [field: SerializeField] public int MaxCount { get; private set; }
