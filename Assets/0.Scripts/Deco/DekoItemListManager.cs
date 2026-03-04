@@ -155,8 +155,17 @@ public class DecoItemListManager : MonoBehaviour
             // 어짜피 GetData로 한꺼번에 가져오기 때문에 GetItemName이라는 함수는 삭제하고 GetData에서 문자열 값을 직접 들고옴
             else if (currentMode == DecoMode.Island)
             {
-                slotUI.nameText.text = DataManager.Instance.DecorationDatabase.InteriorData[slotData.itemId].InteriorName_String
-                     ?? ("섬아이템 :" + slotData.itemId); // 폴백
+               // slotUI.nameText.text = DataManager.Instance.DecorationDatabase.InteriorData[slotData.itemId].InteriorName_String;
+                try
+                {
+                    slotUI.nameText.text = DataManager.Instance.DecorationDatabase.InteriorData[slotData.itemId].InteriorName_String;
+                }
+                catch
+                {
+                    slotUI.nameText.text = "폴백 :" + slotData.itemId;
+                }
+
+
             }
         }
 
