@@ -29,6 +29,9 @@ public class PlayerController : MonoBehaviour
     private int _fishingCount = 5;  //낚시횟수
 
     private Coroutine _fishingRoutine;  //낚시 코루틴
+    private bool _isFishingState;
+    private bool _cycleRunning;
+
     private Coroutine _yawnRoutine;  //하품 코루틴
     public PlayerData PlayerData { get; private set; }
 
@@ -289,30 +292,48 @@ public class PlayerController : MonoBehaviour
 
     }
 
-    public void TryFishing()
+    public void EnterFishingState()
     {
-        if (_isFishing) return; 
-        _isFishing = true;
-        _fishingRoutine = StartCoroutine(FishWait());
+        _isFishingState = true;
+        _cycleRunning = false;
+
+        if (_fishingRoutine != null)
+            StopCoroutine(_fishingRoutine);
+
+        _fishingRoutine = StartCoroutine(FishingLoop());
     }
-    public void StopFishing()
+    public void ExitFishingState()
     {
+        _isFishingState = false;
+        _cycleRunning = false;
+
         if (_fishingRoutine != null)
         {
-            StopCoroutine(FishWait());
-            _isFishing = false;
+            StopCoroutine(_fishingRoutine);
+            _fishingRoutine = null;
         }
-        _isFishing = false;
     }
-    IEnumerator FishWait()  //5~8초 텀으로 낚시하기
+    private IEnumerator FishingLoop()
     {
-        var waitTime = Random.Range(5f, 8f);
-        yield return new WaitForSeconds(waitTime);
-        _animator.SetTrigger("FishingHit");
-        //물고기 얻기, 보관함추가등등      
+        while (_isFishingState)
+        {
+            // 한 사이클 시작
+            _cycleRunning = true;
+
+            float waitTime = Random.Range(5f, 8f);
+            yield return new WaitForSeconds(waitTime);
+
+            Animator.SetTrigger("FishingHit");
+
+            // 사이클이 끝났다는 이벤트가 올 때까지 기다림
+            yield return new WaitUntil(() => _cycleRunning == false);
+        }
+    }
+    public void AnimEvent_GiveFishOnce()  //낚시 성공 애니에 넣을 함수
+    {
         FishManager.Instance.PickRandomSeasonFish();
     }
-    public void AnimEvent_FishingCycleEnd() 
+    public void AnimEvent_FishingCycleEnd() //낚시 성공 애니에 넣을 함수
     {
         _fishingCount--; 
         Debug.Log("fishingCount: " + _fishingCount);
@@ -322,8 +343,9 @@ public class PlayerController : MonoBehaviour
         if (_fishingCount <= 0 || PlayerData.Hunger <= 0 || PlayerData.Stamina <= 0)
         {
             Animator.SetBool("isFish", false);
-            SetState(new IdleState(this)); 
+            SetState(new IdleState(this));
         }
+        _cycleRunning = false;  //다음 사이클로 넘어갈 수 있게 코루틴 대기 해제
     }
     public void ResetFishingCount()
     {

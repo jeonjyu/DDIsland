@@ -31,19 +31,22 @@ public class FishingState : IState
         }
         _player.Agent.updateRotation = false;
         _player.transform.rotation = _fixedRot;
+
+        _player.EnterFishingState();
     }
 
     public void Execute()
     {
         _player.transform.rotation = _fixedRot;
-        _player.TryFishing();
+
     }
 
     public void Exit()
     {
+        _player.ExitFishingState();
         _player.HandOffFishingRod();
-        _player.StopFishing();
         _player.Animator.SetBool("isFish", false);
+        _player.Agent.updateRotation = true;
         _player.Agent.updatePosition = true;
     }
 
