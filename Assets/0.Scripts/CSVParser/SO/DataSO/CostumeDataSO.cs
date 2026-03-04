@@ -3,7 +3,7 @@ using UnityEngine;
 
 // 부위별 파츠
 [Serializable]
-public enum CostumeCategory
+public enum CostumeType
 {
     None = 0,
     Head = 1,         //머리 장식
@@ -27,7 +27,7 @@ public class CostumeDataSO : TableBase<int>
     public string CostumeDesc_String => LocalizationManager.Instance.GetString(costumeDesc);
 
     // 부위별 파츠
-    [field: SerializeField] public CostumeCategory costumecategoryType { get; private set; }
+    [field: SerializeField] public CostumeType costumeType { get; private set; }
 
     // 이미지 리소스
     [field: SerializeField] public GameObject CostumeImgPath_GameObject { get; private set; }

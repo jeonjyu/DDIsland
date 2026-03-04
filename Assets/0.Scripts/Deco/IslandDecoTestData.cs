@@ -11,9 +11,9 @@ public static class IslandDecoTestData
         // TODO: 나중에 실제 스프라이트 로드
         switch (itemId)
         {
-            case 2001: return Resources.Load<Sprite>("Iron");
-            case 2002: return Resources.Load<Sprite>("Silver");
-            case 2003: return Resources.Load<Sprite>("Gold");
+            case 20023: return Resources.Load<Sprite>("Iron");
+            case 20024: return Resources.Load<Sprite>("Silver");
+            case 20025: return Resources.Load<Sprite>("Gold");
             default: return Resources.Load<Sprite>("Iron");
         }
     }

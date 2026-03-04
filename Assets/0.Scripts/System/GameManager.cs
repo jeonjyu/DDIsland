@@ -26,4 +26,9 @@ public class GameManager : Singleton<GameManager>
         }
         playerGold += gold;
     }
+
+    private void OnApplicationQuit()
+    {
+        PlayerPrefs.Save();
+    }
 }

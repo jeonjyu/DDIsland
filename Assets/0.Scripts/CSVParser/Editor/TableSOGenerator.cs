@@ -744,10 +744,6 @@ public class TableSOGenerator
             }
         }
     }
-    private static void SetFieldData(Type type, CsvClassData csvFile, int index)
-    {
-
-    }
     #endregion
 
     #region StringTable.csv의 내용을 stringTables 딕셔너리에 넣기

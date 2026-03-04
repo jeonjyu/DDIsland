@@ -185,6 +185,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2184897637509824683, guid: d39bfe1dba0c92340a14abb2876a3415, type: 3}
   m_PrefabInstance: {fileID: 30041644}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &109933960 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8511567440625557574, guid: 176da03993ea90d48a925d62d01fecd1, type: 3}
+  m_PrefabInstance: {fileID: 197567149}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99bb3111359f6b04d96597f3511dcca5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AquariumMgr
 --- !u!1 &166526771 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8781406202536490168, guid: 16a0de7974b112843b54dfee1aa8e727, type: 3}
@@ -265,6 +276,11 @@ MonoBehaviour:
       BarrelClipping: 0.25
       Anamorphism: 0
   BlendHint: 0
+--- !u!224 &189592405 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 5691353112993969604, guid: 16a0de7974b112843b54dfee1aa8e727, type: 3}
+  m_PrefabInstance: {fileID: 7754265316619247553}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &197567149
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -320,7 +336,7 @@ PrefabInstance:
     - target: {fileID: 8511567440625557574, guid: 176da03993ea90d48a925d62d01fecd1, type: 3}
       propertyPath: _spawnArea
       value: 
-      objectReference: {fileID: 8304695547214233977}
+      objectReference: {fileID: 189592405}
     - target: {fileID: 8511567440625557574, guid: 176da03993ea90d48a925d62d01fecd1, type: 3}
       propertyPath: _fishPrefab
       value: 
@@ -963,6 +979,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 05d7a5bbf7e895348a6b49a4cb66fdf6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI_Storage
+--- !u!1 &639002666 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4813491337530014450, guid: 16a0de7974b112843b54dfee1aa8e727, type: 3}
+  m_PrefabInstance: {fileID: 7754265316619247553}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &673764087 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4140408901512295962, guid: 339406eb6a27c9348aeb8e75ea1ba258, type: 3}
@@ -3004,6 +3025,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1116717911115813903, guid: 339406eb6a27c9348aeb8e75ea1ba258, type: 3}
+      propertyPath: m_Height
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1116717911115813903, guid: 339406eb6a27c9348aeb8e75ea1ba258, type: 3}
+      propertyPath: m_Radius
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1889996173259242745, guid: 339406eb6a27c9348aeb8e75ea1ba258, type: 3}
       propertyPath: m_LocalPosition.x
       value: 4.56
@@ -4435,6 +4464,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3164479646939738596, guid: 16a0de7974b112843b54dfee1aa8e727, type: 3}
+      propertyPath: aquariumMgr
+      value: 
+      objectReference: {fileID: 109933960}
+    - target: {fileID: 3164479646939738596, guid: 16a0de7974b112843b54dfee1aa8e727, type: 3}
       propertyPath: btnExitSave
       value: 
       objectReference: {fileID: 6025337054643690811}
@@ -4446,6 +4479,10 @@ PrefabInstance:
       propertyPath: btnExitNoSave
       value: 
       objectReference: {fileID: 4782743885562229639}
+    - target: {fileID: 3164479646939738596, guid: 16a0de7974b112843b54dfee1aa8e727, type: 3}
+      propertyPath: fishContainer
+      value: 
+      objectReference: {fileID: 639002666}
     - target: {fileID: 3164479646939738596, guid: 16a0de7974b112843b54dfee1aa8e727, type: 3}
       propertyPath: exitPopupPanel
       value: 
@@ -4465,6 +4502,10 @@ PrefabInstance:
     - target: {fileID: 4490126076076491599, guid: 16a0de7974b112843b54dfee1aa8e727, type: 3}
       propertyPath: m_SizeDelta.x
       value: -17
+      objectReference: {fileID: 0}
+    - target: {fileID: 4813491337530014450, guid: 16a0de7974b112843b54dfee1aa8e727, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5255839865420648701, guid: 16a0de7974b112843b54dfee1aa8e727, type: 3}
       propertyPath: m_AnchorMax.y
@@ -4702,11 +4743,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!224 &8304695547214233977 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 4314103662025539143, guid: 16a0de7974b112843b54dfee1aa8e727, type: 3}
-  m_PrefabInstance: {fileID: 7754265316619247553}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &8496941089601018138
 MonoBehaviour:
   m_ObjectHideFlags: 0
