@@ -147,6 +147,14 @@ public class GridSystem : MonoBehaviour
     // 월드 좌표를 셀 좌표로 번역
     public Vector2Int GetGridIndex(Vector3 worldPosition)
     {
+
+        if (bounds.size == Vector3.zero && _gridRenderer != null)
+        {
+            if (_gridRenderer.TryGetComponent<MeshFilter>(out var filter))
+            {
+                bounds = filter.sharedMesh.bounds;
+            }
+        }
         //바닥에 있는 월드 좌표를 로컬 좌표로 가져옴
         Vector3 localPos = _gridRenderer.transform.InverseTransformPoint(worldPosition);
 
@@ -187,6 +195,8 @@ public class GridSystem : MonoBehaviour
     // 그리드의 상태를 텍스쳐로 업데이트하여 셰이더에게 전달 해줌
     public void UpdateGridTexture()
     {
+        if (_gridDataTexture ==null ||_grid == null) return;
+
         for (int x = 0; x < _width; x++)
         {
             for (int y = 0; y < _height; y++)

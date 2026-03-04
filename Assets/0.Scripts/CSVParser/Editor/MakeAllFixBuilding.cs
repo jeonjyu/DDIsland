@@ -14,6 +14,7 @@ public class MakeAllFixBuilding : EditorWindow
     private Vector2 _scrollPos; // 스크롤
     private GridSystem _gridSystem;
     private BuildingManager _buildManager;
+    private DataManager _dataManager;
 
     [MenuItem("Tools/고정 장식물 배치/Bake Fix Building")]
     public static void ShowWindow()
@@ -32,9 +33,9 @@ public class MakeAllFixBuilding : EditorWindow
             EditorGUILayout.Space(2);
 
             // 안내 문구
-            if (_gridSystem == null || _buildManager == null)
+            if (_gridSystem == null || _buildManager == null || _dataManager == null)
             {
-                EditorGUILayout.HelpBox("아래 슬롯에 씬의 [GridSystem]과 [BuildingManager]를 드래그 앤 드롭하세요.", MessageType.Warning);
+                EditorGUILayout.HelpBox("아래 슬롯에 씬의 [GridSystem], [BuildingManager],[DataManager]를 드래그 앤 드롭하세요.", MessageType.Warning);
             }
             else
             {
@@ -44,6 +45,7 @@ public class MakeAllFixBuilding : EditorWindow
             // 슬롯 배치
             _gridSystem = (GridSystem)EditorGUILayout.ObjectField("Grid System", _gridSystem, typeof(GridSystem), true);
             _buildManager = (BuildingManager)EditorGUILayout.ObjectField("Build Manager", _buildManager, typeof(BuildingManager), true);
+            _dataManager = (DataManager)EditorGUILayout.ObjectField("Data Manager", _dataManager, typeof(DataManager), true);
         }
         EditorGUILayout.EndVertical();
 
@@ -119,7 +121,7 @@ public class MakeAllFixBuilding : EditorWindow
     private void BakeAll()
     {
         // SO로드
-        var database = DataManager.Instance.DecorationDatabase;
+        var database = _dataManager.DecorationDatabase;
 
         if (database == null || _gridSystem == null || _buildManager == null)
         {
@@ -139,9 +141,6 @@ public class MakeAllFixBuilding : EditorWindow
         int undoGroup = Undo.GetCurrentGroup();
         try
         {
-            // Placeable안에 있는 Private 필드 _itemState를 강제 변경하기 위한 코드
-            var stateField = typeof(Placeable).GetField("_itemState",
-                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
 
             foreach (var marker in AllMakers)
             {
@@ -170,6 +169,11 @@ public class MakeAllFixBuilding : EditorWindow
                 {
                     placeable = Undo.AddComponent<Placeable3D>(instance);
                 }
+                if (placeable == null)
+                {
+                    Debug.LogError($"{instance.name}에 Placeable3D를 붙이는 데 실패했습니다!");
+                    continue;
+                }
 
                 // Placeable3D 초기화
                 if (placeable != null)
@@ -177,26 +181,38 @@ public class MakeAllFixBuilding : EditorWindow
                     // 스크립트에 데이터 주입 (BuildingManager와 비슷한 방식)
                     placeable.Initialize(_gridSystem, _buildManager, data);
 
-                    stateField?.SetValue(placeable, ItemState.Placed);
+                    placeable.ItemState = ItemState.Placed;
 
-                    Vector2Int index = _gridSystem.GetGridIndex(marker.transform.position);
+                    Vector2Int centerIndex = _gridSystem.GetGridIndex(marker.transform.position);
+
+                    int px = Mathf.RoundToInt((data.GridSizeX - 1) / 2f);
+                    int py = Mathf.RoundToInt((data.GridSizeY - 1) / 2f);
+
+                    Vector2Int originIndex = centerIndex - new Vector2Int(px, py);
                     Vector2Int size = new (data.GridSizeX, data.GridSizeY);
 
-                    placeable.SetBakeData(index, size);
-
-                    _gridSystem.PlaceItem(index.x, index.y, size.x, size.y, placeable);
+                    placeable.SetBakeData(originIndex, size);
 
                     EditorUtility.SetDirty(instance);
+                    EditorUtility.SetDirty(placeable);
+
+                    PrefabUtility.RecordPrefabInstancePropertyModifications(placeable);
+
+                    if (!Application.isPlaying)
+                    {
+                        UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(instance.scene);
+                    }
                 }
 
                 Undo.DestroyObjectImmediate(marker.gameObject);
                 count++;
             }
-            _gridSystem.UpdateGridTexture();
         }
         catch (System.Exception e)
         {
-            Debug.LogError($"실행 중 오류 발생: {e.Message}");
+            //Debug.LogError($"실행 중 오류 발생: {e.Message}");
+            Debug.LogError($"<color=red><b>[Bake 실패!]</b></color> 에러 내용: {e.Message}\n" +
+                   $"<color=yellow><b>[상세 위치 (StackTrace)]</b></color>\n{e.StackTrace}");
         }
         finally
         {
