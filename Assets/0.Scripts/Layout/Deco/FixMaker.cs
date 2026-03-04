@@ -27,4 +27,13 @@ public class FixMaker : MonoBehaviour
         // 할 일을 다한 애들은 쉬게 해주기
         _allMarkers.Remove(this);
     }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = new Color(0.2f, 0.5f, 1.0f, 0.4f);
+        Gizmos.DrawSphere(transform.position + Vector3.up * 0.5f, 1f);
+
+        Gizmos.color = Color.white;
+        Gizmos.DrawWireSphere(transform.position + Vector3.up * 0.5f, 1f);
+    }
 }

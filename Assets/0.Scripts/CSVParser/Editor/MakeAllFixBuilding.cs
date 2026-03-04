@@ -88,7 +88,6 @@ public class MakeAllFixBuilding : EditorWindow
                 // 해당 마커가 어딨는지 씬뷰 카메라로 띄워줌
                 if (GUILayout.Button("찾기", GUILayout.Width(50)))
                 {
-                    Selection.activeGameObject = group.First().gameObject;
                     SceneView.FrameLastActiveSceneView();
                 }
                 EditorGUILayout.EndHorizontal();
@@ -210,9 +209,7 @@ public class MakeAllFixBuilding : EditorWindow
         }
         catch (System.Exception e)
         {
-            //Debug.LogError($"실행 중 오류 발생: {e.Message}");
-            Debug.LogError($"<color=red><b>[Bake 실패!]</b></color> 에러 내용: {e.Message}\n" +
-                   $"<color=yellow><b>[상세 위치 (StackTrace)]</b></color>\n{e.StackTrace}");
+            Debug.LogError($"실행 중 오류 발생: {e.Message}");
         }
         finally
         {
