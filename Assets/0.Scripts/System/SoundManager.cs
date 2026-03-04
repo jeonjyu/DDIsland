@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
-using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
 public enum Soundtype
@@ -48,6 +47,13 @@ public class SoundManager : Singleton<SoundManager>
         InitData();
     }
 
+    private void Start()
+    {
+        SetSoundVolume(Soundtype.BGM, PlayerPrefsDataManager.BgmVolume, PlayerPrefsDataManager.BgmVolumeMute);
+        SetSoundVolume(Soundtype.SFX, PlayerPrefsDataManager.SFXVolume, PlayerPrefsDataManager.SFXVolumeMute);
+        SetSoundVolume(Soundtype.BGS, PlayerPrefsDataManager.BGSVolume, PlayerPrefsDataManager.BGSVolumeMute);
+    }
+
     #region Init
     // 데이터 초기화
     private void InitData()
@@ -65,10 +71,6 @@ public class SoundManager : Singleton<SoundManager>
         audioClipSO.GetClips(audioClipSO.BgsClips, bgsDic);
 
         clearSourceWs = new WaitForSeconds(clearSourceTime);
-
-        SetSoundVolume(Soundtype.BGM, PlayerPrefsDataManager.BgmVolume, PlayerPrefsDataManager.BgmVolumeMute);
-        SetSoundVolume(Soundtype.SFX, PlayerPrefsDataManager.SFXVolume, PlayerPrefsDataManager.SFXVolumeMute);
-        SetSoundVolume(Soundtype.BGS, PlayerPrefsDataManager.BGSVolume, PlayerPrefsDataManager.BGSVolumeMute);
     }
     #endregion
 
