@@ -27,10 +27,14 @@ public class UI_Storage : MonoBehaviour
     // 상세 패널 UI
     [SerializeField] private TextMeshProUGUI _nameText;
     [SerializeField] private TextMeshProUGUI _gradeText;
-    [SerializeField] private TextMeshProUGUI _bestPriceText;
+    //[SerializeField] private TextMeshProUGUI _bestPriceText;
+    [SerializeField] private TextMeshProUGUI _DescText;
     [SerializeField] private Image _detailIcon;
 
     [SerializeField] private Transform _slotParent;  // 슬롯 프리팹(원본은 꺼두고 복제해서 사용)
+
+
+    [SerializeField] private TMP_Dropdown _sortDropdown;
 
     private void Start()
     {
@@ -46,8 +50,18 @@ public class UI_Storage : MonoBehaviour
             _fishSlots[i] = slot;  
             slot.Init(this);// 슬롯이 자기 부모(UI_Storage)
         }
+        if (_sortDropdown != null)
+        {
+            _sortDropdown.onValueChanged.RemoveListener(OnSortDropdownChanged);
+            _sortDropdown.onValueChanged.AddListener(OnSortDropdownChanged);
 
-        RefreshAll();
+            // 초기값 반영 (드롭다운 현재 선택 기준)
+            OnSortDropdownChanged(_sortDropdown.value);
+        }
+        else
+        {
+            RefreshAll();
+        }
     }
 
     private void OnEnable()
@@ -103,6 +117,10 @@ public class UI_Storage : MonoBehaviour
                 int realIndex = _viewIndices[ui];
 
                 _fishSlots[ui].gameObject.SetActive(true);
+                foreach (Transform child in _fishSlots[ui].transform)
+                {
+                   child.gameObject.SetActive(true);
+                }
                 _fishSlots[ui].BindRealIndex(realIndex); // 이 UI real 슬롯 저장
                 _fishSlots[ui].Refresh(StorageManager.Instance.GetSlot(realIndex));  // 실제 슬롯 데이터를 UI에 반영
             }
@@ -110,7 +128,15 @@ public class UI_Storage : MonoBehaviour
             {
                 // 남는 UI칸은 빈칸으로
                 _fishSlots[ui].BindRealIndex(-1);
-                _fishSlots[ui].gameObject.SetActive(false);
+                _fishSlots[ui].gameObject.SetActive(true);
+                foreach (Transform child in _fishSlots[ui].transform)
+                {
+                    if(!child.name.Contains("ItemImage") && !child.name.Contains("BackItemImage"))
+                    {
+                        child.gameObject.SetActive(false);
+                    }
+                    
+                }
             }
         }
     }
@@ -200,8 +226,10 @@ public class UI_Storage : MonoBehaviour
         var grade = def.gradeType;
         _gradeText.text = grade.ToString();
 
-        int bestPrice = slot.Value.MaxPrice;
-        _bestPriceText.text = bestPrice.ToString();
+       // int bestPrice = slot.Value.MaxPrice;
+       // _bestPriceText.text = bestPrice.ToString();
+       string desc = def.FishDesc_String;
+       _DescText.text = desc;
     }
 
     public void OnRemoveClicked()
@@ -236,7 +264,16 @@ public class UI_Storage : MonoBehaviour
         _currentSort = SortMode.Name;
         RefreshAll();
     }
-
+    private void OnDestroy()
+    {
+        if (_sortDropdown != null)
+            _sortDropdown.onValueChanged.RemoveListener(OnSortDropdownChanged);
+    }
+    public void OnSortDropdownChanged(int value)
+    {
+        _currentSort = (SortMode)value;
+        RefreshAll();
+    }
     public void ExitStorageUI()
     {
         gameObject.SetActive(false);
