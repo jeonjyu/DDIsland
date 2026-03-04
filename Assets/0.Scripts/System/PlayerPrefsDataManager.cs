@@ -1,4 +1,5 @@
 using System;
+using Unity.VisualScripting;
 using UnityEngine;
 
 /// <summary>
@@ -66,7 +67,7 @@ public static class PlayerPrefsDataManager
         set
         {
             float vol = Mathf.Clamp(value, 0f, 1f);
-            PlayerPrefs.SetFloat(KEY_SFXVOLUME, vol);
+            PlayerPrefs.SetFloat(KEY_BGSVOLUME, vol);
         }
     }
 
@@ -79,6 +80,7 @@ public static class PlayerPrefsDataManager
         set
         {
             PlayerPrefs.SetInt(KEY_BGMVOLUME_MUTE, value == true ? 1 : 0);
+            Debug.Log("저장");
         }
     }
 

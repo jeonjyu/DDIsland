@@ -10,7 +10,6 @@ public enum InputState : int
     UserInteraction = 1 << 1,       // 유저 개입 상호작용이 가능한 상태
 }
 
-[RequireComponent(typeof(PlayerInput))]
 public class InputHandler : MonoBehaviour
 {
     [Header("인풋 상태")]
@@ -31,7 +30,10 @@ public class InputHandler : MonoBehaviour
     private void Awake()
     {
         playerInput = GetComponent<PlayerInput>();
+    }
 
+    private void Start()
+    {
         leftClickAction = playerInput.actions["LeftMouseClick"];
     }
 

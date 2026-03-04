@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
-using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
 public enum Soundtype
@@ -50,8 +49,6 @@ public class SoundManager : Singleton<SoundManager>
 
     private void Start()
     {
-
-        Debug.Log(PlayerPrefsDataManager.BgmVolumeMute);
         SetSoundVolume(Soundtype.BGM, PlayerPrefsDataManager.BgmVolume, PlayerPrefsDataManager.BgmVolumeMute);
         SetSoundVolume(Soundtype.SFX, PlayerPrefsDataManager.SFXVolume, PlayerPrefsDataManager.SFXVolumeMute);
         SetSoundVolume(Soundtype.BGS, PlayerPrefsDataManager.BGSVolume, PlayerPrefsDataManager.BGSVolumeMute);
@@ -156,19 +153,19 @@ public class SoundManager : Singleton<SoundManager>
         switch (type)
         {
             case Soundtype.BGM:
-                SetVolume("BGM", volume, isMute);
                 PlayerPrefsDataManager.BgmVolume = volume;
                 PlayerPrefsDataManager.BgmVolumeMute = isMute;
+                SetVolume("BGM", volume, isMute);
                 break;
             case Soundtype.SFX:
-                SetVolume("SFX", volume, isMute);
                 PlayerPrefsDataManager.SFXVolume = volume;
                 PlayerPrefsDataManager.SFXVolumeMute = isMute;
+                SetVolume("SFX", volume, isMute);
                 break;
             case Soundtype.BGS:
-                SetVolume("BGS", volume, isMute);
                 PlayerPrefsDataManager.BGSVolume = volume;
                 PlayerPrefsDataManager.BGSVolumeMute = isMute;
+                SetVolume("BGS", volume, isMute);
                 break;
         }
     }
