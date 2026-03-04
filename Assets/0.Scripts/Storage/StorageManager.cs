@@ -20,19 +20,25 @@ public class StorageManager : Singleton<StorageManager>
 {
     FishStackSlot?[] FishSlots;
 
-    [SerializeField] int _storageCapacity = 20;  //인벤크기
+    int _storageCapacity = 10;  //인벤크기
+    int _storagelevel = 1;
     long _acquireCounter = 0;
+    public const int MaxLevel = 5;
+    public const int MaxCapacity = 50;
 
     public event Action<int> OnSlotChanged; // 특정 슬롯이 바뀌었음을 알림(UI는 보통 RefreshAll)
-
     public int Capacity => FishSlots?.Length ?? 0;
+    public int StorageLevel => _storagelevel;
 
     private void Awake()
     {
         base.Awake();
         FishSlots = new FishStackSlot?[_storageCapacity];
     }
+    private void Update()
+    {
 
+    }
     public bool TryAddToStorage(FishInstance fish)
     {
         if (FishSlots == null || FishSlots.Length == 0)
@@ -104,5 +110,32 @@ public class StorageManager : Singleton<StorageManager>
             return null;
 
         return FishSlots[index];
+    }
+    public void UpgradeStorageindex()
+    {
+        if (Capacity >= MaxCapacity || StorageLevel >= MaxLevel)    //이미 최대면 업그레이드 막기
+        {
+            return;
+        }  
+        _storagelevel++;   //레벨 올리고, 그 레벨에 맞는 Capacity 적용
+        ApplyCapacityByLevel();
+    }
+    private void ApplyCapacityByLevel()
+    {
+        //돈결제 하기 넣기
+        int newCap = _storageCapacity; //현재 용량 기준으로 새 용량 계산
+
+
+        if (_storagelevel <= 1) newCap = 10;
+        else if (_storagelevel == 2) newCap = 20;
+        else if (_storagelevel == 3) newCap = 30;
+        else if (_storagelevel == 4) newCap = 40;
+        else newCap = 50;
+        if (_storageCapacity == newCap) return; 
+
+        if (FishSlots == null) FishSlots = new FishStackSlot?[newCap];   //실제 슬롯 배열 크기 변경(기존 데이터 유지)
+        else if (FishSlots.Length != newCap) Array.Resize(ref FishSlots, newCap);
+
+        _storageCapacity = newCap;     //현재 용량 갱신
     }
 }

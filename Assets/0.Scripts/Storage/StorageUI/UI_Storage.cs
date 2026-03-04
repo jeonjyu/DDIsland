@@ -1,9 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using TMPro;
+using UnityEngine;
 using UnityEngine.UI;
+
 
 enum SortMode
 {
@@ -18,7 +19,15 @@ public class UI_Storage : MonoBehaviour
     int _slotCount;    // 슬롯 총 개수(= StorageManager의 Capacity)
     UI_StorageSlot[] _fishSlots;  // 화면에 실제로 표시되는 슬롯 UI 배열 (풀링)
 
-    [SerializeField] GameObject _slotPrefab;
+    [SerializeField] private GameObject _slotPrefab;
+
+    [SerializeField] private GameObject _UpgradePan;
+    [SerializeField] private TextMeshProUGUI _storageLevelText;
+    [SerializeField] private TextMeshProUGUI _systemMsgText;
+    [SerializeField] private Button _upgradeButton;
+    [SerializeField] private TextMeshProUGUI _upgradeButtonLabel;
+    private Coroutine _msgRoutine;
+
 
     SortMode _currentSort;      // 현재 정렬 모드
     List<int> _viewIndices = new List<int>();   // 화면에 보여줄 realIndex 목록
@@ -38,18 +47,9 @@ public class UI_Storage : MonoBehaviour
 
     private void Start()
     {
-        _slotCount = StorageManager.Instance.Capacity;
-        _fishSlots = new UI_StorageSlot[_slotCount];
-
         _slotPrefab.SetActive(false);  // 슬롯 프리팹(원본은 꺼두고 복제해서 사용)
 
-        for (int i = 0; i < _slotCount; i++)
-        {
-            var hi = Instantiate(_slotPrefab, _slotParent, false);
-            var slot = hi.GetComponent<UI_StorageSlot>();
-            _fishSlots[i] = slot;  
-            slot.Init(this);// 슬롯이 자기 부모(UI_Storage)
-        }
+        SlotPool();
         if (_sortDropdown != null)
         {
             _sortDropdown.onValueChanged.RemoveListener(OnSortDropdownChanged);
@@ -70,6 +70,7 @@ public class UI_Storage : MonoBehaviour
         {
             StorageManager.Instance.OnSlotChanged += UpdateSlot; // Storage 데이터가 바뀔 때마다 UI를 갱신하기 위해 이벤트 구독
             RefreshAll();
+            RefreshUpgradeUI();
         }
     }
 
@@ -238,6 +239,90 @@ public class UI_Storage : MonoBehaviour
 
         StorageManager.Instance.TryRemoveAt(_selectedRealIndex);
         _selectedRealIndex = -1;
+    }
+    public void UpgradeStorage()
+    {
+        //이미 최대치면: 버튼/텍스트 최신상태로 갱신 + 안내 메시지 띄우고 끝
+        if (StorageManager.Instance.StorageLevel >= StorageManager.MaxLevel ||
+        StorageManager.Instance.Capacity >= StorageManager.MaxCapacity)
+        {
+            RefreshUpgradeUI();
+            ShowSystemMessage("최대 확장 완료 상태입니다.");
+            return;
+        }
+        StorageManager.Instance.UpgradeStorageindex(); // 실제 데이터(슬롯 배열) 확장
+        SlotPool();  
+        RefreshUpgradeUI();
+        ShowSystemMessage($"창고가 Lv.{StorageManager.Instance.StorageLevel}로 확장되었습니다! (총 {StorageManager.Instance.Capacity}칸)");
+        RefreshAll();
+    }
+    private void SlotPool()  //UI 슬롯 풀(프리팹 복제)도 데이터 Capacity 만큼 늘려줌
+    {
+        int cap = StorageManager.Instance.Capacity;
+
+        // 이미 충분하면 끝
+        if (_fishSlots != null && _fishSlots.Length >= cap) return;
+
+        // 기존 슬롯 유지하면서 더 큰 배열로 확장
+        int old = _fishSlots == null ? 0 : _fishSlots.Length;
+        Array.Resize(ref _fishSlots, cap);
+
+        for (int i = old; i < cap; i++) 
+        {
+            var go = Instantiate(_slotPrefab, _slotParent, false);
+            var slot = go.GetComponent<UI_StorageSlot>();
+            _fishSlots[i] = slot;
+            slot.Init(this);    //슬롯이 클릭했을 때 UI_Storage로 콜백할 수 있게 초기화
+        }
+        _slotCount = cap;  //RefreshAll() 루프에서 사용할 UI 슬롯 개수 최신화
+    }
+    private void RefreshUpgradeUI()  //업그레이드 UI 텍스트/버튼 상태 갱신
+    {
+        var sm = StorageManager.Instance;
+        if (sm == null) return;
+
+        if (_storageLevelText != null)
+            _storageLevelText.text = $"Lv.{sm.StorageLevel} / Lv.{StorageManager.MaxLevel}";
+
+        bool isMax = false;     //최대치인지 판단
+
+        if (sm.StorageLevel >= StorageManager.MaxLevel || sm.Capacity >= StorageManager.MaxCapacity)
+        {
+            isMax = true;
+        }
+
+        if (_upgradeButton != null)
+            _upgradeButton.interactable = !isMax;
+
+        if (_upgradeButtonLabel != null)     //최대치면 버튼 글자 변경
+            _upgradeButtonLabel.text = isMax ? "최대 확장 완료" : "확장하기";
+    }
+    private void ShowSystemMessage(string msg)    //시스템 알림 출력
+    {
+        if (_systemMsgText == null) return;
+
+        _systemMsgText.gameObject.SetActive(true);
+        _systemMsgText.text = msg;
+
+        if (_msgRoutine != null) StopCoroutine(_msgRoutine);   
+        _msgRoutine = StartCoroutine(HideMsgAfterSeconds(2f));
+    }
+
+    private IEnumerator HideMsgAfterSeconds(float sec)   
+    {
+        yield return new WaitForSeconds(sec);     //지정 시간 후 메시지 숨김
+        if (_systemMsgText != null) _systemMsgText.gameObject.SetActive(false);
+        _msgRoutine = null;
+    }
+
+    public void OpenUpgradeUI()
+    {
+        _UpgradePan.gameObject.SetActive(true);
+    }
+
+    public void CloseUpgradeUI()
+    {
+        _UpgradePan.gameObject.SetActive(false);
     }
 
     // 정렬 버튼
