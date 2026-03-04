@@ -14,7 +14,7 @@ using UnityEngine;
 
 public class TradeViewModelBase : MonoBehaviour, INotifyPropertyChanged
 {
-    public StoreItem Model
+    public IStoreItem Model
     {
         get => StoreManager.Instance.tradeModel;
         set 
@@ -64,7 +64,7 @@ public class TradeViewModelBase : MonoBehaviour, INotifyPropertyChanged
         //Init(StoreManager.Instance.tradeModel);
     }
 
-    public void Init(StoreItem model)
+    public void Init(IStoreItem model)
     {
         this.Model = model;
     }

@@ -1,36 +1,32 @@
 using UnityEngine;
 using System;
 
-public abstract class StoreItem : ScriptableObject, IStoreItem
+public abstract class StoreItem<T> : IStoreItem where T : TableBase<int>
 {
+    protected T _data;
+
     //field
-    [SerializeField] private int _itemId;
-    [SerializeField] private bool _isGained;
-    [SerializeField] private bool _isSaleable;
-    [SerializeField] private int _maxCount;
-    [SerializeField] private int _itemCount;
-    [SerializeField] private int _purchasePrice;
-    [SerializeField] private int _sellPrice;
-    [SerializeField] private string _itemImage;
-    [SerializeField] private string _itemName;
-    [SerializeField] private string _itemDesc;
+    [SerializeField] protected bool _isGained;
+    [SerializeField] protected int _itemCount;
 
     //property
-    public int ItemId => _itemId;
-    public bool IsGained { get => _isGained; set => _isGained = value; }
-    public bool IsSaleable => _isSaleable;
-    public int MaxCount => _maxCount;
-    public int ItemCount { get => _itemCount; set => _itemCount = value; }
-    public int PurchasePrice => _purchasePrice;
-    public int SellPrice => _sellPrice;
-    public string ItemImage => _itemImage;
-    public string ItemName => _itemName;
-    public string ItemDesc => _itemDesc;
 
-    public ScriptableObject GetStoreItem()
+    public abstract int ID { get; }
+    public abstract int ObjectId { get; }
+    public abstract bool IsGained { get; set; }
+    public abstract bool IsSaleable { get; }
+    public abstract int MaxCount { get; } 
+    public abstract int ItemCount { get; set; } 
+    public abstract int PurchasePrice { get; } 
+    public abstract int SellPrice { get; } 
+    public abstract string ItemName { get; } 
+    public abstract string ItemDesc { get; } 
+    public abstract Sprite ImgSprite { get; }
+    public abstract Enum Filter { get; }
+
+    public StoreItem(T data)
     {
-        return this; 
+        _data = data;
+        Debug.Log(_data.GetID());
     }
-
-    public abstract Enum GetFilter();
 }

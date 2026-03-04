@@ -9,9 +9,9 @@ public class ItemSlotViewModel : MonoBehaviour, INotifyPropertyChanged
     // 아이템 갯수
     // 획득 여부
 
-    [SerializeField] private StoreItem _model;
+    [SerializeField] private IStoreItem _model;
 
-    public StoreItem Model
+    public IStoreItem Model
     {
         get => _model;
         set
@@ -31,7 +31,7 @@ public class ItemSlotViewModel : MonoBehaviour, INotifyPropertyChanged
             if (_itemId != value || _itemId == 99999999)
             {
                 _itemId = value;
-                OnPropertyChanged(nameof(_model.ItemId));
+                OnPropertyChanged(nameof(_model.ID));
             }
         }
     }
@@ -73,10 +73,10 @@ public class ItemSlotViewModel : MonoBehaviour, INotifyPropertyChanged
         }
     }
 
-    public void SetModel(StoreItem model)
+    public void SetModel(IStoreItem model)
     {
         Model = model;
-        ItemId = model.ItemId;
+        ItemId = model.ID;
     }
 
     public void Reset()

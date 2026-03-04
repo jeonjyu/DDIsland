@@ -16,9 +16,9 @@ public class TradeUnitViewModelBase : MonoBehaviour, INotifyPropertyChanged
     public ITradeStrategy purchaseStrategy;
     public ITradeStrategy sellStrategy;
 
-    private StoreItem model;
+    private IStoreItem model;
 
-    public StoreItem Model
+    public IStoreItem Model
     {
         //get => StoreManager.Instance.tradeModel;
         get => model;

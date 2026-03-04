@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class PurchaseStrategy : MonoBehaviour, ITradeStrategy
 {
-    public virtual bool Trade(int tradeCount, StoreItem item)
+    public virtual bool Trade(int tradeCount, IStoreItem item)
     {
         if(GameManager.Instance.PlayerGold < tradeCount)
         {
@@ -21,12 +21,12 @@ public class PurchaseStrategy : MonoBehaviour, ITradeStrategy
         return true;
     }
 
-    public int GetPrice(StoreItem item)
+    public int GetPrice(IStoreItem item)
     {
         return item.PurchasePrice;
     }
 
-    public int GetMaxCount(StoreItem item)
+    public int GetMaxCount(IStoreItem item)
     {
         return GameManager.Instance.PlayerGold / item.PurchasePrice;
     }

@@ -53,7 +53,7 @@ public class SortDropdown : StoreDropdownBase
         comparers.Remove(comparer);
         comparers.Insert(0, comparer);
 
-        IEnumerable<StoreItem> items = ItemManager.Instance.displayItems;
+        IEnumerable<IStoreItem> items = ItemManager.Instance.displayDatas;
 
         //Debug.Log("[SortDropdown] SortSlots | SelectedOption 1 : " + (StoreSort)SelectedOption);
 
@@ -77,11 +77,11 @@ public class SortDropdown : StoreDropdownBase
                 //    items = items.AppendOrderBy(x => x.ItemName);
                 //    break;
                 case Comparer.ItemId:
-                    items = items.AppendOrderBy(x => x.ItemId);
+                    items = items.AppendOrderBy(x => x.ID);
                     break;
             }
         }
-        ItemManager.Instance.displayItems = items.ToList();
+        ItemManager.Instance.displayDatas = items.ToList();
         //Debug.Log("[SortDropdown] SortSlots | SelectedOption 2 : " + (StoreSort)SelectedOption);
 
         //Debug.Log("정렬 기준 : " + string.Join(" > ", comparers.Select(x => x)));

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -39,7 +40,7 @@ public class FilterDropdown : StoreDropdownBase
                 currentFilter = typeof(FishingFilter);
                 break;
         }
-        //Debug.Log($"[FilterDropdown] {currentFilter}");
+        Debug.Log($"[FilterDropdown] {currentFilter}");
         filters = Enum.GetValues(currentFilter).Cast<Enum>().ToList();
         SetOptions();
     }
@@ -49,12 +50,14 @@ public class FilterDropdown : StoreDropdownBase
     public void FilterSlots(int idx)
     {
         if (idx > 0)
-            ItemManager.Instance.displayItems = ItemManager.Instance.currentCategory.Where(i => i.GetFilter().ToString() == filters[SelectedOption].ToString()).ToList();
-        else
-            ItemManager.Instance.displayItems = ItemManager.Instance.currentCategory;
+            ItemManager.Instance.displayDatas = ItemManager.Instance.currentDatabase.Where(i => i.Filter.ToString().ToLower() == filters[SelectedOption].ToString().ToLower()).ToList();
 
-        //if (ItemManager.Instance.displayItems != null)
-            //Debug.Log("[FilterDropdown] 필터링 완료 : " + string.Join(", ", ItemManager.Instance.displayItems.Select(x => x.ItemName + "(" + x.ItemId + ")" + x.GetFilter().ToString())));
+            //Debug.Log("[FilterDropdown] | 슬롯 필터링 , idx > 0");
+        else
+            ItemManager.Instance.displayDatas = ItemManager.Instance.currentDatabase;
+
+        if (ItemManager.Instance.displayDatas != null)
+            Debug.Log("[FilterDropdown] 필터링 완료 : " + string.Join(", ", ItemManager.Instance.displayDatas.Select(x => x.ItemName + "(" + x.ID + ")" + x.Filter.ToString())));
     }
 
     public override void SetOptions()

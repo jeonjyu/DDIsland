@@ -1,6 +1,6 @@
 public interface ITradeStrategy
 {
-    public bool Trade(int tradeCount, StoreItem item);
-    public int GetPrice(StoreItem item);
-    public int GetMaxCount(StoreItem item);
+    public bool Trade(int tradeCount, IStoreItem item);
+    public int GetPrice(IStoreItem item);
+    public int GetMaxCount(IStoreItem item);
 }

@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class ItemSlotView : MonoBehaviour, IStoreItemView, IPointerClickHandler
 {
     ItemSlotViewModel viewModel;
-    StoreItem modelData;
+    IStoreItem modelData;
     Image slotImage;
 
     // 인테리어 타입에 따라 다른 UI 테두리 표시
@@ -57,7 +57,7 @@ public class ItemSlotView : MonoBehaviour, IStoreItemView, IPointerClickHandler
         modelData = viewModel.Model;
         int itemID = viewModel.ItemId;
 
-        if (!modelData)
+        if (modelData is null)
         {
             //Debug.Log("model이 없음");
             ResetSlot();
@@ -67,7 +67,7 @@ public class ItemSlotView : MonoBehaviour, IStoreItemView, IPointerClickHandler
         _itemName.text = modelData.ItemName;
         _itemPrice.text = modelData.PurchasePrice.ToString();
         _itemCount.text = modelData.ItemCount.ToString();
-        //_itemImage.sprite = ;
+        _itemImage.sprite = modelData.ImgSprite;
     }
 
     public void ResetSlot()

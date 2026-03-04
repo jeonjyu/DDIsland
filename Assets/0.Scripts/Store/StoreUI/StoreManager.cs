@@ -18,7 +18,7 @@ public class StoreManager : Singleton<StoreManager>
 
     public StoreCat currentCat;
 
-    [SerializeField] public StoreItem tradeModel;
+    [SerializeField] public IStoreItem tradeModel;
     public ItemSlotViewModel currentTradeItem;
 
     public GameObject BuyAndSellPanel => buyAndSellPanel;

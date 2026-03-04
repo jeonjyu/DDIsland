@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class SellStrategy : MonoBehaviour, ITradeStrategy
 {
-    public bool Trade(int tradeCount, StoreItem item)
+    public bool Trade(int tradeCount, IStoreItem item)
     {
         GameManager.Instance.SetGold(tradeCount * item.SellPrice);
         //item.ItemCount -= tradeCount;
@@ -17,12 +17,12 @@ public class SellStrategy : MonoBehaviour, ITradeStrategy
         return true;
     }
 
-    public int GetPrice(StoreItem item)
+    public int GetPrice(IStoreItem item)
     {
         return item.SellPrice;
     }
 
-    public int GetMaxCount(StoreItem item)
+    public int GetMaxCount(IStoreItem item)
     {
         return item.ItemCount;
     }

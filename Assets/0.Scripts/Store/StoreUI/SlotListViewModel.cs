@@ -53,20 +53,10 @@ public class StoreListViewModel : MonoBehaviour, INotifyPropertyChanged
     public event PropertyChangedEventHandler PropertyChanged;
 
 
-    //void Start()
-    //{
-    //    UpdateCurrentCat(0);
-    //}
-
-    // 바뀐 항목 갯수에 따라 아이템 슬롯 풀링해옴
-    // 풀링해오면서 storeItemViewModels 리스트에 추가
-
     public void OnEnable()
     {
         StoreManager.Instance.currentCat = StoreCat.interior;
         UpdateCurrentCat(0);
-
-        //ItemManager.Instance.SetCurrentCategory();
     }
 
     public void UpdateCurrentCat(int catIdx)
@@ -96,7 +86,7 @@ public class StoreListViewModel : MonoBehaviour, INotifyPropertyChanged
             ResetSlotList();
 
         // 오브젝트풀에서 가져온 뒤 자동으로 storeItemViewModels에 추가하기
-        foreach(StoreItem item in ItemManager.Instance.displayItems)
+        foreach(IStoreItem item in ItemManager.Instance.displayDatas)
         {
             ItemSlotViewModel itemViewmodel = ItemManager.Instance.itemSlotPool.Get(itemSlot);
             itemViewmodel.transform.SetParent(itemContents.transform);
