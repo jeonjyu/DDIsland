@@ -1,3 +1,4 @@
+using Unity.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -11,24 +12,25 @@ public class Placeable3D : Placeable
     [SerializeField] private float _rotationStep = 90f; // 한 번 누를 때 회전할 각도 
     [SerializeField] private GameObject _editMenuUI; // 현재 선택된 건물의 편집 UI
 
-    protected BuildingManager _build;
-    protected InteriorDataSO _data;
+    [SerializeField] private BuildingManager _build;
+    [SerializeField] private InteriorDataSO _data;
 
-    Camera _mainCamera;
-    MeshRenderer _selectedRenderer;
-    private float _currentYRotation = 0f; // 현재 유지 중인 회전값
-    private int _isRotated;
-    private bool _isPlaced;
-    private Color _originalColor;
+    [SerializeField] Camera _mainCamera;
+    [SerializeField] MeshRenderer _selectedRenderer;
+    [SerializeField] private float _currentYRotation = 0f; // 현재 유지 중인 회전값
+    [SerializeField] private int _isRotated;
+    [SerializeField] private bool _isPlaced;
+    [SerializeField] private Color _originalColor;
 
-    private Vector2Int _lastPlacedIndex;
-    private Vector2Int _lastPlacedSize;
+    // 인스펙터에선 가려놓고 직렬화로 저장시켜놓음
+    [SerializeField, HideInInspector] private Vector2Int _lastPlacedIndex;
+    [SerializeField, HideInInspector] private Vector2Int _lastPlacedSize;
 
     [SerializeField] int _sizeX;
     [SerializeField] int _sizeY;
 
     #region 레이캐스트
-    private Vector2Int _cachedIndex;
+    [SerializeField, ReadOnly] private Vector2Int _cachedIndex;
     //private bool _hasHit;
     #endregion
 
@@ -44,6 +46,23 @@ public class Placeable3D : Placeable
     public bool IsEditable => _data != null && _data.interior_itemType != Interior_ItemType.Fix;
     #endregion
 
+    private void Start()
+    {
+        if (ItemState == ItemState.Placed)
+        {
+            Invoke(nameof(RegisterToGrid), 0.01f);
+        }
+    }
+    private void RegisterToGrid()
+    {
+        if (_targetGrid != null)
+        {
+            // 현재 내 위치와 크기 정보를 바탕으로 그리드 점유
+            _targetGrid.PlaceItem(PlacedIndex.x, PlacedIndex.y, PlacedSize.x, PlacedSize.y, this);
+            Debug.Log($"[Auto-Register] {gameObject.name}이 ({PlacedIndex.x}, {PlacedIndex.y}) 위치에 자동 등록되었습니다.");
+        }
+    }
+
     // 이곳에 data라는 인테리어SO를 추가시켜야함
     public void Initialize(GridSystem grid, BuildingManager build, InteriorDataSO data)
     {
@@ -54,14 +73,18 @@ public class Placeable3D : Placeable
         _selectedRenderer = GetComponentInChildren<MeshRenderer>();
         _groundLayer = LayerMask.GetMask("Ground");
 
-        _originalColor = _selectedRenderer.material.color;
+        if (Application.isPlaying)
+        {
+            _originalColor = _selectedRenderer.material.color;
+
+            ItemState = ItemState.Preview;
+        }
 
         _sizeX = _data.GridSizeX;
         _sizeY = _data.GridSizeY;
 
 
 
-        ItemState = ItemState.Preview;
         enabled = true;
     }
     public void ToggleUI(bool isActive)
@@ -228,7 +251,7 @@ public class Placeable3D : Placeable
         _targetGrid.UpdateShaderHover(index, size, placeAble);
 
     }
-    
+
     private Vector2Int GetRotatedSize()
     {
         return (_isRotated % 2 == 1) ? new Vector2Int(_sizeY, _sizeX) : new Vector2Int(_sizeX, _sizeY);
@@ -275,4 +298,21 @@ public class Placeable3D : Placeable
         _targetGrid.ClearGrid();
         //enabled = false;
     }
+
+#if UNITY_EDITOR
+    /// <summary>
+    /// 빌드에 직접적으로 포함되지 않는 베이크 전용 함수입니다
+    /// </summary>
+    #region 베이크전용함수
+    public void SetBakeData(Vector2Int index, Vector2Int size)
+    {
+        _cachedIndex = index;
+        _lastPlacedIndex = index; 
+        _lastPlacedSize = size;   
+        _sizeX = size.x;
+        _sizeY = size.y;
+        ItemState = ItemState.Placed;
+    }
+    #endregion
+#endif
 }
