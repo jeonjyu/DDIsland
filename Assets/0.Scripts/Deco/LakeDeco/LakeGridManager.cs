@@ -493,6 +493,7 @@ public class LakeGridManager : MonoBehaviour
         if (IsOutOfBounds(pos.x, pos.y)) return "";
         return tileDataArray[pos.x, pos.y].placedObjectId;
     }
+    #region 스냅샷 
     // 배치 스냅샷 저장 
     public void SaveSnapshot()
     {
@@ -525,7 +526,14 @@ public class LakeGridManager : MonoBehaviour
             PlaceObject(snap.itemId, snap.gridPos.x, snap.gridPos.y, snap.size.x, snap.size.y);
         }
     }
-
+    #endregion  
+    public Vector2 GridToSnapPos(int gx, int gy, int sizeX, int sizeY)
+    {
+        return new Vector2(
+            offsetX + (gx * tileWidth) + (sizeX * tileWidth * 0.5f),
+            offsetY + (gy * tileHeight) + (sizeY * tileHeight * 0.5f)
+        );
+    }
     // 헬퍼 함수
     // 그리드 범위 밖인지 확인
     public bool IsOutOfBounds(int x, int y)
@@ -572,4 +580,7 @@ public class LakeGridManager : MonoBehaviour
 
     public float GetTileWidth() { return tileWidth; }
     public float GetTileHeight() { return tileHeight; }
+    // 그리드 크기 가져오기, 배치 오브젝트가 그리드 영역 밖으로 못벗어나게 막기용 
+    public int GetGridWidth() { return gridWidth; }
+    public int GetGridHeight() { return gridHeight; }
 }

@@ -17,8 +17,9 @@ public class LakePlaceController : MonoBehaviour
     public Button btnRecall;  // 회수            
     public Button btnMove;    // 이동            
     public Button btnCancel;  // 취소
-  
-    // 내부 변수
+    [Header("프리뷰 설정")]
+    public float previewOffsetY = 30f; // 미리보기 띄우는 높이
+
     bool isPlacing = false; // 지금 배치 모드인지
     GameObject previewObj;  // 마우스 따라다니는 프리뷰 오브젝트
     int currentItemId = -1; // 현재 선택된 아이템 ID
@@ -97,22 +98,32 @@ public class LakePlaceController : MonoBehaviour
                 CancelPlacing();
                 return;
             }
-
+            
             // 업데이트 순서를 클릭 안했을때만
             // 미리보기 색상 표시 (초록/빨강)
             // 배치 예상도 중앙 정령 
             int cx = gridPos.x - (currentSizeX / 2);
             int cy = gridPos.y - (currentSizeY / 2);
+            // 클램프로 배치 오브젝트가 그리드 밖으로 안 나가게 제한
+            cx = Mathf.Clamp(cx, 0, gridManager.GetGridWidth() - currentSizeX);
+            cy = Mathf.Clamp(cy, 0, gridManager.GetGridHeight() - currentSizeY);
             gridManager.ShowPreview(cx, cy, currentSizeX, currentSizeY);
+            // 오브젝트를 마우스 위치로 이동 // 자유 자재로 움직이는 마우스 커서 
+            //if (previewObj != null)
+            //{
+            //    RectTransform rt = previewObj.GetComponent<RectTransform>();
+            //    Vector2 mousePos = Mouse.current.position.ReadValue();
+            //    rt.position = mousePos + new Vector2(0, 40f); // 마우스 위치 위로 살짝 띄움 
+            //}
 
-            // 오브젝트를 마우스 위치로 이동
+            // 그리드에 스냅 (뚝뚝 끊기는 방식) 
             if (previewObj != null)
             {
                 RectTransform rt = previewObj.GetComponent<RectTransform>();
-                Vector2 mousePos = Mouse.current.position.ReadValue();
-                rt.position = mousePos + new Vector2(0, 40f); // 마우스 위치 위로 살짝 띄움 
+                rt.SetParent(gridManager.transform, false); // 그리드 기준 좌표 사용
+                rt.anchoredPosition = gridManager.GridToSnapPos(cx, cy, currentSizeX, currentSizeY)
+                    + new Vector2(0, previewOffsetY); 
             }
-
 
         }
         else // 배치모드가 아닐때 
@@ -267,6 +278,9 @@ public class LakePlaceController : MonoBehaviour
         // 중앙 기준
         int cx = gridPos.x - (currentSizeX / 2);
         int cy = gridPos.y - (currentSizeY / 2);
+        // 클램프로 배치 오브젝트가 그리드 밖으로 안 나가게 제한
+        cx = Mathf.Clamp(cx, 0, gridManager.GetGridWidth() - currentSizeX);
+        cy = Mathf.Clamp(cy, 0, gridManager.GetGridHeight() - currentSizeY);
         bool success = gridManager.PlaceObject(currentItemId, cx, cy, currentSizeX, currentSizeY);
         if (success)
         {

@@ -100,4 +100,31 @@ public class AquariumMgr : MonoBehaviour
             _fishQueue.Enqueue(fish);
         }
     }
+    // 물고기 숨기기 
+    public void HideFish() 
+    {
+         StopAllCoroutines();
+        // 투명도 0 보이지 않게 
+        var cg = _spawnArea.GetComponent<CanvasGroup>();
+        if (cg == null) cg = _spawnArea.gameObject.AddComponent<CanvasGroup>();
+        cg.alpha = 0f;
+
+        // 물고기 비활성화
+        //var temp = new List<BackGroundFish>(_activeFish); // 복사 
+        //foreach (var fish in temp)
+        //    fish.gameObject.SetActive(false);
+    }
+    // 물고기 보이기 
+    public void ShowFish() 
+    {
+        // 물고기 투명도 1 (보이는 상태로)
+        var cg = _spawnArea.GetComponent<CanvasGroup>();
+        if (cg != null) cg.alpha = 1f;
+        StartCoroutine(RepeatSpawnFish());
+
+        // 물고기 다시 활성화 (초기 위치에서 스폰됨) 
+        //foreach (var fish in _activeFish)
+        //    fish.gameObject.SetActive(true);
+
+    }
 }
