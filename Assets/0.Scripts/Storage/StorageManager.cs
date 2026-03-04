@@ -122,7 +122,6 @@ public class StorageManager : Singleton<StorageManager>
     }
     private void ApplyCapacityByLevel()
     {
-        //돈결제 하기 넣기
         int newCap = _storageCapacity; //현재 용량 기준으로 새 용량 계산
 
 
@@ -137,5 +136,28 @@ public class StorageManager : Singleton<StorageManager>
         else if (FishSlots.Length != newCap) Array.Resize(ref FishSlots, newCap);
 
         _storageCapacity = newCap;     //현재 용량 갱신
+    }
+
+    public bool PayStorageUpgrade()  //돈낼수 있는가 확인
+    {
+        if (Capacity >= MaxCapacity || StorageLevel >=MaxLevel) return false;
+
+        int cost = GetUpgradeCost();
+
+        int money = GameManager.Instance.PlayerGold;
+        if (money < cost) return false;
+
+        GameManager.Instance.SetGold(-money);
+        return true;
+    }
+
+    public int GetUpgradeCost()  //비용 계산
+    {
+
+        if (_storagelevel <= 1) return 100;
+        if (_storagelevel == 2) return 200;
+        if (_storagelevel == 3) return 300;
+        if (_storagelevel == 4) return 400;
+        return 500; 
     }
 }

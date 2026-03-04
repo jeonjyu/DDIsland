@@ -250,6 +250,11 @@ public class UI_Storage : MonoBehaviour
             ShowSystemMessage("최대 확장 완료 상태입니다.");
             return;
         }
+        if (!StorageManager.Instance.PayStorageUpgrade())  //돈체크
+        {
+            ShowSystemMessage("코인이 부족합니다");
+            return;
+        }
         StorageManager.Instance.UpgradeStorageindex(); // 실제 데이터(슬롯 배열) 확장
         SlotPool();  
         RefreshUpgradeUI();
