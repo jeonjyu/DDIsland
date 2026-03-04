@@ -10,6 +10,7 @@ public enum DecoMode { Lake = 0, Island = 1 }
 
 public class DecoItemListManager : MonoBehaviour
 {
+    #region 변수 선언
     [Header("UI 연결")]
     public RectTransform itemContent; // 슬롯들의 부모
     public Button btnArrowLeft;       // 좌측 화살표
@@ -37,19 +38,20 @@ public class DecoItemListManager : MonoBehaviour
     List<LakeInvenSlot> invenData = new List<LakeInvenSlot>();
     List<GameObject> slotObjects = new List<GameObject>();
     List<DecoSlotUI> slotUIs = new List<DecoSlotUI>();
+    List<int> slotDataIndex = new List<int>(); // slotObjects[i]가 invenData[몇번]인지 매핑 (수량0 스킵 시 인덱스 삐끗 방지)
     List<GameObject> pageCountDots = new List<GameObject>();
     int selectedIndex = -1;  // 현재 선택된 슬롯 인덱스 (-1이면 선택 없음)
     int currentPage = 0;     // 현재 페이지 (0부터)
     int totalPages = 1;      // 전체 페이지 수
     DecoMode lastMode = DecoMode.Lake;
-    List<LakeInvenSlot> lakeInvenSave = null;   
+    List<LakeInvenSlot> lakeInvenSave = null;
     List<LakeInvenSlot> islandInvenSave = null;
     List<LakeInvenSlot> snapshotData = null;
     // 아이템 선택 이벤트
     public event Action<int, int> OnSlotPick;   // (itemId, slotIndex)
     public event Action OnSlotCancel;           // 선택 해제
+    #endregion
 
-    
     void Start()
     {
         // 화살표 버튼 연결
@@ -106,16 +108,17 @@ public class DecoItemListManager : MonoBehaviour
         }
         slotObjects.Clear();
         slotUIs.Clear();
+        slotDataIndex.Clear(); 
     }
 
-    // 인벤토리 데이터 기반으로 슬롯 동적 생성 (수량 0인건 안 만듦)
+    // 인벤토리 데이터 기반으로 슬롯 동적 생성
     void CreateSlots()
     {
         for (int i = 0; i < invenData.Count; i++)
         {
             LakeInvenSlot slotData = invenData[i];
 
-            // 수량 0이면 생성 안함
+            // 수량 0이면 슬롯 생성 안함
             if (slotData.quantity <= 0) continue;
 
             // 템플릿 복제
@@ -127,18 +130,16 @@ public class DecoItemListManager : MonoBehaviour
             DecoSlotUI slotUI = slotObj.GetComponent<DecoSlotUI>();
             // 슬롯 내용 채우기
             SetupSlotUI(slotUI, slotData);
-
-            // 클릭 이벤트 연결용
-            int slotIndex = i; // 클로저 캡처용
-            if (slotUI != null && slotUI.itemButton != null)
-                slotUI.itemButton.onClick.AddListener(() => OnSlotClicked(slotIndex));
-
+           
+            SetSlotClick(slotUI, slotObj);
+        
             slotObjects.Add(slotObj);
             slotUIs.Add(slotUI);
+            slotDataIndex.Add(i); 
         }
     }
 
-    // 슬롯 UI 
+    // 슬롯 UI (이름/수량/이미지 세팅) 
     void SetupSlotUI(DecoSlotUI slotUI, LakeInvenSlot slotData)
     {
         if (slotUI == null) return;
@@ -154,7 +155,8 @@ public class DecoItemListManager : MonoBehaviour
             // 어짜피 GetData로 한꺼번에 가져오기 때문에 GetItemName이라는 함수는 삭제하고 GetData에서 문자열 값을 직접 들고옴
             else if (currentMode == DecoMode.Island)
             {
-                slotUI.nameText.text = DataManager.Instance.DecorationDatabase.InteriorData[slotData.itemId].InteriorName_String;
+                slotUI.nameText.text = DataManager.Instance.DecorationDatabase.InteriorData[slotData.itemId].InteriorName_String
+                     ?? ("섬아이템 :" + slotData.itemId); // 폴백
             }
         }
 
@@ -174,7 +176,11 @@ public class DecoItemListManager : MonoBehaviour
         }
     }
 
-    // 페이지 표시 
+
+    #endregion
+
+    #region 인디케이터 
+    // 현재 페이지 슬롯 표시 
     void UpdatePageDisplay()
     {
         int startIndex = currentPage * slotsPerPage;
@@ -194,9 +200,6 @@ public class DecoItemListManager : MonoBehaviour
         // 페이지 수 갱신
         UpdateIndicators();
     }
-    #endregion
-    
-    #region 인디케이터 
     // 페이지수 변경 
     void GoToPrevPage()
     {
@@ -237,7 +240,7 @@ public class DecoItemListManager : MonoBehaviour
         }
     }
     #endregion
-    
+
     // 슬롯 선택 
     void OnSlotClicked(int index)
     {
@@ -257,8 +260,11 @@ public class DecoItemListManager : MonoBehaviour
         SetSlotHighlight(index, true);
 
         // 이벤트 발생
-        if (index < invenData.Count)
-            OnSlotPick?.Invoke(invenData[index].itemId, index);
+        if (index < slotDataIndex.Count)
+        {
+            int dataIdx = slotDataIndex[index];  // slotDataIndex로 매핑 변환
+            OnSlotPick?.Invoke(invenData[dataIdx].itemId, index); 
+        }
     }
 
     // 선택 해제
@@ -285,61 +291,84 @@ public class DecoItemListManager : MonoBehaviour
             bg.color = new Color(0.18f, 0.18f, 0.22f, 0.92f); // 원래 색상
     }
 
-    // 배치 후 수량 갱신 
+    //  invenData 인덱스로 슬롯(slotObjects) 위치 찾기
+    int FindSlotByDataIndex(int dataIdx)
+    {
+        for (int i = 0; i < slotDataIndex.Count; i++)
+        {
+            if (slotDataIndex[i] == dataIdx) return i;
+        }
+        return -1;
+    }
+
     // 아이템 배치 성공 시 수량 차감
     public void UseItem(int itemId)
     {
+        int dataIdx = -1; // invenData 인덱스 추적
         for (int i = 0; i < invenData.Count; i++)
         {
             if (invenData[i].itemId == itemId)
             {
                 invenData[i].quantity--;
-
-                // 수량 UI 갱신
-                if (i < slotUIs.Count && slotUIs[i] != null && slotUIs[i].quantityText != null)
-                    slotUIs[i].quantityText.text = "x" + invenData[i].quantity;
-
-                // 수량 0이면 슬롯 제거
-                if (invenData[i].quantity <= 0)
-                {
-                    if (selectedIndex == i)
-                        DeselectSlot();
-                    RemoveSlot(i);
-                }
+                dataIdx = i; 
                 break;
             }
+        }
+        if (dataIdx < 0) return;
+
+        int slotIdx = FindSlotByDataIndex(dataIdx); // 매핑으로 슬롯 찾기
+        if (slotIdx < 0) return; 
+
+        // 수량 0이면 슬롯 제거 
+        if (invenData[dataIdx].quantity <= 0) //dataIdx 기준
+        {
+            if (selectedIndex == slotIdx) 
+                DeselectSlot();
+            RemoveSlot(slotIdx); // 직접 인덱스로 제거
+        }
+        else
+        {   // 수량 UI 갱신 
+            if (slotUIs[slotIdx] != null && slotUIs[slotIdx].quantityText != null)
+                slotUIs[slotIdx].quantityText.text = "x" + invenData[dataIdx].quantity;
         }
     }
 
     // 아이템 회수 시 수량 복구
     public void RestoreItem(int itemId)
     {
+        int dataIdx = -1;
         for (int i = 0; i < invenData.Count; i++)
         {
             if (invenData[i].itemId == itemId)
             {
-                bool wasZero = (invenData[i].quantity <= 0);
-                invenData[i].quantity++;
-
-                if (wasZero)
-                {
-                    AddSlot(invenData[i], i);
-                }
-                else if (i < slotObjects.Count)
-                {
-                    slotUIs[i].quantityText.text = "x" + invenData[i].quantity;
-                }
+                dataIdx = i;
                 break;
             }
         }
-    }
-    // 초기화용  
-    public void ReturnAllItems()
-    {
-        if (snapshotData == null) return; 
-        LoadSnapshot();
+        if (dataIdx < 0) return; 
+
+        bool wasZero = (invenData[dataIdx].quantity <= 0);
+        invenData[dataIdx].quantity++;
+
+        if (wasZero) // 슬롯이 없으면 다시 생성
+        {
+            AddSlot(invenData[dataIdx], dataIdx); 
+        }
+        else
+        {
+            int slotIdx = FindSlotByDataIndex(dataIdx); // 매핑으로 슬롯 찾기
+            if (slotIdx >= 0 && slotUIs[slotIdx] != null && slotUIs[slotIdx].quantityText != null)
+                slotUIs[slotIdx].quantityText.text = "x" + invenData[dataIdx].quantity;
+        }
     }
 
+    // 초기화 버튼용 (마지막 저장 시점으로 인벤 복원)   
+    public void ReturnAllItems()
+    {
+        if (snapshotData == null) return;
+        LoadSnapshot();
+    }
+    #region 스냅샷 
     // 현재 인벤 상태 스냅샷 저장
     public void SaveSnapshot()
     {
@@ -370,24 +399,26 @@ public class DecoItemListManager : MonoBehaviour
         }
         SetupInventory(restored);
     }
+    #endregion   
     // 슬롯 제거 (수량 0 됐을 때)
-    void RemoveSlot(int dataIndex)
+    void RemoveSlot(int slotIdx) 
     {
-        for (int i = 0; i < slotObjects.Count; i++)
-        {
-            if (slotObjects[i].name == "ItemSlot_" + dataIndex)
-            {
-                Destroy(slotObjects[i]);
-                slotObjects.RemoveAt(i);
-                slotUIs.RemoveAt(i);
-                break;
-            }
-        }
+        if (slotIdx < 0 || slotIdx >= slotObjects.Count) return;
+
+        // 리스트 동기화 
+        Destroy(slotObjects[slotIdx]); // 인덱스로 제거 
+        slotObjects.RemoveAt(slotIdx); // 슬롯
+        slotUIs.RemoveAt(slotIdx);      // UI
+        slotDataIndex.RemoveAt(slotIdx); // 매핑 제거 
+
+        // 삭제된 슬롯 뒤쪽이면 인덱스 당기기
+        if (selectedIndex == slotIdx) selectedIndex = -1; 
+        else if (selectedIndex > slotIdx) selectedIndex--; 
+
         RecalcPages();
         UpdatePageDisplay();
     }
-
-    // 슬롯 추가 
+    // 슬롯 추가 (수량 0에서 1 이상으로 복구됐을 때)
     void AddSlot(LakeInvenSlot slotData, int dataIndex)
     {
         GameObject slotObj = Instantiate(slotTemplate, itemContent);
@@ -397,18 +428,29 @@ public class DecoItemListManager : MonoBehaviour
         DecoSlotUI slotUI = slotObj.GetComponent<DecoSlotUI>();
         SetupSlotUI(slotUI, slotData);
 
-        int slotIndex = dataIndex;
-        if (slotUI != null && slotUI.itemButton != null)
-            slotUI.itemButton.onClick.AddListener(() => OnSlotClicked(slotIndex));
+        SetSlotClick(slotUI, slotObj);    
 
         slotObjects.Add(slotObj);
         slotUIs.Add(slotUI);
+        slotDataIndex.Add(dataIndex); // 매핑 등록
 
         RecalcPages();
         UpdatePageDisplay();
     }
 
-    // 페이지 수 재계산
+    // 슬롯 버튼 클릭 시 현재 인덱스 찾기 
+    void SetSlotClick(DecoSlotUI slotUI, GameObject slotObj) 
+    {
+        if (slotUI == null || slotUI.itemButton == null) return;
+       
+        slotUI.itemButton.onClick.AddListener(() =>
+        {
+            int idx = slotObjects.IndexOf(slotObj); 
+            if (idx >= 0) OnSlotClicked(idx);
+        });
+    }
+
+    // 슬롯 수에 맞게 페이지 수 재계산
     void RecalcPages()
     {
         totalPages = Mathf.CeilToInt((float)slotObjects.Count / slotsPerPage);
@@ -418,13 +460,15 @@ public class DecoItemListManager : MonoBehaviour
             currentPage = totalPages - 1;
     }
 
+    // 현재 선택된 슬롯의 아이템 ID 반환 (-1이면 선택 없음)
     public int GetSelectedItemId()
     {
-        if (selectedIndex < 0 || selectedIndex >= invenData.Count)
-            return -1;
-        return invenData[selectedIndex].itemId;
+        if (selectedIndex < 0 || selectedIndex >= slotDataIndex.Count)
+            return -1; 
+        int dataIdx = slotDataIndex[selectedIndex]; // 매핑 변환
+        return invenData[dataIdx].itemId; 
     }
-
+    // 현재 선택된 슬롯 인덱스 반환 
     public int GetSelectedIndex()
     {
         return selectedIndex;

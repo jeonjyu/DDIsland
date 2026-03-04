@@ -84,7 +84,7 @@ public class LakePlaceController : MonoBehaviour
                 // 그리드 밖이면 클릭취소 
                 if (gridManager.IsOutOfBounds(gridPos.x, gridPos.y))
                 {
-                    CancelPlacing();
+                   // CancelPlacing(); // 그리드 밖에서 좌클로 취소 되게 
                     return;
                 }
                 TryPlace(gridPos);
@@ -112,6 +112,8 @@ public class LakePlaceController : MonoBehaviour
                 Vector2 mousePos = Mouse.current.position.ReadValue();
                 rt.position = mousePos + new Vector2(0, 40f); // 마우스 위치 위로 살짝 띄움 
             }
+
+
         }
         else // 배치모드가 아닐때 
         {
@@ -153,6 +155,7 @@ public class LakePlaceController : MonoBehaviour
             if (visual != null)
             {    // 두트윈으로 올리기 
                 RectTransform vrt = visual.GetComponent<RectTransform>();
+                vrt.DOKill();  // 중복 방지
                 vrt.DOAnchorPosY(vrt.anchoredPosition.y + 20f, 0.2f) 
                     .SetEase(Ease.OutBack);
             }
@@ -162,11 +165,23 @@ public class LakePlaceController : MonoBehaviour
     // 액션 패널 숨기기
     void HideActionPanel()
     {
+        // 띄운 오브젝트 내리기
+        if (gridManager != null && !string.IsNullOrEmpty(selectedObjectId))
+        {
+            GameObject visual = gridManager.GetVisual(selectedObjectId);
+            if (visual != null)
+            {
+                RectTransform vrt = visual.GetComponent<RectTransform>();
+                vrt.DOKill();
+                vrt.DOAnchorPosY(vrt.anchoredPosition.y - 20f, 0.15f);
+            }
+        }
+
         selectedObjectId = "";
         if (objectActionPanel != null)
             objectActionPanel.SetActive(false);
     }
-
+  
     // 회수 버튼
     void OnRecallClicked()
     {
