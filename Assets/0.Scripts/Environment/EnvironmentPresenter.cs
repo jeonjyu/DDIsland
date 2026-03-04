@@ -18,7 +18,12 @@ public class EnvironmentPresenter : MonoBehaviour
     {
         // 켜질 때 구독 (이벤트 연결)
         _model.OnSeasonChanged += _view.PlaySeasonParticle;
+        _model.OnSeasonChanged += _view.ChangeSeasonSprite;
+
         _model.OnDailyChanged += _view.ChangeDayilyBackGround;
+        _model.OnDailyChanged += _view.ChangeDailySprite;
+        _model.OnDailyChanged += (daily) => _view.PlaySeasonParticle(_model.CurrentSeason);
+
 
         if (DataMgr.Instance != null)
             DataMgr.Instance.OnDataLoaded += SyncWithDataMgr;
@@ -27,7 +32,11 @@ public class EnvironmentPresenter : MonoBehaviour
     {
         // 꺼질 때 해제 (중복 구독 및 메모리 누수 방지)
         _model.OnSeasonChanged -= _view.PlaySeasonParticle;
+        _model.OnSeasonChanged -= _view.ChangeSeasonSprite;
+
         _model.OnDailyChanged -= _view.ChangeDayilyBackGround;
+        _model.OnDailyChanged -= _view.ChangeDailySprite;
+        _model.OnDailyChanged -= (daily) => _view.PlaySeasonParticle(_model.CurrentSeason);
 
         if (DataMgr.Instance != null)
             DataMgr.Instance.OnDataLoaded -= SyncWithDataMgr;
@@ -47,6 +56,10 @@ public class EnvironmentPresenter : MonoBehaviour
         _view.PlaySeasonParticle(_model.CurrentSeason);
 
         Debug.Log($"<color=cyan>테스트 날짜: {now} 현재 시점: {_model.CurrentDay} 현재 계절: {_model.CurrentSeason}</color>");
+
+        _view.ChangeDailySprite(_model.CurrentDay);
+        _view.ChangeSeasonSprite(_model.CurrentSeason);
+
     }
 
     private void Update()
