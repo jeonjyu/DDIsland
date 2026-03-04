@@ -48,15 +48,6 @@ public class SoundManager : Singleton<SoundManager>
         InitData();
     }
 
-    private void Start()
-    {
-
-        Debug.Log(PlayerPrefsDataManager.BgmVolumeMute);
-        SetSoundVolume(Soundtype.BGM, PlayerPrefsDataManager.BgmVolume, PlayerPrefsDataManager.BgmVolumeMute);
-        SetSoundVolume(Soundtype.SFX, PlayerPrefsDataManager.SFXVolume, PlayerPrefsDataManager.SFXVolumeMute);
-        SetSoundVolume(Soundtype.BGS, PlayerPrefsDataManager.BGSVolume, PlayerPrefsDataManager.BGSVolumeMute);
-    }
-
     #region Init
     // 데이터 초기화
     private void InitData()
@@ -74,6 +65,10 @@ public class SoundManager : Singleton<SoundManager>
         audioClipSO.GetClips(audioClipSO.BgsClips, bgsDic);
 
         clearSourceWs = new WaitForSeconds(clearSourceTime);
+
+        SetSoundVolume(Soundtype.BGM, PlayerPrefsDataManager.BgmVolume, PlayerPrefsDataManager.BgmVolumeMute);
+        SetSoundVolume(Soundtype.SFX, PlayerPrefsDataManager.SFXVolume, PlayerPrefsDataManager.SFXVolumeMute);
+        SetSoundVolume(Soundtype.BGS, PlayerPrefsDataManager.BGSVolume, PlayerPrefsDataManager.BGSVolumeMute);
     }
     #endregion
 
@@ -156,19 +151,19 @@ public class SoundManager : Singleton<SoundManager>
         switch (type)
         {
             case Soundtype.BGM:
-                SetVolume("BGM", volume, isMute);
                 PlayerPrefsDataManager.BgmVolume = volume;
                 PlayerPrefsDataManager.BgmVolumeMute = isMute;
+                SetVolume("BGM", volume, isMute);
                 break;
             case Soundtype.SFX:
-                SetVolume("SFX", volume, isMute);
                 PlayerPrefsDataManager.SFXVolume = volume;
                 PlayerPrefsDataManager.SFXVolumeMute = isMute;
+                SetVolume("SFX", volume, isMute);
                 break;
             case Soundtype.BGS:
-                SetVolume("BGS", volume, isMute);
                 PlayerPrefsDataManager.BGSVolume = volume;
                 PlayerPrefsDataManager.BGSVolumeMute = isMute;
+                SetVolume("BGS", volume, isMute);
                 break;
         }
     }

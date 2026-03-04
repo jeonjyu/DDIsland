@@ -44,7 +44,6 @@ public class LakeGridManager : MonoBehaviour
     void Start()
     {
         CreateGrid();
-        SetupTest();
     }
 
     // 그리드 생성 (부모 크기를 타일 수로 나눠서 자동 계산)
