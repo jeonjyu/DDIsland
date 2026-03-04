@@ -22,10 +22,10 @@ public class BuildingManager : MonoBehaviour
     private BuildingSnapshot _currentSnapshot;
 
     [Header("오브젝트 저장 담당")]
-    private List<Placeable3D> _newBuildings = new(); // 새로 생긴 건물 담당
     private Dictionary<Placeable3D, BuildingSnapshot> _movedSnapshots = new();
     // 건물을 이동시켰을 때 원복시키기 위한 딕셔너리
     private List<Placeable3D> _deletedBuildings = new(); // 삭제 취소용
+    //건물 담당
     private List<Placeable3D> _allBuildings = new();
 
     #region 배치 결과 이벤트
@@ -45,7 +45,7 @@ public class BuildingManager : MonoBehaviour
     {
         // 편집모드 딱 들어왔을 때 저장한 값이 있다면 (기존 건물)
         // 그리고 이번 편집 모드에 새로 만든게 아니라면
-        if (!_newBuildings.Contains(target) && !_movedSnapshots.ContainsKey(target))
+        if (!_allBuildings.Contains(target) && !_movedSnapshots.ContainsKey(target))
         {
             _movedSnapshots.Add(target, new BuildingSnapshot
             {
@@ -120,7 +120,6 @@ public class BuildingManager : MonoBehaviour
         //현재 배치 중인 물건이 있으면 들고 있는 물체를 제거
         if (_activePlaceable != null && _activePlaceable.ItemState == ItemState.Preview)
         {
-            _newBuildings.Remove(_activePlaceable);
             _allBuildings.Remove(_activePlaceable);
             Destroy(_activePlaceable.gameObject);
         }
@@ -143,8 +142,6 @@ public class BuildingManager : MonoBehaviour
             Destroy(go);
         }
 
-        //저장용
-        _newBuildings.Add(_activePlaceable);
         //건물 관리용
         _allBuildings.Add(_activePlaceable);
     }
@@ -155,7 +152,6 @@ public class BuildingManager : MonoBehaviour
         //만약 기존 위치가 -1(배치 안됨)이라면 그냥 제거
         if (_currentSnapshot.Pos.x == -1)
         {
-            _newBuildings.Remove(_activePlaceable);
             _allBuildings.Remove(_activePlaceable);
             Destroy(_activePlaceable.gameObject);
         }
@@ -198,7 +194,6 @@ public class BuildingManager : MonoBehaviour
 
     private void ClearSession()
     {
-        _newBuildings.Clear();
         _movedSnapshots.Clear();
         _deletedBuildings.Clear();
         _activePlaceable = null;
@@ -207,14 +202,17 @@ public class BuildingManager : MonoBehaviour
     public void RevertAll()
     {
         // 새로 만든 건물들 전부 삭제
-        for (int i = _newBuildings.Count - 1; i >= 0; i--)
+        for (int i = _allBuildings.Count - 1; i >= 0; i--)
         {
-            var b = _newBuildings[i];
+            var b = _allBuildings[i];
             if (b != null)
             {
-                RemoveBuildingFromGrid(b);
-                _allBuildings.Remove(b);
-                Destroy(b.gameObject);
+                if (!_movedSnapshots.ContainsKey(b))
+                {
+                    RemoveBuildingFromGrid(b);
+                    _allBuildings.RemoveAt(i);
+                    Destroy(b.gameObject);
+                }
             }
         }
 
@@ -288,7 +286,6 @@ public class BuildingManager : MonoBehaviour
             }
         }
 
-        _gridSystem.ClearAllItems();
         _gridSystem.ClearGrid();
         
         ClearSession();
