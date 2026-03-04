@@ -46,13 +46,13 @@ public class StageControl : MonoBehaviour
 
     private void OnEnable()
     {
-        if (GameManager.Instance.InputManager != null)
+        if (GameManager.Instance != null)
             GameManager.Instance.InputManager.OnLeftClick_Started += OnInteractObject;
     }
 
     private void OnDisable()
     {
-        if(GameManager.Instance.InputManager != null)
+        if(GameManager.Instance != null)
             GameManager.Instance.InputManager.OnLeftClick_Started -= OnInteractObject;
     }
 }
