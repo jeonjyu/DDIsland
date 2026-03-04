@@ -21,8 +21,9 @@ public class Placeable3D : Placeable
     private bool _isPlaced;
     private Color _originalColor;
 
-    private Vector2Int _lastPlacedIndex;
-    private Vector2Int _lastPlacedSize;
+    // 인스펙터에선 가려놓고 직렬화로 저장시켜놓음
+    [SerializeField, HideInInspector] private Vector2Int _lastPlacedIndex;
+    [SerializeField, HideInInspector] private Vector2Int _lastPlacedSize;
 
     [SerializeField] int _sizeX;
     [SerializeField] int _sizeY;
@@ -43,6 +44,23 @@ public class Placeable3D : Placeable
     public bool IsPlaced => _isPlaced;
     public bool IsEditable => _data != null && _data.interior_itemType != Interior_ItemType.Fix;
     #endregion
+
+    private void Start()
+    {
+        if (ItemState == ItemState.Placed)
+        {
+            RegisterToGrid();
+        }
+    }
+    private void RegisterToGrid()
+    {
+        if (_targetGrid != null)
+        {
+            // 현재 내 위치와 크기 정보를 바탕으로 그리드 점유
+            _targetGrid.PlaceItem(PlacedIndex.x, PlacedIndex.y, PlacedSize.x, PlacedSize.y, this);
+            Debug.Log($"[Auto-Register] {gameObject.name}이 ({PlacedIndex.x}, {PlacedIndex.y}) 위치에 자동 등록되었습니다.");
+        }
+    }
 
     // 이곳에 data라는 인테리어SO를 추가시켜야함
     public void Initialize(GridSystem grid, BuildingManager build, InteriorDataSO data)
@@ -228,7 +246,7 @@ public class Placeable3D : Placeable
         _targetGrid.UpdateShaderHover(index, size, placeAble);
 
     }
-    
+
     private Vector2Int GetRotatedSize()
     {
         return (_isRotated % 2 == 1) ? new Vector2Int(_sizeY, _sizeX) : new Vector2Int(_sizeX, _sizeY);
@@ -275,4 +293,21 @@ public class Placeable3D : Placeable
         _targetGrid.ClearGrid();
         //enabled = false;
     }
+
+    #if UNITY_EDITOR
+    /// <summary>
+    /// 빌드에 직접적으로 포함되지 않는 베이크 전용 함수입니다
+    /// </summary>
+    #region 베이크전용함수
+    public void SetBakeData(Vector2Int index, Vector2Int size)
+    {
+        _lastPlacedIndex = index;
+        _lastPlacedSize = size;
+        _isPlaced = true;
+
+        // 부모 클래스의 프로퍼티 set을 활용
+        ItemState = ItemState.Placed;
+    }
+    #endregion
+    #endif
 }
