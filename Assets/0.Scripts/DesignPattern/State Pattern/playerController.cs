@@ -380,7 +380,6 @@ public class PlayerController : MonoBehaviour
         {
             float next = PlayerData.Stamina + (100f * 0.02f);
             PlayerData.SetStamina(next);
-            Debug.Log(PlayerData.Stamina );
             if (PlayerData.Stamina >= 100f)
             {
                 PlayerData.SetStamina(100f);
