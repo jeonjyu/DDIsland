@@ -27,6 +27,5 @@ public abstract class StoreItem<T> : IStoreItem where T : TableBase<int>
     public StoreItem(T data)
     {
         _data = data;
-        Debug.Log(_data.GetID());
     }
 }
