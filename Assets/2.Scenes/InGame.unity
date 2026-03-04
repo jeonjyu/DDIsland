@@ -185,6 +185,25 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2184897637509824683, guid: d39bfe1dba0c92340a14abb2876a3415, type: 3}
   m_PrefabInstance: {fileID: 30041644}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &46738532 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4667171691794167124, guid: 16a0de7974b112843b54dfee1aa8e727, type: 3}
+  m_PrefabInstance: {fileID: 7754265316619247553}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &46738535
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 46738532}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.ContentSizeFitter
+  m_HorizontalFit: 2
+  m_VerticalFit: 2
 --- !u!114 &109933960 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8511567440625557574, guid: 176da03993ea90d48a925d62d01fecd1, type: 3}
@@ -1614,23 +1633,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45255a5967786da48a628d73f6877a42, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemManager
-  currentCategory: []
-  displayItems: []
   itemSlotPool: {fileID: 1007267945}
-  interiorItem:
-  - {fileID: 11400000, guid: a180df7ade62d384e882d3cb94f7e1a3, type: 2}
-  - {fileID: 11400000, guid: 1b2bf8b9ad0359d4c8adda60586309a4, type: 2}
-  - {fileID: 11400000, guid: 92ac7324a52a14849b985087efdd673d, type: 2}
-  - {fileID: 11400000, guid: 3b454f9100bd2164386f86a467e4b6fe, type: 2}
-  - {fileID: 11400000, guid: a466b6550a507ba4bb9b6481e33ed8c5, type: 2}
-  - {fileID: 11400000, guid: 5f87e2b0bef2b964ca99b47698862964, type: 2}
-  costumeItem:
-  - {fileID: 11400000, guid: 96c143937101f5f47815a1853d056447, type: 2}
-  - {fileID: 11400000, guid: 413d61ca53f869447b92fd16ce434903, type: 2}
-  - {fileID: 11400000, guid: e524b7603503f224da9a13492e33026b, type: 2}
-  - {fileID: 11400000, guid: d92069551734ddf42a9b6308eb2a0ace, type: 2}
-  - {fileID: 11400000, guid: f1ac98831b57b4a4699b013b0ff3f650, type: 2}
-  - {fileID: 11400000, guid: 0c5775331a4fc0443a644e2ceb54b935, type: 2}
+  InteriorDatabase: {fileID: 0}
+  CostumeDatabase: {fileID: 0}
+  FishingDatabase: {fileID: 0}
 --- !u!4 &1007267944
 Transform:
   m_ObjectHideFlags: 0
@@ -2198,7 +2204,6 @@ MonoBehaviour:
   storeListPanel: {fileID: 226598765}
   buyAndSellPanel: {fileID: 711187802}
   currentCat: 0
-  tradeModel: {fileID: 0}
   currentTradeItem: {fileID: 0}
 --- !u!4 &1385310753
 Transform:
@@ -2933,7 +2938,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19a537fed05a3d348ac61cdab868bf72, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StorageManager
-  _storageCapacity: 20
 --- !u!4 &1744364720
 Transform:
   m_ObjectHideFlags: 0
@@ -3859,7 +3863,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7385944453834728146, guid: 16a0de7974b112843b54dfee1aa8e727, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8156678092000533107, guid: 16a0de7974b112843b54dfee1aa8e727, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: -32.170044
+      objectReference: {fileID: 0}
+    - target: {fileID: 8156678092000533107, guid: 16a0de7974b112843b54dfee1aa8e727, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 8239438529121818574, guid: 16a0de7974b112843b54dfee1aa8e727, type: 3}
       propertyPath: m_AnchorMax.x
@@ -3888,7 +3900,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4667171691794167124, guid: 16a0de7974b112843b54dfee1aa8e727, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 46738535}
   m_SourcePrefab: {fileID: 100100000, guid: 16a0de7974b112843b54dfee1aa8e727, type: 3}
 --- !u!33 &8103577943589253557
 MeshFilter:
