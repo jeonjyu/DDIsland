@@ -17,8 +17,8 @@ public enum StoreSort
     [Description("미보유 아이템순")] unGain,
     [Description("높은 가격 순")] highToLow,
     [Description("낮은 가격 순")] lowToHigh,
-    [Description("최근 구매 순")] recentPurchase,
-    [Description("이름 순")] name
+    //[Description("최근 구매 순")] recentPurchase,
+    //[Description("이름 순")] name
 }
 
 public enum Filter
