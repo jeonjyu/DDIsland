@@ -4,6 +4,7 @@ using UnityEngine.UI;
 
 public class UI_Settings : MonoBehaviour
 {
+    [Header("설정 패널")]
     [SerializeField] private GameObject settingPanel;
 
     [Header("언어 관련")]
@@ -22,8 +23,12 @@ public class UI_Settings : MonoBehaviour
     [SerializeField] private TMP_Text sfxVolumeText;
     [SerializeField] private TMP_Text bgsVolumeText;
 
-    private void Awake()
+    private bool isInitializing = false;
+
+    private void Start()
     {
+        isInitializing = true;
+
         languageDropdown.value = PlayerPrefsDataManager.Language;
 
         bgmSlider.value = PlayerPrefsDataManager.BgmVolume;
@@ -37,6 +42,8 @@ public class UI_Settings : MonoBehaviour
         OnValueChangedVolume(bgmSlider, bgmVolumeText);
         OnValueChangedVolume(sfxSlider, sfxVolumeText);
         OnValueChangedVolume(bgsSlider, bgsVolumeText);
+
+        isInitializing = false;
     }
 
     public void OnOffUISettings(bool isOn)
@@ -62,18 +69,24 @@ public class UI_Settings : MonoBehaviour
 
     public void OnValueChangedBGMVolume()
     {
+        if (isInitializing == true) return;
+
         OnValueChangedVolume(bgmSlider, bgmVolumeText);
         SoundManager.Instance.SetSoundVolume(Soundtype.BGM, bgmSlider.value, bgmToggle.isOn);
     }
 
     public void OnValueChangedSFXVolume()
     {
+        if (isInitializing == true) return;
+
         OnValueChangedVolume(sfxSlider, sfxVolumeText);
         SoundManager.Instance.SetSoundVolume(Soundtype.SFX, sfxSlider.value, sfxToggle.isOn);
     }
 
     public void OnValueChangedBGSVolume()
     {
+        if (isInitializing == true) return;
+
         OnValueChangedVolume(bgsSlider, bgsVolumeText);
         SoundManager.Instance.SetSoundVolume(Soundtype.BGS, bgsSlider.value, bgsToggle.isOn);
     }
