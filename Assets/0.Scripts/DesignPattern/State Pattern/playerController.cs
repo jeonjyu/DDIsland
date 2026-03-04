@@ -86,7 +86,7 @@ public class PlayerController : MonoBehaviour
         PlayerData.SetHunger(100);
         PlayerData.SetStamina(100);
         PlayerData.SetMoveSpeed(1);
-        PlayerData.SetDoongDoongStat(100);
+        PlayerData.SetDoongDoongStat(0);
     }
     private void Start()
     {
@@ -380,7 +380,6 @@ public class PlayerController : MonoBehaviour
         {
             float next = PlayerData.Stamina + (100f * 0.02f);
             PlayerData.SetStamina(next);
-            Debug.Log(PlayerData.Stamina );
             if (PlayerData.Stamina >= 100f)
             {
                 PlayerData.SetStamina(100f);

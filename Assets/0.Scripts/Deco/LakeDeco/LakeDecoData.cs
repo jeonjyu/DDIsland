@@ -7,7 +7,7 @@ using System;
 public enum LakeTileState
 {
     Empty,      // 흰색,   배치 가능한 빈 타일
-    Fixed,      // 빨간색, 수정 불가한 고정 오브젝트 
+    Fixed,      // 빨간색, 배치 불가한 고정 오브젝트 
     Occupied,   // 회색,   배치된 오브젝트, 이동/회수 가능
     Preview,    // 초록색, 배치 예상 위치 
     Invalid     // 빨간색, 배치 불가 
