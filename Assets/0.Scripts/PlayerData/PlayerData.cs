@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine.TextCore.Text;
 
 public class PlayerData
@@ -10,6 +10,7 @@ public class PlayerData
     public float Stamina { get; private set; }
     public float MoveSpeed { get; private set; }
     public float FishingSpeed { get; private set; }
+    public float RestSpeed { get; private set; } 
     public int DoongDoongStat { get; private set; }
 
     public string CurrentResourceID;
@@ -23,17 +24,18 @@ public class PlayerData
     public event Action<int> OnDoongDoongChanged;
 
     // 추가된 변수들  
-    public float MaxHunger = 100f; // 허기와 스태미나는 int형?
+    public float MaxHunger = 100f; 
     public float MaxStamina = 100f;
     public float MaxMoveSpeed = 100f;
     public float MaxFishingSpeed = 100f;
+    public float MaxRestSpeed = 2f;
 
     public int HungerLevel = 1;
     public int StaminaLevel = 1;
     public int MoveSpeedLevel = 1;
     public int FishingSpeedLevel = 1;
-    // 
-
+    public int RestSpeedLevel = 1;
+    //
 
     public void Initialize(CharacterDefinition characterDefinition)
     {
@@ -86,5 +88,9 @@ public class PlayerData
         value = Math.Clamp(value, 0f, MaxFishingSpeed);
         FishingSpeed = value;
     }
-
+    public void SetRestSpeed(float value)
+    {
+        value = Math.Clamp(value, 0f, MaxRestSpeed);
+        RestSpeed = value;
+    }
 }

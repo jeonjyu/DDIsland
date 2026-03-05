@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
@@ -6,7 +6,8 @@ public class UpgradeClickHandler : MonoBehaviour
 {
     [Header("참조")]
     public PanelHandler popupWindow;
-    public UpgradeManager upgradeManager;
+    //public UpgradeManager upgradeManager;
+    public UpgradeManagerV2 upgradeManager;
     public GameObject playerCharacter;
 
     [Header("설정")]
