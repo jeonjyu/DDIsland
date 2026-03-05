@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(InputHandler))]
@@ -18,6 +19,21 @@ public class GameManager : Singleton<GameManager>
     protected override void Awake()
     {
         base.Awake();
+    }
+
+    private void Start()
+    {
+        StartCoroutine(AutoAddGold());
+    }
+
+    private IEnumerator AutoAddGold()
+    {
+        while(true)
+        {
+            SetGold(1);
+
+            yield return new WaitForSeconds(5f);
+        }
     }
 
     public void SetGold(int gold)
