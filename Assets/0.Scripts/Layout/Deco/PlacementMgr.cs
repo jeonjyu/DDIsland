@@ -16,6 +16,7 @@ public class PlacementMgr : MonoBehaviour
     private Placeable3D _selectedTarget; // 현재 선택된 건물 
     private InputAction _clickAction; // 클릭 입력 액션
     private InputAction _rotation;
+    private InputAction _cancel;
 
     [Header("Cinemachine Cameras")]
     [SerializeField] private CinemachineCamera _viewCamera;
@@ -33,11 +34,15 @@ public class PlacementMgr : MonoBehaviour
         _instance = this;
         _clickAction = InputSystem.actions.FindAction("UI/Select");
         _rotation = InputSystem.actions.FindAction("UI/Roation");
+        _cancel = InputSystem.actions.FindAction("UI/Cancel");
     }
     private void OnEnable()
     {
         _clickAction.Enable();
         _clickAction.performed += OnClickInput;
+
+        _cancel.Enable();
+        _cancel.performed += OnCancelInput;
         //_rotation.performed += OnRotate;
     }
 
@@ -45,7 +50,10 @@ public class PlacementMgr : MonoBehaviour
     {
         _clickAction.performed -= OnClickInput;
         //_clickAction.performed -= OnRotate;
-        _clickAction.Disable();
+        _clickAction?.Disable();
+
+        _cancel.performed -= OnCancelInput;
+        _cancel?.Disable();
     }
     public void ToggleEditMode()
     {
@@ -75,6 +83,16 @@ public class PlacementMgr : MonoBehaviour
     private void OnRotate(InputAction.CallbackContext ctx)
     {
         OnClickRotate();
+    }
+    private void OnCancelInput(InputAction.CallbackContext ctx)
+    {
+        // 편집 모드 또는 3D오브젝트가 있을 때
+        if (CurrentState == PlacementState.Edit && _buildingManager.ActivePlaceable != null)
+        {
+            _buildingManager.CancelCurrentAction();
+
+            CloseEditMenu();
+        }
     }
     private void OnClickInput(InputAction.CallbackContext ctx)
     {
@@ -226,5 +244,7 @@ public class PlacementMgr : MonoBehaviour
         
         _buildingManager.StartPlacement(itemId);
     }
+
+
 
 }

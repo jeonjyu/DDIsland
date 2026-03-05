@@ -66,7 +66,7 @@ public class EnvironmentPresenter : MonoBehaviour
     {
         //여기서 초를 추가해 줬습니다 10분 마다요!
         
-        now = now.AddSeconds(Time.deltaTime * 600f);
+        now = now.AddSeconds(Time.deltaTime * 1800f);
         _model.UpdateTimeSet(now);
         _view.TextedTimer(now);
 

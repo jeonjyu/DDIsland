@@ -174,8 +174,10 @@ public class BuildingManager : MonoBehaviour
             }
 
             _activePlaceable.RestoreState(originWorldPos, _currentSnapshot.Rotation, _currentSnapshot.IsRotated);
+
         }
 
+            _gridSystem.ClearGrid();
         OnPlaceCancel?.Invoke(null); // 배치 취소 알림 
         _activePlaceable = null;
     }
