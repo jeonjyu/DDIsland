@@ -28,6 +28,6 @@ public class PurchaseStrategy : MonoBehaviour, ITradeStrategy
 
     public int GetMaxCount(IStoreItem item)
     {
-        return GameManager.Instance.PlayerGold / item.PurchasePrice;
+        return Mathf.Min(GameManager.Instance.PlayerGold / item.PurchasePrice, item.MaxCount - item.ItemCount);
     }
 }

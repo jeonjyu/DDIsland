@@ -14,6 +14,10 @@ public abstract class TradeUnitViewBase : MonoBehaviour
 
     protected TradeUnitViewModelBase viewModel;
 
+    public Button TradeBtn => tradeBtn;
+    public Button CountIncBtn => countIncBtn;
+    public Button CountDecBtn => countDecBtn;   
+    public Button CountMaxBtn => countMaxBtn;
 
     protected virtual void Start()
     {
@@ -53,10 +57,9 @@ public abstract class TradeUnitViewBase : MonoBehaviour
     public abstract ITradeStrategy GetTradeStrategy();
 
     // 거래 버튼 활성화 여부 설정
-    // 팝업 끄기 전까지 클릭 불가능
-    public void SetButtonAvailable(bool available)
+    public void SetBtnInteractable(Button btn, bool isAvailable)
     {
-        tradeBtn.enabled = available;
+        btn.interactable = isAvailable;
     }
 
 
@@ -69,6 +72,16 @@ public abstract class TradeUnitViewBase : MonoBehaviour
     public void SetItemCount(int count)
     {
         countTxt.text = count.ToString(); 
+    public virtual void SetButton()
+    {
+    }
+    public void SetAllButtonAvailablity(bool isAvailable)
+    {
+        tradeBtn.interactable = isAvailable;
+        countIncBtn.interactable = isAvailable;
+        countDecBtn.interactable = isAvailable;
+        countMaxBtn.interactable = isAvailable;
+
     }
 
     private void OnViewModelPropChanged(object sender, PropertyChangedEventArgs e)
