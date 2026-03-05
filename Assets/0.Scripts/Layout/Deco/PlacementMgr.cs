@@ -3,7 +3,7 @@ using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
-
+using System;
 public enum PlacementState
 {
     View,
@@ -23,6 +23,8 @@ public class PlacementMgr : MonoBehaviour
     [SerializeField] private CinemachineCamera _editCamera;
 
     [SerializeField] private BuildingManager _buildingManager;
+    public event Action<Placeable3D> OnBuildingPick;
+    public event Action OnBuildingDrop;
 
     #region 프로퍼티
     static public PlacementMgr Instance => _instance;
@@ -165,18 +167,21 @@ public class PlacementMgr : MonoBehaviour
     {
         if (_selectedTarget != null && _selectedTarget != target)
         {
-            _selectedTarget.ToggleUI(false);
+            //_selectedTarget.ToggleUI(false);
+            OnBuildingDrop?.Invoke();
         }
 
         _selectedTarget = target;
-        _selectedTarget.ToggleUI(true);
+        //_selectedTarget.ToggleUI(true);
+        OnBuildingPick?.Invoke(target);
     }
     // 편집 메뉴를 닫는 메서드
     public void CloseEditMenu()
     {
         if (_selectedTarget != null)
         {
-            _selectedTarget.ToggleUI(false);
+            //_selectedTarget.ToggleUI(false);
+            OnBuildingDrop?.Invoke();
         }
         _selectedTarget = null;
     }
@@ -244,7 +249,6 @@ public class PlacementMgr : MonoBehaviour
         
         _buildingManager.StartPlacement(itemId);
     }
-
 
 
 }

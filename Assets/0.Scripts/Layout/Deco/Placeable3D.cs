@@ -299,6 +299,10 @@ public class Placeable3D : Placeable
         //enabled = false;
     }
 
+    public int GetItemId()
+    {
+        return _data != null ? _data.InteriorID : -1;
+    }
 #if UNITY_EDITOR
     /// <summary>
     /// 빌드에 직접적으로 포함되지 않는 베이크 전용 함수입니다

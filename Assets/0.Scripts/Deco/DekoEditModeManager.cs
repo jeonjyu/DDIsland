@@ -1,7 +1,9 @@
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
-using System.Collections.Generic; 
+using System.Collections.Generic;
+using UnityEngine.InputSystem;
+
 /// [호수 꾸미기 편집 모드 전환 관리]
 public class DecoEditModeManager : MonoBehaviour
 {
@@ -12,6 +14,11 @@ public class DecoEditModeManager : MonoBehaviour
     public GameObject objectActionPanel; // 회수, 이동, 취소
     public AquariumMgr aquariumMgr; // 물고기 안보이게 
 
+    [Header("3D 액션 패널 버튼")] 
+    public Button btnObjRecall;   // 회수
+    public Button btnObjMove;     // 이동
+    public Button btnObjRotate;   // 회전 (3D 전용)
+    public Button btnObjCancel;   // 취소
     [Header("UI 연결")]
     public Image dimBackground;
     public RectTransform topButtonPanel;
@@ -23,7 +30,7 @@ public class DecoEditModeManager : MonoBehaviour
     public Button btnReset;     // 초기화 
     public Button btnSave;      // 저장
     public Button btnExit;      // 나가기
-
+ 
     [Header("꾸미기 버튼")]
     public Button btnDecoMode;
     public GameObject dropdownPanel;
@@ -51,9 +58,11 @@ public class DecoEditModeManager : MonoBehaviour
     BuildingManager buildingMgr;
  
     bool isChanged = false; // 저장 안 한 변경이 있었는지 
+
+    Placeable3D selectedIslandTarget; // 3d 오브젝트 선택
     #endregion
 
-    //  초기화   
+    // 버튼들 초기화   
     void Start()
     {
         // 그리드 원래 위치 저장
@@ -100,6 +109,25 @@ public class DecoEditModeManager : MonoBehaviour
             buildingMgr.OnRevert += OnIslandRevert;     // 전체회수
             buildingMgr.OnClearAll += OnIslandClearAll; // 초기화
         }
+
+        // 이벤트 구독 (섬 3d 오브젝트 선택/해제)
+        if (PlacementMgr.Instance != null)
+        {
+            PlacementMgr.Instance.OnBuildingPick += ShowIslandActionPanel;
+            PlacementMgr.Instance.OnBuildingDrop += OnIslandBuildingDeselected;
+        }
+
+        // 3d 오브젝트 액션 버튼   
+        if (btnObjRecall != null)
+            btnObjRecall.onClick.AddListener(OnIslandRecall);
+        if (btnObjMove != null)
+            btnObjMove.onClick.AddListener(OnIslandMove);
+        if (btnObjRotate != null)
+            btnObjRotate.onClick.AddListener(OnIslandRotate);
+        if (btnObjCancel != null)
+            btnObjCancel.onClick.AddListener(OnIslandActionCancel);
+
+
         // 나가기 관련 버튼
         if (btnExitSave != null)
             btnExitSave.onClick.AddListener(OnExitWithSave);
@@ -111,6 +139,75 @@ public class DecoEditModeManager : MonoBehaviour
             exitPopupPanel.SetActive(false);
    
     }
+    #region  섬 전용 
+    // 섬 전용 오브젝트 액션패널
+    void ShowIslandActionPanel(Placeable3D target)
+    {
+        if (currentMode != DecoMode.Island) return;
+        selectedIslandTarget = target;
+
+        if (objectActionPanel != null)
+        {
+            objectActionPanel.SetActive(true);
+            Vector2 mousePos = Mouse.current.position.ReadValue();
+            objectActionPanel.GetComponent<RectTransform>().position = mousePos + new Vector2(0, 60f);
+        }
+        if (btnObjRotate != null) // 회전 버튼 표시 
+            btnObjRotate.gameObject.SetActive(true);
+    }
+    // 3D 오브젝트 선택 해제
+    void OnIslandBuildingDeselected()
+    {
+        selectedIslandTarget = null;
+        if (objectActionPanel != null)
+            objectActionPanel.SetActive(false);
+    }
+
+    // 섬전용 전체회수 
+    void OnIslandRecall()
+    {
+        if (selectedIslandTarget == null) return;
+
+        int itemId = selectedIslandTarget.GetItemId();
+        if (buildingMgr != null)
+            buildingMgr.DeleteBuilding(selectedIslandTarget);
+
+        if (itemId >= 0 && itemListManager != null)
+            itemListManager.RestoreItem(itemId);
+
+        isChanged = true;
+        if (PlacementMgr.Instance != null)
+            PlacementMgr.Instance.CloseEditMenu();
+    }
+
+    // 섬전용 이동
+    void OnIslandMove()
+    {
+        if (selectedIslandTarget == null) return;
+
+        if (PlacementMgr.Instance != null)
+            PlacementMgr.Instance.OnClickMove();
+
+        isChanged = true;
+    }
+
+    // 섬전용 회전
+    void OnIslandRotate()
+    {
+        if (selectedIslandTarget == null) return;
+
+        if (PlacementMgr.Instance != null)
+            PlacementMgr.Instance.OnClickRotate();
+    }
+
+    // 섬전용 취소 (패널만 닫음)
+    void OnIslandActionCancel()
+    {
+        if (PlacementMgr.Instance != null)
+            PlacementMgr.Instance.CloseEditMenu();
+    }
+
+    #endregion
 
     // 섬 전용 인벤 템 보이기
     void OnIslandPick(int itemId, int slotIndex)
@@ -230,6 +327,9 @@ public class DecoEditModeManager : MonoBehaviour
         // 호수 전용 편집모드 입장: 2d그리드 타일 격자 
         if (currentMode == DecoMode.Lake)
         {
+            if (btnObjRotate != null) // 회전버튼 숨기기
+                btnObjRotate.gameObject.SetActive(false); 
+
             if (gridPanel != null) // 2d그리드 다시 켜기
                 gridPanel.gameObject.SetActive(true);
             if (gridManager != null)
@@ -567,8 +667,14 @@ public class DecoEditModeManager : MonoBehaviour
             buildingMgr.OnRevert -= OnIslandRevert;            
             buildingMgr.OnClearAll -= OnIslandClearAll;        
         }
-    }
 
+        if (PlacementMgr.Instance != null)
+        {
+            PlacementMgr.Instance.OnBuildingPick -= ShowIslandActionPanel;
+            PlacementMgr.Instance.OnBuildingDrop -= OnIslandBuildingDeselected;
+        }
+    }
+ 
     //  외부에서 상태 확인용
     public bool IsEditMode()
     {
