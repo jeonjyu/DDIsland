@@ -6,9 +6,9 @@ public class PurchaseUnitView : TradeUnitViewBase
 {
     PurchaseStrategy strategy;
 
-    protected override void Awake()
+    protected override void Start()
     {
-        base.Awake();
+        base.Start();
         strategy = GetComponent<PurchaseStrategy>();
     }
 
