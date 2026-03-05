@@ -19,14 +19,10 @@ public abstract class TradeUnitViewBase : MonoBehaviour
     public Button CountDecBtn => countDecBtn;   
     public Button CountMaxBtn => countMaxBtn;
 
-    protected virtual void Start()
+    protected virtual void Awake()
     {
-        //Debug.Log("[TradeUnitViewBase] Start");
-
         viewModel = GetComponent<TradeUnitViewModelBase>();
         viewModel.PropertyChanged += OnViewModelPropChanged;
-
-        //SetEventListener();
     }
 
     private void OnEnable()
@@ -72,6 +68,7 @@ public abstract class TradeUnitViewBase : MonoBehaviour
     public void SetItemCount(int count)
     {
         countTxt.text = count.ToString(); 
+    }
     public virtual void SetButton()
     {
     }
