@@ -7,5 +7,5 @@ public interface IStoreItemDatabase
     List<IStoreItem> Items { get; set; }
 
     // TableDatabase의 아이템 get
-    IStoreItem this[int id] { get; set; }
+    IStoreItem this[int id] { get; }
 }

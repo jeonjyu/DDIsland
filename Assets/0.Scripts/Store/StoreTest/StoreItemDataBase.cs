@@ -6,7 +6,7 @@ public class StoreItemDatabase : IStoreItemDatabase
     List<IStoreItem> _itemDatas = new List<IStoreItem>();
     public List<IStoreItem> Items { get => _itemDatas; set => _itemDatas = value; }
 
-    public IStoreItem this[int id] { get => Items[id]; set => Items[id] = value; }
+    public IStoreItem this[int id] => Items[id];
 
     public StoreItemDatabase() { }
 
@@ -43,12 +43,14 @@ public class StoreItemDatabase : IStoreItemDatabase
         }
     }
     public void AddToDatabase(IStoreItem data)
-    {      
-        Items.Add(data); 
+    {   
+        if(!Items.Contains(data))
+            Items.Add(data); 
     }
 
     public void RemoveFromDatabase(IStoreItem data)
     {
-        Items.Remove(data);
+        if(Items.Contains(data))
+            Items.Remove(data);
     }
 }

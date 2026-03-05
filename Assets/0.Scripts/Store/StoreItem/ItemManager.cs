@@ -53,14 +53,14 @@ public class ItemManager : Singleton<ItemManager>
         if (!playerItemDatas.ContainsKey(storeCat))
         {
             playerItemDatas.Add(storeCat, new StoreItemDatabase());
-            Debug.LogWarning($"[ItemManager] AddToPlayerItem | {item.ItemName}({item.ID})에 해당하는 플레이어 아이템 딕셔너리가 없습니다");
+            //Debug.LogWarning($"[ItemManager] AddToPlayerItem | {item.ItemName}({item.ID})에 해당하는 플레이어 아이템 딕셔너리가 없습니다");
         }
         // 아이템이 딕셔너리에 존재하는지 검색
-        if (playerItemDatas[storeCat][item.ID] is null)// ContainsKey(item.ID))
-        {
+        //if (playerItemDatas[storeCat][item.ID] is null)// ContainsKey(item.ID))
+        //{
             playerItemDatas[storeCat].AddToDatabase(item);
-            Debug.Log($"[ItemManager] 플레이어 아이템 딕셔너리에 {item.ItemName}({item.ID}) 추가");
-        }
+            //Debug.Log($"[ItemManager] 플레이어 아이템 딕셔너리에 {item.ItemName}({item.ID}) 추가");
+        //}
     }
 
     public void RemoveFromPlayerItem(IStoreItem item, StoreCat storeCat)
@@ -68,17 +68,17 @@ public class ItemManager : Singleton<ItemManager>
         // 카테고리에 해당하는 딕셔너리 검색
         if (!playerItemDatas.ContainsKey(storeCat))
         {
-            Debug.LogWarning($"[ItemManager] RemoveFromPlayerItem | {item.ItemName}({item.ID})에 해당하는 플레이어 아이템 딕셔너리가 없음");
+            //Debug.LogWarning($"[ItemManager] RemoveFromPlayerItem | {item.ItemName}({item.ID})에 해당하는 플레이어 아이템 딕셔너리가 없음");
             return;
         }
         else 
         {
             // 아이템이 딕셔너리에 존재하는지 검색
-            if (playerItemDatas[storeCat][item.ID] is not null)
-            {
+            //if (playerItemDatas[storeCat][item.ID] is not null)
+            //{
                 playerItemDatas[storeCat].RemoveFromDatabase(item);
-                Debug.Log($"[ItemManager] 플레이어 아이템 딕셔너리에서 {item.ItemName}({item.ID}) 제거");
-            }
+            //    Debug.Log($"[ItemManager] 플레이어 아이템 딕셔너리에서 {item.ItemName}({item.ID}) 제거");
+            //}
         }
     }
 
