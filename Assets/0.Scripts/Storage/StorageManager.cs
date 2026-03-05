@@ -140,14 +140,13 @@ public class StorageManager : Singleton<StorageManager>
 
     public bool PayStorageUpgrade()  //돈낼수 있는가 확인
     {
-        if (Capacity >= MaxCapacity || StorageLevel >=MaxLevel) return false;
-
         int cost = GetUpgradeCost();
-
         int money = GameManager.Instance.PlayerGold;
-        if (money < cost) return false;
 
-        GameManager.Instance.SetGold(-money);
+        if (money < cost)
+            return false;
+
+        GameManager.Instance.SetGold(-cost);
         return true;
     }
 
