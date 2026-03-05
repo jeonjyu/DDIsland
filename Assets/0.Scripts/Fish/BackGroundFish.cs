@@ -1,4 +1,5 @@
 using System.Collections;
+using Unity.Mathematics;
 using UnityEngine;
 /// <summary>
 /// 물고기 군집 행동을 관리하는 스크립트
@@ -93,7 +94,7 @@ public class BackGroundFish : MonoBehaviour
     // 업데이트에서 하면 안되는거 같아서 코루틴으로 주변 물고기 찾는거 구현
     IEnumerator FindNeighboorFish()
     {
-        yield return new WaitForSeconds(Random.Range(0f, 0.2f));
+        yield return new WaitForSeconds(UnityEngine.Random.Range(0f, 0.2f));
 
         while (true)
         {
@@ -166,11 +167,11 @@ public class BackGroundFish : MonoBehaviour
 
             // 가중치 조절
             Vector2 desiredVelocity =
-                (separationForce.normalized * 1.2f) + // 겹치지 않게
+                (separationForce.normalized * 1.5f) + // 겹치지 않게
                 (alignmentForce.normalized * 1.0f) +  // 같은 방향으로
-                (cohesionForce.normalized * 1.5f) +   // 뭉치도록
-                (attendantsDir * 0.8f) +              // 오른쪽 또는 왼쪽으로 이동
-                (boundForce * 1.3f); ;                // 경계에서 멀어지도록
+                (cohesionForce.normalized * 1.3f) +   // 뭉치도록
+                (attendantsDir * 0.6f) +              // 오른쪽 또는 왼쪽으로 이동
+                (boundForce * 2.0f);                // 경계에서 멀어지도록
 
             // 최종 속도에 반영
             _velocity = Vector2.Lerp(_velocity, desiredVelocity.normalized * _speed, Time.deltaTime * 3f);

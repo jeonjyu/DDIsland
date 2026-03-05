@@ -30,7 +30,7 @@ public class GameManager : Singleton<GameManager>
     {
         while(true)
         {
-            SetGold(1);
+            SetGold(100);
 
             yield return new WaitForSeconds(5f);
         }
