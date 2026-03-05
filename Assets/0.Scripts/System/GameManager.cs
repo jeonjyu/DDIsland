@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(InputHandler))]
@@ -9,12 +11,29 @@ public class GameManager : Singleton<GameManager>
     [Header("StageControl 클래스")]
     [field: SerializeField] public StageControl StageController { get; set; }
 
-    [SerializeField] private int playerGold = 10000000;
+    public event Action<int> OnGoldChanged;
+
+    [SerializeField] private int playerGold;
     public int PlayerGold => playerGold;
 
     protected override void Awake()
     {
         base.Awake();
+    }
+
+    private void Start()
+    {
+        StartCoroutine(AutoAddGold());
+    }
+
+    private IEnumerator AutoAddGold()
+    {
+        while(true)
+        {
+            SetGold(1);
+
+            yield return new WaitForSeconds(5f);
+        }
     }
 
     public void SetGold(int gold)
@@ -25,6 +44,8 @@ public class GameManager : Singleton<GameManager>
             return;
         }
         playerGold += gold;
+
+        OnGoldChanged?.Invoke(PlayerGold);
     }
 
     private void OnApplicationQuit()

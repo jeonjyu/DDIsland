@@ -170,8 +170,8 @@ public class DecoEditModeManager : MonoBehaviour
     void OnIslandClearAll()
     {
         if (currentMode != DecoMode.Island) return;
-        if (itemListManager != null)
-            itemListManager.ReturnAllItems();
+        //if (itemListManager != null)
+        //    itemListManager.ReturnAllItems();
     }
     void OnLakeDecoClicked()
     {
@@ -422,6 +422,8 @@ public class DecoEditModeManager : MonoBehaviour
             // PlacementMgr.Instance?.OnClickConfirmSession();
             if (buildingMgr != null)
                 buildingMgr.ConfirmAll();
+            if (itemListManager != null)
+                itemListManager.SaveSnapshot(); 
             isChanged = false;
         }
     }
@@ -469,6 +471,12 @@ public class DecoEditModeManager : MonoBehaviour
             if (buildingMgr != null)
             {
                 buildingMgr.ClearAll();
+            }
+            // ClearAll이 전부 파괴하니까 인벤도 처음 상태로 복원
+            if (itemListManager != null)
+            {
+                if (currentMode == DecoMode.Island)
+                    itemListManager.SetupInventory(IslandDecoTestData.CreateInventory());
             }
             isChanged = true;
         }
