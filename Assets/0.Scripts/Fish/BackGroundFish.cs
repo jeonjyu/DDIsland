@@ -17,7 +17,7 @@ public class BackGroundFish : MonoBehaviour
     private float _height;
 
     [Header("물고기 군집 관련")]
-    private float _neighborDistance = 250f; // 근처 물고기와의 거리
+    private float _neighborDistance = 200f; // 근처 물고기와의 거리
     private float _separationDistance = 100f; // 충돌 방지 범위
     public int _fishID; // 물고기 군집 구분용 ID
 
@@ -138,7 +138,7 @@ public class BackGroundFish : MonoBehaviour
             if (sqrDist < sqrNeighborDist && sqrDist > 0)
             {
                 // 물고기의 속도를 더해서 평균 속도 계산에 사용 (쫒아 갈 때 사용)
-                alignmentForce += other._velocity.normalized;
+                alignmentForce += other._velocity;
                 // 물고기의 좌표를 더해서 평균 좌표 계산에 사용 (중심으로 모여서 함께 이동할 때 사용)
                 centerPosition += other._rectTransform.anchoredPosition;
 
@@ -163,8 +163,6 @@ public class BackGroundFish : MonoBehaviour
             // 내 위치에서 중심으로 항햐는 벡터 계산
             cohesionForce = (centerPosition - _rectTransform.anchoredPosition);
 
-            Vector2 noise = new (UnityEngine.Random.Range(-0.1f, 0.1f), UnityEngine.Random.Range(-0.1f, 0.1f));
-
             Vector2 attendantsDir = _moveDir * 0.5f;
 
             // 가중치 조절
@@ -173,17 +171,16 @@ public class BackGroundFish : MonoBehaviour
                 (alignmentForce.normalized * 1.0f) +  // 같은 방향으로
                 (cohesionForce.normalized * 1.3f) +   // 뭉치도록
                 (attendantsDir * 0.6f) +              // 오른쪽 또는 왼쪽으로 이동
-                (boundForce * 2.0f)+
-                noise ;                // 경계에서 멀어지도록
+                (boundForce * 2.0f);                // 경계에서 멀어지도록
 
             // 최종 속도에 반영
-            _velocity = Vector2.Lerp(_velocity, desiredVelocity.normalized * _speed, Time.deltaTime * 2f);
+            _velocity = Vector2.Lerp(_velocity, desiredVelocity.normalized * _speed, Time.deltaTime * 3f);
         }
         // 만약 주변에 아무도 없을수 도 있으니까...
         else
         {
             Vector2 elseDir = Vector2.Lerp(_moveDir, boundForce, boundForce.magnitude).normalized;
-            _velocity = Vector2.Lerp(_velocity, elseDir * _speed, Time.deltaTime * 2f);
+            _velocity = Vector2.Lerp(_velocity, elseDir * _speed, Time.deltaTime * 3f);
         }
     }
     private void OnEnable()
