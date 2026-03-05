@@ -39,7 +39,7 @@ public class UpgradeClickHandler : MonoBehaviour
         if (Mouse.current == null || Mouse.current.leftButton.wasPressedThisFrame == false) return;
 
         // ui 클릭 방지
-        if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject()) return;
+       // if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject()) return;
 
         Camera cam = GetActiveCamera();
         if (cam == null) return;
