@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine;
 
 // 상호작용 종류
@@ -43,8 +43,8 @@ public class InteriorDataSO : TableBase<int>
     [SerializeField] private string interiorName;
     public string InteriorName_String => LocalizationManager.Instance.GetString(interiorName);
 
-    // 설명 텍스트
-    [SerializeField] private string interiorDesc;
+// 설명 텍스트
+[SerializeField] private string interiorDesc;
     public string InteriorDesc_String => LocalizationManager.Instance.GetString(interiorDesc);
 
     // 가로 점유 칸 수

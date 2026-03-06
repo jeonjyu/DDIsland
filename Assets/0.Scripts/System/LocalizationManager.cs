@@ -18,6 +18,7 @@ public class LocalizationManager : Singleton<LocalizationManager>
     protected override void Awake()
     {
         base.Awake();
+        StringDataSO.Init();
     }
 
     public string GetString(string key)
