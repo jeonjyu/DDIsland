@@ -37,19 +37,28 @@ public class PlayerData
     public int RestSpeedLevel = 1;
     //
 
-    public void Initialize(CharacterDefinition characterDefinition)
+    public void Initialize(CharacterDataSO SO)
     {
-        CharID = characterDefinition.CharID;
-        NameKey = characterDefinition.Name;
+        SetHunger(SO.BaseHunger);
+        SetStamina(SO.BaseStamina);
+        SetMoveSpeed(SO.BaseMoveSpeed);
+        SetFishingSpeed(SO.BaseFishingSpeed);
+        SetRestSpeed(SO.BaseRestSpeed);
+        SetDoongDoongStat(SO.BaseDoongDoongStat);
 
-        SetHunger(characterDefinition.BaseHunger);
-        SetStamina(characterDefinition.BaseStamina);
-        SetDoongDoongStat(characterDefinition.BaseDoongDoongStat);
-        MoveSpeed = characterDefinition.BaseMoveSpeed;
-        FishingSpeed = characterDefinition.BaseFishingSpeed;
+        MaxHunger = SO.BaseHunger;
+        MaxStamina = SO.BaseStamina;
 
-        VisualGroupID = characterDefinition.BaseVisualGroupID;
-        UpgradGroupID = characterDefinition.BaseUpgradGroupID;
+        CharID = SO.ID;
+        NameKey = SO.Name_String;
+        VisualGroupID = SO.VisualGroupID;
+        UpgradGroupID = SO.UpgradGroupID;
+
+        HungerLevel = 1;
+        StaminaLevel = 1;
+        MoveSpeedLevel = 1;
+        FishingSpeedLevel = 1;
+        RestSpeedLevel = 1;
     }
 
     //이렇게 쓰면 된다

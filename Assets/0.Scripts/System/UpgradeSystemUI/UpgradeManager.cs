@@ -53,7 +53,7 @@ public class UpgradeManager : MonoBehaviour
             playerController = FindObjectOfType<PlayerController>();
         if (playerController != null)
         {
-            playerData = playerController.PlayerData;
+            playerData = playerController.PlayerDataOld;
         }
         else // 플레이어컨트롤러가 없으면 로컬데이터 생성 
         {

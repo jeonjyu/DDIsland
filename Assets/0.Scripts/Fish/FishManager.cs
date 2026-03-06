@@ -157,7 +157,7 @@ public class FishManager : Singleton<FishManager>
         CreateInstance(fishSO);  //길이,가격 계산 후 저장
     }
 
-    public void CreateInstance(FishDataSO fish)
+    public void CreateInstance(FishDataSO fish)  
     {
         float length = Random.Range(fish.MinLength, fish.MaxLength);
         int price = fish.Price;

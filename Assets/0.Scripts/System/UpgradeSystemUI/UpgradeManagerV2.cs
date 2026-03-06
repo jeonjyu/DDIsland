@@ -59,7 +59,7 @@ public class UpgradeManagerV2 : MonoBehaviour
         if (playerController == null)
             playerController = FindObjectOfType<PlayerController>();
         if (playerController != null)
-            playerData = playerController.PlayerData;
+            playerData = playerController.PlayerDataOld;
         else
             playerData = new PlayerData();
         InitTempTable();
@@ -380,7 +380,7 @@ public class UpgradeManagerV2 : MonoBehaviour
             if (playerController == null)
                 playerController = FindObjectOfType<PlayerController>();
             if (playerController != null)
-                playerData = playerController.PlayerData;
+                playerData = playerController.PlayerDataOld;
             else
                 playerData = new PlayerData();
         }

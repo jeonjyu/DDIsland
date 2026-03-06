@@ -4,7 +4,21 @@ using UnityEngine;
 using UnityEngine.AI;
 using System.Collections.Generic;
 
-public enum Point
+//public struct PlayerContext
+//{
+//    public int ID;
+//    public string Name;
+//    public float Hunger;
+//    public float Stamina;
+//    public float MoveSpeed;
+//    public float FishingSpeed;
+//    public float RestSpeed;
+//    public int DoongDoongStat;
+//    public int VisualGroupID;
+//    public int UpgradGroupID;
+//}
+
+    public enum Point
 {
     Fish,Store,Kitchen,Rest,Acorn
 }
@@ -33,7 +47,9 @@ public class PlayerController : MonoBehaviour
     private bool _cycleRunning;
 
     private Coroutine _yawnRoutine;  //하품 코루틴
-    public PlayerData PlayerData { get; private set; }
+    public CharacterDataSO PlayerDataSO;
+    //public PlayerContext playerData;  //일단은 남겨둠 혹시모르니까
+    public PlayerData PlayerDataOld; //업그레이드매니저를위한거
 
     Point _currentPoint = Point.Fish;  //플레이어 목적지
     [SerializeField] private Transform _fishPoint;  //각 지점 위치
@@ -84,16 +100,13 @@ public class PlayerController : MonoBehaviour
         _animator = GetComponent<Animator>();
         _rigid = GetComponent<Rigidbody2D>();
         _agent = GetComponent<NavMeshAgent>();
-        if (PlayerData == null) PlayerData = new PlayerData();
-        //테스트용
-        PlayerData.SetHunger(100);
-        PlayerData.SetStamina(100);
-        PlayerData.SetMoveSpeed(1);
-        PlayerData.SetDoongDoongStat(0);
+        PlayerDataOld = new PlayerData();
     }
     private void Start()
     {
-        _baseMoveSpeed = PlayerData.MoveSpeed;
+        if (PlayerDataSO == null) return;
+        ApplyPlayerStats(PlayerDataSO);
+        _baseMoveSpeed = PlayerDataOld.MoveSpeed;
         _fishingRod.gameObject.SetActive(false);
     }
     private void Update()
@@ -114,6 +127,23 @@ public class PlayerController : MonoBehaviour
     private void FixedUpdate()
     {
         _currentState?.FixedExecute();
+    }
+
+    public void ApplyPlayerStats(CharacterDataSO SO)
+    {
+        //일단은 남겨둠 혹시모르니까
+        //playerData = new PlayerContext();
+        //playerData.ID = SO.ID;
+        //playerData.Name = SO.Name_String;
+        //playerData.Hunger = SO.BaseHunger;
+        //playerData.Stamina = SO.BaseStamina;
+        //playerData.MoveSpeed = SO.BaseMoveSpeed;
+        //playerData.FishingSpeed = SO.BaseFishingSpeed;
+        //playerData.RestSpeed = SO.BaseRestSpeed;
+        //playerData.DoongDoongStat = SO.BaseDoongDoongStat;
+        //playerData.VisualGroupID = SO.VisualGroupID;
+        //playerData.UpgradGroupID = SO.UpgradGroupID;
+        PlayerDataOld.Initialize(SO);
     }
 
    public void StartAcornSupply(Vector3 center)  //도토리 떨어지는 함수
@@ -159,9 +189,10 @@ public class PlayerController : MonoBehaviour
             SetNextAcornTargetAndMove();
             return;
         }
-        var acorn = _acorns[_acornIndex];  
+        var acorn = _acorns[_acornIndex];
 
-        PlayerData.SetHunger(PlayerData.Hunger + 10);
+        //playerData.Hunger += 10;
+        PlayerDataOld.SetHunger(PlayerDataOld.Hunger + 10);
         Destroy(acorn);
         _acorns.RemoveAt(_acornIndex);
         if (_acorns.Count == 0)
@@ -182,13 +213,14 @@ public class PlayerController : MonoBehaviour
     {
         if (!_canCook) return;
         if (_isCooking) return;
-        if (PlayerData.Stamina < 10)
+        if (PlayerDataOld.Stamina < 10)
         {
             _canCook = false;
             return;
         }
         _isCooking = true;
-        PlayerData.SetStamina(PlayerData.Stamina - 10);
+        //playerData.Stamina -= 10;
+        PlayerDataOld.SetStamina(PlayerDataOld.Stamina - 10);
         _animator.SetBool("isCook", true);
     }
     public void AnimEvent_CookingEnd()  //이함수를 Cook_FryingPan_Mix@loop 애니의 끝부분에 넣기
@@ -208,20 +240,21 @@ public class PlayerController : MonoBehaviour
     public void ExhaustionMovement()  //피로도에 따른 이동속도 감소 및 애니메이션 변화
     {
         //로그창 폭발로 주석처리
-        if (PlayerData.Stamina > 30) return;
-        if (PlayerData.Stamina <= 10) return; //Debug.Log("탈진 상태. 완전히 피곤해 찌들은 애니메이션");
-        else if (PlayerData.Stamina <= 14) return;//Debug.Log("꾸벅거림이 심해진다.");
-        else if (PlayerData.Stamina <= 19) return;//Debug.Log("꽤나 자주 꾸벅거린다.");
-        else if (PlayerData.Stamina <= 24) return; //Debug.Log("조금 더 자주 꾸벅거린다.");
+        if (PlayerDataOld.Stamina > 30) return;
+        if (PlayerDataOld.Stamina <= 10) return; //Debug.Log("탈진 상태. 완전히 피곤해 찌들은 애니메이션");
+        else if (PlayerDataOld.Stamina <= 14) return;//Debug.Log("꾸벅거림이 심해진다.");
+        else if (PlayerDataOld.Stamina <= 19) return;//Debug.Log("꽤나 자주 꾸벅거린다.");
+        else if (PlayerDataOld.Stamina <= 24) return; //Debug.Log("조금 더 자주 꾸벅거린다.");
         else return; //Debug.Log("가끔 꾸벅거린다"); 
     }
     public void HungerMovement()  //배고픔에 따른 이동속도 감소 및 애니메이션 변화
     {
-        if (!_ishungery || PlayerData.Hunger > 25)
+        if (!_ishungery || PlayerDataOld.Hunger > 25)
         {
             if (_slowApplied)
             {
-                PlayerData.SetMoveSpeed(_baseMoveSpeed);
+                //playerData.MoveSpeed = _baseMoveSpeed;
+                PlayerDataOld.SetMoveSpeed(_baseMoveSpeed);
                 _slowApplied = false;
             }
             _hungerTickTimer = 0f;
@@ -234,10 +267,10 @@ public class PlayerController : MonoBehaviour
     public void ApplyHungerTier()  //배고픔 단계에 따른 둥둥 감소 간격 조절
     {
         float interval = 0f;
-        if (PlayerData.Hunger <= 9) interval = 1f;
-        else if (PlayerData.Hunger <= 14) interval = 3f;
-        else if (PlayerData.Hunger <= 19) interval = 5f;
-        else if (PlayerData.Hunger <= 25) interval = 10f;
+        if (PlayerDataOld.Hunger <= 9) interval = 1f;
+        else if (PlayerDataOld.Hunger <= 14) interval = 3f;
+        else if (PlayerDataOld.Hunger <= 19) interval = 5f;
+        else if (PlayerDataOld.Hunger <= 25) interval = 10f;
         ApplyHunger(interval);
     }
     public void ApplyHunger(float inter)  //배고픔 단계에 따른 둥둥 감소 간격 조절
@@ -248,17 +281,18 @@ public class PlayerController : MonoBehaviour
         {
             _hungerTickTimer -= inter;
 
-            int next = Mathf.Max(0, PlayerData.DoongDoongStat - 1);
-            PlayerData.SetDoongDoongStat(next);
+            int next = Mathf.Max(0, PlayerDataOld.DoongDoongStat - 1);
+            //playerData.DoongDoongStat = next;
+            PlayerDataOld.SetDoongDoongStat(next);
             if (next == 0) break;
         }
     }
     private void UpdateConditionFlags()  //상태 업데이트
     {
-        _ishungery = PlayerData.Hunger <= 25;
+        _ishungery = PlayerDataOld.Hunger <= 25;
         
         if (_isAcornFalling) return;
-        if (!_canCook && !_shouldSell && PlayerData.Hunger <= 20)
+        if (!_canCook && !_shouldSell && PlayerDataOld.Hunger <= 20)
         {
             StartAcornSupply(transform.position); 
         }
@@ -269,7 +303,7 @@ public class PlayerController : MonoBehaviour
         // 0 기본 / 1 탈진 / 2 배고픔
         float moveType;
         if (_ishungery) moveType = 2;
-        else if (PlayerData.Stamina <= 30) moveType = 1;
+        else if (PlayerDataOld.Stamina <= 30) moveType = 1;
         else moveType = 0;
         _animator.SetFloat("MoveType", moveType);
     }
@@ -277,9 +311,9 @@ public class PlayerController : MonoBehaviour
     public void ApplyTier()  //둥둥수치에 따른 외형변화
     {
         SkinnedMeshRenderer src;
-        if (PlayerData.DoongDoongStat >= 1000) src = _roundSource;
-        else if (PlayerData.DoongDoongStat >= 500) src = _chubbySource;
-        else if (PlayerData.DoongDoongStat >= 300) src = _normalSource;
+        if (PlayerDataOld.DoongDoongStat >= 1000) src = _roundSource;
+        else if (PlayerDataOld.DoongDoongStat >= 500) src = _chubbySource;
+        else if (PlayerDataOld.DoongDoongStat >= 300) src = _normalSource;
         else src = _slimSource;
         ApplySkin(src);
     }
@@ -337,10 +371,12 @@ public class PlayerController : MonoBehaviour
     {
         _fishingCount--; 
         Debug.Log("fishingCount: " + _fishingCount);
-        PlayerData.SetHunger(PlayerData.Hunger - 4);
-        PlayerData.SetStamina(PlayerData.Stamina - 5);
+        //playerData.Hunger -= 4;
+        //playerData.Stamina -= 5;
+        PlayerDataOld.SetHunger(PlayerDataOld.Hunger - 4);
+        PlayerDataOld.SetStamina(PlayerDataOld.Stamina - 5);
         _isFishing = false; _fishingRoutine = null;
-        if (_fishingCount <= 0 || PlayerData.Hunger <= 0 || PlayerData.Stamina <= 0)
+        if (_fishingCount <= 0 || PlayerDataOld.Hunger <= 0 || PlayerDataOld.Stamina <= 0)
         {
             Animator.SetBool("isFish", false);
             SetState(new IdleState(this));
@@ -400,11 +436,13 @@ public class PlayerController : MonoBehaviour
     {
         while (true)
         {
-            float next = PlayerData.Stamina + (100f * 0.02f);
-            PlayerData.SetStamina(next);
-            if (PlayerData.Stamina >= 100f)
+            float next = PlayerDataOld.Stamina + (100f * 0.02f);
+            //playerData.Stamina = next;
+            PlayerDataOld.SetStamina(next);
+            if (PlayerDataOld.Stamina >= 100f)
             {
-                PlayerData.SetStamina(100f);
+                //playerData.Stamina = 100f;
+                PlayerDataOld.SetStamina(100f);
                 _recoverRoutine = null;
                 _isResting = false;
                 SetState(new IdleState(this));
@@ -418,21 +456,11 @@ public class PlayerController : MonoBehaviour
 
     public void ApplyMoveSpeed()
     {
-        float baseSpeed = PlayerData.MoveSpeed;
+        float baseSpeed = PlayerDataOld.MoveSpeed;
         float finalSpeed = IsHungery ? baseSpeed * 0.5f : baseSpeed;  //배고프면 속도 절반
 
         _agent.speed = finalSpeed;
     }
-    public void PlayAnim(string anim)
-    {
-        _animator.Play(anim);
-    }
-
-    public void MoveTo(Transform target)
-    {
-        _agent.SetDestination(target.position);
-    }
-
     public void RequestReplan()  //idle에서 자율적으로 다음행동 결정
     {
         var nextState = DecideNextState();
@@ -446,7 +474,7 @@ public class PlayerController : MonoBehaviour
         //if (PlayerData.Hunger <= 20)
         //    return new EatState(this);
 
-        if (PlayerData.Stamina <= 10)
+        if (PlayerDataOld.Stamina <= 10)
         {
             _currentPoint = Point.Rest;
             return new MoveState(this, _currentPoint);

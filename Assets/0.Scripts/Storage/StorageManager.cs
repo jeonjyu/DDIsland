@@ -35,10 +35,7 @@ public class StorageManager : Singleton<StorageManager>
         base.Awake();
         FishSlots = new FishStackSlot?[_storageCapacity];
     }
-    private void Update()
-    {
 
-    }
     public bool TryAddToStorage(FishInstance fish)
     {
         if (FishSlots == null || FishSlots.Length == 0)
@@ -120,7 +117,7 @@ public class StorageManager : Singleton<StorageManager>
         _storagelevel++;   //레벨 올리고, 그 레벨에 맞는 Capacity 적용
         ApplyCapacityByLevel();
     }
-    private void ApplyCapacityByLevel()
+    private void ApplyCapacityByLevel()  //레벨에 맞게 창고용량 적용
     {
         int newCap = _storageCapacity; //현재 용량 기준으로 새 용량 계산
 
