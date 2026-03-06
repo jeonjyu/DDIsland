@@ -59,10 +59,15 @@ public class PlayerController : MonoBehaviour
      private Transform _acornPoint;
 
     [SerializeField] private SkinnedMeshRenderer _targetSMR;
-    [SerializeField] private SkinnedMeshRenderer _slimSource;
-    [SerializeField] private SkinnedMeshRenderer _normalSource;
-    [SerializeField] private SkinnedMeshRenderer _roundSource;
-    [SerializeField] private SkinnedMeshRenderer _chubbySource;
+    private SkinnedMeshRenderer _slimSource;
+    private SkinnedMeshRenderer _normalSource;
+    private SkinnedMeshRenderer _chubbySource; 
+    private SkinnedMeshRenderer _roundSource;
+
+    [SerializeField] GameObject _slimPrefab;
+    [SerializeField] GameObject _normalPrefab;
+    [SerializeField] GameObject _chubbyPrefab;
+    [SerializeField] GameObject _roundPrefab;
 
     [SerializeField] private GameObject _fishingRod;
 
@@ -100,7 +105,11 @@ public class PlayerController : MonoBehaviour
         _animator = GetComponent<Animator>();
         _rigid = GetComponent<Rigidbody2D>();
         _agent = GetComponent<NavMeshAgent>();
-        PlayerDataOld = new PlayerData();
+        _slimSource = _slimPrefab.GetComponentInChildren<SkinnedMeshRenderer>();
+        _normalSource = _normalPrefab.GetComponentInChildren<SkinnedMeshRenderer>();
+        _chubbySource = _chubbyPrefab.GetComponentInChildren<SkinnedMeshRenderer>();
+        _roundSource = _roundPrefab.GetComponentInChildren<SkinnedMeshRenderer>();
+         PlayerDataOld = new PlayerData();
     }
     private void Start()
     {
