@@ -22,6 +22,7 @@ public class UpgradeManagerV2 : MonoBehaviour
     public TextMeshProUGUI statNameText;      // 스탯 이름
     public Image levelFillImage;              // 피자 
     public TextMeshProUGUI levelProgressText; // 1/10 
+    public TextMeshProUGUI statChangeText;    // 변동스탯 
     [Header("스탯별 이미지")]
     public Sprite[] statIcons;        // 포만감, 스태미너, 이동속도, 낚시, 휴식
 
@@ -32,7 +33,7 @@ public class UpgradeManagerV2 : MonoBehaviour
     [Header("페이지 네비게이션")]
     public Button prevButton;      // < 버튼
     public Button nextButton;      // > 버튼
-    public Transform dotContainer;  // 도트가 들어갈 빈 옵젝 
+    public Transform dotContainer;  // 도트들이 들어갈 빈 옵젝 
     public GameObject nowDot;   // 현재 페이지 
     public GameObject waitDot;  // 다른 페이지
     #endregion
@@ -62,9 +63,10 @@ public class UpgradeManagerV2 : MonoBehaviour
             playerData = playerController.PlayerDataOld;
         else
             playerData = new PlayerData();
-        InitTempTable();
+       
+        upgradeTable = UpgradeTempData.GetAll();
 
-       // 페이지 인디케이터 
+        // 페이지 인디케이터 
         buyButton.onClick.AddListener(OnbuyClicked);
         prevButton.onClick.AddListener(OnPrevPage);
         nextButton.onClick.AddListener(OnNextPage);
@@ -172,7 +174,7 @@ public class UpgradeManagerV2 : MonoBehaviour
             case StatType.BaseStamina: BuyStamina(); break;
             case StatType.BaseMoveSpeed: BuyMoveSpeed(); break;
             case StatType.BaseFishingSpeed: BuyFishingSpeed(); break;
-            case StatType.StaminaHeal: BuyRestSpeed(); break; // 신규
+            case StatType.StaminaHeal: BuyRestSpeed(); break; 
         }
     }
 
@@ -252,7 +254,7 @@ public class UpgradeManagerV2 : MonoBehaviour
         UpdatePage();
     }
 
-    // 신규: 휴식속도
+    // 휴식속도
     void BuyRestSpeed()
     {
         int currentLevel = playerData.RestSpeedLevel;
@@ -283,7 +285,7 @@ public class UpgradeManagerV2 : MonoBehaviour
         int maxLevel = GetMaxLevel(currentStat);
 
         // 스탯 이름
-        statNameText.text = GetStatDisplayName(currentStat);
+        statNameText.text = UpgradeStringData.GetDisplayName(currentStat);
 
         // 돈
         goldText.text = GameManager.Instance.PlayerGold.ToString();
@@ -291,6 +293,9 @@ public class UpgradeManagerV2 : MonoBehaviour
         // 필 피자와 레벨/최대레벨
         levelFillImage.fillAmount = (float)currentLevel / maxLevel;
         levelProgressText.text = currentLevel + "/" + maxLevel;
+
+        // 변동 스탯
+        UpdateStatChangeText(currentStat, currentLevel);
 
         // 스탯 아이콘 변경
         if (statIconImage != null && currentPageIndex < statIcons.Length)
@@ -309,6 +314,47 @@ public class UpgradeManagerV2 : MonoBehaviour
         UpdateDots();
     }
 
+    // 현재스탯 → 변동스탯
+    void UpdateStatChangeText(StatType type, int level)
+    {
+        if (statChangeText == null) return; 
+
+        UpgradeData currentLevelData = FindCurrentLevelData(type, level);
+        if (currentLevelData == null) return;
+
+        if (currentLevelData.IsMax)
+        {
+            if (currentLevelData.applyType == ApplyType.Add)
+                statChangeText.text = GetCurrentAddValue(type).ToString("F0");
+            else
+                statChangeText.text = currentLevelData.Value.ToString("F2");
+            return;
+        }
+
+        UpgradeData nextLevelData = FindNextLevelData(type, level);
+        if (nextLevelData == null) return;
+
+        if (currentLevelData.applyType == ApplyType.Add)
+        {
+            float curTotal = GetCurrentAddValue(type);
+            statChangeText.text = curTotal.ToString("F0") + " → " + (curTotal + currentLevelData.Value).ToString("F0");
+        }
+        else
+        {
+            statChangeText.text = currentLevelData.Value.ToString("F2") + " → " + nextLevelData.Value.ToString("F2");
+        }
+    }
+
+    // Add 전용 (현재 최종 누적값)
+    float GetCurrentAddValue(StatType type)
+    {
+        switch (type)
+        {
+            case StatType.BaseHunger: return playerData.MaxHunger;
+            case StatType.BaseStamina: return playerData.MaxStamina;
+            default: return 0;
+        }
+    }
     // 구매 버튼 상태 갱신
     void UpdatebuyButton(StatType type, int level)
     {
@@ -327,7 +373,7 @@ public class UpgradeManagerV2 : MonoBehaviour
         }
     }
 
-    // 현재 레벨 가져오기 (UI용)
+    // 현재 레벨 가져오기 (현재스탯, 변동스탯 Text UI용)
     int GetCurrentLevel(StatType type)
     {
         switch (type)
@@ -342,35 +388,6 @@ public class UpgradeManagerV2 : MonoBehaviour
     }
 
     #endregion
-
-    #region 임시용 테이블 
-    string GetStatDisplayName(StatType type)
-    {
-        switch (type)
-        {
-            case StatType.BaseHunger: return "포만감";
-            case StatType.BaseStamina: return "스태미너";
-            case StatType.BaseMoveSpeed: return "이동속도";
-            case StatType.BaseFishingSpeed: return "낚시 숙련도";
-            case StatType.StaminaHeal: return "휴식속도";
-            default: return "";
-        }
-    }
-
-    string GetStatNameKey(StatType type)
-    {
-        switch (type)
-        {
-            case StatType.BaseHunger: return "HungerStatDes_String";
-            case StatType.BaseStamina: return "StaminaStatDes_String";
-            case StatType.BaseMoveSpeed: return "MoveSpeedStatDes_String";
-            case StatType.BaseFishingSpeed: return "FishingSpeedStatDes_String";
-            case StatType.StaminaHeal: return "RestSpeedStatDes_String";
-            default: return "";
-        }
-    }
-    #endregion
-
     // 팝업창이 띄워지고 호출
     public void OnPanelOpened()
     {
@@ -388,59 +405,6 @@ public class UpgradeManagerV2 : MonoBehaviour
         currentPageIndex = 0;
         UpdatePage();
     }
-
-    #region 임시 테이블 (나중에 CSV로 교체)
-
-    void InitTempTable()
-    {
-        // 포만감 (Add, StatType=1, 레벨 10, Value=증가량 +10)
-        AddUpgradeRange((ApplyType)1, (StatType)1, 200010101, "HungerStatDes_String",
-            new int[] { 300, 450, 650, 900, 1200, 1550, 2000, 2500, 3050, 3700 },
-            10f);
-
-        // 스태미너 (Add, StatType=2, 레벨 10, Value=증가량 +10)
-        AddUpgradeRange((ApplyType)1, (StatType)2, 200010201, "StaminaStatDes_String",
-            new int[] { 300, 450, 650, 900, 1200, 1550, 2000, 2500, 3050, 3700 },
-            10f);
-
-        // 이동속도 (Set, StatType=3, 레벨 10, Value=최종값)
-        AddUpgradeRange((ApplyType)2, (StatType)3, 200010301, "MoveSpeedStatDes_String",
-            new int[] { 300, 450, 650, 900, 1200, 1550, 2000, 2500, 3050, 3700 },
-            0f, new float[] { 1.01f, 1.02f, 1.03f, 1.04f, 1.05f, 1.06f, 1.07f, 1.08f, 1.09f, 1.10f });
-
-        // 낚시 숙련도 (Set, StatType=4, 레벨 10, Value=최종값)
-        AddUpgradeRange((ApplyType)2, (StatType)4, 200010401, "FishingSpeedStatDes_String",
-            new int[] { 300, 450, 650, 900, 1200, 1550, 2000, 2500, 3050, 3700 },
-            0f, new float[] { 1.01f, 1.02f, 1.03f, 1.04f, 1.05f, 1.06f, 1.07f, 1.08f, 1.09f, 1.10f });
-
-        // 휴식속도 (Set, StatType=5, 레벨 3, Value=최종값)
-        AddUpgradeRange((ApplyType)2, (StatType)5, 200010501, "RestSpeedStatDes_String",
-            new int[] { 5000, 15000, 50000 },
-            0f, new float[] { 0.03f, 0.04f, 0.05f });
-    }
-
-    // 헬퍼: 레벨 데이터 한번에 추가
-    void AddUpgradeRange(ApplyType applyType, StatType statType, int startID, string statNameString,
-        int[] costs, float fixedValue, float[] levelValues = null)
-    {
-        int totalLevels = costs.Length;
-        for (int i = 0; i < totalLevels; i++)
-        {
-            upgradeTable.Add(new UpgradeData
-            {
-                ID = startID + i,
-                GroupID = "501",
-                applyType = applyType,
-                StatType = statType,
-              //  StatNameString = statNameString,
-                Level = i + 1,
-                Cost = costs[i],
-                Value = (levelValues != null) ? levelValues[i] : fixedValue,
-                Probability = 1f,
-                IsMax = (i == totalLevels - 1)
-            });
-        }
-    }
     int GetBodyIndex(int doongDoongStat)
     {
         for (int i = 0; i < bodyThresholds.Length; i++)
@@ -450,5 +414,5 @@ public class UpgradeManagerV2 : MonoBehaviour
         }
         return bodySprites.Length - 1;
     }
-    #endregion
+ 
 }

@@ -7,12 +7,13 @@ using UnityEngine.InputSystem;
 /// [호수 꾸미기 편집 모드 전환 관리]
 public class DecoEditModeManager : MonoBehaviour
 {
-    #region
+    #region 변수 
     [Header("2D그리드 호수 전용")]
     public RectTransform gridPanel;
     public LakeGridManager gridManager;
     public GameObject objectActionPanel; // 회수, 이동, 취소
     public AquariumMgr aquariumMgr; // 물고기 안보이게 
+    public RectTransform lakeBackground; // 호수 이미지 
 
     [Header("3D 액션 패널 버튼")] 
     public Button btnObjRecall;   // 회수
@@ -41,7 +42,7 @@ public class DecoEditModeManager : MonoBehaviour
     public float animTime = 0.3f;           // 애니메이션 시간
     public float bottomPanelHeight = 240f;  // 인벤 패널 높이
     public float gridMoveUp = 240f;   // 그리드 위로 올리는 높이
-
+    public float lakeBgMoveUp = 240f; // 호수 위로 올리는 높이
     [Header("나가기 팝업")]
     public GameObject exitPopupPanel; 
     public Button btnExitSave;        // 저장하고 나가기
@@ -52,6 +53,7 @@ public class DecoEditModeManager : MonoBehaviour
     bool isEditMode = false;
     DecoMode currentMode = DecoMode.Lake;   // 현재 편집 모드
     Vector2 gridOriginPos;    // 그리드 원래 위치 저장
+    Vector2 lakeOriginPos; // 호수 배경 원래 위치 저장
     float dimAlpha = 0.5f;  // 백그라운드 배경 알파값
   
     int holdItemId = -1;   // 들고 있어서 배치 대기 중인 아이템 ID
@@ -68,7 +70,10 @@ public class DecoEditModeManager : MonoBehaviour
         // 그리드 원래 위치 저장
         if (gridPanel != null)
             gridOriginPos = gridPanel.anchoredPosition;
-
+        // 호수 배경 원래 위치 저장
+        if (lakeBackground != null)
+            lakeOriginPos = lakeBackground.anchoredPosition;
+        
         if (aquariumMgr == null) // 인스펙터 할당된게 없으면 매니저 찾아서 물고기 숨기는용
             aquariumMgr = FindObjectOfType<AquariumMgr>();
 
@@ -114,7 +119,7 @@ public class DecoEditModeManager : MonoBehaviour
         if (PlacementMgr.Instance != null)
         {
             PlacementMgr.Instance.OnBuildingPick += ShowIslandActionPanel;
-            PlacementMgr.Instance.OnBuildingDrop += OnIslandBuildingDeselected;
+            PlacementMgr.Instance.OnBuildingDrop += HideIslandActionPanel;
         }
 
         // 3d 오브젝트 액션 버튼   
@@ -155,8 +160,9 @@ public class DecoEditModeManager : MonoBehaviour
         if (btnObjRotate != null) // 회전 버튼 표시 
             btnObjRotate.gameObject.SetActive(true);
     }
+   
     // 3D 오브젝트 선택 해제
-    void OnIslandBuildingDeselected()
+    void HideIslandActionPanel()
     {
         selectedIslandTarget = null;
         if (objectActionPanel != null)
@@ -206,8 +212,6 @@ public class DecoEditModeManager : MonoBehaviour
         if (PlacementMgr.Instance != null)
             PlacementMgr.Instance.CloseEditMenu();
     }
-
-    #endregion
 
     // 섬 전용 인벤 템 보이기
     void OnIslandPick(int itemId, int slotIndex)
@@ -270,17 +274,21 @@ public class DecoEditModeManager : MonoBehaviour
         //if (itemListManager != null)
         //    itemListManager.ReturnAllItems();
     }
-    void OnLakeDecoClicked()
+
+    #endregion
+
+    void OnIslandDecoClicked() // 섬 
+    {
+        EnterEditMode(DecoMode.Island);
+        HideDropdown();
+    }
+
+    void OnLakeDecoClicked() // 호수
     {
         EnterEditMode(DecoMode.Lake);
         HideDropdown();
     }
 
-    void OnIslandDecoClicked()
-    {
-        EnterEditMode(DecoMode.Island);
-        HideDropdown();
-    }
     // 드롭다운 
     void ToggleDropdown()
     {
@@ -324,7 +332,7 @@ public class DecoEditModeManager : MonoBehaviour
             dimBackground.DOColor(new Color(0, 0, 0, dimAlpha), animTime);
         }
 
-        // 호수 전용 편집모드 입장: 2d그리드 타일 격자 
+        // 호수 전용 편집모드 입장
         if (currentMode == DecoMode.Lake)
         {
             if (btnObjRotate != null) // 회전버튼 숨기기
@@ -342,9 +350,15 @@ public class DecoEditModeManager : MonoBehaviour
                     .SetEase(Ease.OutQuad);
             }
             if (aquariumMgr != null) aquariumMgr.HideFish(); // 물고기 숨기기
+
+            if (lakeBackground != null) // 뒤에 호수도 같이 두트윈으로 띄어올리기 
+            {
+                lakeBackground.DOAnchorPosY(lakeOriginPos.y + lakeBgMoveUp, animTime)
+                .SetEase(Ease.OutQuad);
+            }
         }
 
-        // 섬 전용 편집모드 입장: 나중에 필요한 초기화
+        // 섬 전용 편집모드 입장
         if (currentMode == DecoMode.Island)
         {
             // 섬모드면 호수 2d그리드 끄기 
@@ -432,6 +446,12 @@ public class DecoEditModeManager : MonoBehaviour
                     .SetEase(Ease.OutQuad);
             }
             if (aquariumMgr != null) aquariumMgr.ShowFish(); // 물고기 다시 보이기
+
+            if (lakeBackground != null) // 뒤에 호수 위치 복귀
+            {
+                lakeBackground.DOAnchorPosY(lakeOriginPos.y, animTime)
+                 .SetEase(Ease.OutQuad);
+            }
         }
 
         // 섬 전용 편집모드 퇴장
@@ -671,7 +691,7 @@ public class DecoEditModeManager : MonoBehaviour
         if (PlacementMgr.Instance != null)
         {
             PlacementMgr.Instance.OnBuildingPick -= ShowIslandActionPanel;
-            PlacementMgr.Instance.OnBuildingDrop -= OnIslandBuildingDeselected;
+            PlacementMgr.Instance.OnBuildingDrop -= HideIslandActionPanel;
         }
     }
  
