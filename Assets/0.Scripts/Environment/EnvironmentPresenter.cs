@@ -44,7 +44,7 @@ public class EnvironmentPresenter : MonoBehaviour
 
     private void Start()
     {
-       
+
         //처음 시작할 때 현재 시각 기억
         DateTime now = DateTime.UtcNow.AddHours(9);
         //DateTime now = new DateTime(2026,1,1).AddDays(UnityEngine.Random.Range(0, 365))

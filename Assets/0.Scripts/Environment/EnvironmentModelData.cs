@@ -89,7 +89,7 @@ public class EnvironmentModel
             additional.Add(UnityEngine.Random.Range(0, 4)); //계절이 4개니까 0,1,2,3 중 하나 선택
         }
         int currentDaySum = 0; //계절별 마지막 날짜 구하기 위한 장치
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < additional.Count; i++)
         {
             int duration = 7; //계절별 기본 날짜
             if (additional.Contains(i))
