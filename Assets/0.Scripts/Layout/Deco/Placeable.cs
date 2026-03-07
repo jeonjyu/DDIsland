@@ -11,8 +11,6 @@ public enum ItemState // 건물의 상태를 나타내는 열거형
 /// </summary>
 public abstract class Placeable : MonoBehaviour
 {
-    [SerializeField] protected GameObject _selectedObject;
-
     [SerializeField] protected GridSystem _targetGrid;
 
     [SerializeField] protected ItemState _itemState = ItemState.Preview;
@@ -24,12 +22,7 @@ public abstract class Placeable : MonoBehaviour
         get => _itemState;
         set => _itemState = value;
     }
-
-    public void SelectObject(GameObject obj)
-    {
-        
-        _selectedObject = obj;
-    }
+    
     public virtual void Placement()
     {
 

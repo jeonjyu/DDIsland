@@ -30,15 +30,17 @@ public class FishManager : Singleton<FishManager>
 {
     Dictionary<int, FishDataSO> _fishById;
     List<FishDataSO> _allFish;
+    // 추가한 부분입니다
+    Dictionary<(ArriveSeason, FishType), List<FishDataSO>> _fishData;
 
     private EnvironmentModel _environment;
 
     private ArriveSeason _currentSeason = ArriveSeason.Spring;
 
-     int _seasonChangeCount;  //실러캔스
-    bool _canCoelacanth =  false;
-    float _pirarukuTimer; 
-    bool _canCanPiraruque = false;  
+    int _seasonChangeCount;  //실러캔스
+    bool _canCoelacanth = false;
+    float _pirarukuTimer;
+    bool _canCanPiraruque = false;
 
     private void Awake()
     {
@@ -59,6 +61,37 @@ public class FishManager : Singleton<FishManager>
         if (_environment != null)
         {
             _currentSeason = ConvertSeason(_environment.CurrentSeason);
+        }
+
+        // 추가한 부분입니다
+        _fishData = new();
+        ArriveSeason[] seasons = { ArriveSeason.Spring, ArriveSeason.Summer, ArriveSeason.Autumn, ArriveSeason.Winter };
+        FishType[] types = { FishType.Sea, FishType.Lake };
+
+        foreach (ArriveSeason s in seasons)
+        {
+            foreach (FishType t in types)
+            {
+                _fishData[(s, t)] = new List<FishDataSO>();
+            }
+        }
+
+        var db = DataManager.Instance.FishingDatabase.FishData;
+
+        foreach (var fish in _allFish)
+        {
+            if (fish == null) continue;
+
+            foreach (var s in seasons)
+            {
+                if ((fish.arriveseasonType & s) != 0)
+                {
+                    if (_fishData.ContainsKey((s, fish.fishType)))
+                    {
+                        _fishData[(s, fish.fishType)].Add(fish);
+                    }
+                }
+            }
         }
     }
     private void Update()
@@ -125,8 +158,31 @@ public class FishManager : Singleton<FishManager>
         ctx.IsNight = _environment.CurrentDay == DayilyCycle.Night;
         //날씨, 골드도 필요함 일단테스트
         ctx.GoldAmount = GameManager.Instance.PlayerGold;
-        ctx.IsCherryblossom = true; 
+        ctx.IsCherryblossom = true;
         return ctx;
+    }
+
+    // 군집 알고리즘의 데이터 메서드입니다
+    public List<FishDataSO> GetFishData(FishType type, bool isFlocking)
+    {
+        if (!_fishData.TryGetValue((_currentSeason, type), out var baseList))
+        {
+            return new ();
+        }
+
+        var result = new List<FishDataSO>();
+        var ctx = BuildContextFromCurrentState();
+
+        foreach (var fish in baseList)
+        {
+            if (fish.CrowdingAlgorithm != isFlocking) continue;
+            
+            if (!PassSpecialRuleByFishId(fish.ID, ctx)) continue;
+
+            result.Add(fish);
+        }
+
+        return result;
     }
 
     public void PickRandomSeasonFish(FishingContext ctx)  //낚시 결과 뽑기
@@ -190,7 +246,7 @@ public class FishManager : Singleton<FishManager>
         return null;
     }
 
-    private List<FishingDropDataSO> BuildCandidates(FishingContext ctx)  
+    private List<FishingDropDataSO> BuildCandidates(FishingContext ctx)
     {
         var db = DataManager.Instance.FishingDatabase.FishingDropData;
         var result = new List<FishingDropDataSO>();
@@ -299,7 +355,7 @@ public class FishManager : Singleton<FishManager>
         }
         return weight;
     }
-    public void OpenPiraruku(DayilyCycle dayilyCycle)  
+    public void OpenPiraruku(DayilyCycle dayilyCycle)
     {
         _pirarukuTimer = 0f;
         _canCanPiraruque = true;
