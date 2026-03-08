@@ -17,6 +17,7 @@ public static class PlayerPrefsDataManager
     private const string KEY_SFXVOLUME_MUTE = "SFXVolumeMute";          // SFX 뮤트 키
     private const string KEY_BGSVOLUME_MUTE = "BGSVolumeMute";          // BGS 뮤트 키
     private const string KEY_GRAPHICQUALITY = "GraphicQuality";         // 그래픽 품질 설정 키
+    private const string KEY_TRANSPARENCY = "Transparency";             // 화면 투명도 설정
     private const string KEY_RESOLUTIONWIDTH = "ResolutionWidth";       // 가로 해상도 수치 키
     private const string KEY_RESOLUTIONHEIGHT = "ResolutionHeight";     // 세로 해상도 수치 키
     private const string KEY_RESOLUTIONWINDOW = "ResolutionWindow";     // 세로 해상도 수치 키
@@ -80,7 +81,6 @@ public static class PlayerPrefsDataManager
         set
         {
             PlayerPrefs.SetInt(KEY_BGMVOLUME_MUTE, value == true ? 1 : 0);
-            Debug.Log("저장");
         }
     }
 
@@ -116,6 +116,15 @@ public static class PlayerPrefsDataManager
         {
             int index = Mathf.Clamp(value, 0, QualitySettings.names.Length - 1);
             PlayerPrefs.SetInt(KEY_GRAPHICQUALITY, index);
+        }
+    }
+
+    public static float Transparency
+    {
+        get { return PlayerPrefs.GetFloat(KEY_TRANSPARENCY, 0f); }
+        set
+        {
+            PlayerPrefs.SetFloat(KEY_TRANSPARENCY, value);
         }
     }
 
