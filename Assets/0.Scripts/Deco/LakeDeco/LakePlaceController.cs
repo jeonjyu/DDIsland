@@ -17,7 +17,7 @@ public class LakePlaceController : MonoBehaviour
     public Button btnRecall;  // 회수            
     public Button btnMove;    // 이동            
     public Button btnCancel;  // 취소
-    [Header("프리뷰 설정")]
+    [Header("미리보기 오브젝트 클릭시 띄우는 높이")]
     public float previewOffsetY = 30f; // 미리보기 띄우는 높이
 
     bool isPlacing = false; // 지금 배치 모드인지
@@ -91,7 +91,7 @@ public class LakePlaceController : MonoBehaviour
                 TryPlace(gridPos);
                 return; // 배치 시도 후 이번 프레임은 끝
             }
-
+            // todo: 코루틴 
             // 우클릭 시 취.소.
             if (Mouse.current.rightButton.wasPressedThisFrame)
             {
@@ -116,14 +116,14 @@ public class LakePlaceController : MonoBehaviour
             //    rt.position = mousePos + new Vector2(0, 40f); // 마우스 위치 위로 살짝 띄움 
             //}
 
-            // 그리드에 스냅 (뚝뚝 끊기는 방식) 
+            // 그리드에 스냅 (뚝뚝 끊기는 방식) // todo: 미리보기 오브젝트는 마우스의 중앙위치에 오도록
             if (previewObj != null)
             {
                 RectTransform rt = previewObj.GetComponent<RectTransform>();
                 rt.SetParent(gridManager.transform, false); // 그리드 기준 좌표 사용
                 rt.anchoredPosition = gridManager.GridToSnapPos(cx, cy, currentSizeX, currentSizeY)
                     + new Vector2(0, previewOffsetY); 
-            }
+            } //todo: 코루틴 
 
         }
         else // 배치모드가 아닐때 
@@ -131,7 +131,7 @@ public class LakePlaceController : MonoBehaviour
             // 배치된 오브젝트 클릭 감지 
             if (Mouse.current.leftButton.wasPressedThisFrame)
             {
-                // TODO : 집 
+                
                 // 액션패널이 열려있으면 클릭 무시 (버튼 클릭 우선)
                 if (objectActionPanel != null && objectActionPanel.activeSelf)
                     return;
@@ -328,7 +328,7 @@ public class LakePlaceController : MonoBehaviour
             editModeManager.LockTopButtons(true);
     }
 
-    // 마우스 따라다니는 오브젝트 생성
+    // 마우스 따라다니는 미리보기 오브젝트 생성
     void CreatePreviewObject()
     {
         previewObj = new GameObject("PlacementPreview");
@@ -362,7 +362,7 @@ public class LakePlaceController : MonoBehaviour
     }
 
 
-    // 더미 데이터
+    // 더미 데이터 // 배치할 템의 타일 크기 먹는 수 // TODO: 이것도 데이터쪽에 빼기 
     Vector2Int GetItemSize(int itemId)
     {
         switch (itemId)
@@ -373,10 +373,10 @@ public class LakePlaceController : MonoBehaviour
             case 1004: return new Vector2Int(2, 1);
             case 1005: return new Vector2Int(2, 1);
             case 1006: return new Vector2Int(2, 1);
-            case 1007: return new Vector2Int(4, 2);
+            case 1007: return new Vector2Int(3, 1);
             case 1008: return new Vector2Int(1, 1);
             case 1009: return new Vector2Int(1, 1);
-            case 1010: return new Vector2Int(2, 1);
+            case 1010: return new Vector2Int(3, 1);
 
             default: return new Vector2Int(1, 1);
         }

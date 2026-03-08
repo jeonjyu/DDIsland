@@ -54,7 +54,7 @@ public class DecoItemListManager : MonoBehaviour
 
     void Start()
     {
-        // 화살표 버튼 연결
+        // 페이지 넘김 버튼 연결
         if (btnArrowLeft != null)
             btnArrowLeft.onClick.AddListener(GoToPrevPage);
 
@@ -66,7 +66,7 @@ public class DecoItemListManager : MonoBehaviour
             slotTemplate.SetActive(false);
     }
 
-    // 테스트용 (데이터 연결 전까지 빈 인벤으로 세팅)
+    // 테스트용 
     public void SetupTestInventory()
     {
         // 이전 모드 인벤 저장 
@@ -155,7 +155,6 @@ public class DecoItemListManager : MonoBehaviour
             // 어짜피 GetData로 한꺼번에 가져오기 때문에 GetItemName이라는 함수는 삭제하고 GetData에서 문자열 값을 직접 들고옴
             else if (currentMode == DecoMode.Island)
             {
-               // slotUI.nameText.text = DataManager.Instance.DecorationDatabase.InteriorData[slotData.itemId].InteriorName_String;
                 try
                 {
                     slotUI.nameText.text = DataManager.Instance.DecorationDatabase.InteriorData[slotData.itemId].InteriorName_String;

@@ -7,9 +7,8 @@ public class PurchaseUnitView : TradeUnitViewBase
     PurchaseStrategy strategy;
     SellUnitView sellUnitView;
 
-    protected override void Awake()
+    private void Start()
     {
-        base.Awake();
         strategy = GetComponent<PurchaseStrategy>();
         sellUnitView = GetComponent<SellUnitView>();
         //Debug.Log(this.name);

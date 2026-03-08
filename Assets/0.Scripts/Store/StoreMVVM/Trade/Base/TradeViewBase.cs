@@ -24,6 +24,7 @@ public class TradeViewBase : MonoBehaviour
         viewModel.PropertyChanged += OnViewModelPropChanged;
 
     }
+
     private void OnEnable()
     {
         if(viewModel != null) 

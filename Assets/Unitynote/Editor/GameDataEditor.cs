@@ -28,17 +28,25 @@ public class GameDataEditor : EditorWindow
             return;
         }
 
-        var PlayerData = player.PlayerData;
-
-        if (PlayerData == null) return;
-
-        PlayerData.SetHunger(EditorGUILayout.Slider("Hunger", PlayerData.Hunger, 0, 100));
-        PlayerData.SetStamina(EditorGUILayout.Slider("Stamina", PlayerData.Stamina, 0, 100));
-        PlayerData.SetDoongDoongStat(EditorGUILayout.IntField("DoongDoongStat", PlayerData.DoongDoongStat));
-        PlayerData.SetMoveSpeed(EditorGUILayout.FloatField("Move Speed", PlayerData.MoveSpeed));
-        PlayerData.SetFishingSpeed(EditorGUILayout.FloatField("Fishing Speed", PlayerData.FishingSpeed));
+        var data = player.PlayerDataOld;
 
 
+        EditorGUI.BeginChangeCheck();
+
+        float hunger = EditorGUILayout.Slider("Hunger", data.Hunger, 0, data.MaxHunger);
+        float stamina = EditorGUILayout.Slider("Stamina", data.Stamina, 0, data.MaxStamina);
+        int doong = EditorGUILayout.IntField("DoongDoongStat", data.DoongDoongStat);
+        float move = EditorGUILayout.FloatField("Move Speed", data.MoveSpeed);
+        float fish = EditorGUILayout.FloatField("Fishing Speed", data.FishingSpeed);
+        data.SetHunger(hunger);
+        data.SetStamina(stamina);
+        data.SetDoongDoongStat(doong);
+        data.SetMoveSpeed(move);
+        data.SetFishingSpeed(fish);
+        if (EditorGUI.EndChangeCheck())
+        {
+            player.PlayerDataOld = data;
+        }
     }
 
 }

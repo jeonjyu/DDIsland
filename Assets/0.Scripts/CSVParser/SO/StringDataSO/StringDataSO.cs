@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections.Generic;
 
 // 언어 타입
@@ -14,7 +14,7 @@ public class StringDataSO : ScriptableObject
     public List<StringData> StringDatas;
     public Dictionary<string, string[]> StringDic = new SerializeDictionary<string, string[]>();
 
-    private void OnValidate()
+    public void Init()
     {
         foreach(var data in StringDatas)
         {
