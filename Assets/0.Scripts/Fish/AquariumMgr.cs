@@ -1,4 +1,3 @@
-using Mono.Cecil;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -62,13 +61,17 @@ public class AquariumMgr : MonoBehaviour
                 _themeDict.Add(res.type, res);
             }
         }
+        InitThemeUI();
         FishMake();
+
 
     }
     private void Start()
     {
         StartCoroutine(LateStart());
         AquariumBounds();
+
+
     }
     private void Update()
     {
@@ -82,7 +85,6 @@ public class AquariumMgr : MonoBehaviour
     {
         yield return null;
 
-
         StartCoroutine(RepeatSpawnFish());
     }
     public void AquariumBounds()
@@ -93,6 +95,25 @@ public class AquariumMgr : MonoBehaviour
 
         // 물고기가 화면 밖으로 완전히 나가는 지점 갱신
         ScreenLimit = (Screen.width / 2f) + fishWidth + _spawnPadding;
+    }
+    #region 호수,바다 관련
+    private void InitThemeUI()
+    {
+        if (_themeDict.TryGetValue(_currentType, out ThemeResource res))
+        {
+            if (_backgroundImage != null) _backgroundImage.sprite = res.background;
+            if (_themeButtonText != null) _themeButtonText.text = res.buttonText;
+
+            // 인덱스 동기화 (Toggle 기능을 위해)
+            for (int i = 0; i < _themes.Length; i++)
+            {
+                if (_themes[i].type == _currentType)
+                {
+                    _currentThemeIndex = i;
+                    break;
+                }
+            }
+        }
     }
 
     public void ToggleTheme()
@@ -121,7 +142,9 @@ public class AquariumMgr : MonoBehaviour
 
         StartCoroutine(RepeatSpawnFish());
     }
+    #endregion
 
+    #region 물고기 소환 관련
     private void FishMake()
     {
         for (int i = 0; i < _maxFishCount; i++)
@@ -256,8 +279,7 @@ public class AquariumMgr : MonoBehaviour
             }
         }
     }
-
-
+    #endregion
 
 
     // 물고기 숨기기 

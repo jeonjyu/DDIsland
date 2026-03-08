@@ -1,5 +1,4 @@
 using System.Collections;
-using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.UI;
 /// <summary>
@@ -119,6 +118,7 @@ public class BackGroundFish : MonoBehaviour
     }
 
 
+    #region 물고기 군집 관련
     // 업데이트에서 하면 안되는거 같아서 코루틴으로 주변 물고기 찾는거 구현
     IEnumerator FindNeighborFish()
     {
@@ -133,7 +133,6 @@ public class BackGroundFish : MonoBehaviour
             yield return new WaitForSeconds(0.2f);
         }
     }
-
     private void Boids()
     {
         Vector2 boundForce = Vector2.zero; // 경계에서 멀어질 때 중앙으로 돌아오게 하는 힘을 저장
@@ -222,6 +221,8 @@ public class BackGroundFish : MonoBehaviour
             _targetVelocity = desiredVelocity.normalized * _speed;
         }
     }
+    #endregion
+
     private void OnEnable()
     {
         if (_manager != null)
