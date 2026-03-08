@@ -12,11 +12,13 @@ public class UI_InGame_TopBar : MonoBehaviour
 
     private void OnEnable()
     {
-        GameManager.Instance.OnGoldChanged += ShowGoldToText;
+        if(GameManager.Instance != null)
+            GameManager.Instance.OnGoldChanged += ShowGoldToText;
     }
 
     private void OnDisable()
     {
-        GameManager.Instance.OnGoldChanged -= ShowGoldToText;
+        if (GameManager.Instance != null)
+            GameManager.Instance.OnGoldChanged -= ShowGoldToText;
     }
 }

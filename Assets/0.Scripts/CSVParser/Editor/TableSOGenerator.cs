@@ -110,7 +110,7 @@ public class TableSOGenerator
         // '\r'와 '\n'를 기준으로 분리
         // System.StringSplitOptions.RemoveEmptyEntries → 분리 결과중 빈 문자열은 결과 배열에 포함하지 않는다.
         // string[] lines = csvFile.text.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);        // 기존의 방식, 셀 내의 줄바꿈도 잘라버려서 이상하게 분리됨
-        string[] lines = Regex.Split(csvFile.text, @"\r\n|\n(?=(?:[^""]*""[^""]*"")*[^""]*$)");                     // 큰따옴표 내의 줄바꿈은 무시
+        string[] lines = Regex.Split(csvFile.text, @"\r?\n(?=(?:[^""]*""[^""]*"")*[^""]*$)");                     // 큰따옴표 내의 줄바꿈은 무시
 
         // 데이터 타입이 적힌 행보다 lines의 길이가 작거나 같으면 데이터가 없는 것
         if (lines.Length <= DataTypeRow)
@@ -448,7 +448,7 @@ public class TableSOGenerator
         sb.AppendLine($"    public List<{dataClassName}> StringDatas;");
         sb.AppendLine($"    public Dictionary<string, string[]> StringDic = new SerializeDictionary<string, string[]>();");
         sb.AppendLine();
-        sb.AppendLine("    private void OnValidate()");
+        sb.AppendLine("    public void Init()");
         sb.AppendLine("    {");
         sb.AppendLine("        foreach(var data in StringDatas)");
         sb.AppendLine("        {");
