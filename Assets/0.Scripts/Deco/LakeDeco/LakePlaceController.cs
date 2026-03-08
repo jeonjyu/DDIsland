@@ -17,7 +17,7 @@ public class LakePlaceController : MonoBehaviour
     public Button btnRecall;  // 회수            
     public Button btnMove;    // 이동            
     public Button btnCancel;  // 취소
-    [Header("프리뷰 설정")]
+    [Header("미리보기 오브젝트 클릭시 띄우는 높이")]
     public float previewOffsetY = 30f; // 미리보기 띄우는 높이
 
     bool isPlacing = false; // 지금 배치 모드인지
@@ -362,7 +362,7 @@ public class LakePlaceController : MonoBehaviour
     }
 
 
-    // 더미 데이터
+    // 더미 데이터 // 배치할 템의 타일 크기 먹는 수 // TODO: 이것도 데이터쪽에 빼기 
     Vector2Int GetItemSize(int itemId)
     {
         switch (itemId)
@@ -373,10 +373,10 @@ public class LakePlaceController : MonoBehaviour
             case 1004: return new Vector2Int(2, 1);
             case 1005: return new Vector2Int(2, 1);
             case 1006: return new Vector2Int(2, 1);
-            case 1007: return new Vector2Int(4, 2);
+            case 1007: return new Vector2Int(3, 1);
             case 1008: return new Vector2Int(1, 1);
             case 1009: return new Vector2Int(1, 1);
-            case 1010: return new Vector2Int(2, 1);
+            case 1010: return new Vector2Int(3, 1);
 
             default: return new Vector2Int(1, 1);
         }

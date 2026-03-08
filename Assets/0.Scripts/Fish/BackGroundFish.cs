@@ -1,4 +1,5 @@
 using System.Collections;
+using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.UI;
 /// <summary>
@@ -23,14 +24,16 @@ public class BackGroundFish : MonoBehaviour
     public int _floackID; // 물고기 군집 구분용 ID
 
     [Header("수조 경계 제한")]
-    private float _highLimit;
-    private float _screenLimit;
+    [Range(0,1)]
+    [SerializeField] float _upperFishLimited;
+    [Range(0, 1)]
+    [SerializeField] float _lowerFishLimited;
 
     [Header("물고기 시각화 관련")]
     private Image _fishImage;
     private Vector2 _moveDir;
     public bool _isGoingRight = true; // true면 우행, false면 좌행
-    public float _fishScale = 0.5f;
+    public float _fishScale = 0.3f;
 
     public AquariumMgr Manager
     {
@@ -63,14 +66,26 @@ public class BackGroundFish : MonoBehaviour
         //Atan2 방식에서 벡터 방식으로 변경
         if (_velocity.sqrMagnitude > 0.01f)
         {
-            float xHoldScale = (_velocity.x < 0) ? -_fishScale : _fishScale;
-            _rectTransform.localScale = new Vector3(xHoldScale, _fishScale, 1);
+            float targetX = _targetVelocity.x;
+            float xDirection = (_targetVelocity.x < 0) ? -1f : 1f;
+
+            _rectTransform.localScale = new Vector3(xDirection * _fishScale, _fishScale, 1f);
 
             Vector2 moveDir = _velocity.normalized;
 
-            Vector2 lookTarget = (xHoldScale < 0) ? -moveDir : moveDir;
+            //Vector2 targetRight = _velocity.normalized;
+            Vector2 targetRight = (xDirection < 0) ? -moveDir : moveDir;
 
-            _rectTransform.right = Vector2.Lerp(_rectTransform.right, lookTarget, dt * _rotationSpeed);
+            Quaternion fullRotation = Quaternion.FromToRotation(Vector3.right, (Vector3)targetRight);
+
+            float safeZ = fullRotation.eulerAngles.z;
+
+            Quaternion targetRotation = Quaternion.Euler(0, 0, safeZ);
+
+            _rectTransform.localRotation = Quaternion.Lerp(
+                _rectTransform.localRotation,
+                targetRotation,
+                dt * _rotationSpeed);
         }
 
         if (_isGoingRight && _rectTransform.anchoredPosition.x > Manager.ScreenLimit)
@@ -90,8 +105,11 @@ public class BackGroundFish : MonoBehaviour
 
         if (data != null)
         {
+
             _fishImage.sprite = data.FishImgPath_Sprite;
             _fishImage.SetNativeSize();
+
+            _rectTransform.sizeDelta *= _fishScale;
         }
 
         _moveDir = _isGoingRight ? Vector2.right : Vector2.left;
@@ -110,12 +128,13 @@ public class BackGroundFish : MonoBehaviour
         {
             if (_manager != null)
             {
-                Bodis();
+                Boids();
             }
             yield return new WaitForSeconds(0.2f);
         }
     }
-    private void Bodis()
+
+    private void Boids()
     {
         Vector2 boundForce = Vector2.zero; // 경계에서 멀어질 때 중앙으로 돌아오게 하는 힘을 저장
         Vector2 separationForce = Vector2.zero; // 멀어지는 힘을 저장
@@ -126,16 +145,23 @@ public class BackGroundFish : MonoBehaviour
         Vector2 desiredVelocity = Vector2.zero;
         int neighborCount = 0;
 
+        float currentY = _rectTransform.anchoredPosition.y;
+
         float sqrNeighborDist = Mathf.Pow(_neighborDistance,2); //연산 최적화를 위해 제곱값 사용
         float sqrSeparationDist = Mathf.Pow(_separationDistance, 2); //연산 최적화를 위해 제곱값 사용
 
         float yRatio = Mathf.Abs(_rectTransform.anchoredPosition.y) / Manager.HighLimit;
 
         // 인스펙터에 노출시켜 직접 제어할 수 있게 해두기
-        if (yRatio > 0.8f)
+        if (currentY > 0 && yRatio > _upperFishLimited) // 위쪽 경계 감지
         {
-            float forceStrength = (yRatio - 0.8f) * 2.0f;
-            boundForce = (_rectTransform.anchoredPosition.y > 0) ? Vector2.down * forceStrength : Vector2.up * forceStrength;
+            float forceStrength = (yRatio - _upperFishLimited) * 5.0f;
+            boundForce = Vector2.down * forceStrength;
+        }
+        else if (currentY < 0 && yRatio > _lowerFishLimited) // 아래쪽 경계 감지
+        {
+            float forceStrength = (yRatio - _lowerFishLimited) * 5.0f; 
+            boundForce = Vector2.up * forceStrength;
         }
 
         foreach (var other in _manager._activeFish)
@@ -188,7 +214,6 @@ public class BackGroundFish : MonoBehaviour
         // 만약 주변에 아무도 없을수 도 있으니까...
         else
         {
-            // [수정 부분] recoveryDir를 desiredVelocity에 할당
             desiredVelocity = (_moveDir + (boundForce * 1.5f));
         }
 

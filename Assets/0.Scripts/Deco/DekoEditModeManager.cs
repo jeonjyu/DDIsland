@@ -367,6 +367,9 @@ public class DecoEditModeManager : MonoBehaviour
             if (gridManager != null)
                 gridManager.HideGrid();
 
+            if (lakeBackground != null) // 호수 숨기기
+                lakeBackground.gameObject.SetActive(false);
+
             // TODO: 섬 전용 로직, 섬 3d그리드 켜기 
             // 3D 그리드 편집모드 진입
             if (PlacementMgr.Instance != null)
@@ -457,9 +460,11 @@ public class DecoEditModeManager : MonoBehaviour
         // 섬 전용 편집모드 퇴장
         if (currentMode == DecoMode.Island)
         {
-            if (gridPanel != null) // 섬 편집 모드 나갈때, 호수 2d그리드 복구 
+            if (gridPanel != null) // 호수 2d그리드 복구 
                 gridPanel.gameObject.SetActive(true);
-          
+            if (lakeBackground != null) // 호수 다시 보이기
+                lakeBackground.gameObject.SetActive(true);
+
             // TODO: 섬 보이는거 비활성화 
             if (PlacementMgr.Instance != null)
             {
@@ -525,7 +530,6 @@ public class DecoEditModeManager : MonoBehaviour
     }
 
     #region 상단 버튼 기능
-
     void OnSave() // 저장
     {
         // TODO: 파베에 저장
@@ -539,9 +543,11 @@ public class DecoEditModeManager : MonoBehaviour
         }
         else if (currentMode == DecoMode.Island)
         {
-            // PlacementMgr.Instance?.OnClickConfirmSession();
-            if (buildingMgr != null)
-                buildingMgr.ConfirmAll();
+            PlacementMgr.Instance?.OnClickConfirmSession(); // 모든 변경사항 확정 후 저장
+          
+            //if (buildingMgr != null)
+            //    buildingMgr.ConfirmAll();
+
             if (itemListManager != null)
                 itemListManager.SaveSnapshot(); 
             isChanged = false;
@@ -550,7 +556,7 @@ public class DecoEditModeManager : MonoBehaviour
     void OnReset() // 초기화, 저장한 상태로 불러오기
     {
         // TODO:  (파베 연결 후에 나중에 구현)
-        if (currentMode == DecoMode.Lake)
+        if (currentMode == DecoMode.Lake) // 호수 모드
         {
             // 인벤을 마지막 저장 시점으로 복구
             if (itemListManager != null)
@@ -560,19 +566,21 @@ public class DecoEditModeManager : MonoBehaviour
                 gridManager.LoadSnapshot();
             isChanged = false;
         }
-        else if (currentMode == DecoMode.Island)
+        else if (currentMode == DecoMode.Island) // 섬모드 
         {
-            // PlacementMgr.Instance?.OnClickAllDelete();
-            if (buildingMgr != null)
-            {
-                buildingMgr.RevertAll();          // 되돌리기
-                buildingMgr.CancelCurrentAction(); // 들고있는 거 취소
-            }
+            PlacementMgr.Instance?.OnClickCancelSession(); // 모든 변경사항 취소
+           
+            //if (buildingMgr != null)
+            //{
+            //    buildingMgr.RevertAll();          // 되돌리기
+            //    buildingMgr.CancelCurrentAction(); // 들고있는 거 취소
+            //}
+            isChanged = false; 
         }
     } 
     void OnRecallAll()  // 전체회수 : 배치된 거 전부 인벤으로 회수 
     {
-        if (currentMode == DecoMode.Lake)
+        if (currentMode == DecoMode.Lake) // 호수모드 
         {
             // 배치된 모든 오브젝트를 인벤에 복구
             var placedList = gridManager.GetPlacedObjects();
@@ -585,13 +593,15 @@ public class DecoEditModeManager : MonoBehaviour
             gridManager.RecallAll();  // 그리드에서 전부 제거
             isChanged = true;
         }
-        else if (currentMode == DecoMode.Island)
+        else if (currentMode == DecoMode.Island) // 섬모드 
         {
-            //  PlacementMgr.Instance?.OnClickCancelSession();
-            if (buildingMgr != null)
-            {
-                buildingMgr.ClearAll();
-            }
+            PlacementMgr.Instance?.OnClickAllDelete(); // 전체회수 버튼클릭 
+
+            //if (buildingMgr != null)
+            //{
+            //    buildingMgr.ClearAll();
+            //}
+
             // ClearAll이 전부 파괴하니까 인벤도 처음 상태로 복원
             if (itemListManager != null)
             {
@@ -614,6 +624,7 @@ public class DecoEditModeManager : MonoBehaviour
         }
     }
     #endregion
+   
     #region 나가기 팝업
     void ShowExitPopup()
     {
