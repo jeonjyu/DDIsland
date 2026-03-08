@@ -11,8 +11,8 @@ public static class IslandDecoTestData
         // TODO: 나중에 실제 스프라이트 로드
         switch (itemId)
         {
-            case 20023: return Resources.Load<Sprite>("Iron");
-            case 20024: return Resources.Load<Sprite>("Silver");
+            case 20001: return Resources.Load<Sprite>("Iron");
+            case 20002: return Resources.Load<Sprite>("Silver");
             case 20025: return Resources.Load<Sprite>("Gold");
             default: return Resources.Load<Sprite>("Iron");
         }
@@ -21,9 +21,9 @@ public static class IslandDecoTestData
     {
         List<LakeInvenSlot> list = new()
         {
-            new LakeInvenSlot { itemId = 20023, quantity = 3 },
-            new LakeInvenSlot { itemId = 20024, quantity = 2 },
-            new LakeInvenSlot { itemId = 20025, quantity = 1 }
+            new LakeInvenSlot { itemId = 20001, quantity = 1 },
+            new LakeInvenSlot { itemId = 20002, quantity = 2 },
+            new LakeInvenSlot { itemId = 20025, quantity = 3 }
         };
         return list;
     }
