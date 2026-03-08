@@ -6,11 +6,13 @@ using UnityEngine.UI;
 
 public class ItemSlotView : MonoBehaviour, IStoreItemView, IPointerClickHandler
 {
+//field
     ItemSlotViewModel viewModel;
     IStoreItem modelData;
     Image slotImage;
 
-    // 인테리어 타입에 따라 다른 UI 테두리 표시
+
+    // 인테리어 타입에 따라 다른 UI 테두리 표시 >> 기획서에 업데이트 없어 보류된 기능
     [SerializeField] private Image _slotBackground;
     [SerializeField] private TMP_Text _itemPrice;
     [SerializeField] private TMP_Text _itemName;
@@ -19,6 +21,7 @@ public class ItemSlotView : MonoBehaviour, IStoreItemView, IPointerClickHandler
 
     EventTrigger eventTrigger;
 
+// property
     public Image SlotBackground => _slotBackground;
     public TMP_Text ItemPrice => _itemPrice;
     public TMP_Text ItemName => _itemName;
@@ -31,11 +34,6 @@ public class ItemSlotView : MonoBehaviour, IStoreItemView, IPointerClickHandler
     }
     void Start()
     {
-        //Debug.Log("[ItemSlotView] Start");
-        //modelData = viewModel.Model;
-
-
-        viewModel.PropertyChanged += OnViewModelPropChanged;
         Init();
     }
 
@@ -51,6 +49,7 @@ public class ItemSlotView : MonoBehaviour, IStoreItemView, IPointerClickHandler
         //viewModel.PropertyChanged -= OnViewModelPropChanged;
     }
 
+    // 뷰 초기화 및 업데이트 메서드
     public void Init()
     {
         //Debug.Log("[ItemSlotView] Init");
