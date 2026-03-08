@@ -52,7 +52,7 @@ public class StoreManager : Singleton<StoreManager>, INotifyPropertyChanged
             if (tradeModel.ItemCount != value)
             {
                 tradeModel.ItemCount = value;
-                Debug.Log("[StoreManager] | 아이템 개수 변경 " + TradeItemCount);
+                //Debug.Log("[StoreManager] | 아이템 개수 변경 " + TradeItemCount);
 
                 OnTradeModelChanged(nameof(TradeItemCount));
             }
@@ -127,7 +127,7 @@ public class StoreManager : Singleton<StoreManager>, INotifyPropertyChanged
     // TradeUnitViewModelBase에서 구독
     protected virtual void OnTradeModelChanged([CallerMemberName] string propertyName = null)
     {
-        Debug.Log("[StoreManager] | " + propertyName);
+        //Debug.Log("[StoreManager] | " + propertyName);
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }

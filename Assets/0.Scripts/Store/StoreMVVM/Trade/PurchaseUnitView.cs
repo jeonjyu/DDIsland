@@ -24,7 +24,7 @@ public class PurchaseUnitView : TradeUnitViewBase
     public override void SetButton()
     {
         base.SetButton();
-        Debug.Log($"구매 유닛 | 유닛 초기화 | 아이템 개수 : {viewModel.ItemCount} ({viewModel.Model.IsGained}) 거래 개수 : {viewModel.TradeCount}");
+        //Debug.Log($"구매 유닛 | 유닛 초기화 | 아이템 개수 : {viewModel.ItemCount} ({viewModel.Model.IsGained}) 거래 개수 : {viewModel.TradeCount}");
 
 
         // 이미 최대로 보유하고 있으므로 거래 불가능

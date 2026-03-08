@@ -1,6 +1,11 @@
 using UnityEngine;
 using System;
 
+/// <summary>
+/// 상점 아이템 관리를 위해 전반적으로 사용되는 아이템 클래스
+/// 아이템 항목별로 해당 클래스 상속받아서 사용됨
+/// </summary>
+/// <typeparam name="T">아이템 아이디</typeparam>
 public abstract class StoreItem<T> : IStoreItem where T : TableBase<int>
 {
     protected T _data;

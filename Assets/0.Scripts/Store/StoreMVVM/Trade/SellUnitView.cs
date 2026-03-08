@@ -26,7 +26,7 @@ public class SellUnitView : TradeUnitViewBase
     public override void SetButton()
     {
         base.SetButton();
-        Debug.Log($"판매 유닛 | 유닛 초기화 | 아이템 개수 : {viewModel.ItemCount} ({viewModel.Model.IsGained}) 거래 개수 : {viewModel.TradeCount}");
+        //Debug.Log($"판매 유닛 | 유닛 초기화 | 아이템 개수 : {viewModel.ItemCount} ({viewModel.Model.IsGained}) 거래 개수 : {viewModel.TradeCount}");
 
         // 거래 개수가 0일 경우 
         // 보유하지 않은 아이템일 경우 

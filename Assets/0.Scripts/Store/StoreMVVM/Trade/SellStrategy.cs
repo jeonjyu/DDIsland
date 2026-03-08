@@ -4,11 +4,8 @@ public class SellStrategy : MonoBehaviour, ITradeStrategy
 {
     public bool Trade(int tradeCount, int tradePrice)
     {
-        Debug.Log("판매 로직 " + StoreManager.Instance.TradeItemCount + " 획득 여부 " + StoreManager.Instance.TradeModel.IsGained);
         GameManager.Instance.SetGold(tradePrice);
         StoreManager.Instance.ItemCountChanged(-tradeCount);
-
-        Debug.Log("판매 로직 " + StoreManager.Instance.TradeItemCount + " 획득 여부 " + StoreManager.Instance.TradeModel.IsGained);
 
         return true;
     }

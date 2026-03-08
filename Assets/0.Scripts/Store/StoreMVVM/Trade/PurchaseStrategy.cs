@@ -11,7 +11,7 @@ public class PurchaseStrategy : MonoBehaviour, ITradeStrategy
         StoreManager.Instance.ItemCountChanged(tradeCount);
         GameManager.Instance.SetGold(-tradePrice);
 
-        Debug.Log("구매 로직 " + StoreManager.Instance.TradeItemCount);
+        //Debug.Log("구매 로직 " + StoreManager.Instance.TradeItemCount);
         return true;
     }
 
