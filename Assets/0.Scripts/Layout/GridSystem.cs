@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 /// <summary>
 /// 그리드 시스템을 관리하는 클래스
@@ -78,8 +77,6 @@ public class GridSystem : MonoBehaviour
             return false;
         }
        
-        // 음수쪽 경계 처리하기
-        // 양수쪽 확장 처리
         for (int i = minX; i < maxX; i++)
         {
             for (int j = minY; j < maxY; j++)
@@ -90,7 +87,6 @@ public class GridSystem : MonoBehaviour
                 }
             }
         }
-        // 음수쪽 확장 처리
         return true;
     }
     // 그리드에 오브젝트를 배치하는 메서드
