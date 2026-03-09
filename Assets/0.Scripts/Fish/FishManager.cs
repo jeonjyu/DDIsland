@@ -234,7 +234,7 @@ public class FishManager : Singleton<FishManager>
             Price = price
         };
 
-        bool success = StorageManager.Instance.TryAddToStorage(fish);
+        bool success = FishStorageManager.Instance.TryAddToStorage(fish);
         if (!success)
         {
             // 가득함 처리

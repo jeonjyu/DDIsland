@@ -1,0 +1,114 @@
+
+using System.Collections.Generic;
+using UnityEngine;
+
+public struct CookingContext
+{
+    public int ID;
+    public string foodName;
+    public string foodDesc;
+    public int PurchasePrice;
+    public FoodRateType foodrateType;
+    public int MainIngredient;
+    public int SubIngredient;
+    public FoodEffectType foodeffectType;
+    public float HungerBuffRate;
+    public int DoongDoongBuffRate;
+    public Sprite FoodImgPath_Sprite;
+    public GameObject FoodIconPath_GameObject;
+}
+public class CookingManager : Singleton<CookingManager>
+{
+    Dictionary<int, FoodDataSO> _foodById;
+    List<FoodDataSO> _allfood;
+
+    private void Awake()
+    {
+        base.Awake();
+    }
+    private void Start()
+    {
+        _allfood = new List<FoodDataSO>(DataManager.Instance.FoodDatabase.FoodInfoData.datas);
+        _foodById = new Dictionary<int, FoodDataSO>(); 
+        foreach (var food in _allfood)
+        {
+            _foodById[food.ID] = food;
+        }
+
+    }
+
+    public List<FoodDataSO> BuildCookCandidates(CookingContext ctx)  //현재 보유 물고기 검사,레시피 해금 여부검사
+    {
+        var db = DataManager.Instance.FoodDatabase.FoodInfoData;
+        var result = new List<FoodDataSO>();
+        var fish = FishStorageManager.Instance.FishSlotData;
+        foreach (var food in db.datas)
+        {
+            if (food == null) continue;
+            if (!HasFish(food.MainIngredient))
+                continue;
+            if (food.SubIngredient != 0 && !HasFish(food.SubIngredient))
+                continue;
+            //레시피 검사
+            result.Add(food);
+        }
+        return result;
+    }
+    public bool HasFish(int fishId)
+    {
+        var fish = FishStorageManager.Instance.FishSlotData;
+        foreach (var slot in fish)
+        {
+            if (!slot.HasValue) continue;
+            if (slot.Value.FishId == fishId) return true;
+            if (slot.Value.FishId == fishId)
+                return true;
+        }
+
+        return false;
+    }
+    public FoodDataSO PickRecipe(List<FoodDataSO> rating, CookingContext ctx)  //등급정렬, 동일등급랜덤
+    {
+        if (rating == null || rating.Count == 0) return null;
+        List<FoodDataSO> result = new List<FoodDataSO>();
+        FoodRateType maxRate = FoodRateType.None; 
+        for (int i = 0; i < rating.Count; i++)
+        {
+            if (maxRate < rating[i].foodrateType)
+            {
+                maxRate = rating[i].foodrateType;
+            }
+        }
+        foreach (var item in rating)
+        {
+            if (maxRate == item.foodrateType)
+            {
+                result.Add(item);
+            }
+        }
+        var randomFood = result[UnityEngine.Random.Range(0, result.Count)];
+        return randomFood;
+    }
+    public void Cook(FoodDataSO food) //요리보관함에 보관
+    {
+        FishStorageManager.Instance.TryRemoveFishById(food.MainIngredient);
+        if (food.SubIngredient != 0) FishStorageManager.Instance.TryRemoveFishById(food.SubIngredient);
+        //음식생성
+        FoodToStorage(food);
+
+    }
+
+    public void FoodToStorage(FoodDataSO myFood)
+    {
+        FoodInstance food = new FoodInstance
+        {
+            FoodId = myFood.ID,
+        };
+        Debug.Log($"Name: {myFood.FoodName_String}");
+        bool success = FoodStorageManager.Instance.TryAddToFoodStorage(food);
+        if (!success)
+        {
+            // 가득함 처리
+        }
+    }
+}

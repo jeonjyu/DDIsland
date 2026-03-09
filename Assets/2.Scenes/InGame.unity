@@ -3889,26 +3889,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1744364720}
-  - component: {fileID: 1744364719}
+  - component: {fileID: 1744364721}
   m_Layer: 0
-  m_Name: StorageManager
+  m_Name: FishStorageManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1744364719
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1744364718}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 19a537fed05a3d348ac61cdab868bf72, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::StorageManager
 --- !u!4 &1744364720
 Transform:
   m_ObjectHideFlags: 0
@@ -3924,6 +3912,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1744364721
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1744364718}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5c6d21ea9a2cec4796121780e02d979, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FishStorageManager
 --- !u!1001 &1800068101
 PrefabInstance:
   m_ObjectHideFlags: 0

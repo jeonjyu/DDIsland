@@ -66,9 +66,9 @@ public class UI_Storage : MonoBehaviour
 
     private void OnEnable()
     {
-        if (StorageManager.Instance != null)
+        if (FishStorageManager.Instance != null)
         {
-            StorageManager.Instance.OnSlotChanged += UpdateSlot; // Storage 데이터가 바뀔 때마다 UI를 갱신하기 위해 이벤트 구독
+            FishStorageManager.Instance.OnSlotChanged += UpdateSlot; // Storage 데이터가 바뀔 때마다 UI를 갱신하기 위해 이벤트 구독
             RefreshAll();
             RefreshUpgradeUI();
         }
@@ -76,9 +76,9 @@ public class UI_Storage : MonoBehaviour
 
     private void OnDisable()
     {
-        if (StorageManager.Instance != null)
+        if (FishStorageManager.Instance != null)
         {
-            StorageManager.Instance.OnSlotChanged -= UpdateSlot;
+            FishStorageManager.Instance.OnSlotChanged -= UpdateSlot;
         }
     }
 
@@ -100,9 +100,9 @@ public class UI_Storage : MonoBehaviour
         _viewIndices.Clear();
 
         // 1 실제 데이터 슬롯 중 값 있는 슬롯만 모음
-        for (int real = 0; real < StorageManager.Instance.Capacity; real++)
+        for (int real = 0; real < FishStorageManager.Instance.Capacity; real++)
         {
-            var slot = StorageManager.Instance.GetSlot(real);
+            var slot = FishStorageManager.Instance.GetSlot(real);
             if (slot.HasValue)
                 _viewIndices.Add(real);
         }
@@ -123,7 +123,7 @@ public class UI_Storage : MonoBehaviour
                    child.gameObject.SetActive(true);
                 }
                 _fishSlots[ui].BindRealIndex(realIndex); // 이 UI real 슬롯 저장
-                _fishSlots[ui].Refresh(StorageManager.Instance.GetSlot(realIndex));  // 실제 슬롯 데이터를 UI에 반영
+                _fishSlots[ui].Refresh(FishStorageManager.Instance.GetSlot(realIndex));  // 실제 슬롯 데이터를 UI에 반영
             }
             else
             {
@@ -144,8 +144,8 @@ public class UI_Storage : MonoBehaviour
 
     public int CompareByCurrentSort(int a, int b)    // 현재 SortMode에 따른 비교 함수, a,b는 realIndex임!
     {
-        var sa = StorageManager.Instance.GetSlot(a);
-        var sb = StorageManager.Instance.GetSlot(b);
+        var sa = FishStorageManager.Instance.GetSlot(a);
+        var sb = FishStorageManager.Instance.GetSlot(b);
 
         if (!sa.HasValue && !sb.HasValue) return 0;
         if (!sa.HasValue) return 1;
@@ -206,7 +206,7 @@ public class UI_Storage : MonoBehaviour
     {
         _selectedRealIndex = realIndex;
 
-        var slot = StorageManager.Instance.GetSlot(realIndex);
+        var slot = FishStorageManager.Instance.GetSlot(realIndex);
         if (!slot.HasValue) return;
 
         var def = DataManager.Instance.FishingDatabase.FishData[slot.Value.FishId];
@@ -237,33 +237,33 @@ public class UI_Storage : MonoBehaviour
     {
         if (_selectedRealIndex < 0) return;
 
-        StorageManager.Instance.TryRemoveAt(_selectedRealIndex);
+        FishStorageManager.Instance.TryRemoveAt(_selectedRealIndex);
         _selectedRealIndex = -1;
     }
     public void UpgradeStorage()
     {
         //이미 최대치면: 버튼/텍스트 최신상태로 갱신 + 안내 메시지 띄우고 끝
-        if (StorageManager.Instance.StorageLevel >= StorageManager.MaxLevel ||
-        StorageManager.Instance.Capacity >= StorageManager.MaxCapacity)
+        if (FishStorageManager.Instance.StorageLevel >= FishStorageManager.MaxLevel ||
+        FishStorageManager.Instance.Capacity >= FishStorageManager.MaxCapacity)
         {
             RefreshUpgradeUI();
             ShowSystemMessage("최대 확장 완료 상태입니다.");
             return;
         }
-        if (!StorageManager.Instance.PayStorageUpgrade())  //돈체크
+        if (!FishStorageManager.Instance.PayStorageUpgrade())  //돈체크
         {
             ShowSystemMessage("코인이 부족합니다");
             return;
         }
-        StorageManager.Instance.UpgradeStorageindex(); // 실제 데이터(슬롯 배열) 확장
+        FishStorageManager.Instance.UpgradeStorageindex(); // 실제 데이터(슬롯 배열) 확장
         SlotPool();  
         RefreshUpgradeUI();
-        ShowSystemMessage($"창고가 Lv.{StorageManager.Instance.StorageLevel}로 확장되었습니다! (총 {StorageManager.Instance.Capacity}칸)");
+        ShowSystemMessage($"창고가 Lv.{FishStorageManager.Instance.StorageLevel}로 확장되었습니다! (총 {FishStorageManager.Instance.Capacity}칸)");
         RefreshAll();
     }
     private void SlotPool()  //UI 슬롯 풀(프리팹 복제)도 데이터 Capacity 만큼 늘려줌
     {
-        int cap = StorageManager.Instance.Capacity;
+        int cap = FishStorageManager.Instance.Capacity;
 
         // 이미 충분하면 끝
         if (_fishSlots != null && _fishSlots.Length >= cap) return;
@@ -283,15 +283,15 @@ public class UI_Storage : MonoBehaviour
     }
     private void RefreshUpgradeUI()  //업그레이드 UI 텍스트/버튼 상태 갱신
     {
-        var sm = StorageManager.Instance;
+        var sm = FishStorageManager.Instance;
         if (sm == null) return;
 
         if (_storageLevelText != null)
-            _storageLevelText.text = $"Lv.{sm.StorageLevel} / Lv.{StorageManager.MaxLevel}";
+            _storageLevelText.text = $"Lv.{sm.StorageLevel} / Lv.{FishStorageManager.MaxLevel}";
 
         bool isMax = false;     //최대치인지 판단
 
-        if (sm.StorageLevel >= StorageManager.MaxLevel || sm.Capacity >= StorageManager.MaxCapacity)
+        if (sm.StorageLevel >= FishStorageManager.MaxLevel || sm.Capacity >= FishStorageManager.MaxCapacity)
         {
             isMax = true;
         }
