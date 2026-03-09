@@ -2451,6 +2451,9 @@ MonoBehaviour:
   _viewCamera: {fileID: 1470008535}
   _editCamera: {fileID: 171470127}
   _buildingManager: {fileID: 2124093049}
+  _zoomSpeed: 10
+  _minFOV: 20
+  _maxFOV: 70
 --- !u!4 &1208405311
 Transform:
   m_ObjectHideFlags: 0
@@ -3406,7 +3409,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1685603068
 Transform:
   m_ObjectHideFlags: 0
@@ -4164,6 +4167,10 @@ PrefabInstance:
       propertyPath: playerCharacter
       value: 
       objectReference: {fileID: 673764087}
+    - target: {fileID: 1327585438889165734, guid: 16a0de7974b112843b54dfee1aa8e727, type: 3}
+      propertyPath: transparencyPanel
+      value: 
+      objectReference: {fileID: 7754265316619247557}
     - target: {fileID: 1669974020035761650, guid: 16a0de7974b112843b54dfee1aa8e727, type: 3}
       propertyPath: m_Color.a
       value: 0
@@ -4260,6 +4267,10 @@ PrefabInstance:
       propertyPath: aquariumMgr
       value: 
       objectReference: {fileID: 109933960}
+    - target: {fileID: 3409128207071668798, guid: 16a0de7974b112843b54dfee1aa8e727, type: 3}
+      propertyPath: m_Name
+      value: TransparencyPanel
+      objectReference: {fileID: 0}
     - target: {fileID: 5055165865618238471, guid: 16a0de7974b112843b54dfee1aa8e727, type: 3}
       propertyPath: m_RaycastTarget
       value: 0
@@ -4335,6 +4346,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 2299492582696093177, guid: 16a0de7974b112843b54dfee1aa8e727, type: 3}
   m_PrefabInstance: {fileID: 7754265316619247553}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &7754265316619247557 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8822445134856315353, guid: 16a0de7974b112843b54dfee1aa8e727, type: 3}
+  m_PrefabInstance: {fileID: 7754265316619247553}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
 --- !u!33 &8103577943589253557
 MeshFilter:
   m_ObjectHideFlags: 0
