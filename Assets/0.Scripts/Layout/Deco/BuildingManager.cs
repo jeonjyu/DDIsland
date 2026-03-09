@@ -82,6 +82,23 @@ public class BuildingManager : MonoBehaviour
 
         target.ItemState = ItemState.Preview;
     }
+
+    public void CompletePlacement(Placeable3D target)
+    {
+        if (target == null) return;
+
+        if (!_activeBuildings.Contains(target))
+        {
+            _activeBuildings.Add(target);
+        }
+
+        if (_activePlaceable == target)
+        {
+            _activePlaceable = null;
+        }
+    }
+
+
     // 오브젝트(건물) 제거
     public void DeleteBuilding(Placeable3D target)
     {
