@@ -18,7 +18,7 @@ using System.Collections.Generic;
 //    public int UpgradGroupID;
 //}
 
-    public enum Point
+public enum Point
 {
     Fish,Store,Kitchen,Rest,Acorn
 }
@@ -50,6 +50,7 @@ public class PlayerController : MonoBehaviour
     public CharacterDataSO PlayerDataSO;
     //public PlayerContext playerData;  //일단은 남겨둠 혹시모르니까
     public PlayerData PlayerDataOld; //업그레이드매니저를위한거
+    private FoodDataSO PendingFood;
 
     Point _currentPoint = Point.Fish;  //플레이어 목적지
     [SerializeField] private Transform _fishPoint;  //각 지점 위치
@@ -99,7 +100,6 @@ public class PlayerController : MonoBehaviour
     public Transform AcornPoint => _acornPoint;
     public int FishingCount => _fishingCount;
 
-
     private void Awake()
     {
         _animator = GetComponent<Animator>();
@@ -117,6 +117,8 @@ public class PlayerController : MonoBehaviour
         ApplyPlayerStats(PlayerDataSO);
         _baseMoveSpeed = PlayerDataOld.MoveSpeed;
         _fishingRod.gameObject.SetActive(false);
+
+        RefreshCanCook();
     }
     private void Update()
     {
@@ -136,6 +138,23 @@ public class PlayerController : MonoBehaviour
     private void FixedUpdate()
     {
         _currentState?.FixedExecute();
+    }
+    private void OnEnable()
+    {
+        if (FishStorageManager.Instance != null)
+            FishStorageManager.Instance.OnSlotChanged += OnFishStorageChanged;
+
+        if (FoodStorageManager.Instance != null)
+            FoodStorageManager.Instance.OnSlotChanged += OnFoodStorageChanged;
+    }
+
+    private void OnDisable()
+    {
+        if (FishStorageManager.Instance != null)
+            FishStorageManager.Instance.OnSlotChanged -= OnFishStorageChanged;
+
+        if (FoodStorageManager.Instance != null)
+            FoodStorageManager.Instance.OnSlotChanged -= OnFoodStorageChanged;
     }
 
     public void ApplyPlayerStats(CharacterDataSO SO)
@@ -200,7 +219,6 @@ public class PlayerController : MonoBehaviour
         }
         var acorn = _acorns[_acornIndex];
 
-        //playerData.Hunger += 10;
         PlayerDataOld.SetHunger(PlayerDataOld.Hunger + 10);
         Destroy(acorn);
         _acorns.RemoveAt(_acornIndex);
@@ -220,6 +238,7 @@ public class PlayerController : MonoBehaviour
 
     public void TryCooking()
     {
+        RefreshCanCook();
         if (!_canCook) return;
         if (_isCooking) return;
         if (PlayerDataOld.Stamina < 10)
@@ -227,25 +246,73 @@ public class PlayerController : MonoBehaviour
             _canCook = false;
             return;
         }
+
+        var candidates = CookingManager.Instance.BuildCookCandidates(new CookingContext());
+        var pickedFood = CookingManager.Instance.PickRecipe(candidates, new CookingContext());
+        if (pickedFood == null)
+        {
+            _canCook = false;
+            return;
+        }
+        PendingFood = pickedFood;
         _isCooking = true;
-        //playerData.Stamina -= 10;
         PlayerDataOld.SetStamina(PlayerDataOld.Stamina - 10);
         _animator.SetBool("isCook", true);
+         CookingManager.Instance.FoodIngredientsRemove(pickedFood);
     }
     public void AnimEvent_CookingEnd()  //이함수를 Cook_FryingPan_Mix@loop 애니의 끝부분에 넣기
     {
-        //요리 결과 보관
-        //레시피대로 재료 소비
-        //재료 남았나 체크해서 _canCook 갱신
+        if (PendingFood != null)
+        {
+            CookingManager.Instance.CreateCookedFood(PendingFood);
+            PendingFood = null;
+        }
+
         _isCooking = false;
         _animator.SetBool("isCook", false);
+        RefreshCanCook();
         if (_canCook && _currentState is CookState)
         {
             TryCooking();
             return;
         }
          SetState(new IdleState(this));  //재료없으면
-    }  
+    }
+    public void RefreshCanCook()  //요리 조건 확인
+    {
+        var candidates = CookingManager.Instance.BuildCookCandidates(new CookingContext());
+
+        if (candidates == null || candidates.Count == 0)
+        {
+            Debug.Log("요리 가능한 음식 없음");
+            _canCook = false;
+            return;
+        }
+        var pickedFood = CookingManager.Instance.PickRecipe(candidates, new CookingContext());
+        if (pickedFood == null)
+        {
+            Debug.Log("레시피 선택 실패");
+            _canCook = false;
+            return;
+        }
+
+        if (!FoodStorageManager.Instance.HasSpaceForFood(pickedFood.ID))
+        {
+            Debug.Log("요리 보관함이 가득 참");
+            _canCook = false;
+            return;
+        }
+        _canCook = true;
+    }
+    private void OnFishStorageChanged(int index)
+    {
+        RefreshCanCook();
+    }
+
+    private void OnFoodStorageChanged(int index)
+    {
+        RefreshCanCook();
+    }
     public void ExhaustionMovement()  //피로도에 따른 이동속도 감소 및 애니메이션 변화
     {
         //로그창 폭발로 주석처리

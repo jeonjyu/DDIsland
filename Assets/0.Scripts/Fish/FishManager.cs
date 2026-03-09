@@ -159,7 +159,8 @@ public class FishManager : Singleton<FishManager>
         ctx.IsAfternoon = _environment.CurrentDay == DayilyCycle.Sunset;
         ctx.IsNight = _environment.CurrentDay == DayilyCycle.Night;
         //날씨, 골드도 필요함 일단테스트
-        ctx.GoldAmount = GameManager.Instance.PlayerGold;
+        //ctx.GoldAmount = GameManager.Instance.PlayerGold;
+        ctx.GoldAmount = 50000;
         ctx.IsCherryblossom = true;
         return ctx;
     }

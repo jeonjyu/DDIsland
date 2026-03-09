@@ -163,5 +163,16 @@ public class FoodStorageManager : Singleton<FoodStorageManager>
             return true;
         }
         return false;
+    }  
+    public bool HasSpaceForFood(int foodId)  //보관함 공간 확인
+    {
+        if (foodSlots == null || foodSlots.Length == 0) return false;
+        for (int i = 0; i < foodSlots.Length; i++)
+        {
+            if (!foodSlots[i].HasValue) return true;
+
+            if (foodSlots[i].Value.FoodId == foodId) return true;
+        }
+        return false;
     }
 }

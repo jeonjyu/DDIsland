@@ -21,7 +21,6 @@ public class CookingManager : Singleton<CookingManager>
 {
     Dictionary<int, FoodDataSO> _foodById;
     List<FoodDataSO> _allfood;
-
     private void Awake()
     {
         base.Awake();
@@ -41,7 +40,6 @@ public class CookingManager : Singleton<CookingManager>
     {
         var db = DataManager.Instance.FoodDatabase.FoodInfoData;
         var result = new List<FoodDataSO>();
-        var fish = FishStorageManager.Instance.FishSlotData;
         foreach (var food in db.datas)
         {
             if (food == null) continue;
@@ -61,8 +59,6 @@ public class CookingManager : Singleton<CookingManager>
         {
             if (!slot.HasValue) continue;
             if (slot.Value.FishId == fishId) return true;
-            if (slot.Value.FishId == fishId)
-                return true;
         }
 
         return false;
@@ -71,7 +67,8 @@ public class CookingManager : Singleton<CookingManager>
     {
         if (rating == null || rating.Count == 0) return null;
         List<FoodDataSO> result = new List<FoodDataSO>();
-        FoodRateType maxRate = FoodRateType.None; 
+        FoodRateType maxRate = FoodRateType.None;
+        var fish = FishStorageManager.Instance.FishSlotData;
         for (int i = 0; i < rating.Count; i++)
         {
             if (maxRate < rating[i].foodrateType)
@@ -79,6 +76,7 @@ public class CookingManager : Singleton<CookingManager>
                 maxRate = rating[i].foodrateType;
             }
         }
+        
         foreach (var item in rating)
         {
             if (maxRate == item.foodrateType)
@@ -86,18 +84,30 @@ public class CookingManager : Singleton<CookingManager>
                 result.Add(item);
             }
         }
-        var randomFood = result[UnityEngine.Random.Range(0, result.Count)];
-        return randomFood;
+        if (maxRate == FoodRateType.Normal)  //일반등급이면 기본회보다 일반레시피우선 
+        {
+            List<FoodDataSO> normalRecipe = new List<FoodDataSO>();
+
+            for (int i = 0;i < result.Count;i++)
+            {
+                if (result[i].ID != 50001) normalRecipe.Add(result[i]);  //기본회 무시
+            }
+
+            if (normalRecipe.Count > 0) return normalRecipe[UnityEngine.Random.Range(0, normalRecipe.Count)];
+
+        }
+        return result[UnityEngine.Random.Range(0, result.Count)]; 
     }
-    public void Cook(FoodDataSO food) //요리보관함에 보관
+    public void CreateCookedFood(FoodDataSO food) //요리보관함에 보관
+    {
+        //음식생성
+        FoodToStorage(food);
+    }
+    public void FoodIngredientsRemove(FoodDataSO food)  //재료차감
     {
         FishStorageManager.Instance.TryRemoveFishById(food.MainIngredient);
         if (food.SubIngredient != 0) FishStorageManager.Instance.TryRemoveFishById(food.SubIngredient);
-        //음식생성
-        FoodToStorage(food);
-
     }
-
     public void FoodToStorage(FoodDataSO myFood)
     {
         FoodInstance food = new FoodInstance

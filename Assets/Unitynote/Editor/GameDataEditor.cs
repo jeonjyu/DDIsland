@@ -32,7 +32,6 @@ public class GameDataEditor : EditorWindow
 
 
         EditorGUI.BeginChangeCheck();
-
         float hunger = EditorGUILayout.Slider("Hunger", data.Hunger, 0, data.MaxHunger);
         float stamina = EditorGUILayout.Slider("Stamina", data.Stamina, 0, data.MaxStamina);
         int doong = EditorGUILayout.IntField("DoongDoongStat", data.DoongDoongStat);
