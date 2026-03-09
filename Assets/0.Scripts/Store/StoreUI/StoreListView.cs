@@ -9,12 +9,15 @@ public class StoreListView : MonoBehaviour
 {
     [SerializeField] GameObject storeListPanel;
 
-    List<GameObject> stores = new List<GameObject>();
+    List<Button> stores = new List<Button>();
 
     StoreListViewModel viewModel;
 
+    public List<Button> Stores => stores;
 
-    void Start()
+
+
+    void Awake()
     {
         viewModel = GetComponent<StoreListViewModel>();
         viewModel.PropertyChanged += OnStoreListViewModelChanged;
@@ -27,8 +30,8 @@ public class StoreListView : MonoBehaviour
         if (stores != null)
             stores.Clear();
 
-        foreach (Transform child in storeListPanel.transform)
-            stores.Add(child.gameObject);
+        foreach (Button button in storeListPanel.GetComponentsInChildren<Button>())
+            stores.Add(button);
 
         List<string> catList = StoreManager.Instance.GetEnumList<StoreCat>(Enum.GetValues(typeof(StoreCat)));
         foreach (string item in catList)
@@ -40,9 +43,29 @@ public class StoreListView : MonoBehaviour
             // 버튼에 모델을 현재 상점 카테고리로 설정하도록 하는 로직 추가
             stores[idx].GetComponent<Button>().onClick.AddListener(() =>
             {
-                viewModel. UpdateCurrentCat(idx);
+                viewModel.UpdateCurrentCat(idx);
             });
         }
+    }
+    public void SetSelectedCatBtnColor(Button button, bool isSelected)
+    {
+        ColorBlock colorBlock = button.colors;
+
+        if (isSelected)
+        {
+            colorBlock.normalColor = Color.lightGray;
+            colorBlock.selectedColor = Color.lightGray;
+        }
+        else
+        {
+            colorBlock.normalColor = Color.white;
+            colorBlock.selectedColor = Color.white;
+        }
+
+
+        button.colors = colorBlock;
+
+        //Debug.Log(colorBlock.normalColor.GetHashCode());
     }
 
     private void OnStoreListViewModelChanged(object sender, PropertyChangedEventArgs e)

@@ -1,9 +1,6 @@
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using TMPro;
 using UnityEngine;
 
 public class StoreListViewModel : MonoBehaviour, INotifyPropertyChanged
@@ -17,6 +14,8 @@ public class StoreListViewModel : MonoBehaviour, INotifyPropertyChanged
     List<ItemSlotViewModel> storeItemViewModels = new List<ItemSlotViewModel>();
     [SerializeField] FilterDropdown filterDropdown;
     [SerializeField] SortDropdown sortDropdown;
+    StoreListView view;
+
     public StoreCat CurrentCat
     {
         get => StoreManager.Instance.currentCat;
@@ -52,6 +51,10 @@ public class StoreListViewModel : MonoBehaviour, INotifyPropertyChanged
 
     public event PropertyChangedEventHandler PropertyChanged;
 
+    private void Awake()
+    {
+        view = GetComponent<StoreListView>();
+    }
 
     public void OnEnable()
     {
@@ -65,11 +68,15 @@ public class StoreListViewModel : MonoBehaviour, INotifyPropertyChanged
 
         //Debug.Log("[ItemListViewModel] UpdateCurrentCat");
 
+        view.SetSelectedCatBtnColor(view.Stores[(int)CurrentCat], false);
+
         // 현재 카테고리 변경
         CurrentCat = (StoreCat)catIdx;
 
         // 카탈로그 변경
         ItemManager.Instance.SetCurrentCategory(CurrentCat);
+
+        view.SetSelectedCatBtnColor(view.Stores[(int)CurrentCat], true);
 
         // 아이템 리스트 업데이트
         LoadSlotList();
