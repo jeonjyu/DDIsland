@@ -15,8 +15,6 @@ public class StoreListView : MonoBehaviour
 
     public List<Button> Stores => stores;
 
-
-
     void Awake()
     {
         viewModel = GetComponent<StoreListViewModel>();

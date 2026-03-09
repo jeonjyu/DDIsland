@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using TMPro;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -15,6 +16,8 @@ public class StoreManager : Singleton<StoreManager>, INotifyPropertyChanged
 
     [SerializeField] GameObject storeListPanel;
     [SerializeField] GameObject buyAndSellPanel;
+    [SerializeField] public FilterDropdown filterDropdown;
+    [SerializeField] public SortDropdown sortDropdown;
 
     List<GameObject> stores = new List<GameObject>();
 
@@ -119,6 +122,12 @@ public class StoreManager : Singleton<StoreManager>, INotifyPropertyChanged
         {
             Debug.LogWarning("TradeModel이 없음");
         }
+    }
+
+    public void ChangeDropdownAvailability(bool isAvailable)
+    {
+        filterDropdown.filterDrop.interactable = isAvailable;
+        sortDropdown.sortDrop.interactable = isAvailable;
     }
 
     public event PropertyChangedEventHandler PropertyChanged;

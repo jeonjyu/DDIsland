@@ -22,6 +22,12 @@ public enum Comparer
 public class SortDropdown : StoreDropdownBase
 {
     List<Comparer> comparers = new List<Comparer>();
+    public TMP_Dropdown sortDrop;
+
+    private void Awake()
+    {
+        sortDrop = GetComponent<TMP_Dropdown>();
+    }
 
     void Start()
     {

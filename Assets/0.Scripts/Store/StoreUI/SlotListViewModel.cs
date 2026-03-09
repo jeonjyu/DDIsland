@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class StoreListViewModel : MonoBehaviour, INotifyPropertyChanged
 {
@@ -12,8 +13,8 @@ public class StoreListViewModel : MonoBehaviour, INotifyPropertyChanged
     [SerializeField] ItemSlotViewModel itemSlot;
 
     List<ItemSlotViewModel> storeItemViewModels = new List<ItemSlotViewModel>();
-    [SerializeField] FilterDropdown filterDropdown;
-    [SerializeField] SortDropdown sortDropdown;
+    //[SerializeField] FilterDropdown filterDropdown;
+    //[SerializeField] SortDropdown sortDropdown;
     StoreListView view;
 
     public StoreCat CurrentCat
@@ -28,23 +29,23 @@ public class StoreListViewModel : MonoBehaviour, INotifyPropertyChanged
 
     public FilterDropdown Filter
     {
-        get => filterDropdown;
+        get => StoreManager.Instance.filterDropdown;
         set
         {
-            filterDropdown = value;
-            OnPropertyChanged(nameof(filterDropdown));
+            StoreManager.Instance.filterDropdown = value;
+            OnPropertyChanged(nameof(StoreManager.Instance.filterDropdown));
         }
     }
 
     public SortDropdown Sort
     {
-        get => sortDropdown;
+        get => StoreManager.Instance.sortDropdown;
         set
         {
-            if (sortDropdown != value)
+            if (StoreManager.Instance.sortDropdown != value)
             {
-                sortDropdown = value;
-                OnPropertyChanged(nameof(sortDropdown));
+                StoreManager.Instance.sortDropdown = value;
+                OnPropertyChanged(nameof(StoreManager.Instance.sortDropdown));
             }
         }
     }
@@ -131,17 +132,12 @@ public class StoreListViewModel : MonoBehaviour, INotifyPropertyChanged
         //Debug.Log("[ItemListViewModel] ResetSlotList | 슬롯 반납 완료");
     }
 
-    // 슬롯 모델 바꾸려면 SetModel로 변경해줘야 함
+
 
     protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
     {
         //Debug.Log("[ItemListViewModel] OnPropertyChanged 실행");
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        //filterDropdown.UpdateFilter((Filter)CurrentCat);
-        ////filterDropdown.FilterSlots(0); // 카테고리가 변할때만 
-        //sortDropdown.SetOptions();
-        //sortDropdown.ApplySortPriority();
-        //LoadSlotList();
     }
 
 }
