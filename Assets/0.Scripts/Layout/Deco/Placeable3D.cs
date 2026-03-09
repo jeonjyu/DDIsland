@@ -223,6 +223,7 @@ public class Placeable3D : Placeable
 
             _isPlaced = true;
             ItemState = ItemState.Placed;
+            _build.CompletePlacement(this);
         }
     }
     public override void VisualFeedback()

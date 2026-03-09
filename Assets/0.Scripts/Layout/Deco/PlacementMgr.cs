@@ -41,7 +41,7 @@ public class PlacementMgr : MonoBehaviour
     {
         _instance = this;
         _clickAction = InputSystem.actions.FindAction("UI/Select");
-        _rotation = InputSystem.actions.FindAction("UI/Roation");
+        _rotation = InputSystem.actions.FindAction("UI/Rotation");
         _cancel = InputSystem.actions.FindAction("UI/Cancel");
         _scrollAction = InputSystem.actions.FindAction("UI/ScrollWheel");
     }
