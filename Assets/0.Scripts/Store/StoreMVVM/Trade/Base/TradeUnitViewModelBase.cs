@@ -1,8 +1,7 @@
+using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using UnityEngine;
-
-using System;
 
 //[RequireComponent(typeof(TradeViewBase))]
 public class TradeUnitViewModelBase : MonoBehaviour, INotifyPropertyChanged
@@ -16,35 +15,41 @@ public class TradeUnitViewModelBase : MonoBehaviour, INotifyPropertyChanged
     public ITradeStrategy purchaseStrategy;
     public ITradeStrategy sellStrategy;
 
-    private IStoreItem model;
-
-    public IStoreItem Model
+    public IStoreItem Model 
     {
-        //get => StoreManager.Instance.tradeModel;
-        get => model;
-        set 
-        {
-            model = value;
-            //StoreManager.Instance.tradeModel = model; 
-            OnPropertyChanged(null); 
-        }
+        get => StoreManager.Instance.TradeModel;
+        private set => StoreManager.Instance.TradeModel = value;
     }
 
-    protected int tradeCount = 1;
+    //public IStoreItem Model
+    //{
+    //    get => model;
+    //    set 
+    //    {
+    //        if (model != value)
+    //        {
+    //            model = value;
+    //            OnPropertyChanged(null);
+    //        }
+    //    }
+    //}
+
+    protected int _tradeCount = 1;
     public int TradeCount
     {
-        get => tradeCount;
+        get => _tradeCount;
         set
         {
-            if (tradeCount != value) 
+            if (_tradeCount != value) 
             { 
-                tradeCount = value; 
-                OnPropertyChanged(nameof(TradeCount)); 
+                _tradeCount = value; 
+                OnPropertyChanged(nameof(TradeCount));  // UpdateTradeUnitUI
             }
         }
     }
 
-    //protected int totalPrice;
+    protected int _totalPrice;
+    public int TotalPrice => _totalPrice;
 
     //public int TotalPrice
     //{
@@ -59,33 +64,83 @@ public class TradeUnitViewModelBase : MonoBehaviour, INotifyPropertyChanged
     //    }
     //}
 
+    public int ItemCount
+    {
+        get => StoreManager.Instance.TradeItemCount;
+    }
+
     void Awake()
     {
         //Debug.Log("[TradeUnitViewModelBase] Awake");
         view = GetComponent<TradeUnitViewBase>();
         purchaseStrategy = GetComponent<PurchaseStrategy>();
         sellStrategy = GetComponent<SellStrategy>();
+
+        // StoreManager의 TradeModel,TradeItemCount이 변경되면 갱신되도록 알림 받도록
+        StoreManager.Instance.PropertyChanged += UpdateTradeModel;
     }
 
-    private void OnEnable()
+    void OnEnable()
     {
-        InitUnit();
+        Debug.Log("UI 초기화");
+        SetTotalPrice();
+        view.SetTradeCountText(TradeCount);
+        view.SetButton();
     }
+
+    // Trademodel이 갱신될 때 실행시켜 줄 메서드
+    // 거래 아이템이 변경될 때
+    // 거래 완료 후 
+    public void UpdateTradeModel(object sender, PropertyChangedEventArgs e)
+    {
+        switch (e.PropertyName)
+        {
+            // 모델 변경
+            case null:
+            case "":
+                _tradeCount = 1;
+                InitUnit();
+                break;
+            // 보유중인 아이템 개수 변경
+            case nameof(StoreManager.Instance.TradeItemCount):
+                //Debug.Log("UpdateTradeModel |" + nameof(StoreManager.Instance.TradeItemCount));
+                _tradeCount = 1;
+                OnPropertyChanged(nameof(StoreManager.Instance.TradeItemCount));
+
+                break;
+        }
+        //SetTotalPrice();
+        //view.SetTradeCountText(TradeCount);
+    }
+
+    //private void OnEnable()
+    //{
+    //    Debug.Log("모델 설정");
+    //    Model = StoreManager.Instance.tradeModel;
+
+    //    //InitUnit();
+    //}
 
     // 팝업 껐다 켰다, 거래완료 팝업 끝나고 호출
+    /// <summary>
+    /// 각 거래 유닛 초기화
+    /// </summary>
     public void InitUnit()
     {
-        Model = StoreManager.Instance.tradeModel;
-        TradeCount = 1;
-        view.SetItemCount(TradeCount);
+        Debug.Log("[TradeUnitViewBase] InitUnit | 초기화");
+
+        //TradeCount = 1;
         SetTotalPrice();
+        view.SetTradeCountText(TradeCount);
+        view.SetButton();
     }
 
     public void ExcuteTrade(ITradeStrategy tradeStrategy)
     {
         //Debug.Log(tradeStrategy.ToString());
 
-        if (tradeStrategy.Trade(TradeCount, Model))
+        //view.SetButton();
+        if (tradeStrategy.Trade(TradeCount, TotalPrice))
         {
             TradeConfirmPanel.SetActive(true);
         }
@@ -93,7 +148,7 @@ public class TradeUnitViewModelBase : MonoBehaviour, INotifyPropertyChanged
         {
             GoldWarningPanel.SetActive(false);
         }
-        InitUnit(); 
+        //InitUnit();
     }
 
     // 아이템 갯수 변경
@@ -115,10 +170,10 @@ public class TradeUnitViewModelBase : MonoBehaviour, INotifyPropertyChanged
     public void DecreaseCount()
     {
         // 0보다 낮을 때
-        if(TradeCount <= 1)
+        if(TradeCount <= 0)
         {
-            Debug.LogWarning("[TradeUnitViewModelBase] 아이템 최소 범위 미만");
-            TradeCount = 1;
+            Debug.LogWarning("[TradeUnitViewModelBase] 거래 개수가 0보다 작아질 수 없음");
+            //TradeCount = 1;
             return;
         }
         else
@@ -127,7 +182,6 @@ public class TradeUnitViewModelBase : MonoBehaviour, INotifyPropertyChanged
             return;
         }
     }
-
 
     public void SetMaxCount()
     {
@@ -143,7 +197,14 @@ public class TradeUnitViewModelBase : MonoBehaviour, INotifyPropertyChanged
 
     public void SetTotalPrice()
     {
-        view.SetTotalPriceText(TradeCount * view.GetTradeStrategy().GetPrice(Model));
+        if (TradeCount <= 0)
+            view.SetTotalPriceText(0);
+        else
+        {
+            //view.SetTotalPriceText(TradeCount * view.GetTradeStrategy().GetPrice(Model));
+            _totalPrice = TradeCount * view.GetTradeStrategy().GetPrice(Model);
+            view.SetTotalPriceText(_totalPrice);
+        }
     }
 
     public event PropertyChangedEventHandler PropertyChanged;
@@ -152,4 +213,6 @@ public class TradeUnitViewModelBase : MonoBehaviour, INotifyPropertyChanged
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
+
+
 }

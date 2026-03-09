@@ -45,6 +45,7 @@ public class SortDropdown : StoreDropdownBase
     // 정렬 체이닝 돌리기
     public void SortSlots(Comparer comparer)
     {
+        // 드롭다운 설정에 따라 정렬 기준을 정렬
         // 정렬 enum에 따라 해당 enum을 맨 앞으로 가져옴
         // 리스트가 있고 순서를 지키지만 특정한 하나를 1순위로 >
         // 해당 리스트 요소를 널으로 만들고 0 위치에 insert, 빈 거 제거/무시 후 리스트화 
@@ -52,7 +53,9 @@ public class SortDropdown : StoreDropdownBase
         comparers = comparers.OrderBy(x => x).ToList();
         comparers.Remove(comparer);
         comparers.Insert(0, comparer);
+        // todo : 이부분 리스트 재할당 등 확인해보기
 
+        // 여기서부터 정렬 기준에 맞춰 아이템 정렬
         IEnumerable<IStoreItem> items = ItemManager.Instance.displayDatas;
 
         //Debug.Log("[SortDropdown] SortSlots | SelectedOption 1 : " + (StoreSort)SelectedOption);

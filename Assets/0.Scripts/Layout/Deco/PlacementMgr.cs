@@ -17,6 +17,7 @@ public class PlacementMgr : MonoBehaviour
     private InputAction _clickAction; // 클릭 입력 액션
     private InputAction _rotation;
     private InputAction _cancel;
+    private InputAction _scrollAction;
 
     [Header("Cinemachine Cameras")]
     [SerializeField] private CinemachineCamera _viewCamera;
@@ -25,6 +26,11 @@ public class PlacementMgr : MonoBehaviour
     [SerializeField] private BuildingManager _buildingManager;
     public event Action<Placeable3D> OnBuildingPick;
     public event Action OnBuildingDrop;
+
+    [Header("Zoom Settings")]
+    [SerializeField] private float _zoomSpeed = 10f; // 줌 속도
+    [SerializeField] private float _minFOV = 20f;   // 가장 가까운 곳
+    [SerializeField] private float _maxFOV = 70f;   // 가장 먼 곳
 
     #region 프로퍼티
     static public PlacementMgr Instance => _instance;
@@ -37,6 +43,7 @@ public class PlacementMgr : MonoBehaviour
         _clickAction = InputSystem.actions.FindAction("UI/Select");
         _rotation = InputSystem.actions.FindAction("UI/Roation");
         _cancel = InputSystem.actions.FindAction("UI/Cancel");
+        _scrollAction = InputSystem.actions.FindAction("UI/ScrollWheel");
     }
     private void OnEnable()
     {
@@ -45,18 +52,49 @@ public class PlacementMgr : MonoBehaviour
 
         _cancel.Enable();
         _cancel.performed += OnCancelInput;
-        //_rotation.performed += OnRotate;
+
+        _scrollAction?.Enable();
+
+        _rotation.Enable();
+        _rotation.performed += OnRotate;
     }
 
     private void OnDisable()
     {
         _clickAction.performed -= OnClickInput;
-        //_clickAction.performed -= OnRotate;
         _clickAction?.Disable();
 
         _cancel.performed -= OnCancelInput;
         _cancel?.Disable();
+
+        _scrollAction?.Disable();
+
+        _rotation.performed -= OnRotate;
+        _rotation.Disable();
     }
+
+    private void Update()
+    {
+        HandleZoom();
+    }
+
+    private void HandleZoom()
+    {
+        if (CurrentState != PlacementState.Edit) return;
+
+        float scrollValue = _scrollAction.ReadValue<Vector2>().y;
+        if (Mathf.Abs(scrollValue) < 0.01f) return;
+
+        if (_editCamera != null)
+        {
+            float currentFOV = _editCamera.Lens.FieldOfView;
+
+            float nextFOV = currentFOV - (scrollValue * _zoomSpeed * Time.deltaTime);
+
+            _editCamera.Lens.FieldOfView = Mathf.Clamp(nextFOV, _minFOV, _maxFOV);
+        }
+    }
+
     public void ToggleEditMode()
     {
         CurrentState = (CurrentState == PlacementState.View) ? PlacementState.Edit : PlacementState.View;
@@ -220,7 +258,6 @@ public class PlacementMgr : MonoBehaviour
         _buildingManager.ConfirmAll();
 
         CloseEditMenu();
-        ToggleEditMode();
 
         Debug.Log("모든 변경 사항이 확정되어 저장되었습니다.");
     }
@@ -231,7 +268,6 @@ public class PlacementMgr : MonoBehaviour
         _buildingManager.CancelCurrentAction();
 
         CloseEditMenu();
-        ToggleEditMode();
 
         Debug.Log("모든 변경 사항이 취소되고 편집 전으로 되돌아갔습니다.");
     }

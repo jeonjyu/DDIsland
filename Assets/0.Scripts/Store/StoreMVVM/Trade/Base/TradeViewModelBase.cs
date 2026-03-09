@@ -16,11 +16,11 @@ public class TradeViewModelBase : MonoBehaviour, INotifyPropertyChanged
 {
     public IStoreItem Model
     {
-        get => StoreManager.Instance.tradeModel;
-        set 
-        {  
-            StoreManager.Instance.tradeModel = value;
-        }
+        get => StoreManager.Instance.TradeModel;
+        //set 
+        //{  
+        //    StoreManager.Instance.TradeModel = value;
+        //}
     }
     public TradeViewBase view;
 
@@ -62,11 +62,6 @@ public class TradeViewModelBase : MonoBehaviour, INotifyPropertyChanged
     public void OnEnable()
     {
         //Init(StoreManager.Instance.tradeModel);
-    }
-
-    public void Init(IStoreItem model)
-    {
-        this.Model = model;
     }
 
     protected void OnPropertyChanged([CallerMemberName] string propertyName = null)

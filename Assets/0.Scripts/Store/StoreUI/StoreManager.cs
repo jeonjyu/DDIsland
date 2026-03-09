@@ -1,13 +1,15 @@
+using NUnit.Framework.Internal;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.ComponentModel;
+using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 
-public class StoreManager : Singleton<StoreManager>
+public class StoreManager : Singleton<StoreManager>, INotifyPropertyChanged
 { 
     List<Enum> category = new List<Enum>();
 
@@ -18,10 +20,44 @@ public class StoreManager : Singleton<StoreManager>
 
     public StoreCat currentCat;
 
-    [SerializeField] public IStoreItem tradeModel;
+    [SerializeField] private IStoreItem tradeModel;
     public ItemSlotViewModel currentTradeItem;
 
     public GameObject BuyAndSellPanel => buyAndSellPanel;
+
+    /// <summary>
+    /// 현재 아이템 모델
+    /// </summary>
+    public IStoreItem TradeModel
+    {
+        get => tradeModel;
+        set
+        {
+            if (tradeModel != value)
+            {
+                tradeModel = value;
+                OnTradeModelChanged(null);
+            }
+        }
+    }
+
+    /// <summary>
+    /// 거래 아이템의 현재 개수
+    /// </summary>
+    public int TradeItemCount
+    {
+        get => tradeModel.ItemCount;
+        set
+        {
+            if (tradeModel.ItemCount != value)
+            {
+                tradeModel.ItemCount = value;
+                //Debug.Log("[StoreManager] | 아이템 개수 변경 " + TradeItemCount);
+
+                OnTradeModelChanged(nameof(TradeItemCount));
+            }
+        }
+    }
 
     void Start() 
     {
@@ -49,23 +85,49 @@ public class StoreManager : Singleton<StoreManager>
         return description.Description;
     }
 
+    /// <summary>
+    /// 거래 아이템 보유 개수 변경 후 소유 여부, 사용자 소유 아이템 딕셔너리에 추가
+    /// </summary>
+    /// <param name="inCount">변동할 아이템 수량</param>
     public void ItemCountChanged(int inCount)
     {
-        if (currentTradeItem != null)
+        if (TradeModel != null)
         {
-            currentTradeItem.ItemCount = inCount;
-            if (currentTradeItem.ItemCount > 0 && !currentTradeItem.IsGained)
+
+            // 추가할 때
+            if (inCount > 0)
             {
-                currentTradeItem.IsGained = true;
-                ItemManager.Instance.AddToPlayerItem(tradeModel, currentCat);
+                if (TradeItemCount == 0 && TradeModel.IsGained == false)
+                {
+                    TradeModel.IsGained = true;
+                    Debug.Log($"[Storemanager] 새로운 아이템 추가 | IsGained : {TradeModel.IsGained} / TradeItemCount : {TradeItemCount + inCount}");
+                    ItemManager.Instance.AddToPlayerItem(TradeModel, currentCat);
+                }
             }
-            else if (currentTradeItem.ItemCount == 0 && currentTradeItem.IsGained)
+                // 감소할 때
+            if (inCount < 0)
             {
-                currentTradeItem.IsGained = false;
-                ItemManager.Instance.RemoveFromPlayerItem(tradeModel, currentCat);
+                if (TradeItemCount + inCount == 0 && TradeModel.IsGained == true)
+                {
+                    TradeModel.IsGained = false;
+                    Debug.Log($"[Storemanager] 아이템 삭제 | IsGained : {TradeModel.IsGained} / TradeItemCount : {TradeItemCount + inCount}"); ItemManager.Instance.RemoveFromPlayerItem(TradeModel, currentCat);
+                }
             }
-            else
-                return;
+
+            TradeItemCount += inCount;
         }
+        else
+        {
+            Debug.LogWarning("TradeModel이 없음");
+        }
+    }
+
+    public event PropertyChangedEventHandler PropertyChanged;
+
+    // TradeUnitViewModelBase에서 구독
+    protected virtual void OnTradeModelChanged([CallerMemberName] string propertyName = null)
+    {
+        //Debug.Log("[StoreManager] | " + propertyName);
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }

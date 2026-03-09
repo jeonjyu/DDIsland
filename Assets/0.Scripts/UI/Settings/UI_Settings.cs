@@ -7,6 +7,13 @@ public class UI_Settings : MonoBehaviour
     [Header("설정 패널")]
     [SerializeField] private GameObject settingPanel;
 
+    [Header("투명도 관련")]
+    [SerializeField] private Image transparencyPanel;
+    [SerializeField] private Slider transparencySlider;
+    [SerializeField] private TMP_Text transparencyText;
+    [SerializeField] private float minValue = 0.3f;
+    [SerializeField] private float maxValue = 1.0f;
+
     [Header("언어 관련")]
     [SerializeField] private TMP_Dropdown languageDropdown;
 
@@ -39,6 +46,7 @@ public class UI_Settings : MonoBehaviour
         sfxToggle.isOn = PlayerPrefsDataManager.SFXVolumeMute;
         bgsToggle.isOn = PlayerPrefsDataManager.BGSVolumeMute;
 
+        OnValueChangedVolume(transparencySlider, transparencyText);
         OnValueChangedVolume(bgmSlider, bgmVolumeText);
         OnValueChangedVolume(sfxSlider, sfxVolumeText);
         OnValueChangedVolume(bgsSlider, bgsVolumeText);
@@ -53,6 +61,21 @@ public class UI_Settings : MonoBehaviour
         if(settingPanel.activeSelf != isOn)
             settingPanel.SetActive(isOn);
     }
+
+    #region
+    public void OnValueChangedTransparency()
+    {
+        if (isInitializing == true) return;
+
+        OnValueChangedVolume(transparencySlider, transparencyText);
+
+        Color color = transparencyPanel.color;
+        color.a = Mathf.Clamp(transparencySlider.value, minValue, maxValue);
+        transparencyPanel.color = color;
+
+        PlayerPrefsDataManager.Transparency = transparencyPanel.color.a;
+    }
+    #endregion
 
     #region 언어 설정
     public void OnValueChangedLanguage()

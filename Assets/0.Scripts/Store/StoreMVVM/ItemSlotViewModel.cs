@@ -5,9 +5,11 @@ using UnityEngine;
 public class ItemSlotViewModel : MonoBehaviour, INotifyPropertyChanged
 {
 
-    // 변경될 속성들
-    // 아이템 갯수
+    // 해당 속성이 변경되면 뷰가 수정되어야 한다
+    // 모델, 아이템 아이디
+    // 아이템 개수
     // 획득 여부
+
 
     [SerializeField] private IStoreItem _model;
 
@@ -88,8 +90,8 @@ public class ItemSlotViewModel : MonoBehaviour, INotifyPropertyChanged
 
     public void SetPopupModel()
     {
-        StoreManager.Instance.tradeModel = Model;
-        StoreManager.Instance.currentTradeItem = this;
+        StoreManager.Instance.TradeModel = Model;
+        //StoreManager.Instance.currentTradeItem = this;
     }
 
     public event PropertyChangedEventHandler PropertyChanged;

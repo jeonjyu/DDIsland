@@ -1,10 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class FilterDropdown : StoreDropdownBase
 {
@@ -50,9 +47,9 @@ public class FilterDropdown : StoreDropdownBase
     public void FilterSlots(int idx)
     {
         if (idx > 0)
-            ItemManager.Instance.displayDatas = ItemManager.Instance.currentDatabase.Where(i => i.Filter.ToString().ToLower() == filters[SelectedOption].ToString().ToLower()).ToList();
-
-            //Debug.Log("[FilterDropdown] | 슬롯 필터링 , idx > 0");
+            ItemManager.Instance.displayDatas = ItemManager.Instance.currentDatabase.
+                Where(i => i.Filter.ToString().ToLower() == filters[SelectedOption].ToString().ToLower())
+                .ToList();
         else
             ItemManager.Instance.displayDatas = ItemManager.Instance.currentDatabase;
 

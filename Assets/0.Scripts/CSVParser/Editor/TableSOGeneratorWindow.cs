@@ -19,7 +19,7 @@ public class TableSOGeneratorWindow : EditorWindow
     private const string CSVKEY = "CsvKey";
     private const string STRINGDATASOCLASSKEY = "StringDataSOClassKey";
     private const string DATASOCLASSKEY = "DataSOClassKey";
-    private const string DATABASESOClassKEY = "DatabaseSOClassKey";
+    private const string DATABASESOCLASSKEY = "DatabaseSOClassKey";
 
     private static string csvFolderPath = "Assets/6.DataTable/CSV";                         // CSV 파일 폴더 경로
     private static string stringSOClassFolderPath = "Assets/0.Scripts/StringDataSO";        // String 테이블 SO 정의 클래스를 생성할 폴더 경로
@@ -36,7 +36,7 @@ public class TableSOGeneratorWindow : EditorWindow
     private const string DATASOKEY = "DataSOKey";
     private const string DATABASESOKEY = "DatabaseSOKey";
 
-    private static string stringSOFolderPath = "Assets/1.Prefabs/SO/StringDataSO";          // 데이터 SO가 저장될 경로
+    private static string stringSOFolderPath = "Assets/1.Prefabs/SO/StringDataSO";          // String데이터 SO가 저장될 경로
     private static string dataSOFolderPath = "Assets/1.Prefabs/SO/Data";                    // 데이터 SO가 저장될 경로
     private static string databaseSOFolderPath = "Assets/1.Prefabs/SO/Database";            // 데이터베이스 SO가 저장될 경로
     #endregion
@@ -87,7 +87,7 @@ public class TableSOGeneratorWindow : EditorWindow
 
         EditorGUILayout.Space();
         EditorGUILayout.Space();
-        DrawTextAssetField("StringTable.csv를 넣어주세요", ref stringTableFolder, ref stringTableFilePath, STRINGTABLEKEY);
+        DrawTextAssetField("StringTable CSV 파일", ref stringTableFolder, ref stringTableFilePath, STRINGTABLEKEY);
         #endregion
 
         EditorGUILayout.Space();
@@ -101,16 +101,16 @@ public class TableSOGeneratorWindow : EditorWindow
 
         EditorGUILayout.Space();
         EditorGUILayout.Space();
-        DrawFolderField("CSV 폴더 경로를 지정해주세요", ref csvFolder, ref csvFolderPath, CSVKEY);
+        DrawFolderField("CSV 폴더", ref csvFolder, ref csvFolderPath, CSVKEY);
 
         EditorGUILayout.Space();
-        DrawFolderField("String 데이터 SO 파일을 생성할 폴더 경로를 지정해주세요", ref stringSoClassFolder, ref stringSOClassFolderPath, STRINGDATASOCLASSKEY);
+        DrawFolderField("StringTable Class:", ref stringSoClassFolder, ref stringSOClassFolderPath, STRINGDATASOCLASSKEY);
 
         EditorGUILayout.Space();
-        DrawFolderField("데이터 SO 파일을 생성할 폴더 경로를 지정해주세요", ref dataSoClassFolder, ref dataSOClassFolderPath, DATASOCLASSKEY);
+        DrawFolderField("Data Class:", ref dataSoClassFolder, ref dataSOClassFolderPath, DATASOCLASSKEY);
 
         EditorGUILayout.Space();
-        DrawFolderField("데이터베이스 SO 파일을 생성할 폴더 경로를 지정해주세요", ref databaseSOClassFolder, ref databaseSOClassFolderPath, DATABASESOClassKEY);
+        DrawFolderField("DataBase Class:", ref databaseSOClassFolder, ref databaseSOClassFolderPath, DATABASESOCLASSKEY);
 
         #endregion
 
@@ -125,13 +125,13 @@ public class TableSOGeneratorWindow : EditorWindow
 
         EditorGUILayout.Space();
         EditorGUILayout.Space();
-        DrawFolderField("String 데이터를 저장할 SO 저장 경로를 지정해주세요", ref stringSOFolder, ref stringSOFolderPath, STRINGDATASOKEY);
+        DrawFolderField("StringTable SO:", ref stringSOFolder, ref stringSOFolderPath, STRINGDATASOKEY);
 
         EditorGUILayout.Space();
-        DrawFolderField("데이터를 저장할 SO 저장 경로를 지정해주세요", ref dataSOFolder, ref dataSOFolderPath, DATASOKEY);
+        DrawFolderField("Data SO:", ref dataSOFolder, ref dataSOFolderPath, DATASOKEY);
 
         EditorGUILayout.Space();
-        DrawFolderField("데이터 SO들을 저장할 SO 저장 경로를 지정해주세요", ref databaseSOFolder, ref databaseSOFolderPath, DATABASESOKEY);
+        DrawFolderField("Database SO:", ref databaseSOFolder, ref databaseSOFolderPath, DATABASESOKEY);
 
         // --- 4. 클래스 생성 버튼 ---
         EditorGUILayout.Space(20);
@@ -199,10 +199,8 @@ public class TableSOGeneratorWindow : EditorWindow
     /// <param name="key"> EditorPrefs에 저장할 키 </param>
     private void DrawFolderField(string label, ref DefaultAsset folderAsset, ref string path, string key)
     {
-        EditorGUILayout.LabelField(label, EditorStyles.boldLabel);
-
         folderAsset = (DefaultAsset)EditorGUILayout.ObjectField(
-            path,
+            label,
             folderAsset,
             typeof(DefaultAsset),
             false
@@ -230,10 +228,8 @@ public class TableSOGeneratorWindow : EditorWindow
 
     private void DrawTextAssetField(string label, ref TextAsset textAsset, ref string path, string key)
     {
-        EditorGUILayout.LabelField(label, EditorStyles.boldLabel);
-
         textAsset = (TextAsset)EditorGUILayout.ObjectField(
-            path,
+            label,
             textAsset,
             typeof(TextAsset),
             false
@@ -257,19 +253,6 @@ public class TableSOGeneratorWindow : EditorWindow
 
         path = assetPath;
         EditorPrefs.SetString(key, assetPath);
-    }
-
-    /// <summary>
-    /// 정수를 받아오는 필드
-    /// </summary>
-    /// <param name="label">  </param>
-    /// <param name="index">  </param>
-    /// <param name="key">  </param>
-    private void DrawIntField(string label, ref int index, string key)
-    {
-        EditorGUILayout.LabelField(label, EditorStyles.boldLabel);
-
-
     }
 
     /// <summary>
@@ -301,6 +284,7 @@ public class TableSOGeneratorWindow : EditorWindow
             asset = AssetDatabase.LoadAssetAtPath<DefaultAsset>(path);
         }
     }
+
     private void RestoreTextAsset(ref TextAsset asset, string path)
     {
         if (!string.IsNullOrEmpty(path))
@@ -316,7 +300,7 @@ public class TableSOGeneratorWindow : EditorWindow
 
         csvFolderPath = EditorPrefs.GetString(CSVKEY);
         dataSOClassFolderPath = EditorPrefs.GetString(DATASOCLASSKEY);
-        databaseSOClassFolderPath = EditorPrefs.GetString(DATABASESOClassKEY);
+        databaseSOClassFolderPath = EditorPrefs.GetString(DATABASESOCLASSKEY);
         dataSOFolderPath = EditorPrefs.GetString(DATASOKEY);
         databaseSOFolderPath = EditorPrefs.GetString(DATABASESOKEY);
         stringSOFolderPath = EditorPrefs.GetString(STRINGDATASOKEY);

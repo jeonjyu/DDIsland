@@ -2,11 +2,15 @@ using UnityEngine;
 
 public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
 {
+    protected static bool isQuit = false;
+
     private static T instance;
     public static T Instance
     {
         get
         {
+            if (isQuit) return null;
+
             if (instance == null)
             {
                 instance = FindAnyObjectByType<T>();
@@ -31,4 +35,7 @@ public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
 
         DontDestroyOnLoad(gameObject);
     }
+
+    protected void OnApplicationQuit() => isQuit = true;
+    protected void OnDestroy() => isQuit = true;
 }

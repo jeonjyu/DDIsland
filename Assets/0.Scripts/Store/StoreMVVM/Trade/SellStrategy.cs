@@ -2,18 +2,11 @@ using UnityEngine;
 
 public class SellStrategy : MonoBehaviour, ITradeStrategy
 {
-    public bool Trade(int tradeCount, IStoreItem item)
+    public bool Trade(int tradeCount, int tradePrice)
     {
-        GameManager.Instance.SetGold(tradeCount * item.SellPrice);
-        //item.ItemCount -= tradeCount;
-        StoreManager.Instance.ItemCountChanged(item.ItemCount - tradeCount);
+        GameManager.Instance.SetGold(tradePrice);
+        StoreManager.Instance.ItemCountChanged(-tradeCount);
 
-        if (item.ItemCount == 0 && item.IsGained == true)
-        {
-            item.IsGained = false;
-            //ItemManager.Instance.RemoveFromPlayerItem(StoreManager.Instance.tradeModel, StoreManager.Instance.currentCat);
-
-        }
         return true;
     }
 
@@ -22,6 +15,7 @@ public class SellStrategy : MonoBehaviour, ITradeStrategy
         return item.SellPrice;
     }
 
+    // 현재 보유하고 있는 아이템의 개수
     public int GetMaxCount(IStoreItem item)
     {
         return item.ItemCount;
