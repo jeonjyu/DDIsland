@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 public struct FishingContext 
@@ -35,7 +36,7 @@ public class FishManager : Singleton<FishManager>
 
     private EnvironmentModel _environment;
 
-    private ArriveSeason _currentSeason = ArriveSeason.Spring;
+    private ArriveSeason _currentSeason;
 
     int _seasonChangeCount;  //실러캔스
     bool _canCoelacanth = false;
@@ -96,6 +97,7 @@ public class FishManager : Singleton<FishManager>
     }
     private void Update()
     {
+        _environment.UpdateTimeSet(DateTime.Now);
         if (_canCanPiraruque)
         {
             _pirarukuTimer += Time.deltaTime;
@@ -157,7 +159,8 @@ public class FishManager : Singleton<FishManager>
         ctx.IsAfternoon = _environment.CurrentDay == DayilyCycle.Sunset;
         ctx.IsNight = _environment.CurrentDay == DayilyCycle.Night;
         //날씨, 골드도 필요함 일단테스트
-        ctx.GoldAmount = GameManager.Instance.PlayerGold;
+        //ctx.GoldAmount = GameManager.Instance.PlayerGold;
+        ctx.GoldAmount = 50000;
         ctx.IsCherryblossom = true;
         return ctx;
     }
@@ -215,7 +218,7 @@ public class FishManager : Singleton<FishManager>
 
     public void CreateInstance(FishDataSO fish)  
     {
-        float length = Random.Range(fish.MinLength, fish.MaxLength);
+        float length = UnityEngine.Random.Range(fish.MinLength, fish.MaxLength);
         int price = fish.Price;
 
         Debug.Log($"Name: {fish.FishName_String}, price: {price}, Length: {length}");
@@ -232,7 +235,7 @@ public class FishManager : Singleton<FishManager>
             Price = price
         };
 
-        bool success = StorageManager.Instance.TryAddToStorage(fish);
+        bool success = FishStorageManager.Instance.TryAddToStorage(fish);
         if (!success)
         {
             // 가득함 처리
@@ -331,10 +334,10 @@ public class FishManager : Singleton<FishManager>
 
         if (total <= 0)
         {
-            return candidates[Random.Range(0, candidates.Count)];
+            return candidates[UnityEngine.Random.Range(0, candidates.Count)];
         }
 
-        float r = Random.Range(0, total);
+        float r = UnityEngine.Random.Range(0, total);
         float acc = 0;
 
         for (int i = 0; i < candidates.Count; i++)

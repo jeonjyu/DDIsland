@@ -670,7 +670,7 @@ GameObject:
   - component: {fileID: 7112307475939129612}
   - component: {fileID: 4038320929526839987}
   m_Layer: 5
-  m_Name: StoragePanel
+  m_Name: FishStoragePanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -763,6 +763,12 @@ MonoBehaviour:
   _detailIcon: {fileID: 317286320175215328}
   _slotParent: {fileID: 2224079387606345204}
   _sortDropdown: {fileID: 2418359176170396038}
+  _fishStorageUI: {fileID: 1599342480710765375}
+  _foodStorageUI: {fileID: 0}
+  _ofFishFishButton: {fileID: 9128992694989075076}
+  _ofFishFoodButton: {fileID: 4460634135657480838}
+  _ofFoodFishButton: {fileID: 0}
+  _ofFoodFoodButton: {fileID: 0}
 --- !u!1 &2371706869915699368
 GameObject:
   m_ObjectHideFlags: 0
@@ -4439,7 +4445,35 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3092756029370038745, guid: 5afedec85b51a9a42b44ba5c6e64e2a9, type: 3}
       propertyPath: m_Interactable
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3092756029370038745, guid: 5afedec85b51a9a42b44ba5c6e64e2a9, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3092756029370038745, guid: 5afedec85b51a9a42b44ba5c6e64e2a9, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3092756029370038745, guid: 5afedec85b51a9a42b44ba5c6e64e2a9, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 4038320929526839987}
+    - target: {fileID: 3092756029370038745, guid: 5afedec85b51a9a42b44ba5c6e64e2a9, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3092756029370038745, guid: 5afedec85b51a9a42b44ba5c6e64e2a9, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OpenFishStorage
+      objectReference: {fileID: 0}
+    - target: {fileID: 3092756029370038745, guid: 5afedec85b51a9a42b44ba5c6e64e2a9, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: UI_Storage, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3092756029370038745, guid: 5afedec85b51a9a42b44ba5c6e64e2a9, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 6435711244824513045, guid: 5afedec85b51a9a42b44ba5c6e64e2a9, type: 3}
       propertyPath: m_Pivot.x
@@ -4551,6 +4585,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 6435711244824513045, guid: 5afedec85b51a9a42b44ba5c6e64e2a9, type: 3}
   m_PrefabInstance: {fileID: 6078486507280780125}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &9128992694989075076 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3092756029370038745, guid: 5afedec85b51a9a42b44ba5c6e64e2a9, type: 3}
+  m_PrefabInstance: {fileID: 6078486507280780125}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
 --- !u!1001 &8284216322739790085
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4807,13 +4852,52 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5469527151679159443, guid: de2d787b77e0555468e9f01b14917cef, type: 3}
       propertyPath: m_Interactable
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5469527151679159443, guid: de2d787b77e0555468e9f01b14917cef, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5469527151679159443, guid: de2d787b77e0555468e9f01b14917cef, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5469527151679159443, guid: de2d787b77e0555468e9f01b14917cef, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 4038320929526839987}
+    - target: {fileID: 5469527151679159443, guid: de2d787b77e0555468e9f01b14917cef, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5469527151679159443, guid: de2d787b77e0555468e9f01b14917cef, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OpenFoodStorage
+      objectReference: {fileID: 0}
+    - target: {fileID: 5469527151679159443, guid: de2d787b77e0555468e9f01b14917cef, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: UI_Storage, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 5469527151679159443, guid: de2d787b77e0555468e9f01b14917cef, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: de2d787b77e0555468e9f01b14917cef, type: 3}
+--- !u!114 &4460634135657480838 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5469527151679159443, guid: de2d787b77e0555468e9f01b14917cef, type: 3}
+  m_PrefabInstance: {fileID: 8503063191329717781}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
 --- !u!224 &5646611661353939274 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4061184221576449887, guid: de2d787b77e0555468e9f01b14917cef, type: 3}
