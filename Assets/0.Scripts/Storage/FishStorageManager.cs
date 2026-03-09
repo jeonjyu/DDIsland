@@ -1,4 +1,5 @@
 using System;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public struct FishInstance
@@ -16,7 +17,7 @@ public struct FishStackSlot
     public int MaxPrice;
 }
 
-public class StorageManager : Singleton<StorageManager>
+public class FishStorageManager : Singleton<FishStorageManager>
 {
     FishStackSlot?[] FishSlots;
 
@@ -29,6 +30,7 @@ public class StorageManager : Singleton<StorageManager>
     public event Action<int> OnSlotChanged; // 특정 슬롯이 바뀌었음을 알림(UI는 보통 RefreshAll)
     public int Capacity => FishSlots?.Length ?? 0;
     public int StorageLevel => _storagelevel;
+    public FishStackSlot?[] FishSlotData => FishSlots;
 
     private void Awake()
     {
@@ -100,7 +102,26 @@ public class StorageManager : Singleton<StorageManager>
         OnSlotChanged?.Invoke(slotIndex);
         return true;
     }
+    public bool TryRemoveFishById(int fishId)  //물고기ID로 없애는함수
+    {
+        if (FishSlots == null) return false;
 
+        for (int i = 0; i < FishSlots.Length; i++)
+        {
+            if (!FishSlots[i].HasValue) continue;
+            if (FishSlots[i].Value.FishId != fishId) continue;
+
+            var slot = FishSlots[i].Value;
+            slot.Count--;
+            
+            if (slot.Count <= 0) FishSlots[i] = null;
+            else FishSlots[i] = slot;
+
+            OnSlotChanged?.Invoke(i);
+            return true;
+        }
+        return false;
+    }
     public FishStackSlot? GetSlot(int index)
     {
         if (FishSlots == null || index < 0 || index >= FishSlots.Length)
