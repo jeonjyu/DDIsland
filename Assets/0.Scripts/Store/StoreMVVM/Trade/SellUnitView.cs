@@ -26,7 +26,15 @@ public class SellUnitView : TradeUnitViewBase
     public override void SetButton()
     {
         base.SetButton();
-        //Debug.Log($"판매 유닛 | 유닛 초기화 | 아이템 개수 : {viewModel.ItemCount} ({viewModel.Model.IsGained}) 거래 개수 : {viewModel.TradeCount}");
+        //Debug.Log($"판매 유닛 | 유닛 초기화 | 아이템 개수 : {viewModel.ItemCount} ({viewModel.IsGained}) 거래 개수 : {viewModel.TradeCount}");
+
+        // 거래 불가능한 아이템일 경우 판매 유닛 버튼 클릭 불가능
+        if (viewModel.Model.IsSaleable == false)
+        {
+            Debug.Log("판매 유닛 | 판매 불가능");
+            SetAllButtonAvailablity(false);
+            return;
+        }
 
         // 거래 개수가 0일 경우 
         // 보유하지 않은 아이템일 경우 
@@ -38,9 +46,9 @@ public class SellUnitView : TradeUnitViewBase
             SetBtnInteractable(tradeBtn, false);
             return;
         }
-        if (viewModel.ItemCount == 0 && viewModel.Model.IsGained == false)
+        if (viewModel.ItemCount == 0 && viewModel.IsGained == false)
         {
-            Debug.Log("판매 유닛 | 보유하지 않은 아이템 " + viewModel.Model.IsGained);
+            Debug.Log("판매 유닛 | 보유하지 않은 아이템 " + viewModel.IsGained);
             
             SetAllButtonAvailablity(false);
             return;

@@ -69,6 +69,11 @@ public class TradeUnitViewModelBase : MonoBehaviour, INotifyPropertyChanged
         get => StoreManager.Instance.TradeItemCount;
     }
 
+    public bool IsGained
+    {
+        get => StoreManager.Instance.TradeModel.IsGained;
+    }
+
     void Awake()
     {
         //Debug.Log("[TradeUnitViewModelBase] Awake");

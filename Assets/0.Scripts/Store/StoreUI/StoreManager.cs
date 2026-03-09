@@ -21,7 +21,6 @@ public class StoreManager : Singleton<StoreManager>, INotifyPropertyChanged
     public StoreCat currentCat;
 
     [SerializeField] private IStoreItem tradeModel;
-    public ItemSlotViewModel currentTradeItem;
 
     public GameObject BuyAndSellPanel => buyAndSellPanel;
 
