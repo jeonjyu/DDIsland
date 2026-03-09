@@ -2,7 +2,6 @@ using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using UnityEngine;
-using static UnityEditor.Profiling.HierarchyFrameDataView;
 
 //[RequireComponent(typeof(TradeViewBase))]
 public class TradeUnitViewModelBase : MonoBehaviour, INotifyPropertyChanged
