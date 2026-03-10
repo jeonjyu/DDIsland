@@ -48,7 +48,8 @@ public class DecoEditModeManager : MonoBehaviour
     public Button btnExitSave;        // 저장하고 나가기
     public Button btnExitNoSave;      // 저장하지 않고 나가기
     public Button btnExitCancel;      // 취소 
-
+    [Header("플레이어")]
+    public GameObject playerObject;
     // 내부 변수
     bool isEditMode = false;
     DecoMode currentMode = DecoMode.Lake;   // 현재 편집 모드
@@ -60,7 +61,7 @@ public class DecoEditModeManager : MonoBehaviour
     BuildingManager buildingMgr;
  
     bool isChanged = false; // 저장 안 한 변경이 있었는지 
-
+    Vector2 placedObjOriginPos; // 배치템 원래 위치 
     Placeable3D selectedIslandTarget; // 3d 오브젝트 선택
     #endregion
 
@@ -70,6 +71,8 @@ public class DecoEditModeManager : MonoBehaviour
         // 그리드 원래 위치 저장
         if (gridPanel != null)
             gridOriginPos = gridPanel.anchoredPosition;
+        if (gridManager != null && gridManager.placedObjectsParent != null) // 배치템 원래 위치 저장
+            placedObjOriginPos = gridManager.placedObjectsParent.GetComponent<RectTransform>().anchoredPosition;
         // 호수 배경 원래 위치 저장
         if (lakeBackground != null)
             lakeOriginPos = lakeBackground.anchoredPosition;
@@ -341,7 +344,7 @@ public class DecoEditModeManager : MonoBehaviour
             if (gridPanel != null) // 2d그리드 다시 켜기
                 gridPanel.gameObject.SetActive(true);
             if (gridManager != null)
-                gridManager.ShowGrid(2f);  // 이미지에 격자가 있는게 아니라, 중간중간 띄워서 백그라운드가 보이게 하는 방식
+                gridManager.ShowGrid();  // 이미지에 격자가 있는게 아니라, 중간중간 띄워서 백그라운드가 보이게 하는 방식
 
             // 그리드 타일 위로 밀기
             if (gridPanel != null)
@@ -355,6 +358,13 @@ public class DecoEditModeManager : MonoBehaviour
             {
                 lakeBackground.DOAnchorPosY(lakeOriginPos.y + lakeBgMoveUp, animTime)
                 .SetEase(Ease.OutQuad);
+            }
+            // 장식물 띄우기 
+            if (gridManager != null && gridManager.placedObjectsParent != null)
+            {
+                gridManager.placedObjectsParent.GetComponent<RectTransform>()
+                    .DOAnchorPosY(placedObjOriginPos.y + gridMoveUp, animTime)
+                    .SetEase(Ease.OutQuad);
             }
         }
 
@@ -379,6 +389,11 @@ public class DecoEditModeManager : MonoBehaviour
                     PlacementMgr.Instance.ToggleEditMode();
             }
             if (aquariumMgr != null) aquariumMgr.HideFish(); // 물고기 숨기기
+            if (playerObject != null) // 곰 숨기기
+            {
+                foreach (var renderer in playerObject.GetComponentsInChildren<Renderer>())
+                    renderer.enabled = false;
+            }
         }
 
         // 이하 공용 
@@ -455,6 +470,13 @@ public class DecoEditModeManager : MonoBehaviour
                 lakeBackground.DOAnchorPosY(lakeOriginPos.y, animTime)
                  .SetEase(Ease.OutQuad);
             }
+            // 장식물 위치 복귀 
+            if (gridManager != null && gridManager.placedObjectsParent != null)
+            {
+                gridManager.placedObjectsParent.GetComponent<RectTransform>()
+                    .DOAnchorPosY(placedObjOriginPos.y, animTime)
+                    .SetEase(Ease.OutQuad);
+            }
         }
 
         // 섬 전용 편집모드 퇴장
@@ -474,6 +496,11 @@ public class DecoEditModeManager : MonoBehaviour
             }
             holdItemId = -1; // 나갈때 배치 대기 아이템 초기화 
             if (aquariumMgr != null) aquariumMgr.ShowFish(); // 물고기 다시 보이기
+            if (playerObject != null) // 곰 다시 보이기
+            {
+                foreach (var renderer in playerObject.GetComponentsInChildren<Renderer>())
+                    renderer.enabled = true;
+            }
         }
 
         // 인벤 

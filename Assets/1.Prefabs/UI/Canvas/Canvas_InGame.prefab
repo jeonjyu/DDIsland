@@ -1074,11 +1074,11 @@ RectTransform:
   - {fileID: 3854376393713120641}
   - {fileID: 4433150212443953806}
   - {fileID: 5450203188115193135}
-  m_Father: {fileID: 6901008796908216202}
+  m_Father: {fileID: 2299492582696093177}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 33, y: -218}
+  m_AnchoredPosition: {x: 33, y: 222}
   m_SizeDelta: {x: 260, y: 55}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &706159822814154020
@@ -2483,7 +2483,6 @@ RectTransform:
   - {fileID: 1411848789191002489}
   - {fileID: 5065453437384358101}
   - {fileID: 7623228944471929318}
-  - {fileID: 4833167087186878367}
   - {fileID: 8983769080489473887}
   - {fileID: 1723843377402038824}
   m_Father: {fileID: 2593630522131703902}
@@ -3112,8 +3111,7 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 4314103662025539143}
+  m_Children: []
   m_Father: {fileID: 6901008796908216202}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -3812,12 +3810,12 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8522824564267322684}
-  m_Father: {fileID: 5065453437384358101}
+  m_Father: {fileID: 2299492582696093177}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.02, y: 0.24}
   m_AnchorMax: {x: 0.98, y: 0.9}
-  m_AnchoredPosition: {x: -0.000061035156, y: -593.4376}
-  m_SizeDelta: {x: 76.8, y: -670.9774}
+  m_AnchoredPosition: {x: -0.000061035156, y: -91.83765}
+  m_SizeDelta: {x: 76.8, y: -90.17737}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4499554407957953602
 CanvasRenderer:
@@ -5020,8 +5018,9 @@ MonoBehaviour:
   previewColor: {r: 0, g: 1, b: 0, a: 0.5}
   invalidColor: {r: 1, g: 0, b: 0, a: 0.8}
   tilePrefab: {fileID: 3665496843568710625, guid: bb00644830bdeff488eaafd2786d04b6, type: 3}
-  itemPrefab: {fileID: 0}
   blockedIconPrefab: {fileID: 9063298959219636583, guid: 59479a24f5abb0143b5c673b32962119, type: 3}
+  placedObjectsParent: {fileID: 0}
+  lakeBackground: {fileID: 0}
 --- !u!1 &6479857964246875908
 GameObject:
   m_ObjectHideFlags: 0
@@ -5522,9 +5521,11 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 5691353112993969604}
   - {fileID: 5556376848989329645}
+  - {fileID: 5691353112993969604}
+  - {fileID: 4314103662025539143}
   - {fileID: 8012299208967113706}
+  - {fileID: 4833167087186878367}
   m_Father: {fileID: 2593630522131703902}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
