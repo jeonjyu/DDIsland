@@ -32,6 +32,8 @@ public class AquariumMgr : MonoBehaviour
     [SerializeField] private BackGroundFish _fishPrefab;
     [SerializeField] private RectTransform _spawnArea;
     [SerializeField] private float _spawnPadding = 200f;
+    private IMovement _boidsFish;
+    private IMovement _normalFish;
 
     [Header("군집 관련 설정")]
     [SerializeField] int _maxFishCount;
@@ -64,7 +66,8 @@ public class AquariumMgr : MonoBehaviour
         InitThemeUI();
         FishMake();
 
-
+        _boidsFish = new FishBoids();
+        _normalFish = new FishPattern();
     }
     private void Start()
     {
@@ -195,7 +198,7 @@ public class AquariumMgr : MonoBehaviour
 
             Vector2 spawnPos = new(spawnX, spawnY);
 
-            SpawnFish(spawnPos, selectedFishData ,fishID: flockID, isRight: isRight);
+            SpawnFish(spawnPos, selectedFishData ,fishID: flockID, isRight: isRight, movement: _boidsFish);
 
             yield return new WaitForSeconds(0.1f);
         }
@@ -216,22 +219,23 @@ public class AquariumMgr : MonoBehaviour
         _flockMemberCount[fishID] = 1;
 
         bool isRight = (Random.value > 0.5f);
+
         float spawnX = isRight ? -ScreenLimit : ScreenLimit;
         float spawnY = Random.Range(-_spawnArea.rect.height / 2 + 100f, _spawnArea.rect.height / 2 - 100f);
 
-        SpawnFish(new Vector2(spawnX, spawnY), selectedData, fishID: fishID, isRight: isRight);
+        SpawnFish(new Vector2(spawnX, spawnY), selectedData, fishID: fishID, isRight: isRight, movement: _normalFish);
 
         yield return null;
     }
-    public void SpawnFish(Vector2 spawnPosition, FishDataSO data, int fishID = -1, bool isRight = true)
+    public void SpawnFish(Vector2 spawnPosition, FishDataSO data, int fishID = -1, bool isRight = true, IMovement movement = null)
     {
         if (_fishQueue.Count > 0)
         {
             BackGroundFish fish = _fishQueue.Dequeue();
 
-            fish.SetSpawn(data, fishID, isRight);
             fish.FishTransform.anchoredPosition = spawnPosition;
             fish.gameObject.SetActive(true);
+            fish.SetSpawn(data, fishID, isRight, movement);
             _activeFish.Add(fish);
         }
     }
