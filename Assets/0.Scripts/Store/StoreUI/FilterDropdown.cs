@@ -1,14 +1,21 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class FilterDropdown : StoreDropdownBase
 {
     Type currentFilter;
     List<Enum> filters;
     [SerializeField] SortDropdown sortDropdown;
+    public TMP_Dropdown filterDrop;
 
+    private void Awake()
+    {
+        filterDrop = GetComponent<TMP_Dropdown>();
+    }
 
     void Start()
     {

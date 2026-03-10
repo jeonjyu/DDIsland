@@ -410,8 +410,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::StoreManager
   storeListPanel: {fileID: 1574743981}
   buyAndSellPanel: {fileID: 385899313}
+  filterDropdown: {fileID: 2086556009}
+  sortDropdown: {fileID: 1590389516}
   currentCat: 0
-  currentTradeItem: {fileID: 0}
 --- !u!4 &1543916710
 Transform:
   m_ObjectHideFlags: 0
@@ -497,6 +498,17 @@ MonoBehaviour:
   maxSize: 50
   initCount: 6
   data: {fileID: 4007453396370722924, guid: 8429fda8938318448b57bb4bd1fb013a, type: 3}
+--- !u!114 &1590389516 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3841629520960940788, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
+  m_PrefabInstance: {fileID: 4261510180227368517}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6ecaf544000293469e7378278b36839, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SortDropdown
 --- !u!1 &1839738073
 GameObject:
   m_ObjectHideFlags: 0
@@ -800,6 +812,17 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2086556009 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3294994116761818843, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
+  m_PrefabInstance: {fileID: 4261510180227368517}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f571966bfd19ca4aa33f13ad6ece956, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FilterDropdown
 --- !u!114 &848204768603809120
 MonoBehaviour:
   m_ObjectHideFlags: 0

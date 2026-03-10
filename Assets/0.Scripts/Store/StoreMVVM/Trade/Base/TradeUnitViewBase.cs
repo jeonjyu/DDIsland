@@ -92,14 +92,6 @@ public abstract class TradeUnitViewBase : MonoBehaviour
     public virtual void SetButton()
     {
         SetAllButtonAvailablity(true);
-
-        // 거래 불가능한 아이템일 경우 거래 유닛 버튼 클릭 불가능
-        if (viewModel.Model.IsSaleable == false)
-        {
-            Debug.Log("거래 유닛 | 거래 불가능");
-            SetAllButtonAvailablity(false);
-            return;
-        }
     }
     
     public void SetAllButtonAvailablity(bool isAvailable)

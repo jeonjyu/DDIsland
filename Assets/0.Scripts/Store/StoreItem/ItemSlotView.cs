@@ -96,6 +96,7 @@ public class ItemSlotView : MonoBehaviour, IStoreItemView, IPointerClickHandler
         // 구매보다 카테고리 변경을 더 자주하니까 구매창 킬 때 카테고리에 따라 다른 구매창 열도록 설정
         viewModel.SetPopupModel();
         StoreManager.Instance.BuyAndSellPanel.SetActive(true);
+        StoreManager.Instance.ChangeDropdownAvailability(false);
     }
 
     private void OnViewModelPropChanged(object sender, PropertyChangedEventArgs e)

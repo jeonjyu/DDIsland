@@ -19,15 +19,19 @@ public class LakeGridManager : MonoBehaviour
 
     [Header("프리팹 (없으면 코드로 생성)")]
     public GameObject tilePrefab;  // 타일재
-    public GameObject itemPrefab;  // 배치템 
-
+                                   //  public GameObject itemPrefab;  // 배치템 
+    public GameObject blockedIconPrefab; // 접근금지 이미지 프리팹 
+    [Header("배치 오브젝트 위치 (호수 뒤에 배치)")]
+    public Transform placedObjectsParent;
+    [Header("호수")]
+    public RectTransform lakeBackground;
     //  내부 변수 
     LakeTileData[,] tileDataArray;        // 타일 데이터 2차원 배열
     GameObject[,] tileObjectArray;        // 타일 게임오브젝트 2차원 배열
     List<LakePlacedObjectData> placedObjects = new List<LakePlacedObjectData>();
     Dictionary<string, GameObject> placedVisuals = new Dictionary<string, GameObject>(); // 배치된 실제 오브젝트 관리
     List<GameObject> blockedIcons = new List<GameObject>();
-    public GameObject blockedIconPrefab; // 접근금지 이미지 프리팹 
+
     int placedIdCounter = 0; // 배치 ID
     List<LakePlacedObjectData> gridSnapshot = null; // 배치 스냅샷 
 
@@ -43,6 +47,16 @@ public class LakeGridManager : MonoBehaviour
     // 초기화
     void Start()
     {
+        if (placedObjectsParent != null)
+        {
+            RectTransform myRect = GetComponent<RectTransform>();
+            RectTransform parentRT = placedObjectsParent.GetComponent<RectTransform>();
+            parentRT.anchorMin = myRect.anchorMin;
+            parentRT.anchorMax = myRect.anchorMax;
+            parentRT.pivot = myRect.pivot;
+            parentRT.sizeDelta = myRect.sizeDelta;
+            parentRT.anchoredPosition = myRect.anchoredPosition;
+        }
         CreateGrid();
     }
 
@@ -288,18 +302,24 @@ public class LakeGridManager : MonoBehaviour
     GameObject CreatePlacedVisual(LakePlacedObjectData data)
     {
         GameObject obj;
-
-        if (itemPrefab != null) // 인스펙터에 프리팹 넣으면 프리팹 생성 
+        GameObject prefab = LakeDecoTestData.GetPrefab(data.itemId);
+        //      if (itemPrefab != null) // 인스펙터에 프리팹 넣으면 프리팹 생성 
+        if (prefab != null)
         {
             // TODO: 실제 스프라이트 로드 (나중에 ObjectTable 연동)
-            obj = Instantiate(itemPrefab);
+           // obj = Instantiate(itemPrefab);
+            obj = Instantiate(prefab);
             obj.name = "Placed_" + data.objectId;
-            obj.transform.SetParent(this.transform, false);
+            obj.transform.SetParent(placedObjectsParent != null ? placedObjectsParent : this.transform, false);
+
+            // 3D 프리팹에 RectTransform 없으면 추가
+            if (obj.GetComponent<RectTransform>() == null)
+                obj.AddComponent<RectTransform>();
         }
         else  // 프리팹 없을시 더미 
         {
             obj = new GameObject("Placed_" + data.objectId);
-            obj.transform.SetParent(this.transform, false);
+            obj.transform.SetParent(placedObjectsParent != null ? placedObjectsParent : this.transform, false);
             obj.AddComponent<RectTransform>();
 
             Image img = obj.AddComponent<Image>();
@@ -309,28 +329,48 @@ public class LakeGridManager : MonoBehaviour
                 img.sprite = sprite;
                 img.color = Color.white;
             }
-            else // 폴백할 스프라이트도 없으면 랜덤색 타일
-            {
-                img.color = GetDummyItemColor(data.itemId);
-            }
-
+       
             img.raycastTarget = true;
+         //   img.SetNativeSize(); // 원본 크기 
         }
-
+   
         // 위치와 크기 세팅 (프리팹이든 더미든 동일)
         RectTransform rt = obj.GetComponent<RectTransform>();
         rt.anchorMin = new Vector2(0.5f, 0.5f);
         rt.anchorMax = new Vector2(0.5f, 0.5f);
         rt.pivot = new Vector2(0f, 0f);
-
-        float objWidth = tileWidth * data.size.x;
+        // 오브젝트 크기 
+        float objWidth = tileWidth * data.size.x ;
         float objHeight = tileHeight * data.size.y;
-        rt.sizeDelta = new Vector2(objWidth, objHeight);
+       
 
-        rt.anchoredPosition = new Vector2(
-            offsetX + (data.gridPos.x * tileWidth),
-            offsetY + (data.gridPos.y * tileHeight)
-        );
+        //if (prefab != null)
+        //{
+        //    // 프리팹이면 원본 크기 유지, 위치만 타일 중앙에
+        //    rt.anchoredPosition = new Vector2(
+        //        offsetX + (data.gridPos.x * tileWidth) + (objWidth * 0.5f),
+        //        offsetY + (data.gridPos.y * tileHeight) + (objHeight * 0.5f)
+        //    );
+        //}
+        //else // 프리팹이 없으면 
+        //{
+        //    rt.sizeDelta = new Vector2(objWidth, objHeight);
+        //    rt.anchoredPosition = new Vector2(
+        //        offsetX + (data.gridPos.x * tileWidth),
+        //        offsetY + (data.gridPos.y * tileHeight) //+ (objHeight * 0.2f) // 살짝 위로
+        //    );
+        //}
+
+        Vector2 gridLocalPos = (prefab != null)
+            ? new Vector2(offsetX + (data.gridPos.x * tileWidth) + (objWidth * 0.5f),
+                          offsetY + (data.gridPos.y * tileHeight) + (objHeight * 0.5f))
+            : new Vector2(offsetX + (data.gridPos.x * tileWidth),
+                          offsetY + (data.gridPos.y * tileHeight));
+
+        if (prefab == null)
+            rt.sizeDelta = new Vector2(objWidth, objHeight);
+
+        rt.position = this.transform.TransformPoint(gridLocalPos);
      
         return obj;
     }
@@ -416,8 +456,9 @@ public class LakeGridManager : MonoBehaviour
       //  ShowPreview(12, 0, 2, 1);
     }
 
+
     // 격자 보이기 (편집 모드 ON) // 이미지에 격자가 있는게 아니라, 중간중간 띄워서 백그라운드가 보이게 하는 방식
-    public void ShowGrid(float gap = 2f)
+    public void ShowGrid(float gap = 0f)
     {
         currentGap = gap;
 
@@ -426,7 +467,8 @@ public class LakeGridManager : MonoBehaviour
             for (int y = 0; y < gridHeight; y++)
             {
                 RectTransform rt = tileObjectArray[x, y].GetComponent<RectTransform>();
-                rt.sizeDelta = new Vector2(tileWidth - gap, tileHeight - gap); // gap만큼 타일 줄여서 틈 생성
+               // rt.sizeDelta = new Vector2(tileWidth - gap, tileHeight - gap); // gap만큼 타일 줄여서 틈 생성
+                rt.sizeDelta = new Vector2(tileWidth, tileHeight); 
                 UpdateTileColor(x, y);
             }
         }

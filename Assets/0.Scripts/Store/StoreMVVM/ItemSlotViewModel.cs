@@ -91,7 +91,6 @@ public class ItemSlotViewModel : MonoBehaviour, INotifyPropertyChanged
     public void SetPopupModel()
     {
         StoreManager.Instance.TradeModel = Model;
-        //StoreManager.Instance.currentTradeItem = this;
     }
 
     public event PropertyChangedEventHandler PropertyChanged;
