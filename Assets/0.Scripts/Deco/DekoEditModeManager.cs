@@ -14,6 +14,8 @@ public class DecoEditModeManager : MonoBehaviour
     public GameObject objectActionPanel; // 회수, 이동, 취소
     public AquariumMgr aquariumMgr; // 물고기 안보이게 
     public RectTransform lakeBackground; // 호수 이미지 
+    public RectTransform floorPlane; // 바닥재
+   
 
     [Header("3D 액션 패널 버튼")] 
     public Button btnObjRecall;   // 회수
@@ -48,7 +50,8 @@ public class DecoEditModeManager : MonoBehaviour
     public Button btnExitSave;        // 저장하고 나가기
     public Button btnExitNoSave;      // 저장하지 않고 나가기
     public Button btnExitCancel;      // 취소 
-    [Header("플레이어")]
+
+    [Header("플레이어(투명화)")]
     public GameObject playerObject;
     // 내부 변수
     bool isEditMode = false;
@@ -62,6 +65,7 @@ public class DecoEditModeManager : MonoBehaviour
  
     bool isChanged = false; // 저장 안 한 변경이 있었는지 
     Vector2 placedObjOriginPos; // 배치템 원래 위치 
+    Vector2 floorOriginPos; // 바닥재 원래 위치 
     Placeable3D selectedIslandTarget; // 3d 오브젝트 선택
     #endregion
 
@@ -73,10 +77,14 @@ public class DecoEditModeManager : MonoBehaviour
             gridOriginPos = gridPanel.anchoredPosition;
         if (gridManager != null && gridManager.placedObjectsParent != null) // 배치템 원래 위치 저장
             placedObjOriginPos = gridManager.placedObjectsParent.GetComponent<RectTransform>().anchoredPosition;
-        // 호수 배경 원래 위치 저장
+        // 호수와 바닥재 원래 위치 저장
         if (lakeBackground != null)
             lakeOriginPos = lakeBackground.anchoredPosition;
-        
+        if (floorPlane != null) 
+            floorOriginPos = floorPlane.anchoredPosition;
+
+
+
         if (aquariumMgr == null) // 인스펙터 할당된게 없으면 매니저 찾아서 물고기 숨기는용
             aquariumMgr = FindObjectOfType<AquariumMgr>();
 
@@ -359,6 +367,11 @@ public class DecoEditModeManager : MonoBehaviour
                 lakeBackground.DOAnchorPosY(lakeOriginPos.y + lakeBgMoveUp, animTime)
                 .SetEase(Ease.OutQuad);
             }
+            if (floorPlane != null) // 바닥재 띄우기 
+            {
+                floorPlane.DOAnchorPosY(floorOriginPos.y + gridMoveUp, animTime)
+                    .SetEase(Ease.OutQuad);
+            }
             // 장식물 띄우기 
             if (gridManager != null && gridManager.placedObjectsParent != null)
             {
@@ -469,6 +482,11 @@ public class DecoEditModeManager : MonoBehaviour
             {
                 lakeBackground.DOAnchorPosY(lakeOriginPos.y, animTime)
                  .SetEase(Ease.OutQuad);
+            }
+            if (floorPlane != null) // 바닥재 복귀 
+            {
+                floorPlane.DOAnchorPosY(floorOriginPos.y, animTime)
+                    .SetEase(Ease.OutQuad);
             }
             // 장식물 위치 복귀 
             if (gridManager != null && gridManager.placedObjectsParent != null)
