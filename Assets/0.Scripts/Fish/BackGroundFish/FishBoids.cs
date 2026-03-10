@@ -23,14 +23,18 @@ public class FishBoids : IMovement
         // 인스펙터에 노출시켜 직접 제어할 수 있게 해두기
         if (currentY > 0 && yRatio > fish.UpsserFish) // 위쪽 경계 감지
         {
-            float forceStrength = (yRatio - fish.UpsserFish) * 5.0f;
+            float forceStrength = (yRatio - fish.UpsserFish) * 10f;
             boundForce = Vector2.down * forceStrength;
         }
         else if (currentY < 0 && yRatio > fish.LowerFish) // 아래쪽 경계 감지
         {
-            float forceStrength = (yRatio - fish.LowerFish) * 5.0f;
+            float forceStrength = (yRatio - fish.LowerFish) * 10f;
             boundForce = Vector2.up * forceStrength;
         }
+
+        float wanderNoise = Mathf.PerlinNoise(Time.deltaTime * 0.5f, fish.gameObject.GetInstanceID());
+        float wanderAngle = wanderNoise * Mathf.PI * 4f;
+        Vector2 wanderForce = new (Mathf.Cos(wanderAngle), Mathf.Sin(wanderAngle));
 
         foreach (var other in fish.Manager._activeFish)
         {
@@ -72,20 +76,20 @@ public class FishBoids : IMovement
 
             // 가중치 조절
             desiredVelocity =
-                (separationForce.normalized * 0.7f) + // 겹치지 않게
+                (separationForce.normalized * 0.9f) + // 겹치지 않게
                 (alignmentForce.normalized * 1.0f) +  // 같은 방향으로
-                (cohesionForce.normalized * 0.5f) +   // 뭉치도록
+                (cohesionForce.normalized * 1.3f) +   // 뭉치도록
                 (attendantsDir * 1.5f) +              // 오른쪽 또는 왼쪽으로 이동
-                (boundForce * 1.5f);                // 경계에서 멀어지도록
+                (wanderForce*0.3f);                // 경계에서 멀어지도록
 
         }
         // 만약 주변에 아무도 없을수 도 있으니까...
         else
         {
-            desiredVelocity = (fish.MoveDir + (boundForce * 1.5f));
+            desiredVelocity = (fish.MoveDir + (boundForce));
         }
 
-        return desiredVelocity.normalized * fish._speed;
+        return (desiredVelocity+boundForce).normalized * fish._speed;
 
     }
 }

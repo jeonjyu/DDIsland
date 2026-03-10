@@ -9,7 +9,6 @@ public enum SubState
 public class FishPattern : IMovement
 {
     private const float INSIDE_THE_SCREEN = 0.8f;
-    private const float BASE_SPEED = 50f;
     private const float PLUS_SPEED = 20f;
     private const float RADIUS = 100f;
     private const float WAIT_TIME = 3f;
@@ -17,10 +16,32 @@ public class FishPattern : IMovement
 
     public Vector2 GetTargetVelocity(BackGroundFish fish, float dt)
     {
-        var data = fish._patternData;
+        FishStateData data = fish._patternData;
+        Vector2 boundForce = Vector2.zero;
+
+        float currentY = fish.FishTransform.anchoredPosition.y;
+        float highLimit = Mathf.Max(1f, fish.Manager.HighLimit);
+        float yRatio = Mathf.Abs(currentY) / highLimit;
 
         Vector2 fishVelocity = Vector2.zero;
         Vector2 forwardDir = fish._isGoingRight ? Vector2.right : Vector2.left;
+
+        if (yRatio > fish.UpsserFish && currentY > 0)
+        {
+            boundForce = Vector2.down * (yRatio - fish.UpsserFish) * 15f;
+        }
+        else if (yRatio > fish.LowerFish && currentY < 0)
+        {
+            boundForce = Vector2.up * (yRatio - fish.LowerFish) * 15f;
+        }
+
+        if (yRatio > 0.9f) 
+        {
+            if (data._currentState == SubState.ShortMove)
+            {
+                data._isSubTargetSet = false;
+            }
+        }
 
         if (data._currentState == SubState.Enter)
         {
@@ -32,7 +53,7 @@ public class FishPattern : IMovement
             {
                 SelectNewPattern(data);
             }
-            fishVelocity = forwardDir * BASE_SPEED;
+            fishVelocity = forwardDir * fish._speed;
         }
         else
         {
@@ -41,7 +62,7 @@ public class FishPattern : IMovement
             switch (data._currentState)
             {
                 case SubState.BaseMove:
-                    fishVelocity = forwardDir * BASE_SPEED;
+                    fishVelocity = forwardDir * fish._speed;
                     break;
 
                 case SubState.ShortMove:
@@ -62,18 +83,18 @@ public class FishPattern : IMovement
                             data._currentState = SubState.Interval;
                             data._stateTimer = INTERVAL_TIME;
                         }
-                        fishVelocity = forwardDir * BASE_SPEED;
+                        fishVelocity = forwardDir * fish._speed;
                     }
                     else
                     {
                         if (Vector2.Dot(forwardDir, toTarget.normalized) < 0.1f)
                         {
-                            fishVelocity = forwardDir * (BASE_SPEED + PLUS_SPEED);
+                            fishVelocity = forwardDir * (fish._speed + PLUS_SPEED);
                             data._isSubTargetSet = false;
                         }
                         else
                         {
-                            fishVelocity = toTarget.normalized * (BASE_SPEED + PLUS_SPEED);
+                            fishVelocity = toTarget.normalized * (fish._speed + PLUS_SPEED);
                         }
                     }
                     break;
@@ -92,8 +113,9 @@ public class FishPattern : IMovement
             }
         }
 
-        float smoothness = 0.1f;
-        data._currentVelocity = Vector2.Lerp(data._currentVelocity, fishVelocity, smoothness);
+        float smoothness = 0.15f;
+
+        data._currentVelocity = Vector2.Lerp(data._currentVelocity, (fishVelocity+boundForce).normalized * fish._speed, smoothness);
 
         return data._currentVelocity;
     }

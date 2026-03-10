@@ -43,7 +43,7 @@ public class BackGroundFish : MonoBehaviour
     [SerializeField] private float _spawnTime = 0.2f;
 
     [Header("물고기 군집 관련")]
-    private float _neighborDistance = 200f; // 근처 물고기와의 거리
+    private float _neighborDistance = 250f; // 근처 물고기와의 거리
     private float _separationDistance = 100f; // 충돌 방지 범위
     public int _floackID; // 물고기 군집 구분용 ID
 
@@ -93,7 +93,11 @@ public class BackGroundFish : MonoBehaviour
         float dt = Mathf.Min(Time.deltaTime, 0.05f);
 
         _velocity = Vector2.Lerp(_velocity, _targetVelocity, dt * 1.5f);
-        _rectTransform.anchoredPosition += _velocity * dt;
+
+        float waveY = Mathf.Sin(Time.time * 1.5f + _floackID) * 15f;
+        Vector2 waveOffset = Vector2.up * waveY;
+
+        _rectTransform.anchoredPosition += (_velocity+ waveOffset) * dt;
 
         // 다시 Atan2 사용(짐벌락 방지)
         float sqrMag = _velocity.sqrMagnitude;
@@ -138,6 +142,10 @@ public class BackGroundFish : MonoBehaviour
         _isGoingRight = isRight;
         _movementPattern = movement;
 
+        float baseSpeed = 50f;
+        float randomSpeedFactor = Random.Range(0.9f, 1.1f);
+        _speed = baseSpeed * randomSpeedFactor;
+
         if (data != null)
         {
             _fishImage.sprite = data.FishImgPath_Sprite;
@@ -167,7 +175,7 @@ public class BackGroundFish : MonoBehaviour
             {
                 _targetVelocity = _movementPattern.GetTargetVelocity(this, _spawnTime);
             }
-            yield return new WaitForSeconds(_spawnTime);
+            yield return new WaitForSeconds(_spawnTime + Random.Range(-0.02f,0.02f));
         }
     }
     #endregion
