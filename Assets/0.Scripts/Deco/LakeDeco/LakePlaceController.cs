@@ -227,7 +227,7 @@ public class LakePlaceController : MonoBehaviour
 
         // 다시 배치 모드
         currentItemId = itemId;
-        Vector2Int size = GetItemSize(itemId);
+        Vector2Int size = LakeDecoTestData.GetItemSize(itemId);
         currentSizeX = size.x;
         currentSizeY = size.y;
 
@@ -251,7 +251,7 @@ public class LakePlaceController : MonoBehaviour
 
         // 아이템 정보 세팅
         currentItemId = itemId;
-        Vector2Int size = GetItemSize(itemId);
+        Vector2Int size = LakeDecoTestData.GetItemSize(itemId);
         currentSizeX = size.x;
         currentSizeY = size.y;
 
@@ -358,27 +358,6 @@ public class LakePlaceController : MonoBehaviour
         {
             Destroy(previewObj);
             previewObj = null;
-        }
-    }
-
-
-    // 더미 데이터 // 배치할 템의 타일 크기 먹는 수 // TODO: 이것도 데이터쪽에 빼기 
-    Vector2Int GetItemSize(int itemId)
-    {
-        switch (itemId)
-        {
-            case 1001: return new Vector2Int(1, 1);
-            case 1002: return new Vector2Int(1, 1);
-            case 1003: return new Vector2Int(1, 1);
-            case 1004: return new Vector2Int(2, 1);
-            case 1005: return new Vector2Int(2, 1);
-            case 1006: return new Vector2Int(2, 1);
-            case 1007: return new Vector2Int(3, 1);
-            case 1008: return new Vector2Int(1, 1);
-            case 1009: return new Vector2Int(1, 1);
-            case 1010: return new Vector2Int(3, 1);
-
-            default: return new Vector2Int(1, 1);
         }
     }
 
