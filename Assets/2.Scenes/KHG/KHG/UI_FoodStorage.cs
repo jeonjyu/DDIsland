@@ -122,14 +122,7 @@ public class UI_FoodStorage : MonoBehaviour
                 // 남는 UI칸은 빈칸으로
                 _foodSlots[ui].BindRealIndex(-1);
                 _foodSlots[ui].gameObject.SetActive(true);
-                foreach (Transform child in _foodSlots[ui].transform)
-                {
-                    if (!child.name.Contains("ItemImage") && !child.name.Contains("BackItemImage"))
-                    {
-                        child.gameObject.SetActive(false);
-                    }
-
-                }
+                _foodSlots[ui].SetEmpty();
             }
         }
     }

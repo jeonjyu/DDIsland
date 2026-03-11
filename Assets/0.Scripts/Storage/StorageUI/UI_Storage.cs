@@ -2,7 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem.HID;
 using UnityEngine.UI;
 
 
@@ -138,14 +140,7 @@ public class UI_Storage : MonoBehaviour
                 // 남는 UI칸은 빈칸으로
                 _fishSlots[ui].BindRealIndex(-1);
                 _fishSlots[ui].gameObject.SetActive(true);
-                foreach (Transform child in _fishSlots[ui].transform)
-                {
-                    if(!child.name.Contains("ItemImage") && !child.name.Contains("BackItemImage"))
-                    {
-                        child.gameObject.SetActive(false);
-                    }
-                    
-                }
+                _fishSlots[ui].SetEmpty();
             }
         }
     }

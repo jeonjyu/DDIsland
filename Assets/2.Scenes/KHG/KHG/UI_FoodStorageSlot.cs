@@ -8,11 +8,13 @@ public class UI_FoodStorageSlot : MonoBehaviour
     [SerializeField] Image _icon;
     [SerializeField] GameObject _emptyOverlay;
     [SerializeField] TextMeshProUGUI _countText;
+    [SerializeField] GameObject _textBackground;
 
     [SerializeField] private TextMeshProUGUI _itemNameText;
     [SerializeField] private TextMeshProUGUI _itemGradeText;
     [SerializeField] private TextMeshProUGUI _itemPriceText;
     int _boundRealIndex = -1;
+
     public void Init(UI_FoodStorage parent) // 이 UI 슬롯이 대표하는 실제 데이터 슬롯 인덱스
     {
         _parentUI = parent;
@@ -81,6 +83,30 @@ public class UI_FoodStorageSlot : MonoBehaviour
         if (_itemGradeText != null)
             _itemGradeText.text = def.foodrateType.ToString();
     }
+    public void SetEmpty()
+    {
+        if (_icon != null)
+        {
+            _icon.sprite = null;
+            _icon.enabled = false;
+        }
+
+        if (_countText != null)
+            _countText.gameObject.SetActive(false);
+
+        if (_itemNameText != null)
+            _itemNameText.gameObject.SetActive(false);
+
+        if (_itemGradeText != null)
+            _itemGradeText.gameObject.SetActive(false);
+
+        if (_itemPriceText != null)
+            _itemPriceText.gameObject.SetActive(false);
+
+        if (_textBackground != null)
+            _textBackground.gameObject.SetActive(false);
+    }
+
     public void BindRealIndex(int realIndex)
     {
         _boundRealIndex = realIndex;
