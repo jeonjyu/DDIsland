@@ -336,7 +336,7 @@ public class BuildingManager : MonoBehaviour
     #endregion
     private void Update()
     {
-        /* // 
+        
         //배치 가능한 물건이 배치되었으면
         if (_activePlaceable != null && _activePlaceable.ItemState == ItemState.Placed)
         {
@@ -344,6 +344,6 @@ public class BuildingManager : MonoBehaviour
             // 매니저의 관리 대상에서 해제
             _activePlaceable = null;
         }
-        */ 
+       
     }
 }

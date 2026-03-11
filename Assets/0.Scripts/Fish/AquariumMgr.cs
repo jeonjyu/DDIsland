@@ -289,6 +289,7 @@ public class AquariumMgr : MonoBehaviour
     // 물고기 숨기기 
     public void HideFish() 
     {
+
          StopAllCoroutines();
         // 투명도 0 보이지 않게 
         var cg = _spawnArea.GetComponent<CanvasGroup>();

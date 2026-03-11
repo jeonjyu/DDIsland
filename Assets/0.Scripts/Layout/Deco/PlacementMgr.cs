@@ -272,7 +272,6 @@ public class PlacementMgr : MonoBehaviour
         Debug.Log("모든 변경 사항이 취소되고 편집 전으로 되돌아갔습니다.");
     }
 
-    // 인테리어 데이터 SO로 바꿔야함
     public void OnClickConstructionButton(int itemId)
     {
         // 편집 모드일 때만 건설 시작 가능
