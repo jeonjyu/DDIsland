@@ -20,6 +20,7 @@ public abstract class StoreItem<T> : IStoreItem where T : TableBase<int>
     public abstract int ObjectId { get; }
     public abstract bool IsGained { get; set; }
     public abstract bool IsSaleable { get; }
+    public abstract bool IsDefault { get; }
     public abstract int MaxCount { get; } 
     public abstract int ItemCount { get; set; } 
     public abstract int PurchasePrice { get; } 
@@ -32,5 +33,11 @@ public abstract class StoreItem<T> : IStoreItem where T : TableBase<int>
     public StoreItem(T data)
     {
         _data = data;
+        if (IsDefault == true)
+        {
+            ItemCount = 1;
+            IsGained = true;
+        }
+        //Debug.Log($"{ID} {ObjectId} {ItemName} {IsDefault} {IsGained}");
     }
 }
