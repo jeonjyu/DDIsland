@@ -14,6 +14,7 @@ public class GridSystem : MonoBehaviour
     [SerializeField] private GameObject _gridObject; //그리드 시각화 오브젝트
 
     private Texture2D _gridDataTexture;
+    [SerializeField] private bool _showGizmos = true;
 
     private Placeable[,] _grid; //셀의 상태를 나타내는 2차원 배열, 0은 빈 셀, 1은 채워진 셀
 
@@ -228,5 +229,52 @@ public class GridSystem : MonoBehaviour
         if (_gridRenderer == null) return;
         _gridRenderer.material.SetFloat("_IsBuilding", 0f); //만약 건물을 배치하는 중이 아니라면 셰이더에서 색 제거
         _gridRenderer.material.SetVector("_Hoverinfo", new Vector4(-100, -100, 0, 0)); // 좌표 초기화
+    }
+
+
+    private void OnDrawGizmos()
+    {
+        if (_gridRenderer == null) return;
+
+        // 1. 에디터에서도 Bounds 정보를 가져오기 위한 처리
+        if (bounds.size == Vector3.zero)
+        {
+            if (_gridRenderer.TryGetComponent<MeshFilter>(out var filter) && filter.sharedMesh != null)
+            {
+                bounds = filter.sharedMesh.bounds;
+            }
+            else return;
+        }
+
+        Gizmos.color = Color.white; // 깔끔한 흰색 선
+
+        // 2. 가로줄 그리기
+        for (int i = 0; i <= _width; i++)
+        {
+            Vector3 start = GetWorldPosition_Gizmo(i, 0);
+            Vector3 end = GetWorldPosition_Gizmo(i, _height);
+            Gizmos.DrawLine(start, end);
+        }
+
+        // 3. 세로줄 그리기
+        for (int j = 0; j <= _height; j++)
+        {
+            Vector3 start = GetWorldPosition_Gizmo(0, j);
+            Vector3 end = GetWorldPosition_Gizmo(_width, j);
+            Gizmos.DrawLine(start, end);
+        }
+    }
+
+    // 기즈모 전용 좌표 계산 (선 그리기용이라 sizeX, sizeY를 0으로 처리)
+    private Vector3 GetWorldPosition_Gizmo(int x, int y)
+    {
+        float xPos = (float)x / _width;
+        float zPos = (float)y / _height;
+
+        float localX = bounds.min.x + (xPos * bounds.size.x);
+        float localZ = bounds.min.z + (zPos * bounds.size.z);
+
+        Vector3 localPos = new Vector3(localX, 0.05f, localZ); // 바닥에 묻히지 않게 살짝 띄움
+        return _gridRenderer.transform.TransformPoint(localPos);
     }
 }
