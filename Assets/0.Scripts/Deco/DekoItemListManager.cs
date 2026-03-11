@@ -66,8 +66,46 @@ public class DecoItemListManager : MonoBehaviour
             slotTemplate.SetActive(false);
     }
 
-    // 테스트용 
-    public void SetupTestInventory()
+    // 상점에서 구매한 인테리어 아이템을 LakeInvenSlot 리스트로 변환
+    List<LakeInvenSlot> CreateInven()
+    {
+        List<LakeInvenSlot> list = new List<LakeInvenSlot>();
+
+        // playerItemDatas에 interior 카테고리가 없으면 빈 리스트 반환
+        if (!ItemManager.Instance.playerItemDatas.ContainsKey(StoreCat.interior))
+            return list;
+
+        var playerItems = ItemManager.Instance.playerItemDatas[StoreCat.interior].Items;
+    
+        foreach (var item in playerItems)
+        {
+            // 보유 중이고 수량이 1이상인 것만
+            if (item.IsGained && item.ItemCount > 0)
+            {
+                //{
+                //    // 상점ID(200011)를 인테리어ID(20001) 변환
+                //    var storeData = DataManager.Instance.StoreDatabase.InteriorStoreData[item.ObjectId];
+                //    if (storeData == null) continue;
+
+                //    list.Add(new LakeInvenSlot)
+                //    { 
+                //        itemId = storeData.InteriorId, // InteriorId를 20001~ 등으로 저장)
+                //        quantity = item.ItemCount
+                //    });
+                //}
+                //catch { continue; }
+                list.Add(new LakeInvenSlot
+                {
+                    itemId = item.ObjectId,  // InteriorId (20001~ 등)
+                    quantity = item.ItemCount
+                });
+            }
+        }
+
+        return list;
+    }
+
+    public void SetupInventory()
     {
         // 이전 모드 인벤 저장 
         if (lastMode == DecoMode.Lake && invenData.Count > 0)
@@ -76,14 +114,20 @@ public class DecoItemListManager : MonoBehaviour
             islandInvenSave = invenData;
         lastMode = currentMode;
 
-        // 테스트용 (데이터 연결 전까지 LakeDecoTestData의 더미 인벤 사용)
-        if (currentMode == DecoMode.Lake)
+        if (currentMode == DecoMode.Lake) // 호수 인벤
+        {
             SetupInventory(lakeInvenSave ?? LakeDecoTestData.CreateTestInventory());
-        else if (currentMode == DecoMode.Island)
             SetupInventory(islandInvenSave ?? IslandDecoTestData.CreateInventory());
+        }
+        else if (currentMode == DecoMode.Island) // 섬 인벤  
+        {   
+            //SetupInventory(islandInvenSave ?? CreateInven());
+            SetupInventory(CreateInven());
+        }
         else
-            SetupInventory(new List<LakeInvenSlot>()); // 빈 인벤 
-
+        {
+            SetupInventory(new List<LakeInvenSlot>()); // 빈 인벤
+        }
     }
 
     #region 인벤토리 세팅 
@@ -176,7 +220,21 @@ public class DecoItemListManager : MonoBehaviour
             if (currentMode == DecoMode.Lake)
                 sprite = LakeDecoTestData.GetIconSprite(slotData.itemId);
             else if (currentMode == DecoMode.Island)
-                sprite = IslandDecoTestData.GetIconSprite(slotData.itemId);
+            {
+                // 상점SO에서 아이콘 가져오기 (InteriorId로 검색)
+                var storeDatas = DataManager.Instance.StoreDatabase.InteriorStoreData.datas;
+                foreach (var sd in storeDatas)
+                {
+                    if (sd.InteriorId == slotData.itemId && sd.InteriorImgPath_Sprite != null)
+                    {
+                        sprite = sd.InteriorImgPath_Sprite;
+                        break;
+                    }
+                }
+                // 폴백
+                if (sprite == null)
+                    sprite = IslandDecoTestData.GetIconSprite(slotData.itemId);
+            }
 
             if (sprite != null)
                 slotUI.itemImage.sprite = sprite;

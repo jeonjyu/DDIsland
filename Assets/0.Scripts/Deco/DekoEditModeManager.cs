@@ -429,7 +429,7 @@ public class DecoEditModeManager : MonoBehaviour
         if (itemListManager != null)
         {
             itemListManager.currentMode = currentMode; // 모드를 받아서 세팅후 
-            itemListManager.SetupTestInventory(); // 인벤호출
+            itemListManager.SetupInventory(); // 인벤호출
             itemListManager.SaveSnapshot();
         }
         // 호수 그리드 스냅샷 저장
@@ -650,8 +650,9 @@ public class DecoEditModeManager : MonoBehaviour
             // ClearAll이 전부 파괴하니까 인벤도 처음 상태로 복원
             if (itemListManager != null)
             {
-                if (currentMode == DecoMode.Island)
-                    itemListManager.SetupInventory(IslandDecoTestData.CreateInventory());
+                //if (currentMode == DecoMode.Island)
+                //    itemListManager.SetupInventory(IslandDecoTestData.CreateInventory());
+                itemListManager.LoadSnapshot(); // 마지막 저장 시점으로 복구
             }
             isChanged = true;
         }
