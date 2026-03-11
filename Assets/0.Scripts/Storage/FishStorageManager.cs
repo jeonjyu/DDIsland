@@ -142,7 +142,6 @@ public class FishStorageManager : Singleton<FishStorageManager>
     {
         int newCap = _storageCapacity; //현재 용량 기준으로 새 용량 계산
 
-
         if (_storagelevel <= 1) newCap = 10;
         else if (_storagelevel == 2) newCap = 20;
         else if (_storagelevel == 3) newCap = 30;

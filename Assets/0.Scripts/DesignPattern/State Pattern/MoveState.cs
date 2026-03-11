@@ -23,6 +23,9 @@ public class MoveState : IState
                  case Point.Acorn:
                     target = _player.AcornPoint;
                 break;
+            case Point.Table:
+                target = _player.TablePoint;
+                break;
             case Point.Rest:
                 target = _player.RestAreaPoint;
                 break;
@@ -45,7 +48,8 @@ public class MoveState : IState
             {
                 case Point.Fish: _player.SetState(new FishingState(_player)); break;
                 case Point.Kitchen: _player.SetState(new CookState(_player)); break;
-                case Point.Acorn: _player.SetState(new EatState(_player)); break;
+                case Point.Acorn: _player.SetState(new EatState(_player, _desPoint)); break;
+                case Point.Table: _player.SetState(new EatState(_player, _desPoint)); break;
                 case Point.Rest: _player.SetState(new SleepState(_player)); break;
             }
             return;
@@ -74,8 +78,11 @@ public class MoveState : IState
                      _player.SetState(new CookState(_player));  
                     break;
                 case Point.Acorn:
-                    _player.SetState(new EatState(_player));  
-                   break;
+                    _player.SetState(new EatState(_player, _desPoint));  
+                  break;
+                case Point.Table:
+                    _player.SetState(new EatState(_player, _desPoint));
+                    break;
                 case Point.Rest:
                     _player.SetState(new SleepState(_player));
                     break;
