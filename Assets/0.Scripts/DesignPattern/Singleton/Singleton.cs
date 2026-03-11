@@ -36,6 +36,6 @@ public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-    protected void OnApplicationQuit() => isQuit = true;
+    protected virtual void OnApplicationQuit() => isQuit = true;
     protected void OnDestroy() => isQuit = true;
 }
