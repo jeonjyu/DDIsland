@@ -14,6 +14,7 @@ using UnityEngine;
 
 public class TradeViewModelBase : MonoBehaviour, INotifyPropertyChanged
 {
+
     public IStoreItem Model
     {
         get => StoreManager.Instance.TradeModel;
@@ -34,8 +35,6 @@ public class TradeViewModelBase : MonoBehaviour, INotifyPropertyChanged
         }
     }
 
-
-
     int totalPrice;
 
     public int TotalPrice
@@ -50,6 +49,8 @@ public class TradeViewModelBase : MonoBehaviour, INotifyPropertyChanged
             }
         }
     }
+
+    public StoreCat storeCat => StoreManager.Instance.currentCat;
 
     public event PropertyChangedEventHandler PropertyChanged;
 
