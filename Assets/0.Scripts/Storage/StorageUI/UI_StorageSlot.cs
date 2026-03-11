@@ -10,6 +10,7 @@ public class UI_StorageSlot : MonoBehaviour
     [SerializeField] Image _icon;
     [SerializeField] GameObject _emptyOverlay;
     [SerializeField] TextMeshProUGUI _countText;
+    [SerializeField] GameObject _textBackground;
 
     // 슬롯 내부 표시용 텍스트
     [SerializeField] private TextMeshProUGUI _itemNameText;
@@ -17,10 +18,7 @@ public class UI_StorageSlot : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _itemPriceText;
 
     int _boundRealIndex = -1;  // 이 UI 슬롯이 대표하는 실제 데이터 슬롯 인덱스
-    void OnEnable()
-    {
-        FishStorageManager.Instance.OnSlotChanged += RefreshSlot;
-    }
+
     public void Init(UI_Storage parent) // 이 UI 슬롯이 대표하는 실제 데이터 슬롯 인덱스
     {
         _parentUI = parent;
@@ -92,18 +90,31 @@ public class UI_StorageSlot : MonoBehaviour
 
         //if (itemPriceText != null) itemPriceText.text = data.Value.maxPrice.ToString();
     }
-    public void RefreshSlot(int index)  //요리하고 물고기 차감시 슬롯의 이미지도 없애기
+    public void SetEmpty()
     {
-        var slot = FishStorageManager.Instance.FishSlotData[index];
-
-        if (!slot.HasValue)
+        if (_icon != null)
         {
-            _icon.enabled = false;
             _icon.sprite = null;
-            return;
+            _icon.enabled = false;
         }
-        _icon.enabled = true;
+
+        if (_countText != null)
+            _countText.gameObject.SetActive(false);
+
+        if (_itemNameText != null)
+            _itemNameText.gameObject.SetActive(false);
+
+        if (_itemGradeText != null)
+            _itemGradeText.gameObject.SetActive(false);
+
+        if (_itemPriceText != null)
+            _itemPriceText.gameObject.SetActive(false);
+
+        if (_textBackground != null) 
+            _textBackground.gameObject.SetActive(false);
     }
+
+
     public void BindRealIndex(int realIndex)
     {
         _boundRealIndex = realIndex;

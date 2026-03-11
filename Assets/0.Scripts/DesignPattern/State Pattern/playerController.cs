@@ -20,7 +20,7 @@ using System.Collections.Generic;
 
 public enum Point
 {
-    Fish,Store,Kitchen,Rest,Acorn
+    Fish,Store,Kitchen,Rest,Acorn,Table
 }
 public class PlayerController : MonoBehaviour
 {
@@ -47,6 +47,7 @@ public class PlayerController : MonoBehaviour
     private bool _cycleRunning;
 
     private Coroutine _yawnRoutine;  //하품 코루틴
+
     public CharacterDataSO PlayerDataSO;
     //public PlayerContext playerData;  //일단은 남겨둠 혹시모르니까
     public PlayerData PlayerDataOld; //업그레이드매니저를위한거
@@ -57,6 +58,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Transform _storePoint;
     [SerializeField] private Transform _kitchenPoint;
     [SerializeField] private Transform _restAreaPoint;
+    [SerializeField] private Transform _tablePoint;
      private Transform _acornPoint;
 
     [SerializeField] private SkinnedMeshRenderer _targetSMR;
@@ -98,6 +100,7 @@ public class PlayerController : MonoBehaviour
     public Transform KitchenPoint => _kitchenPoint;
     public Transform RestAreaPoint => _restAreaPoint;
     public Transform AcornPoint => _acornPoint;
+    public Transform TablePoint => _tablePoint;
     public int FishingCount => _fishingCount;
 
     private void Awake()
@@ -220,6 +223,7 @@ public class PlayerController : MonoBehaviour
         var acorn = _acorns[_acornIndex];
 
         PlayerDataOld.SetHunger(PlayerDataOld.Hunger + 10);
+       // _animator.SetTrigger("isEat");
         Destroy(acorn);
         _acorns.RemoveAt(_acornIndex);
         if (_acorns.Count == 0)
@@ -231,9 +235,35 @@ public class PlayerController : MonoBehaviour
         else SetNextAcornTargetAndMove();
 
     }
-    public void TryConsumeFood()
+    public void AnimEvent_TryConsumeFood()  //먹기 애니에 넣기
     {
-        // 음식 섭취 로직
+        int index = FoodStorageManager.Instance.TakeOutRandomFood();
+        if (index == -1) return;
+        var slot = FoodStorageManager.Instance.GetFoodSlot(index);
+        if (!slot.HasValue) return;
+        int foodId = slot.Value.FoodId;
+        var food = DataManager.Instance.FoodDatabase.FoodInfoData[foodId];
+        if (food == null) return;
+        if (food.foodeffectType == FoodEffectType.None) return;
+        float afterHunger = PlayerDataOld.Hunger + food.HungerBuffRate;
+        if (afterHunger > PlayerDataOld.MaxHunger)
+        {
+
+            PlayerDataOld.SetDoongDoongStat(PlayerDataOld.DoongDoongStat + Mathf.FloorToInt(afterHunger - PlayerDataOld.MaxHunger));
+        }
+
+        PlayerDataOld.SetHunger(PlayerDataOld.Hunger + food.HungerBuffRate);
+        
+
+        PlayerDataOld.SetDoongDoongStat(PlayerDataOld.DoongDoongStat + food.DoongDoongBuffRate);
+
+        FoodStorageManager.Instance.TryFoodRemoveAt(index);
+        //만약 추후 음식버프 효과가 주가되면 버프는 중첩안되게 하기
+    }
+
+    public void AnimEvent_EatEnd()  //애니재생 끝나는 타이밍을 맞추기 위한거
+    {
+        SetState(new IdleState(this));
     }
 
     public void TryCooking()
@@ -368,7 +398,7 @@ public class PlayerController : MonoBehaviour
         _ishungery = PlayerDataOld.Hunger <= 25;
         
         if (_isAcornFalling) return;
-        if (!_canCook && !_shouldSell && PlayerDataOld.Hunger <= 20)
+        if (!_canCook && !_shouldSell && PlayerDataOld.Hunger <= 20 && FoodStorageManager.Instance.FoodEmptyCheck())
         {
             StartAcornSupply(transform.position); 
         }
@@ -547,8 +577,19 @@ public class PlayerController : MonoBehaviour
 
     private IState DecideNextState()    //상태에 따른 도착지 결정, Move상태가 도착지의 따른 행동결정
     {
-        //if (PlayerData.Hunger <= 20)
-        //    return new EatState(this);
+        if (PlayerDataOld.Hunger <= 20)
+        {
+            if (!FoodStorageManager.Instance.FoodEmptyCheck())
+            {
+                _currentPoint = Point.Table;
+                return new MoveState(this, _currentPoint);
+            }
+            else
+            {
+                _currentPoint = Point.Acorn;
+                return new MoveState(this, _currentPoint);
+            }
+        }
 
         if (PlayerDataOld.Stamina <= 10)
         {

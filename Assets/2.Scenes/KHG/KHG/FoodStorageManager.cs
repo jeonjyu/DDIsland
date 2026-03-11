@@ -1,4 +1,6 @@
+using NUnit.Framework;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 public struct FoodInstance
 {
@@ -72,8 +74,30 @@ public class FoodStorageManager : Singleton<FoodStorageManager>
     {
         if (foodSlots == null || index < 0 || index >= foodSlots.Length)
             return null;
-
+        
         return foodSlots[index];
+    }
+
+    public int TakeOutRandomFood()  //랜덤 음식
+    {
+        List<int> candidates = new List<int>();
+
+        for (int i = 0; i < foodSlots.Length; i++)
+        {
+            if (foodSlots[i].HasValue) candidates.Add(i);
+        }
+        if (candidates.Count == 0) return -1;
+
+        return candidates[UnityEngine.Random.Range(0, candidates.Count)];
+    }
+    public bool FoodEmptyCheck()
+    {
+        for (int i = 0; i < foodSlots.Length; i++)
+        {
+            if (foodSlots[i].HasValue)
+                return false; // 하나라도 있으면 안 비었음
+        }
+        return true;
     }
     public void UpgradeFoodStorageindex()
     {
