@@ -26,6 +26,9 @@ public class CostumeDataSO : TableBase<int>
     [SerializeField] private string costumeDesc;
     public string CostumeDesc_String => LocalizationManager.Instance.GetString(costumeDesc);
 
+    // 기본 제공 여부
+    [field: SerializeField] public bool IsDefault { get; private set; }
+
     // 부위별 파츠
     [field: SerializeField] public CostumeType costumeType { get; private set; }
 
