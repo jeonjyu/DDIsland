@@ -13,6 +13,9 @@ public class CookState : IState
         _player.Agent.isStopped = true;
         _player.Agent.ResetPath();
         _player.Agent.velocity = Vector3.zero;
+
+        _player.transform.SetPositionAndRotation(_player.KitchenPoint.position, _player.KitchenPoint.rotation);
+
         Debug.Log("요리진입");
         _player.TryCooking();
 
