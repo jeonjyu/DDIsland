@@ -414,6 +414,10 @@ PrefabInstance:
       value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 6038522852140780350, guid: 339406eb6a27c9348aeb8e75ea1ba258, type: 3}
+      propertyPath: _SellPoint
+      value: 
+      objectReference: {fileID: 236287965}
+    - target: {fileID: 6038522852140780350, guid: 339406eb6a27c9348aeb8e75ea1ba258, type: 3}
       propertyPath: _fishPoint
       value: 
       objectReference: {fileID: 1401280330}
@@ -751,7 +755,7 @@ GameObject:
   - component: {fileID: 236287963}
   - component: {fileID: 236287962}
   m_Layer: 0
-  m_Name: Store
+  m_Name: Sell
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1239,11 +1243,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 1738019030956761086, guid: a2d4fe40519411947a8aa1ba5135e69a, type: 3}
   m_PrefabInstance: {fileID: 362080594}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &383073080 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5159517065308571289, guid: 9697854330b26ce4ab16cf9ba2866c9c, type: 3}
-  m_PrefabInstance: {fileID: 1835048003}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &399148369
 GameObject:
   m_ObjectHideFlags: 0
@@ -1367,16 +1366,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
   PlayerDataSO: {fileID: 0}
   _fishPoint: {fileID: 1401280330}
-  _storePoint: {fileID: 236287965}
   _kitchenPoint: {fileID: 1209487042}
   _restAreaPoint: {fileID: 1933992858}
   _tablePoint: {fileID: 0}
+  _SellPoint: {fileID: 0}
   _targetSMR: {fileID: 0}
   _slimPrefab: {fileID: 0}
   _normalPrefab: {fileID: 0}
   _chubbyPrefab: {fileID: 0}
   _roundPrefab: {fileID: 0}
   _fishingRod: {fileID: 0}
+  _fork: {fileID: 0}
+  _pan: {fileID: 0}
   _acornPrefab: {fileID: 0}
 --- !u!95 &399148375
 Animator:
@@ -2296,6 +2297,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1023246104}
   m_CullTransparentMesh: 1
+--- !u!1 &1133155723 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 544043681711124090, guid: e06d1202fd548834ca15bc8b02c5ffe1, type: 3}
+  m_PrefabInstance: {fileID: 6705686129106398995}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &1159190761 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3565168682580631852, guid: 9697854330b26ce4ab16cf9ba2866c9c, type: 3}
@@ -3401,10 +3407,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: FishStoragePanel
       objectReference: {fileID: 0}
-    - target: {fileID: 2679514389570408571, guid: 9697854330b26ce4ab16cf9ba2866c9c, type: 3}
-      propertyPath: m_overflowMode
-      value: 3
-      objectReference: {fileID: 0}
     - target: {fileID: 3565168682580631852, guid: 9697854330b26ce4ab16cf9ba2866c9c, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -3497,10 +3499,6 @@ PrefabInstance:
       propertyPath: _ofFoodFoodButton
       value: 
       objectReference: {fileID: 1521445727}
-    - target: {fileID: 5553458617096097230, guid: 9697854330b26ce4ab16cf9ba2866c9c, type: 3}
-      propertyPath: m_overflowMode
-      value: 3
-      objectReference: {fileID: 0}
     - target: {fileID: 5890692958213012680, guid: 9697854330b26ce4ab16cf9ba2866c9c, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -3513,14 +3511,6 @@ PrefabInstance:
       propertyPath: m_SizeDelta.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6315258240394949093, guid: 9697854330b26ce4ab16cf9ba2866c9c, type: 3}
-      propertyPath: m_overflowMode
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 7323735621397120223, guid: 9697854330b26ce4ab16cf9ba2866c9c, type: 3}
-      propertyPath: _textBackground
-      value: 
-      objectReference: {fileID: 383073080}
     - target: {fileID: 7355805929326412521, guid: 9697854330b26ce4ab16cf9ba2866c9c, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -3905,14 +3895,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 52286845}
     m_Modifications:
-    - target: {fileID: 1044835725908987757, guid: e06d1202fd548834ca15bc8b02c5ffe1, type: 3}
-      propertyPath: m_overflowMode
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 2687534882512518281, guid: e06d1202fd548834ca15bc8b02c5ffe1, type: 3}
-      propertyPath: m_overflowMode
-      value: 3
-      objectReference: {fileID: 0}
     - target: {fileID: 3573002343764400695, guid: e06d1202fd548834ca15bc8b02c5ffe1, type: 3}
       propertyPath: m_Name
       value: FoodStoragePanel
@@ -3921,6 +3903,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1159190762}
+    - target: {fileID: 4303680544580103172, guid: e06d1202fd548834ca15bc8b02c5ffe1, type: 3}
+      propertyPath: _textBackground
+      value: 
+      objectReference: {fileID: 1133155723}
     - target: {fileID: 4669161574880742626, guid: e06d1202fd548834ca15bc8b02c5ffe1, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -4017,10 +4003,6 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1159190762}
-    - target: {fileID: 7913192957255353583, guid: e06d1202fd548834ca15bc8b02c5ffe1, type: 3}
-      propertyPath: m_overflowMode
-      value: 3
-      objectReference: {fileID: 0}
     - target: {fileID: 9190119325780042957, guid: e06d1202fd548834ca15bc8b02c5ffe1, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0

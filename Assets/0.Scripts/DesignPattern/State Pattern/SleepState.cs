@@ -12,6 +12,10 @@ public class SleepState : IState
     {
         Debug.Log("수면진입");
         _player.Animator.SetBool("isSleep", true);
+
+
+        _player.transform.SetPositionAndRotation(_player.RestAreaPoint.position, _player.RestAreaPoint.rotation);
+
         _player.StartRecover();
     }
 

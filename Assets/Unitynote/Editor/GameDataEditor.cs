@@ -5,6 +5,7 @@ public class GameDataEditor : EditorWindow
 {
     private PlayerController player;
     private static GameDataEditor window;
+    int testFishId = 0;
     [MenuItem("Window/Game Data Editor")]
     private static void Setup()
     {
@@ -46,6 +47,14 @@ public class GameDataEditor : EditorWindow
         {
             player.PlayerDataOld = data;
         }
+
+        testFishId = EditorGUILayout.IntField("Test Fish ID", testFishId);
+
+        if (GUILayout.Button("Fill Storage For Sell Test"))
+        {
+           FishStorageManager.Instance.DebugFillForSellTest(testFishId);
+        }
+
     }
 
 }

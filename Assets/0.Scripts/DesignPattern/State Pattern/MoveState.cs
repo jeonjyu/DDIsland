@@ -4,39 +4,46 @@ public class MoveState : IState
 {
     private readonly PlayerController _player;
     Point _desPoint;
-    Transform target;
     public MoveState(PlayerController player, Point destination)
     {
         _player = player;
         _desPoint = destination;
-        switch (_desPoint)  //받아온 Point에 따른 타겟설정
+    }
+    private Transform GetTarget()
+    {
+        switch (_desPoint)
         {
             case Point.Fish:
-                target = _player.FishPoint;
-                break;
-                //  case Point.Store:
-                //      target = _player.StorePoint;
-                //      break;
-                 case Point.Kitchen:
-                     target = _player.KitchenPoint;
-                      break;
-                 case Point.Acorn:
-                    target = _player.AcornPoint;
-                break;
+                return _player.FishPoint;
+            case Point.Kitchen:
+                return _player.KitchenPoint;
+            case Point.Acorn:
+                return _player.AcornPoint;
             case Point.Table:
-                target = _player.TablePoint;
-                break;
+                return _player.TablePoint;
             case Point.Rest:
-                target = _player.RestAreaPoint;
-                break;
+                return _player.RestAreaPoint;
+            case Point.Sell:
+                return _player.SellPoint;
         }
+
+        return null;
     }
+
 
     public void Enter()
     {
         Debug.Log("무브진입");
         _player.Agent.stoppingDistance = 0.6f;
         _player.Animator.applyRootMotion = false;
+
+        Transform target = GetTarget();
+        if (target == null)
+        {
+            Debug.LogWarning($"MoveState target NULL / 목적지 = {_desPoint}");
+            _player.SetState(new IdleState(_player));
+            return;
+        }
         float dist = Vector3.Distance(_player.transform.position, target.position);
         if (dist <= _player.Agent.stoppingDistance + 0.05f)  //이미도착한 거리면 바로 그상태 보내버리기
         {
@@ -64,32 +71,45 @@ public class MoveState : IState
     public void Execute()
     {
         _player.ApplyMoveSpeed();
-        if (!_player.Agent.pathPending && _player.Agent.remainingDistance <= _player.Agent.stoppingDistance && _player.Agent.velocity.sqrMagnitude < 0.05)  //받아온 Point에 따른 상태전환
+        Transform target = GetTarget();
+        if (_desPoint == Point.Acorn && target == null)
         {
-            switch (_desPoint)
-            {
-                case Point.Fish:
-                    _player.SetState(new FishingState(_player));
-                    break;
-                // case Point.Store:
-                //     _player.SetState(new SalesState(_player));
-                //     break;
-                 case Point.Kitchen:
-                     _player.SetState(new CookState(_player));  
-                    break;
-                case Point.Acorn:
-                    _player.SetState(new EatState(_player, _desPoint));  
-                  break;
-                case Point.Table:
-                    _player.SetState(new EatState(_player, _desPoint));
-                    break;
-                case Point.Rest:
-                    _player.SetState(new SleepState(_player));
-                    break;
-            }
+            Debug.LogWarning("도토리 타겟이 사라져서 Idle로 복귀");
+            _player.SetState(new IdleState(_player));
+            return;
+        }
+
+        if (!_player.Agent.pathPending &&
+            _player.Agent.remainingDistance <= _player.Agent.stoppingDistance &&
+            _player.Agent.velocity.sqrMagnitude < 0.05f)
+        {
+            ChangeToNextState();
         }
     }
-
+    private void ChangeToNextState()
+    {
+        switch (_desPoint)
+        {
+            case Point.Fish:
+                _player.SetState(new FishingState(_player));
+                break;
+            case Point.Kitchen:
+                _player.SetState(new CookState(_player));
+                break;
+            case Point.Acorn:
+                _player.SetState(new EatState(_player, _desPoint));
+                break;
+            case Point.Table:
+                _player.SetState(new EatState(_player, _desPoint));
+                break;
+            case Point.Rest:
+                _player.SetState(new SleepState(_player));
+                break;
+            case Point.Sell:
+                _player.SetState(new SellState(_player));
+                break;
+        }
+    }
     public void Exit()
     {
         _player.Animator.SetBool("isMove", false);
