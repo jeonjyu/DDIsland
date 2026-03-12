@@ -129,6 +129,15 @@ public class FishStorageManager : Singleton<FishStorageManager>
 
         return FishSlots[index];
     }
+    public bool FishEmptyCheck()
+    {
+        for (int i = 0; i < FishSlots.Length; i++)
+        {
+            if (FishSlots[i].HasValue)
+                return false; // 하나라도 있으면 안 비었음
+        }
+        return true;
+    }
     public void UpgradeStorageindex()
     {
         if (Capacity >= MaxCapacity || StorageLevel >= MaxLevel)    //이미 최대면 업그레이드 막기

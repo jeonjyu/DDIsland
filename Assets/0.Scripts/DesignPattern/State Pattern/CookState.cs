@@ -9,7 +9,7 @@ public class CookState : IState
     }
     public void Enter()
     {
-        if (!_player.CanCook) { _player.SetState(new IdleState(_player)); return; }  //혹시 모르니까 탈출기능
+        if (!_player.CanCook) { Debug.LogWarning("요리 불가라 Idle 복귀"); _player.SetState(new IdleState(_player)); return; }  //혹시 모르니까 탈출기능
         _player.Agent.isStopped = true;
         _player.Agent.ResetPath();
         _player.Agent.velocity = Vector3.zero;

@@ -179,9 +179,16 @@ public class PlayerController : MonoBehaviour
 
    public void StartAcornSupply(Vector3 center)  //도토리 떨어지는 함수
     {
-        if (_isAcornFalling) return;
         _isAcornFalling = true;
+
+        foreach (var acorn in _acorns)
+        {
+            if (acorn != null)
+                Destroy(acorn);
+        }
+
         _acorns.Clear();
+        _acornPoint = null;
         _acornIndex = 0;
 
         for (int i = 0; i < 3; i++)
@@ -195,45 +202,129 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        SetNextAcornTargetAndMove();
+        _acorns.RemoveAll(a => a == null);
+
+        if (_acorns.Count > 0)
+            _acornPoint = _acorns[0].transform;
+        else
+            _isAcornFalling = false;
     }
     private void SetNextAcornTargetAndMove()  //다음 도토리 위치로 이동하거나, 도토리가 없으면 도토리 떨어지는 상태 종료
     {
-        _acorns.RemoveAll(a => a == null);  //파괴된 도토리 리스트에서 제거
+        _acorns.RemoveAll(a => a == null);
 
-        if (_acorns.Count == 0)  
+        if (_acorns.Count == 0)
         {
             _isAcornFalling = false;
+            _acornPoint = null;
             SetState(new IdleState(this));
             return;
         }
 
-        if (_acornIndex >= _acorns.Count) _acornIndex = 0;  
-        _acornPoint = _acorns[_acornIndex].transform;    
+        if (_acornIndex >= _acorns.Count)
+            _acornIndex = 0;
+
+        _acornPoint = _acorns[_acornIndex].transform;
         SetState(new MoveState(this, Point.Acorn));
+    }
+    public void InterruptToAcorn(Vector3 center)
+    {
+        if (_currentState is SleepState) return;
+
+        if (_isAcornFalling && _acornPoint != null)
+        {
+            SetState(new MoveState(this, Point.Acorn), true);
+            return;
+        }
+
+        if (!(_currentState is IdleState)) StopCurrentAction();
+
+        StartAcornSupply(center);
+
+        if (_isAcornFalling && _acornPoint != null)
+            SetState(new MoveState(this, Point.Acorn), true);
+        else
+            SetState(new IdleState(this), true);
     }
     public void EatCurrentAcorn()  //도토리 먹는 함수, 도토리 없으면 도토리 떨어지는 상태 종료
     {
         if (!_isAcornFalling) return;
-        if (_acorns.Count == 0)  
-        {
-            SetNextAcornTargetAndMove();
-            return;
-        }
-        var acorn = _acorns[_acornIndex];
 
-        PlayerDataOld.SetHunger(PlayerDataOld.Hunger + 10);
-       // _animator.SetTrigger("isEat");
-        Destroy(acorn);
-        _acorns.RemoveAt(_acornIndex);
+        _acorns.RemoveAll(a => a == null);
+
         if (_acorns.Count == 0)
         {
+            _acornPoint = null;
             _isAcornFalling = false;
             SetState(new IdleState(this));
             return;
         }
-        else SetNextAcornTargetAndMove();
 
+        if (_acornIndex >= _acorns.Count)
+            _acornIndex = 0;
+
+        var acorn = _acorns[_acornIndex];
+        if (acorn == null)
+        {
+            _acornPoint = null;
+            SetNextAcornTargetAndMove();
+            return;
+        }
+
+        if (_acornPoint == acorn.transform)
+            _acornPoint = null;
+
+        PlayerDataOld.SetHunger(PlayerDataOld.Hunger + 10);
+
+        _acorns.RemoveAt(_acornIndex);
+        Destroy(acorn);
+
+        if (_acorns.Count == 0)
+        {
+            _isAcornFalling = false;
+            _acornPoint = null;
+            SetState(new IdleState(this));
+            return;
+        }
+
+        SetNextAcornTargetAndMove();
+
+    }
+    public void StopCurrentAction()
+    {
+        _agent.isStopped = true;
+        _agent.ResetPath();
+        _agent.velocity = Vector3.zero;
+
+        ExitFishingState();
+        _isFishing = false;
+        _animator.SetBool("isFish", false);
+        _animator.ResetTrigger("FishingHit");
+        HandOffFishingRod();
+
+        _isCooking = false;
+        PendingFood = null;
+        _animator.SetBool("isCook", false);
+
+        _animator.ResetTrigger("isEat");
+        _animator.ResetTrigger("Yawn");
+
+        if (_yawnRoutine != null)
+        {
+            StopCoroutine(_yawnRoutine);
+            _yawnRoutine = null;
+        }
+
+        _isYawning = false;
+        _hasYawned = false;
+
+        _animator.SetBool("isMove", false);
+        _animator.SetBool("isIdle", false);
+
+        if (!(_currentState is SleepState))
+        {
+            StopRecover();
+        }
     }
     public void AnimEvent_TryConsumeFood()  //먹기 애니에 넣기
     {
@@ -263,6 +354,8 @@ public class PlayerController : MonoBehaviour
 
     public void AnimEvent_EatEnd()  //애니재생 끝나는 타이밍을 맞추기 위한거
     {
+        if (!(_currentState is EatState))
+            return;
         SetState(new IdleState(this));
     }
 
@@ -292,6 +385,9 @@ public class PlayerController : MonoBehaviour
     }
     public void AnimEvent_CookingEnd()  //이함수를 Cook_FryingPan_Mix@loop 애니의 끝부분에 넣기
     {
+        if (!(_currentState is CookState))
+            return;
+
         if (PendingFood != null)
         {
             CookingManager.Instance.CreateCookedFood(PendingFood);
@@ -398,12 +494,18 @@ public class PlayerController : MonoBehaviour
         _ishungery = PlayerDataOld.Hunger <= 25;
         
         if (_isAcornFalling) return;
-        if (!_canCook && !_shouldSell && PlayerDataOld.Hunger <= 20 && FoodStorageManager.Instance.FoodEmptyCheck())
+        bool noCookedFood = FoodStorageManager.Instance.FoodEmptyCheck();
+        bool hasCookableRecipe = HasCookableRecipe();
+        if (PlayerDataOld.Hunger <= 20 && noCookedFood && !hasCookableRecipe)
         {
-            StartAcornSupply(transform.position); 
+            InterruptToAcorn(transform.position);
         }
     }
-
+    private bool HasCookableRecipe()  //_canCook하나로 통일하고싶었는데 만들다보니 이변수 하나가 담당하는게 너무많아짐 그래서 따로 함수만듬 
+    {
+        var candidates = CookingManager.Instance.BuildCookCandidates(new CookingContext());
+        return candidates != null && candidates.Count > 0;
+    }
     private void UpdateMoveType()  //이동타입 업데이트, 애니메이션에 적용
     {
         // 0 기본 / 1 탈진 / 2 배고픔
@@ -481,11 +583,13 @@ public class PlayerController : MonoBehaviour
         //playerData.Stamina -= 5;
         PlayerDataOld.SetHunger(PlayerDataOld.Hunger - 4);
         PlayerDataOld.SetStamina(PlayerDataOld.Stamina - 5);
-        _isFishing = false; _fishingRoutine = null;
+        _isFishing = false;
         if (_fishingCount <= 0 || PlayerDataOld.Hunger <= 0 || PlayerDataOld.Stamina <= 0)
         {
+            ExitFishingState();
             Animator.SetBool("isFish", false);
             SetState(new IdleState(this));
+            return;
         }
         _cycleRunning = false;  //다음 사이클로 넘어갈 수 있게 코루틴 대기 해제
     }
@@ -577,18 +681,27 @@ public class PlayerController : MonoBehaviour
 
     private IState DecideNextState()    //상태에 따른 도착지 결정, Move상태가 도착지의 따른 행동결정
     {
-        if (PlayerDataOld.Hunger <= 20)
+        if (PlayerDataOld.Hunger <= 20)  //20이하가 되어도 음식체크 => 물고기(레시피)체크 => 도토리 순서
         {
             if (!FoodStorageManager.Instance.FoodEmptyCheck())
             {
                 _currentPoint = Point.Table;
                 return new MoveState(this, _currentPoint);
             }
-            else
+
+            if (_canCook)
+            {
+                _currentPoint = Point.Kitchen;
+                return new MoveState(this, _currentPoint);
+            }
+
+            if (_isAcornFalling && _acornPoint != null)
             {
                 _currentPoint = Point.Acorn;
                 return new MoveState(this, _currentPoint);
             }
+
+            return new IdleState(this);
         }
 
         if (PlayerDataOld.Stamina <= 10)
@@ -596,19 +709,17 @@ public class PlayerController : MonoBehaviour
             _currentPoint = Point.Rest;
             return new MoveState(this, _currentPoint);
         }
-
         if (_canCook)
         {
             _currentPoint = Point.Kitchen;
             return new MoveState(this, _currentPoint);
         }
-
-       // if (_shouldSell)
-       // {
-       //     _currentPoint = Point.Store;
-       //     return new MoveState(this, _currentPoint);
-       // }
-       if (_isAcornFalling) 
+        // if (_shouldSell)
+        // {
+        //     _currentPoint = Point.Store;
+        //     return new MoveState(this, _currentPoint);
+        // }
+        if (_isAcornFalling && _acornPoint != null) 
         {
             _currentPoint = Point.Acorn;
             return new MoveState(this, _currentPoint);  
@@ -617,9 +728,11 @@ public class PlayerController : MonoBehaviour
         return new MoveState(this, _currentPoint);
     }
 
-    public void SetState(IState newState)
+    public void SetState(IState newState, bool force = false)
     {
-        if (newState is not SleepState && _isResting == true) return;
+        if (!force && newState is not SleepState && _isResting)
+            return;
+
         _currentState?.Exit();
         _currentState = newState;
         _currentState.Enter();
