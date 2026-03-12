@@ -64,7 +64,7 @@ public class SortDropdown : StoreDropdownBase
         // 여기서부터 정렬 기준에 맞춰 아이템 정렬
         IEnumerable<IStoreItem> items = ItemManager.Instance.displayDatas;
 
-        Debug.Log("[SortDropdown] SortSlots | SelectedOption 1 : " + (StoreSort)SelectedOption);
+        //Debug.Log("[SortDropdown] SortSlots | SelectedOption 1 : " + (StoreSort)SelectedOption);
 
         foreach (Comparer comp in comparers)
         {
@@ -93,7 +93,7 @@ public class SortDropdown : StoreDropdownBase
         ItemManager.Instance.displayDatas = items.ToList();
         //Debug.Log("[SortDropdown] SortSlots | SelectedOption 2 : " + (StoreSort)SelectedOption);
 
-        Debug.Log("정렬 기준 : " + string.Join(" > ", comparers.Select(x => x)));
+        //Debug.Log("정렬 기준 : " + string.Join(" > ", comparers.Select(x => x)));
         //Debug.Log("정렬 완료: " + string.Join(", ", ItemManager.Instance.displayItems.Select(x => x.ItemName + "(" + x.IsGained + "):" + x.PurchasePrice)));
     }
 

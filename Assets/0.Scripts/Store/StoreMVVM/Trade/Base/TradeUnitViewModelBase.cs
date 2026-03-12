@@ -87,7 +87,7 @@ public class TradeUnitViewModelBase : MonoBehaviour, INotifyPropertyChanged
 
     void OnEnable()
     {
-        Debug.Log("UI 초기화");
+        //Debug.Log("UI 초기화");
         SetTotalPrice();
         view.SetTradeCountText(TradeCount);
         view.SetButton();
