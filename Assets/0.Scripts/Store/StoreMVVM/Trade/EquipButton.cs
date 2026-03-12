@@ -14,14 +14,42 @@ public class EquipButton : MonoBehaviour
     private void Awake()
     {
         _equipButton = GetComponent<Button>();
-        _text = GetComponent<TMP_Text>();
-        //_text.text = "장착";
+        _text = _equipButton.GetComponentInChildren<TMP_Text>();
     }
 
-    public void ChangeBtnText(bool isEquipped)
+    private void OnEnable()
     {
-        _text.text = isEquipped ? "해제" : "장착";
-        _isEquipped = isEquipped;
+        _equipButton.onClick.AddListener(ChangEquipState);
+    }
+
+    private void OnDisable()
+    {
+        _equipButton.onClick.RemoveAllListeners();
+    }
+
+    public void ChangeBtnText(bool isEquipped, bool isGained)
+    {
+        IStoreItem item = StoreManager.Instance.TradeModel;
+
+        if (_isEquipped && isGained)
+        {
+            // 현재 장착중인 아이템과 현재 아이템이 동일하면 해제
+            if (PlayerManager.Instance.CompareID(item.ObjectId, (CostumeType)item.Filter))
+            {
+                _text.text = "해제";
+            }
+            else
+            {
+                _text.text = "장착";
+            }
+
+            if (_isEquipped != isEquipped) _isEquipped = isEquipped;
+        }
+        else
+        {
+            _text.text = "장착";
+            if (_isEquipped != isEquipped) _isEquipped = isEquipped;
+        }
     }
 
     public void SetBtnAvailability(bool isGained)
@@ -29,19 +57,21 @@ public class EquipButton : MonoBehaviour
         _equipButton.interactable = isGained ? true : false;
     }
 
-    // 장착 버튼 클릭하면 변경하는 메서드
-    public void OnPointerClick(PointerEventData eventData)
+    /// <summary>
+    /// 장착 버튼 클릭하면 PlayerManager에서 장착한 아이템 아이디 변경
+    /// </summary>
+    public void ChangEquipState()
     {
         IStoreItem item = StoreManager.Instance.TradeModel;
         if (!_isEquipped) // 장착
         {
-            PlayerManager.Instance.SetCostume(item.ID, (CostumeType)item.Filter);
-            ChangeBtnText(true);
+            PlayerManager.Instance.SetCostume(item.ObjectId, (CostumeType)item.Filter);
+            ChangeBtnText(true, true);
         }
         else // 해제
         {
             PlayerManager.Instance.SetCostume(0, (CostumeType)item.Filter);
-            ChangeBtnText(false);
+            ChangeBtnText(false, true);
         }
     }
 }

@@ -58,6 +58,19 @@ public class StoreManager : Singleton<StoreManager>, INotifyPropertyChanged
         }
     }
 
+    public bool IsTradeItemGained
+    {
+        get => tradeModel.IsGained;
+        set
+        {
+            if(tradeModel.IsGained != value)
+            {
+                tradeModel.IsGained = value;
+                OnTradeModelChanged(nameof(IsTradeItemGained));
+            }
+        }
+    }
+
     void Start() 
     {
         // 초기 카테고리 설정

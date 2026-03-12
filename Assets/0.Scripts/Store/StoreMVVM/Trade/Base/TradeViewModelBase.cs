@@ -50,6 +50,19 @@ public class TradeViewModelBase : MonoBehaviour, INotifyPropertyChanged
         }
     }
 
+    public bool isGained;
+    public bool IsGained
+    {
+        get => StoreManager.Instance.IsTradeItemGained;
+        set
+        {
+            if (isGained != value)
+            {
+                isGained = value;
+            }
+        }
+    }
+
     public StoreCat storeCat => StoreManager.Instance.currentCat;
 
     public event PropertyChangedEventHandler PropertyChanged;
