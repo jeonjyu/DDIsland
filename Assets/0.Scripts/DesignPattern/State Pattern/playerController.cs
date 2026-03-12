@@ -73,6 +73,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] GameObject _roundPrefab;
 
     [SerializeField] private GameObject _fishingRod;
+    [SerializeField] private GameObject _fork;
+    [SerializeField] private GameObject _pan;
 
     private float _hungerTickTimer;
     private float _baseMoveSpeed;  
@@ -120,6 +122,8 @@ public class PlayerController : MonoBehaviour
         ApplyPlayerStats(PlayerDataSO);
         _baseMoveSpeed = PlayerDataOld.MoveSpeed;
         _fishingRod.gameObject.SetActive(false);
+        _fork.gameObject.SetActive(false);
+        _pan.gameObject.SetActive(false);
 
         RefreshCanCook();
     }
@@ -604,6 +608,22 @@ public class PlayerController : MonoBehaviour
     public void HandOffFishingRod()
     {
         _fishingRod.SetActive(false);
+    }
+    public void HandOnFork()
+    {
+        _fork.SetActive(true);
+    }
+    public void HandOffFork()
+    {
+        _fork.SetActive(false);
+    }
+    public void HandOnPan()
+    {
+        _pan.SetActive(true);
+    }
+    public void HandOffPan()
+    {
+        _pan.SetActive(false);
     }
     public void HasYawned()
     {

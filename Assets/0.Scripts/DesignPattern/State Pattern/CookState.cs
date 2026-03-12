@@ -13,6 +13,7 @@ public class CookState : IState
         _player.Agent.isStopped = true;
         _player.Agent.ResetPath();
         _player.Agent.velocity = Vector3.zero;
+        _player.HandOnPan();
 
         _player.transform.SetPositionAndRotation(_player.KitchenPoint.position, _player.KitchenPoint.rotation);
 
@@ -28,7 +29,7 @@ public class CookState : IState
 
     public void Exit()
     {
-
+        _player.HandOffPan();
     }
 
     public void FixedExecute()

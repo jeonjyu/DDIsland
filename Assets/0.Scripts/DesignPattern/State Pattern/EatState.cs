@@ -13,7 +13,7 @@ public class EatState : IState
     {
         _player.Agent.isStopped = true;
         _player.Agent.velocity = Vector3.zero;
-
+        _player.HandOnFork();
         if (_desPoint == Point.Acorn)
         {
             _player.StartCoroutine(CoEatAcorn());
@@ -38,7 +38,7 @@ public class EatState : IState
 
     public void Exit()
     {
-        
+        _player.HandOffFork();
     }
 
     public void FixedExecute()
