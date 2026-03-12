@@ -44,7 +44,7 @@ public class FilterDropdown : StoreDropdownBase
                 currentFilter = typeof(FishingFilter);
                 break;
         }
-        Debug.Log($"[FilterDropdown] {currentFilter}");
+        //Debug.Log($"[FilterDropdown] {currentFilter}");
         filters = Enum.GetValues(currentFilter).Cast<Enum>().ToList();
         SetOptions();
     }
