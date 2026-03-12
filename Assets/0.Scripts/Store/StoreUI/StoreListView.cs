@@ -20,9 +20,9 @@ public class StoreListView : MonoBehaviour
 
     void Awake()
     {
+        SetStoreCat();
         viewModel = GetComponent<StoreListViewModel>();
         viewModel.PropertyChanged += OnStoreListViewModelChanged;
-        SetStoreCat();
         normalColor = StoreButton.colors.normalColor;
         selectedColor = StoreButton.colors.pressedColor;
     }
