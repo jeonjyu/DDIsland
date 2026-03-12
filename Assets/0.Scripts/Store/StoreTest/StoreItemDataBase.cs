@@ -13,7 +13,7 @@ public class StoreItemDatabase : IStoreItemDatabase
     // 받아온 SO를 판별해서 인게임 상점에서 사용할 각 상점 데이터베이스로 만들어줌
     public StoreItemDatabase(ScriptableObject database)
     {
-        Debug.Log(database.GetType().Name);
+        //Debug.Log(database.GetType().Name);
         switch (database)
         {
             case TableDatabase<int, InteriorStoreDataSO> interiorDatabase:

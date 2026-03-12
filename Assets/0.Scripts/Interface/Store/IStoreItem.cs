@@ -10,6 +10,7 @@ public interface IStoreItem
     int MaxCount { get; }
     int ItemCount { get; set; }
     bool IsGained { get; set; }
+    bool IsDefault { get; }
     bool IsSaleable { get; }
     int PurchasePrice { get; }
     int SellPrice { get; }
