@@ -23,6 +23,8 @@ public class MoveState : IState
                 return _player.TablePoint;
             case Point.Rest:
                 return _player.RestAreaPoint;
+            case Point.Sell:
+                return _player.SellPoint;
         }
 
         return null;
@@ -102,6 +104,9 @@ public class MoveState : IState
                 break;
             case Point.Rest:
                 _player.SetState(new SleepState(_player));
+                break;
+            case Point.Sell:
+                _player.SetState(new SellState(_player));
                 break;
         }
     }

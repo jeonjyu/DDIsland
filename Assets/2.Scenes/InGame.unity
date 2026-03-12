@@ -1369,6 +1369,37 @@ ParticleSystem:
   m_CorrespondingSourceObject: {fileID: 3782563496081608212, guid: d39bfe1dba0c92340a14abb2876a3415, type: 3}
   m_PrefabInstance: {fileID: 30041644}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &618209081
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 618209082}
+  m_Layer: 0
+  m_Name: TablePoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &618209082
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 618209081}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 2.66, y: 0, z: -3.14}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 810830239}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &673764087 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4140408901512295962, guid: 339406eb6a27c9348aeb8e75ea1ba258, type: 3}
@@ -1796,6 +1827,7 @@ Transform:
   - {fileID: 2015116028}
   - {fileID: 922184497}
   - {fileID: 1511822266}
+  - {fileID: 618209082}
   m_Father: {fileID: 705281532}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &815761051
@@ -4061,6 +4093,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6038522852140780350, guid: 339406eb6a27c9348aeb8e75ea1ba258, type: 3}
+      propertyPath: _SellPoint
+      value: 
+      objectReference: {fileID: 2015116028}
+    - target: {fileID: 6038522852140780350, guid: 339406eb6a27c9348aeb8e75ea1ba258, type: 3}
       propertyPath: _fishPoint
       value: 
       objectReference: {fileID: 253377396}
@@ -4076,6 +4112,10 @@ PrefabInstance:
       propertyPath: _storePoint
       value: 
       objectReference: {fileID: 2015116028}
+    - target: {fileID: 6038522852140780350, guid: 339406eb6a27c9348aeb8e75ea1ba258, type: 3}
+      propertyPath: _tablePoint
+      value: 
+      objectReference: {fileID: 618209082}
     - target: {fileID: 6038522852140780350, guid: 339406eb6a27c9348aeb8e75ea1ba258, type: 3}
       propertyPath: _acornPrefab
       value: 
@@ -4441,7 +4481,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2015116028}
   m_Layer: 0
-  m_Name: StorePoint
+  m_Name: SellPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

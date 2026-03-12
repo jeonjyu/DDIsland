@@ -20,7 +20,7 @@ using System.Collections.Generic;
 
 public enum Point
 {
-    Fish,Store,Kitchen,Rest,Acorn,Table
+    Fish,Kitchen,Rest,Acorn,Table,Sell
 }
 public class PlayerController : MonoBehaviour
 {
@@ -34,7 +34,6 @@ public class PlayerController : MonoBehaviour
     private bool _ishungery = false;
     private bool _canCook = false;  
     private bool _isCooking = false;
-    private bool _shouldSell = false;
     private bool _isFishing = false;
     private bool _isAcornFalling = false;
     private bool _isResting = false;
@@ -48,6 +47,8 @@ public class PlayerController : MonoBehaviour
 
     private Coroutine _yawnRoutine;  //하품 코루틴
 
+    private Coroutine _sellRoutine;
+
     public CharacterDataSO PlayerDataSO;
     //public PlayerContext playerData;  //일단은 남겨둠 혹시모르니까
     public PlayerData PlayerDataOld; //업그레이드매니저를위한거
@@ -55,11 +56,11 @@ public class PlayerController : MonoBehaviour
 
     Point _currentPoint = Point.Fish;  //플레이어 목적지
     [SerializeField] private Transform _fishPoint;  //각 지점 위치
-    [SerializeField] private Transform _storePoint;
     [SerializeField] private Transform _kitchenPoint;
     [SerializeField] private Transform _restAreaPoint;
     [SerializeField] private Transform _tablePoint;
-     private Transform _acornPoint;
+    [SerializeField] private Transform _SellPoint;
+    private Transform _acornPoint;
 
     [SerializeField] private SkinnedMeshRenderer _targetSMR;
     private SkinnedMeshRenderer _slimSource;
@@ -98,11 +99,11 @@ public class PlayerController : MonoBehaviour
     public bool CanCook => _canCook;
     public Point Point => _currentPoint;
     public Transform FishPoint => _fishPoint;
-    public Transform StorePoint => _storePoint;
     public Transform KitchenPoint => _kitchenPoint;
     public Transform RestAreaPoint => _restAreaPoint;
     public Transform AcornPoint => _acornPoint;
     public Transform TablePoint => _tablePoint;
+    public Transform SellPoint => _SellPoint;
     public int FishingCount => _fishingCount;
 
     private void Awake()
@@ -578,6 +579,13 @@ public class PlayerController : MonoBehaviour
     public void AnimEvent_GiveFishOnce()  //낚시 성공 애니에 넣을 함수
     {
         FishManager.Instance.PickRandomSeasonFish();
+
+        if (FishStorageManager.Instance.FishFullCheck())  //낚시 한마리 낚을떄마다 검사
+        {
+            ExitFishingState();
+            Animator.SetBool("isFish", false);
+            SetState(new IdleState(this));
+        }
     }
     public void AnimEvent_FishingCycleEnd() //낚시 성공 애니에 넣을 함수
     {
@@ -597,6 +605,7 @@ public class PlayerController : MonoBehaviour
         }
         _cycleRunning = false;  //다음 사이클로 넘어갈 수 있게 코루틴 대기 해제
     }
+  
     public void ResetFishingCount()
     {
         _fishingCount = 5;
@@ -645,6 +654,21 @@ public class PlayerController : MonoBehaviour
         _hasYawned = false;
         _isYawning = false;
         _yawnRoutine = null;
+    }
+
+
+    public void SellFishs()
+    {
+       _sellRoutine = StartCoroutine(SellWait());
+    }
+
+    IEnumerator SellWait()
+    {
+        Agent.isStopped = true;
+        Agent.velocity = Vector3.zero;
+        yield return new WaitForSeconds(2f);
+        FishStorageManager.Instance.SellAllFish();
+        SetState(new IdleState(this));
     }
 
     public void StartRecover()
@@ -734,11 +758,11 @@ public class PlayerController : MonoBehaviour
             _currentPoint = Point.Kitchen;
             return new MoveState(this, _currentPoint);
         }
-        // if (_shouldSell)
-        // {
-        //     _currentPoint = Point.Store;
-        //     return new MoveState(this, _currentPoint);
-        // }
+        if (FishStorageManager.Instance.FishFullCheck())
+        {
+            _currentPoint = Point.Sell;
+            return new MoveState(this, _currentPoint);
+        }
         if (_isAcornFalling && _acornPoint != null) 
         {
             _currentPoint = Point.Acorn;

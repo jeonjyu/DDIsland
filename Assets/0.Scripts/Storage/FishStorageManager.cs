@@ -1,6 +1,7 @@
 using System;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using System.Collections.Generic;
 
 public struct FishInstance
 {
@@ -15,6 +16,7 @@ public struct FishStackSlot
     public int Count;
     public long LastAcquiredOrder;
     public int MaxPrice;
+    public int TotalPrice;
 }
 
 public class FishStorageManager : Singleton<FishStorageManager>
@@ -46,13 +48,15 @@ public class FishStorageManager : Singleton<FishStorageManager>
         // 1 같은 FishId 있으면 스택 증가
         for (int i = 0; i < FishSlots.Length; i++) 
         {
-            if (FishSlots[i].HasValue && FishSlots[i].Value.FishId == fish.FishId)
+            if (FishSlots[i].HasValue && FishSlots[i].Value.
+                FishId == fish.FishId)
             {
                 var slot = FishSlots[i].Value;
 
                 slot.Count += 1;
                 //slot.lastLength = fish.length;
                 slot.MaxPrice = Mathf.Max(slot.MaxPrice, fish.Price);
+                slot.TotalPrice += fish.Price;
                 slot.LastAcquiredOrder = ++_acquireCounter;
 
                 FishSlots[i] = slot;
@@ -70,6 +74,7 @@ public class FishStorageManager : Singleton<FishStorageManager>
                     FishId = fish.FishId,
                     Count = 1,
                     MaxPrice = fish.Price,
+                    TotalPrice = fish.Price,
                     LastAcquiredOrder = ++_acquireCounter,
                 };
 
@@ -88,7 +93,12 @@ public class FishStorageManager : Singleton<FishStorageManager>
         if (!FishSlots[slotIndex].HasValue) return false;
 
         var slot = FishSlots[slotIndex].Value;
+
+        int removedPrice = Mathf.RoundToInt((float)slot.TotalPrice / slot.Count);
         slot.Count--;
+        slot.TotalPrice -= removedPrice;
+
+        if (slot.TotalPrice < 0) slot.TotalPrice = 0;
 
         if (slot.Count <= 0)
         {
@@ -112,8 +122,13 @@ public class FishStorageManager : Singleton<FishStorageManager>
             if (FishSlots[i].Value.FishId != fishId) continue;
 
             var slot = FishSlots[i].Value;
+
+            int removedPrice = Mathf.RoundToInt((float)slot.TotalPrice / slot.Count);
             slot.Count--;
-            
+            slot.TotalPrice -= removedPrice;
+
+            if (slot.TotalPrice < 0) slot.TotalPrice = 0;
+
             if (slot.Count <= 0) FishSlots[i] = null;
             else FishSlots[i] = slot;
 
@@ -138,6 +153,32 @@ public class FishStorageManager : Singleton<FishStorageManager>
         }
         return true;
     }
+    public bool FishFullCheck()  //보관함 5칸이하로 비어있는지 체크
+    {
+       int emptyCount = 0;
+        for (int i = 0; i < FishSlots.Length; i++)
+        {
+            if (!FishSlots[i].HasValue) emptyCount++;
+        }
+
+        return emptyCount <= 5;
+    }
+
+    public void SellAllFish()  //물고기 판매
+    {
+        int totalGold = 0;
+        for (int i = 0; i < FishSlots.Length; i++)
+        {
+            if (FishSlots[i].HasValue)
+            {
+                totalGold += FishSlots[i].Value.TotalPrice;
+                FishSlots[i] = null;
+                OnSlotChanged?.Invoke(i);
+            }
+        }
+        if (totalGold > 0) GameManager.Instance.SetGold(totalGold);
+    }
+
     public void UpgradeStorageindex()
     {
         if (Capacity >= MaxCapacity || StorageLevel >= MaxLevel)    //이미 최대면 업그레이드 막기
@@ -168,6 +209,7 @@ public class FishStorageManager : Singleton<FishStorageManager>
     {
         int cost = GetUpgradeCost();
         int money = GameManager.Instance.PlayerGold;
+        //int money = 100000000;
 
         if (money < cost)
             return false;
@@ -175,7 +217,36 @@ public class FishStorageManager : Singleton<FishStorageManager>
         GameManager.Instance.SetGold(-cost);
         return true;
     }
+    public void DebugFillForSellTest(int FishListNum)  //테스트용 함수  테스트로 좋은 블롭이는 29번  
+    {
+        if (FishSlots == null || FishSlots.Length == 0) return;
 
+        // 실제 물고기 데이터 하나 가져오기
+        var fishDb = DataManager.Instance.FishingDatabase.FishData;
+
+        // 첫 번째 물고기 하나 사용
+        var fishList = new List<FishDataSO>(fishDb.datas);
+        var fishDef = fishList[FishListNum];
+
+        int fishId = fishDef.ID;
+        int price = fishDef.Price;
+
+        int targetFillCount = FishSlots.Length - 4; // 빈칸 4칸 남기기 (판매조건)
+
+        for (int i = 0; i < targetFillCount; i++)
+        {
+            FishSlots[i] = new FishStackSlot
+            {
+                FishId = fishId,
+                Count = 1,
+                MaxPrice = price,
+                TotalPrice = price,
+                LastAcquiredOrder = ++_acquireCounter
+            };
+
+            OnSlotChanged?.Invoke(i);
+        }
+    }
     public int GetUpgradeCost()  //비용 계산
     {
 
