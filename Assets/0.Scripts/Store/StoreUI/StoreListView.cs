@@ -9,12 +9,13 @@ using UnityEngine.UI;
 public class StoreListView : MonoBehaviour
 {
     [SerializeField] GameObject storeListPanel;
+    [SerializeField] Button StoreButton;
 
     List<Button> stores = new List<Button>();
 
     StoreListViewModel viewModel;
-    Color selectedColor = new Color(0.92f, 0.72f, 0.52f);
-    Color normalColor = new Color(0.94f, 0.88f, 0.78f);
+    Color selectedColor; 
+    Color normalColor; 
     public List<Button> Stores => stores;
 
     void Awake()
@@ -22,6 +23,8 @@ public class StoreListView : MonoBehaviour
         viewModel = GetComponent<StoreListViewModel>();
         viewModel.PropertyChanged += OnStoreListViewModelChanged;
         SetStoreCat();
+        normalColor = StoreButton.colors.normalColor;
+        selectedColor = StoreButton.colors.pressedColor;
     }
 
     // 스토어 버튼 설정
@@ -55,11 +58,13 @@ public class StoreListView : MonoBehaviour
 
         if (isSelected)
         {
+            Debug.Log("선택된 색");
             colorBlock.normalColor = selectedColor;
             colorBlock.selectedColor = selectedColor;
         }
         else
         {
+            Debug.Log("기본 색");
             colorBlock.normalColor = normalColor;
             colorBlock.selectedColor = normalColor;
         }

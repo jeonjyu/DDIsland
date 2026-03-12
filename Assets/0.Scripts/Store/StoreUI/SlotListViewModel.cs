@@ -69,7 +69,10 @@ public class StoreListViewModel : MonoBehaviour, INotifyPropertyChanged
 
         //Debug.Log("[ItemListViewModel] UpdateCurrentCat");
 
-        view.SetSelectedCatBtnColor(view.Stores[(int)CurrentCat], false);
+        Debug.Log((int)CurrentCat);
+
+        if(view.Stores.Count > 0)
+            view.SetSelectedCatBtnColor(view.Stores[(int)CurrentCat], false);
 
         // 현재 카테고리 변경
         CurrentCat = (StoreCat)catIdx;
@@ -77,10 +80,11 @@ public class StoreListViewModel : MonoBehaviour, INotifyPropertyChanged
         // 카탈로그 변경
         ItemManager.Instance.SetCurrentCategory(CurrentCat);
 
-        view.SetSelectedCatBtnColor(view.Stores[(int)CurrentCat], true);
+        if (view.Stores.Count > 0)
+            view.SetSelectedCatBtnColor(view.Stores[(int)CurrentCat], true);
 
-        // 아이템 리스트 업데이트
         LoadSlotList();
+        // 아이템 리스트 업데이트
     }
 
     // itemList 갯수 맞춰서 갯수 정해두고
