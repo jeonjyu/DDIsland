@@ -111,7 +111,6 @@ public class TradeUnitViewModelBase : MonoBehaviour, INotifyPropertyChanged
                 //Debug.Log("UpdateTradeModel |" + nameof(StoreManager.Instance.TradeItemCount));
                 _tradeCount = 1;
                 OnPropertyChanged(nameof(StoreManager.Instance.TradeItemCount));
-
                 break;
         }
         //SetTotalPrice();

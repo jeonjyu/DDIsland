@@ -33,7 +33,7 @@ public class ItemSlotViewModel : MonoBehaviour, INotifyPropertyChanged
             if (_itemId != value || _itemId == 99999999)
             {
                 _itemId = value;
-                OnPropertyChanged(nameof(_model.ID));
+                //OnPropertyChanged(nameof(_model.ID));
             }
         }
     }

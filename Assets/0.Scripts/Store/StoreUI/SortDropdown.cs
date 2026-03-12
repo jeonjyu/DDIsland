@@ -64,7 +64,7 @@ public class SortDropdown : StoreDropdownBase
         // 여기서부터 정렬 기준에 맞춰 아이템 정렬
         IEnumerable<IStoreItem> items = ItemManager.Instance.displayDatas;
 
-        //Debug.Log("[SortDropdown] SortSlots | SelectedOption 1 : " + (StoreSort)SelectedOption);
+        Debug.Log("[SortDropdown] SortSlots | SelectedOption 1 : " + (StoreSort)SelectedOption);
 
         foreach (Comparer comp in comparers)
         {
@@ -93,12 +93,13 @@ public class SortDropdown : StoreDropdownBase
         ItemManager.Instance.displayDatas = items.ToList();
         //Debug.Log("[SortDropdown] SortSlots | SelectedOption 2 : " + (StoreSort)SelectedOption);
 
-        //Debug.Log("정렬 기준 : " + string.Join(" > ", comparers.Select(x => x)));
+        Debug.Log("정렬 기준 : " + string.Join(" > ", comparers.Select(x => x)));
         //Debug.Log("정렬 완료: " + string.Join(", ", ItemManager.Instance.displayItems.Select(x => x.ItemName + "(" + x.IsGained + "):" + x.PurchasePrice)));
     }
 
     public void ApplySortPriority()
     {
+        Debug.Log("정렬");
         //Debug.Log("[SortDropdown] ApplySortPriority | SelectedOption : " + (StoreSort)SelectedOption);
         // 선택된 옵션에 따라 StoreSort 적용 후 정렬
         switch ((StoreSort)(SelectedOption))
@@ -111,10 +112,13 @@ public class SortDropdown : StoreDropdownBase
             case StoreSort.lowToHigh:
                 SortSlots(Comparer.Price);
                 break;
-                //case StoreSort.name:
-                //    SortSlots(Comparer.Name);
-                //    storeListViewModel.LoadSlotList();
-                //    break;
+            //case StoreSort.name:
+            //    SortSlots(Comparer.Name);
+            //    storeListViewModel.LoadSlotList();
+            //    break;
+            default:
+                SortSlots(Comparer.Gain);
+                break;
         }
     }
 
