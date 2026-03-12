@@ -407,6 +407,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -663,6 +664,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -1221,6 +1223,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -2058,7 +2061,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4792219325536708606}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -2074,6 +2077,7 @@ RectTransform:
   - {fileID: 340592275940938844}
   - {fileID: 1866579157960650692}
   - {fileID: 2538541790867572379}
+  - {fileID: 4378398843844621748}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -2222,6 +2226,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -2433,6 +2438,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -2838,6 +2844,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -2974,6 +2981,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -3110,6 +3118,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -3582,6 +3591,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -3780,6 +3790,94 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!1 &7319436134680709630
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4378398843844621748}
+  - component: {fileID: 566704304700681516}
+  - component: {fileID: 2534515286080275133}
+  m_Layer: 0
+  m_Name: UpgradeManagerV2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4378398843844621748
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7319436134680709630}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -658.615, y: 18.114166, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8466223904741966300}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &566704304700681516
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7319436134680709630}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1d89d051a6b9924fb7f0a3a71a0a26c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UpgradeManagerV2
+  playerController: {fileID: 0}
+  goldText: {fileID: 4083318965980751701}
+  bodySprites:
+  - {fileID: 21300000, guid: a72f927f9a37d994f8f368ad037f8cfa, type: 3}
+  - {fileID: 21300000, guid: 8ccdbf51d77faa3489d10a4f9e2bc900, type: 3}
+  - {fileID: 21300000, guid: 1a42c2d8d43af904ab770c6d9b7d43ca, type: 3}
+  - {fileID: 21300000, guid: e5622bd327f58e840bc9aa59e4c8bc6c, type: 3}
+  characterImage: {fileID: 984067263709419403}
+  bodyThresholds: c8000000900100005802000020030000
+  statIconImage: {fileID: 8395934617099070470}
+  statNameText: {fileID: 7233833024871226306}
+  levelFillImage: {fileID: 6844720798917178669}
+  levelProgressText: {fileID: 6839756220316221333}
+  statChangeText: {fileID: 526670848396298507}
+  statIcons:
+  - {fileID: 21300000, guid: 70e424ce3454ba340aa0cb8d56a4c7f1, type: 3}
+  - {fileID: 21300000, guid: b777fe966f950b94eb167a602d345b22, type: 3}
+  - {fileID: 21300000, guid: b2c820db0c5d8784a90e9594668d798a, type: 3}
+  - {fileID: 21300000, guid: 927ba0861e5f47047a782a96331e82a9, type: 3}
+  - {fileID: 21300000, guid: c5968662f3410fc489b41d82741d64f9, type: 3}
+  buyButton: {fileID: 409308331563612647}
+  buyCostText: {fileID: 6693196811914649837}
+  prevButton: {fileID: 8757710805937830178}
+  nextButton: {fileID: 7489517594740970722}
+  dotContainer: {fileID: 2538541790867572379}
+  nowDot: {fileID: 3731089512179192681, guid: 23b35db81fcc4244a898af6a0c3dcd97, type: 3}
+  waitDot: {fileID: 8988176465940424137, guid: 880865ac61dad0548a8132a699228b29, type: 3}
+--- !u!114 &2534515286080275133
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7319436134680709630}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ba24bf73999952418ef2028739968f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UpgradeClickHandler
+  popupWindow: {fileID: 0}
+  upgradeManager: {fileID: 566704304700681516}
+  playerCharacter: {fileID: 0}
+  rayDistance: 100
 --- !u!1 &7374303177497836119
 GameObject:
   m_ObjectHideFlags: 0
@@ -3883,6 +3981,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -4509,6 +4608,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
