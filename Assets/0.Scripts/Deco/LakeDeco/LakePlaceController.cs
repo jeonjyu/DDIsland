@@ -29,6 +29,12 @@ public class LakePlaceController : MonoBehaviour
    
     string selectedObjectId = ""; // 현재 선택된 배치 오브젝트 ID
 
+    // 이동 취소용 스냅샷 
+    int moveItemId = -1;
+    int moveSizeX = 0;
+    int moveSizeY = 0;
+    Vector2Int moveOriginPos;
+    bool isMoving = false; // 이동 중인지 (인벤에서 꺼냈을때와 구분)
 
     void Start()
     {
@@ -218,6 +224,21 @@ public class LakePlaceController : MonoBehaviour
         int itemId = gridManager.GetItemIdByObjectId(selectedObjectId);
         if (itemId < 0) return;
 
+        // 원래 위치/크기 저장
+        var placedList = gridManager.GetPlacedObjects();
+        for (int i = 0; i < placedList.Count; i++)
+        {
+            if (placedList[i].objectId == selectedObjectId)
+            {
+                moveOriginPos = placedList[i].gridPos;
+                moveSizeX = placedList[i].size.x;
+                moveSizeY = placedList[i].size.y;
+                break;
+            }
+        }
+        moveItemId = itemId;
+        isMoving = true; // 이동모드 시작 
+
         // 인벤에 복원 
         if (itemListManager != null)
             itemListManager.RestoreItem(itemId);
@@ -302,6 +323,9 @@ public class LakePlaceController : MonoBehaviour
 
             if (editModeManager != null)
                 editModeManager.SetChanged();
+
+            isMoving = false; 
+            moveItemId = -1;  
         }
         else
         {
@@ -313,6 +337,16 @@ public class LakePlaceController : MonoBehaviour
     void CancelPlacing()
     {
         if (!isPlacing) return;
+
+        // 이동 중 취소하면 원래 자리에 복구
+        if (isMoving && moveItemId >= 0)
+        {
+            gridManager.PlaceObject(moveItemId, moveOriginPos.x, moveOriginPos.y, moveSizeX, moveSizeY);
+            if (itemListManager != null)
+                itemListManager.UseItem(moveItemId); // 인벤에서 다시 차감
+            isMoving = false;
+            moveItemId = -1;
+        }
 
         isPlacing = false;
         currentItemId = -1;
@@ -373,6 +407,16 @@ public class LakePlaceController : MonoBehaviour
     {
         if (isPlacing)
         {
+            // 이동 중이면 원래 자리에 복구
+            if (isMoving && moveItemId >= 0)
+            {
+                gridManager.PlaceObject(moveItemId, moveOriginPos.x, moveOriginPos.y, moveSizeX, moveSizeY);
+                if (itemListManager != null)
+                    itemListManager.UseItem(moveItemId);
+                isMoving = false;
+                moveItemId = -1;
+            }
+
             isPlacing = false;
             currentItemId = -1;
             gridManager.ClearPreview();

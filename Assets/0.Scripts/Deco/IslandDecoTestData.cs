@@ -34,11 +34,11 @@ public static class IslandDecoTestData
             var data = DataManager.Instance.DecorationDatabase.InteriorData[itemId];
             if (data != null)
             {
-                // Fix
+                // Fix(고정장식물)
                 if (data.interior_itemType == Interior_ItemType.Fix)
                     return Resources.Load<Sprite>("Iron");
 
-                // Free
+                // Free(자유장식물)
                 if (data.InteriorPath_GameObject != null)
                 {
                     var col = data.InteriorPath_GameObject.GetComponentInChildren<Collider>();

@@ -146,6 +146,7 @@ public class MakeAllFixBuilding : EditorWindow
                 // 마커에 있는 ID를 참조해서 SO 데이터로 변환
                 var data = database.InteriorData[marker._interiorId];
 
+
                 if (data == null)
                 {
                     Debug.LogWarning($"ID {marker._interiorId}번에 해당하는 데이터를 찾을 수 없어 건너뜁니다.");
@@ -160,7 +161,6 @@ public class MakeAllFixBuilding : EditorWindow
 
                 // 마커를 프리팹으로 교체
                 GameObject instance = (GameObject)PrefabUtility.InstantiatePrefab(data.InteriorPath_GameObject, _gridSystem.transform);
-                instance.transform.SetPositionAndRotation(marker.transform.position, marker.transform.rotation);
 
                 Undo.RegisterCreatedObjectUndo(instance, "Bake Building");
 
@@ -173,6 +173,8 @@ public class MakeAllFixBuilding : EditorWindow
                     Debug.LogError($"{instance.name}에 Placeable3D를 붙이는 데 실패했습니다!");
                     continue;
                 }
+                int sizeX = data.GridSizeX;
+                int sizeY = data.GridSizeY;
 
                 // Placeable3D 초기화
                 if (placeable != null)
@@ -184,10 +186,19 @@ public class MakeAllFixBuilding : EditorWindow
 
                     Vector2Int centerIndex = _gridSystem.GetGridIndex(marker.transform.position);
 
-                    int px = Mathf.RoundToInt((data.GridSizeX - 1) / 2f);
-                    int py = Mathf.RoundToInt((data.GridSizeY - 1) / 2f);
+                    int offsetX = (sizeX - 1) / 2;
+                    int offsetY = (sizeY - 1) / 2;
 
-                    Vector2Int originIndex = centerIndex - new Vector2Int(px, py);
+                    Vector2Int originIndex = centerIndex - new Vector2Int(offsetX, offsetY);
+
+                    originIndex.x = Mathf.Clamp(originIndex.x, 0, _gridSystem.Width - sizeX);
+                    originIndex.y = Mathf.Clamp(originIndex.y, 0, _gridSystem.Height - sizeY);
+
+                    Vector3 snappedPos = _gridSystem.GetWorldPosition(originIndex.x, originIndex.y, sizeX, sizeY);
+
+                    instance.transform.position = snappedPos;
+                    instance.transform.rotation = marker.transform.rotation;
+
                     Vector2Int size = new (data.GridSizeX, data.GridSizeY);
 
                     placeable.SetBakeData(originIndex, size);
