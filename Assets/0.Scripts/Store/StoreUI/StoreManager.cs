@@ -5,10 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using TMPro;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class StoreManager : Singleton<StoreManager>, INotifyPropertyChanged
 { 
@@ -124,6 +121,7 @@ public class StoreManager : Singleton<StoreManager>, INotifyPropertyChanged
         }
     }
 
+    // 거래 팝업 활성화에 따라 드롭다운 선택 가능 여부 변경
     public void ChangeDropdownAvailability(bool isAvailable)
     {
         filterDropdown.filterDrop.interactable = isAvailable;
