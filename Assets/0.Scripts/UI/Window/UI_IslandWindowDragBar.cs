@@ -2,23 +2,26 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class UI_WaterWindowDragBar : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler
+public class UI_IslandWindowDragBar : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler
 {
-    [Header("호수/바다 창 컨트롤러")]
-    [SerializeField] private UI_WaterWindow waterWindow;
+    [Header("UI_IslandWindow.cs")]
+    [SerializeField] private UI_IslandWindow ui_IslandWindow;
 
-    [Header("드래그 바")]
+    [Header("드래그 바 이미지")]
     [SerializeField] private Image dragBar;
 
+    private Vector2 gapPos;
     private bool isDragging;
-    private float gapHeight;        // 마우스 클릭 지점과 호수창 높이의 차이값
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        if(eventData.button == PointerEventData.InputButton.Left)
+        if (eventData.button == PointerEventData.InputButton.Left)
         {
             isDragging = true;
-            gapHeight = waterWindow.Height - eventData.position.y;
+
+            gapPos = new Vector2(
+                ui_IslandWindow.IslandWindowRect.position.x - eventData.position.x,
+                ui_IslandWindow.IslandWindowRect.position.y - eventData.position.y);
         }
     }
 
@@ -26,7 +29,7 @@ public class UI_WaterWindowDragBar : MonoBehaviour, IBeginDragHandler, IDragHand
     {
         if (eventData.button == PointerEventData.InputButton.Left)
         {
-            waterWindow.Height = eventData.position.y + gapHeight;
+            ui_IslandWindow.WindowPosition = eventData.position + gapPos;
         }
     }
 
@@ -35,12 +38,12 @@ public class UI_WaterWindowDragBar : MonoBehaviour, IBeginDragHandler, IDragHand
         if (eventData.button == PointerEventData.InputButton.Left)
         {
             isDragging = false;
-            gapHeight = 0f;
+
 
             // 드래그가 끝났을 때 마우스 위치가 현재 스크립트를 가진 오브젝트가 아닐 경우 OnPointerExit이 실행되지 않으므로 여기서 처리
             GameObject obj = eventData.pointerCurrentRaycast.gameObject;
 
-            if(obj != gameObject)
+            if (obj != gameObject)
             {
                 dragBar.SetAlpha(0f);
             }
@@ -54,7 +57,7 @@ public class UI_WaterWindowDragBar : MonoBehaviour, IBeginDragHandler, IDragHand
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        if(!isDragging)
+        if (!isDragging)
             dragBar.SetAlpha(0f);
     }
 }
