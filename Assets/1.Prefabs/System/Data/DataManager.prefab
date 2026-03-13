@@ -11,11 +11,13 @@ GameObject:
   - component: {fileID: 3744847620700466291}
   - component: {fileID: 2142102931881390183}
   - component: {fileID: 1652024204880346904}
-  - component: {fileID: 4319663135619139181}
   - component: {fileID: 4946444882785808218}
+  - component: {fileID: 4319663135619139181}
   - component: {fileID: 8401348486315703230}
   - component: {fileID: 5709479046935205811}
   - component: {fileID: 2696265373571662090}
+  - component: {fileID: 1511301407840568267}
+  - component: {fileID: 7202889330313061700}
   m_Layer: 0
   m_Name: DataManager
   m_TagString: Untagged
@@ -56,6 +58,8 @@ MonoBehaviour:
   <FoodDatabase>k__BackingField: {fileID: 5709479046935205811}
   <StoreDatabase>k__BackingField: {fileID: 2696265373571662090}
   <DecorationDatabase>k__BackingField: {fileID: 4946444882785808218}
+  <QuestDatabase>k__BackingField: {fileID: 1511301407840568267}
+  <JournalDatabase>k__BackingField: {fileID: 7202889330313061700}
 --- !u!114 &1652024204880346904
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -71,19 +75,6 @@ MonoBehaviour:
   <CharacterInfoData>k__BackingField: {fileID: 11400000, guid: eee66a1155b13c6439decb951930e38e, type: 2}
   <CharacterUpgradeData>k__BackingField: {fileID: 11400000, guid: d6f9742f6ca24be4f8113528365670c4, type: 2}
   <CharacterVisualData>k__BackingField: {fileID: 11400000, guid: ad3fb9a482f972048a7e63c5ce97b86d, type: 2}
---- !u!114 &4319663135619139181
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4924133292910811244}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ee7f9dd93ee96c64aa6a76fd361ee0b1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CurrencyData
-  <CurrencyInfoData>k__BackingField: {fileID: 11400000, guid: 575ac18ad38c1e947b9ccce819e4437b, type: 2}
 --- !u!114 &4946444882785808218
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -98,6 +89,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DecorationData
   <InteriorData>k__BackingField: {fileID: 11400000, guid: ba1975b4f425439418d5e092e468e353, type: 2}
   <CostumeData>k__BackingField: {fileID: 11400000, guid: b67078f36f78838458600a796c757d63, type: 2}
+--- !u!114 &4319663135619139181
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4924133292910811244}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee7f9dd93ee96c64aa6a76fd361ee0b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CurrencyData
+  <CurrencyInfoData>k__BackingField: {fileID: 11400000, guid: 575ac18ad38c1e947b9ccce819e4437b, type: 2}
 --- !u!114 &8401348486315703230
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -140,4 +144,33 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::StoreData
   <FishingStoreData>k__BackingField: {fileID: 11400000, guid: d4e4dd8e66f63e948bcb1038f3379dc8, type: 2}
   <CostumeStoreData>k__BackingField: {fileID: 11400000, guid: 14e4ec0ac8526924d99d25cac5e882ff, type: 2}
-  <InteriorStoreData>k__BackingField: {fileID: 11400000, guid: a076a62cfd96d9440a1afc21b5e583e6, type: 2}
+  <IslandStoreData>k__BackingField: {fileID: 11400000, guid: 6c4ba374f8851564596f727ef02aed32, type: 2}
+--- !u!114 &1511301407840568267
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4924133292910811244}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 080e0d1d61a8cee4c8627747aa966058, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::QuestData
+  <QuestInfoData>k__BackingField: {fileID: 11400000, guid: 76a7adeffe92f5e4ba52ab29fa45716b, type: 2}
+--- !u!114 &7202889330313061700
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4924133292910811244}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb504b6b7c012f4c8cd3a45115a1f46, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::JournalData
+  <JournalCostumeData>k__BackingField: {fileID: 11400000, guid: 2aa82756163ceec468cf646a8873fb6a, type: 2}
+  <JournalInteriorData>k__BackingField: {fileID: 11400000, guid: 16c02b00096edb4489c4a41915b54778, type: 2}
+  <JournalFoodData>k__BackingField: {fileID: 11400000, guid: 14d5cad07f8342d46b7c46f3b7c91dc9, type: 2}
+  <JournalFishData>k__BackingField: {fileID: 11400000, guid: fe3d953e84615094db9a951314048fcc, type: 2}
