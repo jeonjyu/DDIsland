@@ -48,6 +48,7 @@ public class DecoInventoryManager : Singleton<DecoInventoryManager>
     // 배치 시 수량 감소
     public void UseItem(int itemId)
     {
+        var playerItem = FindPlayerItem(itemId);
         if (playerItem == null) return;
 
         playerItem.ItemCount--;
