@@ -27,6 +27,9 @@ public class GameManager : Singleton<GameManager>
     private void Start()
     {
         StartCoroutine(AutoAddGold());
+
+        IslandWindow?.Init();
+        WaterWindow?.Init();
     }
 
     private IEnumerator AutoAddGold()

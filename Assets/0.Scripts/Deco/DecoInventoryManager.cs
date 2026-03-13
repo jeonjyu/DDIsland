@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class DecoInventoryManager : Singleton<DecoInventoryManager>
 {
-    List<LakeInvenSlot> invenList = new List<LakeInvenSlot>();
+    [SerializeField] List<LakeInvenSlot> invenList = new List<LakeInvenSlot>();
 
     protected override void Awake()
     {

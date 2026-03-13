@@ -18,12 +18,6 @@ public class CameraController : MonoBehaviour
         originPos = transform.position;
     }
 
-    private void Start()
-    {
-        GameManager.Instance.IslandWindow.OnScaleChanged += SetCamSize;
-        GameManager.Instance.IslandWindow.OnPosChanged += SetCamPos;
-    }
-
     private void SetCamSize(float ratio)
     {
         cinemachineCam.Lens.OrthographicSize = minSize + ((maxSize - minSize) * (1f - ratio));
@@ -46,9 +40,18 @@ public class CameraController : MonoBehaviour
         transform.position = originPos + (transform.right * xOffset) + (transform.up * yOffset);
     }
 
-    private void OnDestroy()
+    private void OnEnable()
     {
-        if(GameManager.Instance != null && GameManager.Instance.IslandWindow != null)
+        if (GameManager.Instance != null && GameManager.Instance.IslandWindow != null)
+        {
+            GameManager.Instance.IslandWindow.OnScaleChanged += SetCamSize;
+            GameManager.Instance.IslandWindow.OnPosChanged += SetCamPos;
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (GameManager.Instance != null && GameManager.Instance.IslandWindow != null)
         {
             GameManager.Instance.IslandWindow.OnScaleChanged -= SetCamSize;
             GameManager.Instance.IslandWindow.OnPosChanged -= SetCamPos;
