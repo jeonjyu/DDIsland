@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-[RequireComponent(typeof(InputHandler))]
+[DefaultExecutionOrder(-50), RequireComponent(typeof(InputHandler))]
 public class GameManager : Singleton<GameManager>
 {
     [Header("InputHandler 클래스")]
@@ -27,6 +27,11 @@ public class GameManager : Singleton<GameManager>
     private void Start()
     {
         StartCoroutine(AutoAddGold());
+
+        IslandWindow?.Init();
+        WaterWindow?.Init();
+
+        Debug.Log($"GameManager");
     }
 
     private IEnumerator AutoAddGold()

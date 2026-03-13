@@ -333,6 +333,9 @@ public class PlayerController : MonoBehaviour
     }
     public void AnimEvent_TryConsumeFood()  //먹기 애니에 넣기
     {
+        if (!(_currentState is EatState))
+            return;
+
         int index = FoodStorageManager.Instance.TakeOutRandomFood();
         if (index == -1) return;
         var slot = FoodStorageManager.Instance.GetFoodSlot(index);
@@ -402,12 +405,8 @@ public class PlayerController : MonoBehaviour
         _isCooking = false;
         _animator.SetBool("isCook", false);
         RefreshCanCook();
-        if (_canCook && _currentState is CookState)
-        {
-            TryCooking();
-            return;
-        }
-         SetState(new IdleState(this));  //재료없으면
+
+        SetState(new IdleState(this));
     }
     public void RefreshCanCook()  //요리 조건 확인
     {
@@ -717,6 +716,7 @@ public class PlayerController : MonoBehaviour
     }
     public void RequestReplan()  //idle에서 자율적으로 다음행동 결정
     {
+        RefreshCanCook();
         var nextState = DecideNextState();
         if (nextState is not SleepState && _isResting == true) return;
         if (nextState != null)

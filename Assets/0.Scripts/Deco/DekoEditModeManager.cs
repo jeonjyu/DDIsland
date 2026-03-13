@@ -279,11 +279,19 @@ public class DecoEditModeManager : MonoBehaviour
     }
 
     // 섬 초기화 
-    void OnIslandClearAll()
+    void OnIslandClearAll(List<int> destroyedIds)
     {
         if (currentMode != DecoMode.Island) return;
         //if (itemListManager != null)
         //    itemListManager.ReturnAllItems();
+
+        foreach (int itemId in destroyedIds)                   
+        {                                                      
+            DecoInventoryManager.Instance.RestoreItem(itemId); 
+        }                                                      
+
+        if (itemListManager != null)                           
+            itemListManager.SetupInventory();                  
     }
 
     #endregion
@@ -600,6 +608,8 @@ public class DecoEditModeManager : MonoBehaviour
     }
     void OnReset() // 초기화, 저장한 상태로 불러오기
     {
+        if (!isChanged) return; // 변경사항 없으면 무시 
+
         // TODO:  (파베 연결 후에 나중에 구현)
         if (currentMode == DecoMode.Lake) // 호수 모드
         {
@@ -614,7 +624,9 @@ public class DecoEditModeManager : MonoBehaviour
         else if (currentMode == DecoMode.Island) // 섬모드 
         {
             PlacementMgr.Instance?.OnClickCancelSession(); // 모든 변경사항 취소
-           
+          
+            if (itemListManager != null)
+                itemListManager.ReturnAllItems();
             //if (buildingMgr != null)
             //{
             //    buildingMgr.RevertAll();          // 되돌리기
@@ -648,12 +660,10 @@ public class DecoEditModeManager : MonoBehaviour
             //}
 
             // ClearAll이 전부 파괴하니까 인벤도 처음 상태로 복원
-            if (itemListManager != null)
-            {
-                //if (currentMode == DecoMode.Island)
-                //    itemListManager.SetupInventory(IslandDecoTestData.CreateInventory());
-                itemListManager.LoadSnapshot(); // 마지막 저장 시점으로 복구
-            }
+            //if (itemListManager != null)
+            //{
+            //    itemListManager.ReturnAllItems();
+            //}
             isChanged = true;
         }
     }
@@ -705,12 +715,14 @@ public class DecoEditModeManager : MonoBehaviour
         }
         else if (currentMode == DecoMode.Island)
         {
-            // PlacementMgr.Instance?.OnClickCancelSession();
+            // PlacementMgr.Instance?.OnClickCancelSession(); 
             if (buildingMgr != null)
             {
                 buildingMgr.RevertAll();          // 되돌리기
                 buildingMgr.CancelCurrentAction(); // 들고있는 거 취소
             }
+            if (itemListManager != null)
+                itemListManager.ReturnAllItems();
         }
 
         if (exitPopupPanel != null)
