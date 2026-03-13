@@ -99,15 +99,6 @@ public class UI_IslandWindow : MonoBehaviour
 #endif
     }
 
-    private void Update()
-    {
-        if(Keyboard.current.fKey.wasPressedThisFrame)
-        {
-            Debug.Log(islandWindowRect.position.x + WidthOffset / islandWindowRect.sizeDelta.x);
-            Debug.Log((islandWindowRect.sizeDelta.y - islandWindowRect.position.y + HeightOffset) / islandWindowRect.sizeDelta.y);
-        }
-    }
-
     /// <summary>
     /// 크기를 조절할 드래그 방향에 따른 Pivot / Position 수정
     /// </summary>
