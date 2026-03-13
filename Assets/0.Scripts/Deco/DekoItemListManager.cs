@@ -348,7 +348,7 @@ public class DecoItemListManager : MonoBehaviour
     // 아이템 회수 시 수량 복구
     public void RestoreItem(int itemId)
     {
-        DecoInventoryManager.Instance.RestoreItem(itemId); // 수량 복구
+    
 
         int dataIdx = -1;
         for (int i = 0; i < invenData.Count; i++)
@@ -362,8 +362,8 @@ public class DecoItemListManager : MonoBehaviour
         if (dataIdx < 0) return; 
 
         bool wasZero = (invenData[dataIdx].quantity <= 0);
-       // invenData[dataIdx].quantity++;
-
+        // invenData[dataIdx].quantity++;
+        DecoInventoryManager.Instance.RestoreItem(itemId); // 수량 복구
         if (wasZero) // 슬롯이 없으면 다시 생성
         {
             AddSlot(invenData[dataIdx], dataIdx); 
