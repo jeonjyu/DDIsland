@@ -27,7 +27,7 @@ public class PurchaseStrategy : MonoBehaviour, ITradeStrategy
     {
         if(item.PurchasePrice == 0)
         {
-            Debug.Log("아이템의 구매 가격이 0원이라 골드 고려 안함");
+            //Debug.Log("아이템의 구매 가격이 0원이라 골드 고려 안함");
             return item.MaxCount - item.ItemCount;
         }
         return Mathf.Min(GameManager.Instance.PlayerGold / item.PurchasePrice, item.MaxCount - item.ItemCount);

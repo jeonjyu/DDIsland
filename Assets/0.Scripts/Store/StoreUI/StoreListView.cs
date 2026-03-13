@@ -5,21 +5,26 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+
 public class StoreListView : MonoBehaviour
 {
     [SerializeField] GameObject storeListPanel;
+    [SerializeField] Button StoreButton;
 
     List<Button> stores = new List<Button>();
 
     StoreListViewModel viewModel;
-
+    Color selectedColor; 
+    Color normalColor; 
     public List<Button> Stores => stores;
 
     void Awake()
     {
+        SetStoreCat();
         viewModel = GetComponent<StoreListViewModel>();
         viewModel.PropertyChanged += OnStoreListViewModelChanged;
-        SetStoreCat();
+        normalColor = StoreButton.colors.normalColor;
+        selectedColor = StoreButton.colors.pressedColor;
     }
 
     // 스토어 버튼 설정
@@ -45,19 +50,23 @@ public class StoreListView : MonoBehaviour
             });
         }
     }
+
+    // 버튼 선택되었을 때 색상 변경
     public void SetSelectedCatBtnColor(Button button, bool isSelected)
     {
         ColorBlock colorBlock = button.colors;
 
         if (isSelected)
         {
-            colorBlock.normalColor = Color.lightGray;
-            colorBlock.selectedColor = Color.lightGray;
+            Debug.Log("선택된 색");
+            colorBlock.normalColor = selectedColor;
+            colorBlock.selectedColor = selectedColor;
         }
         else
         {
-            colorBlock.normalColor = Color.white;
-            colorBlock.selectedColor = Color.white;
+            Debug.Log("기본 색");
+            colorBlock.normalColor = normalColor;
+            colorBlock.selectedColor = normalColor;
         }
 
 

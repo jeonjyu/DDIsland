@@ -15,6 +15,8 @@ public class FishingStoreItem : StoreItem<FishingStoreDataSO>
 
     public override bool IsSaleable => _data.IsSaleable;
 
+    public override bool IsDefault => true; // DataManager.Instance.FishingDatabase.FishingItemData[ObjectId].IsDefault;
+
     public override int MaxCount => _data.MaxCount;
 
     public override int ItemCount { get => _itemCount; set => _itemCount = value; }

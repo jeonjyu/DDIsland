@@ -102,6 +102,13 @@ public abstract class TradeUnitViewBase : MonoBehaviour
         countMaxBtn.interactable = isAvailable;
     }
 
+    protected virtual void UpdateUI()
+    {
+        viewModel.SetTotalPrice();
+        SetTradeCountText(viewModel.TradeCount);
+        SetButton();
+    }
+
     // StoreManager의 Model과 TradeItemCount 변경시 이거 아님
     // TradeUnitViewModelBase의 TradeCount, ItemCount 변경시 실행
     private void UpdateTradeUnitUI(object sender, PropertyChangedEventArgs e)
@@ -113,16 +120,12 @@ public abstract class TradeUnitViewBase : MonoBehaviour
             case nameof(viewModel.TradeCount):
                 //Debug.Log("UpdateTradeUnitUI | " + nameof(viewModel.TradeCount));
                 // 해당하는 거래 유형만) UI 가격, 개수, 개수 버튼
-                viewModel.SetTotalPrice();
-                SetTradeCountText(viewModel.TradeCount);
-                SetButton();
+                UpdateUI();
                 break;
             // 모든 유닛 뷰 요소 초기화
             case nameof(StoreManager.Instance.TradeItemCount):
                 //Debug.Log("UpdateTradeUnitUI |" + nameof(StoreManager.Instance.TradeItemCount));
-                viewModel.SetTotalPrice();
-                SetTradeCountText(viewModel.TradeCount);
-                SetButton();
+                UpdateUI();
                 break;
         }
     }

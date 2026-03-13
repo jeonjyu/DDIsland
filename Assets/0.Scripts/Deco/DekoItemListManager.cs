@@ -82,18 +82,6 @@ public class DecoItemListManager : MonoBehaviour
             // 보유 중이고 수량이 1이상인 것만
             if (item.IsGained && item.ItemCount > 0)
             {
-                //{
-                //    // 상점ID(200011)를 인테리어ID(20001) 변환
-                //    var storeData = DataManager.Instance.StoreDatabase.InteriorStoreData[item.ObjectId];
-                //    if (storeData == null) continue;
-
-                //    list.Add(new LakeInvenSlot)
-                //    { 
-                //        itemId = storeData.InteriorId, // InteriorId를 20001~ 등으로 저장)
-                //        quantity = item.ItemCount
-                //    });
-                //}
-                //catch { continue; }
                 list.Add(new LakeInvenSlot
                 {
                     itemId = item.ObjectId,  // InteriorId (20001~ 등)
@@ -117,7 +105,6 @@ public class DecoItemListManager : MonoBehaviour
         if (currentMode == DecoMode.Lake) // 호수 인벤
         {
             SetupInventory(lakeInvenSave ?? LakeDecoTestData.CreateTestInventory());
-            SetupInventory(islandInvenSave ?? IslandDecoTestData.CreateInventory());
         }
         else if (currentMode == DecoMode.Island) // 섬 인벤  
         {   
@@ -207,8 +194,6 @@ public class DecoItemListManager : MonoBehaviour
                 {
                     slotUI.nameText.text = "폴백 :" + slotData.itemId;
                 }
-
-
             }
         }
 

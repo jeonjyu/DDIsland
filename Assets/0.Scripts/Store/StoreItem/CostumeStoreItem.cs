@@ -14,6 +14,7 @@ public class CostumeStoreItem : StoreItem<CostumeStoreDataSO>
     public override bool IsGained { get => _isGained; set => _isGained = value; }
 
     public override bool IsSaleable => _data.IsSaleable;
+    public override bool IsDefault => DataManager.Instance.DecorationDatabase.CostumeData[ObjectId].IsDefault;
 
     public override int MaxCount => _data.MaxCount;
 

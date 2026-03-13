@@ -46,7 +46,7 @@ public class ItemSlotView : MonoBehaviour, IStoreItemView, IPointerClickHandler
 
     void OnDisable()
     {
-        //viewModel.PropertyChanged -= OnViewModelPropChanged;
+        viewModel.PropertyChanged -= OnViewModelPropChanged;
     }
 
     // 뷰 초기화 및 업데이트 메서드
@@ -95,6 +95,7 @@ public class ItemSlotView : MonoBehaviour, IStoreItemView, IPointerClickHandler
     {
         // 구매보다 카테고리 변경을 더 자주하니까 구매창 킬 때 카테고리에 따라 다른 구매창 열도록 설정
         viewModel.SetPopupModel();
+        StoreManager.Instance.TradeItemSlot = this.viewModel;
         StoreManager.Instance.BuyAndSellPanel.SetActive(true);
         StoreManager.Instance.ChangeDropdownAvailability(false);
     }
@@ -104,15 +105,26 @@ public class ItemSlotView : MonoBehaviour, IStoreItemView, IPointerClickHandler
         if (string.IsNullOrEmpty(e.PropertyName))
         {
             //Debug.Log("[ItemSlotView] OnViewModelPropChanged | 모델 변경");
-
             Init();
+            return;
         }
+        else
+            Debug.Log(this.name + " 변경됨 " + e.PropertyName + " " + sender);
+        
         switch (e.PropertyName)
         {
+            //case null:
+            //case "":
+            //    Init();
+            //    break;
             case "IsGained":
             case "ItemCount":
                 UpdateItemCount(modelData.ItemCount);
-                UpdateSlotColor(modelData.IsGained); // itemCount 증가하면 itemGained 변경되어야 함
+                UpdateSlotColor(modelData.IsGained);
+                StoreManager.Instance.sortDropdown.ApplySortPriority();
+                StoreManager.Instance.StoreListVM.LoadSlotList();
+
+                //StoreManager.Instance.sortDropdown.SortSlots((Comparer)StoreManager.Instance.sortDropdown.SelectedOption);
                 break;
         }
     }

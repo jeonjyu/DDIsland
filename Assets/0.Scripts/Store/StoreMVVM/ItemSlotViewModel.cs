@@ -33,7 +33,7 @@ public class ItemSlotViewModel : MonoBehaviour, INotifyPropertyChanged
             if (_itemId != value || _itemId == 99999999)
             {
                 _itemId = value;
-                OnPropertyChanged(nameof(_model.ID));
+                //OnPropertyChanged(nameof(_model.ID));
             }
         }
     }
@@ -56,6 +56,7 @@ public class ItemSlotViewModel : MonoBehaviour, INotifyPropertyChanged
             if (_model.IsGained != value)
             {
                 _model.IsGained = value;
+                Debug.Log(this.name + " 아이템 보유 여부 변경 " + _model.IsGained);
                 OnPropertyChanged(nameof(_model.IsGained));
             }
         }
