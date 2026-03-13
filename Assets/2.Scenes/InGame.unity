@@ -1289,6 +1289,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8685fee7a90c85489386733cb6af9d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DecoInventoryManager
+  invenList: []
 --- !u!4 &431356647
 Transform:
   m_ObjectHideFlags: 0
@@ -1596,6 +1597,69 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 810830239}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &643667433
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 643667435}
+  - component: {fileID: 643667434}
+  m_Layer: 0
+  m_Name: DataHub
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &643667434
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 643667433}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 942061910f6c1bf469ca4a8742417797, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DataHub
+  _allUserData:
+    Environment:
+      _calculation: 
+    Character:
+      stats: []
+      upgrades: 
+    Store:
+      gold: 0
+    Decoration:
+      _ownedCostumes: 
+      _currentCostumeId: 0
+      _buildings: []
+      _ownedDecoItems: []
+    Collection:
+      _unlockedAlbumIds: 
+      _unlockedBookIds: 
+    Progress:
+      activeQuestIds: 
+      shopPurchaseCounts: 
+--- !u!4 &643667435
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 643667433}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 815761052}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &673764087 stripped
 GameObject:
@@ -2116,6 +2180,10 @@ PrefabInstance:
       propertyPath: <CharacterUpgradeData>k__BackingField
       value: 
       objectReference: {fileID: 11400000, guid: d6f9742f6ca24be4f8113528365670c4, type: 2}
+    - target: {fileID: 2142102931881390183, guid: c8c6696fe7172b04eaa827c7faa6c031, type: 3}
+      propertyPath: _hub
+      value: 
+      objectReference: {fileID: 643667434}
     - target: {fileID: 2696265373571662090, guid: c8c6696fe7172b04eaa827c7faa6c031, type: 3}
       propertyPath: <CostumeStoreData>k__BackingField
       value: 
@@ -2202,9 +2270,17 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: a6ff88db9aec22c4697aae7938cc501b, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 3744847620700466291, guid: c8c6696fe7172b04eaa827c7faa6c031, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 643667435}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c8c6696fe7172b04eaa827c7faa6c031, type: 3}
+--- !u!4 &815761052 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3744847620700466291, guid: c8c6696fe7172b04eaa827c7faa6c031, type: 3}
+  m_PrefabInstance: {fileID: 815761051}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &849499452
 PrefabInstance:
   m_ObjectHideFlags: 0
