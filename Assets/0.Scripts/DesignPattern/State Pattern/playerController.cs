@@ -20,7 +20,7 @@ using System.Collections.Generic;
 
 public enum Point
 {
-    Fish,Store,Kitchen,Rest,Acorn,Table
+    Fish,Kitchen,Rest,Acorn,Table,Sell
 }
 public class PlayerController : MonoBehaviour
 {
@@ -34,7 +34,6 @@ public class PlayerController : MonoBehaviour
     private bool _ishungery = false;
     private bool _canCook = false;  
     private bool _isCooking = false;
-    private bool _shouldSell = false;
     private bool _isFishing = false;
     private bool _isAcornFalling = false;
     private bool _isResting = false;
@@ -48,6 +47,8 @@ public class PlayerController : MonoBehaviour
 
     private Coroutine _yawnRoutine;  //하품 코루틴
 
+    private Coroutine _sellRoutine;
+
     public CharacterDataSO PlayerDataSO;
     //public PlayerContext playerData;  //일단은 남겨둠 혹시모르니까
     public PlayerData PlayerDataOld; //업그레이드매니저를위한거
@@ -55,11 +56,11 @@ public class PlayerController : MonoBehaviour
 
     Point _currentPoint = Point.Fish;  //플레이어 목적지
     [SerializeField] private Transform _fishPoint;  //각 지점 위치
-    [SerializeField] private Transform _storePoint;
     [SerializeField] private Transform _kitchenPoint;
     [SerializeField] private Transform _restAreaPoint;
     [SerializeField] private Transform _tablePoint;
-     private Transform _acornPoint;
+    [SerializeField] private Transform _SellPoint;
+    private Transform _acornPoint;
 
     [SerializeField] private SkinnedMeshRenderer _targetSMR;
     private SkinnedMeshRenderer _slimSource;
@@ -73,6 +74,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] GameObject _roundPrefab;
 
     [SerializeField] private GameObject _fishingRod;
+    [SerializeField] private GameObject _fork;
+    [SerializeField] private GameObject _pan;
 
     private float _hungerTickTimer;
     private float _baseMoveSpeed;  
@@ -96,11 +99,11 @@ public class PlayerController : MonoBehaviour
     public bool CanCook => _canCook;
     public Point Point => _currentPoint;
     public Transform FishPoint => _fishPoint;
-    public Transform StorePoint => _storePoint;
     public Transform KitchenPoint => _kitchenPoint;
     public Transform RestAreaPoint => _restAreaPoint;
     public Transform AcornPoint => _acornPoint;
     public Transform TablePoint => _tablePoint;
+    public Transform SellPoint => _SellPoint;
     public int FishingCount => _fishingCount;
 
     private void Awake()
@@ -120,6 +123,8 @@ public class PlayerController : MonoBehaviour
         ApplyPlayerStats(PlayerDataSO);
         _baseMoveSpeed = PlayerDataOld.MoveSpeed;
         _fishingRod.gameObject.SetActive(false);
+        _fork.gameObject.SetActive(false);
+        _pan.gameObject.SetActive(false);
 
         RefreshCanCook();
     }
@@ -179,9 +184,16 @@ public class PlayerController : MonoBehaviour
 
    public void StartAcornSupply(Vector3 center)  //도토리 떨어지는 함수
     {
-        if (_isAcornFalling) return;
         _isAcornFalling = true;
+
+        foreach (var acorn in _acorns)
+        {
+            if (acorn != null)
+                Destroy(acorn);
+        }
+
         _acorns.Clear();
+        _acornPoint = null;
         _acornIndex = 0;
 
         for (int i = 0; i < 3; i++)
@@ -195,45 +207,129 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        SetNextAcornTargetAndMove();
+        _acorns.RemoveAll(a => a == null);
+
+        if (_acorns.Count > 0)
+            _acornPoint = _acorns[0].transform;
+        else
+            _isAcornFalling = false;
     }
     private void SetNextAcornTargetAndMove()  //다음 도토리 위치로 이동하거나, 도토리가 없으면 도토리 떨어지는 상태 종료
     {
-        _acorns.RemoveAll(a => a == null);  //파괴된 도토리 리스트에서 제거
+        _acorns.RemoveAll(a => a == null);
 
-        if (_acorns.Count == 0)  
+        if (_acorns.Count == 0)
         {
             _isAcornFalling = false;
+            _acornPoint = null;
             SetState(new IdleState(this));
             return;
         }
 
-        if (_acornIndex >= _acorns.Count) _acornIndex = 0;  
-        _acornPoint = _acorns[_acornIndex].transform;    
+        if (_acornIndex >= _acorns.Count)
+            _acornIndex = 0;
+
+        _acornPoint = _acorns[_acornIndex].transform;
         SetState(new MoveState(this, Point.Acorn));
+    }
+    public void InterruptToAcorn(Vector3 center)
+    {
+        if (_currentState is SleepState) return;
+
+        if (_isAcornFalling && _acornPoint != null)
+        {
+            SetState(new MoveState(this, Point.Acorn), true);
+            return;
+        }
+
+        if (!(_currentState is IdleState)) StopCurrentAction();
+
+        StartAcornSupply(center);
+
+        if (_isAcornFalling && _acornPoint != null)
+            SetState(new MoveState(this, Point.Acorn), true);
+        else
+            SetState(new IdleState(this), true);
     }
     public void EatCurrentAcorn()  //도토리 먹는 함수, 도토리 없으면 도토리 떨어지는 상태 종료
     {
         if (!_isAcornFalling) return;
-        if (_acorns.Count == 0)  
-        {
-            SetNextAcornTargetAndMove();
-            return;
-        }
-        var acorn = _acorns[_acornIndex];
 
-        PlayerDataOld.SetHunger(PlayerDataOld.Hunger + 10);
-       // _animator.SetTrigger("isEat");
-        Destroy(acorn);
-        _acorns.RemoveAt(_acornIndex);
+        _acorns.RemoveAll(a => a == null);
+
         if (_acorns.Count == 0)
         {
+            _acornPoint = null;
             _isAcornFalling = false;
             SetState(new IdleState(this));
             return;
         }
-        else SetNextAcornTargetAndMove();
 
+        if (_acornIndex >= _acorns.Count)
+            _acornIndex = 0;
+
+        var acorn = _acorns[_acornIndex];
+        if (acorn == null)
+        {
+            _acornPoint = null;
+            SetNextAcornTargetAndMove();
+            return;
+        }
+
+        if (_acornPoint == acorn.transform)
+            _acornPoint = null;
+
+        PlayerDataOld.SetHunger(PlayerDataOld.Hunger + 10);
+
+        _acorns.RemoveAt(_acornIndex);
+        Destroy(acorn);
+
+        if (_acorns.Count == 0)
+        {
+            _isAcornFalling = false;
+            _acornPoint = null;
+            SetState(new IdleState(this));
+            return;
+        }
+
+        SetNextAcornTargetAndMove();
+
+    }
+    public void StopCurrentAction()
+    {
+        _agent.isStopped = true;
+        _agent.ResetPath();
+        _agent.velocity = Vector3.zero;
+
+        ExitFishingState();
+        _isFishing = false;
+        _animator.SetBool("isFish", false);
+        _animator.ResetTrigger("FishingHit");
+        HandOffFishingRod();
+
+        _isCooking = false;
+        PendingFood = null;
+        _animator.SetBool("isCook", false);
+
+        _animator.ResetTrigger("isEat");
+        _animator.ResetTrigger("Yawn");
+
+        if (_yawnRoutine != null)
+        {
+            StopCoroutine(_yawnRoutine);
+            _yawnRoutine = null;
+        }
+
+        _isYawning = false;
+        _hasYawned = false;
+
+        _animator.SetBool("isMove", false);
+        _animator.SetBool("isIdle", false);
+
+        if (!(_currentState is SleepState))
+        {
+            StopRecover();
+        }
     }
     public void AnimEvent_TryConsumeFood()  //먹기 애니에 넣기
     {
@@ -263,6 +359,8 @@ public class PlayerController : MonoBehaviour
 
     public void AnimEvent_EatEnd()  //애니재생 끝나는 타이밍을 맞추기 위한거
     {
+        if (!(_currentState is EatState))
+            return;
         SetState(new IdleState(this));
     }
 
@@ -292,6 +390,9 @@ public class PlayerController : MonoBehaviour
     }
     public void AnimEvent_CookingEnd()  //이함수를 Cook_FryingPan_Mix@loop 애니의 끝부분에 넣기
     {
+        if (!(_currentState is CookState))
+            return;
+
         if (PendingFood != null)
         {
             CookingManager.Instance.CreateCookedFood(PendingFood);
@@ -398,12 +499,18 @@ public class PlayerController : MonoBehaviour
         _ishungery = PlayerDataOld.Hunger <= 25;
         
         if (_isAcornFalling) return;
-        if (!_canCook && !_shouldSell && PlayerDataOld.Hunger <= 20 && FoodStorageManager.Instance.FoodEmptyCheck())
+        bool noCookedFood = FoodStorageManager.Instance.FoodEmptyCheck();
+        bool hasCookableRecipe = HasCookableRecipe();
+        if (PlayerDataOld.Hunger <= 20 && noCookedFood && !hasCookableRecipe)
         {
-            StartAcornSupply(transform.position); 
+            InterruptToAcorn(transform.position);
         }
     }
-
+    private bool HasCookableRecipe()  //_canCook하나로 통일하고싶었는데 만들다보니 이변수 하나가 담당하는게 너무많아짐 그래서 따로 함수만듬 
+    {
+        var candidates = CookingManager.Instance.BuildCookCandidates(new CookingContext());
+        return candidates != null && candidates.Count > 0;
+    }
     private void UpdateMoveType()  //이동타입 업데이트, 애니메이션에 적용
     {
         // 0 기본 / 1 탈진 / 2 배고픔
@@ -472,6 +579,13 @@ public class PlayerController : MonoBehaviour
     public void AnimEvent_GiveFishOnce()  //낚시 성공 애니에 넣을 함수
     {
         FishManager.Instance.PickRandomSeasonFish();
+
+        if (FishStorageManager.Instance.FishFullCheck())  //낚시 한마리 낚을떄마다 검사
+        {
+            ExitFishingState();
+            Animator.SetBool("isFish", false);
+            SetState(new IdleState(this));
+        }
     }
     public void AnimEvent_FishingCycleEnd() //낚시 성공 애니에 넣을 함수
     {
@@ -481,14 +595,17 @@ public class PlayerController : MonoBehaviour
         //playerData.Stamina -= 5;
         PlayerDataOld.SetHunger(PlayerDataOld.Hunger - 4);
         PlayerDataOld.SetStamina(PlayerDataOld.Stamina - 5);
-        _isFishing = false; _fishingRoutine = null;
+        _isFishing = false;
         if (_fishingCount <= 0 || PlayerDataOld.Hunger <= 0 || PlayerDataOld.Stamina <= 0)
         {
+            ExitFishingState();
             Animator.SetBool("isFish", false);
             SetState(new IdleState(this));
+            return;
         }
         _cycleRunning = false;  //다음 사이클로 넘어갈 수 있게 코루틴 대기 해제
     }
+  
     public void ResetFishingCount()
     {
         _fishingCount = 5;
@@ -500,6 +617,22 @@ public class PlayerController : MonoBehaviour
     public void HandOffFishingRod()
     {
         _fishingRod.SetActive(false);
+    }
+    public void HandOnFork()
+    {
+        _fork.SetActive(true);
+    }
+    public void HandOffFork()
+    {
+        _fork.SetActive(false);
+    }
+    public void HandOnPan()
+    {
+        _pan.SetActive(true);
+    }
+    public void HandOffPan()
+    {
+        _pan.SetActive(false);
     }
     public void HasYawned()
     {
@@ -521,6 +654,21 @@ public class PlayerController : MonoBehaviour
         _hasYawned = false;
         _isYawning = false;
         _yawnRoutine = null;
+    }
+
+
+    public void SellFishs()
+    {
+       _sellRoutine = StartCoroutine(SellWait());
+    }
+
+    IEnumerator SellWait()
+    {
+        Agent.isStopped = true;
+        Agent.velocity = Vector3.zero;
+        yield return new WaitForSeconds(2f);
+        FishStorageManager.Instance.SellAllFish();
+        SetState(new IdleState(this));
     }
 
     public void StartRecover()
@@ -577,18 +725,27 @@ public class PlayerController : MonoBehaviour
 
     private IState DecideNextState()    //상태에 따른 도착지 결정, Move상태가 도착지의 따른 행동결정
     {
-        if (PlayerDataOld.Hunger <= 20)
+        if (PlayerDataOld.Hunger <= 20)  //20이하가 되어도 음식체크 => 물고기(레시피)체크 => 도토리 순서
         {
             if (!FoodStorageManager.Instance.FoodEmptyCheck())
             {
                 _currentPoint = Point.Table;
                 return new MoveState(this, _currentPoint);
             }
-            else
+
+            if (_canCook)
+            {
+                _currentPoint = Point.Kitchen;
+                return new MoveState(this, _currentPoint);
+            }
+
+            if (_isAcornFalling && _acornPoint != null)
             {
                 _currentPoint = Point.Acorn;
                 return new MoveState(this, _currentPoint);
             }
+
+            return new IdleState(this);
         }
 
         if (PlayerDataOld.Stamina <= 10)
@@ -596,19 +753,17 @@ public class PlayerController : MonoBehaviour
             _currentPoint = Point.Rest;
             return new MoveState(this, _currentPoint);
         }
-
         if (_canCook)
         {
             _currentPoint = Point.Kitchen;
             return new MoveState(this, _currentPoint);
         }
-
-       // if (_shouldSell)
-       // {
-       //     _currentPoint = Point.Store;
-       //     return new MoveState(this, _currentPoint);
-       // }
-       if (_isAcornFalling) 
+        if (FishStorageManager.Instance.FishFullCheck())
+        {
+            _currentPoint = Point.Sell;
+            return new MoveState(this, _currentPoint);
+        }
+        if (_isAcornFalling && _acornPoint != null) 
         {
             _currentPoint = Point.Acorn;
             return new MoveState(this, _currentPoint);  
@@ -617,9 +772,11 @@ public class PlayerController : MonoBehaviour
         return new MoveState(this, _currentPoint);
     }
 
-    public void SetState(IState newState)
+    public void SetState(IState newState, bool force = false)
     {
-        if (newState is not SleepState && _isResting == true) return;
+        if (!force && newState is not SleepState && _isResting)
+            return;
+
         _currentState?.Exit();
         _currentState = newState;
         _currentState.Enter();

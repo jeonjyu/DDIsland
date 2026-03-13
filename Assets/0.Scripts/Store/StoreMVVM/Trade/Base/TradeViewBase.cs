@@ -10,9 +10,9 @@ public class TradeViewBase : MonoBehaviour
     [SerializeField] TMP_Text itemName;
     [SerializeField] TMP_Text itemDesc;
 
-
     TradeViewModelBase viewModel;
-    
+    public EquipTradeView _equipTradeView;
+
 
     public void Awake()
     {
@@ -27,14 +27,23 @@ public class TradeViewBase : MonoBehaviour
 
     private void OnEnable()
     {
-        if(viewModel != null) 
-            SetView();
+        SetView();
+
     }
 
     public void SetView()
     {
         itemName.text = viewModel.Model.ItemName;
         itemDesc.text = viewModel.Model.ItemDesc;
+        switch (viewModel.storeCat)
+        {
+            case StoreCat.interior:
+                _equipTradeView.EquipButton.gameObject.SetActive(false);
+                break;
+            default:
+                _equipTradeView.EquipButton.gameObject.SetActive(true);
+                break;
+        }
     }
 
     private void OnViewModelPropChanged(object sender, PropertyChangedEventArgs e)
@@ -45,6 +54,8 @@ public class TradeViewBase : MonoBehaviour
             case "":
                 SetView();
                 break;
+
+
         }
     }
 }

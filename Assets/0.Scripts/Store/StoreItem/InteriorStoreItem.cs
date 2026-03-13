@@ -15,6 +15,8 @@ public class InteriorStoreItem : StoreItem<InteriorStoreDataSO>
 
     public override bool IsSaleable => _data.IsSaleable;
 
+    public override bool IsDefault => DataManager.Instance.DecorationDatabase.InteriorData[ObjectId].IsDefault;
+
     public override int MaxCount => _data.MaxCount;
 
     public override int ItemCount { get => _itemCount; set => _itemCount = value; }

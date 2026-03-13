@@ -99,6 +99,7 @@ public class SortDropdown : StoreDropdownBase
 
     public void ApplySortPriority()
     {
+        Debug.Log("정렬");
         //Debug.Log("[SortDropdown] ApplySortPriority | SelectedOption : " + (StoreSort)SelectedOption);
         // 선택된 옵션에 따라 StoreSort 적용 후 정렬
         switch ((StoreSort)(SelectedOption))
@@ -111,10 +112,13 @@ public class SortDropdown : StoreDropdownBase
             case StoreSort.lowToHigh:
                 SortSlots(Comparer.Price);
                 break;
-                //case StoreSort.name:
-                //    SortSlots(Comparer.Name);
-                //    storeListViewModel.LoadSlotList();
-                //    break;
+            //case StoreSort.name:
+            //    SortSlots(Comparer.Name);
+            //    storeListViewModel.LoadSlotList();
+            //    break;
+            default:
+                SortSlots(Comparer.Gain);
+                break;
         }
     }
 

@@ -4,10 +4,13 @@ using UnityEngine.UI;
 
 public class UI_WaterWindow : MonoBehaviour
 {
-    [Header("호수창")]
+    [Header("호수 창")]
     [SerializeField] private RectTransform waterBackground;
 
-    [Header("호수창 열기 버튼")]
+    [Header("섬 창")]
+    [SerializeField] private UI_IslandWindow islandWindow;
+
+    [Header("호수 창 열기 버튼")]
     [SerializeField] private Button btnEnableWaterWindow;
 
     [Header("창 높이 설정 배율")]
@@ -19,7 +22,7 @@ public class UI_WaterWindow : MonoBehaviour
         get { return waterBackground.sizeDelta.y; }
         set
         {
-            int height = Mathf.RoundToInt(value);
+            int height = Mathf.RoundToInt(Mathf.Min(value, islandWindow.WindowPosition.y - islandWindow.HeightOffset));
             height = Mathf.Clamp(height, 0, maxHeight);
 
             waterBackground.sizeDelta = new Vector2(0, height);
@@ -31,6 +34,12 @@ public class UI_WaterWindow : MonoBehaviour
 
     private int maxHeight;          // 최대 호수/바다 창 높이
     private int defaultHeight;      // 시작 호수/바다 창 높이
+
+    private void Awake()
+    {
+        if (GameManager.Instance != null)
+            GameManager.Instance.WaterWindow = this;
+    }
 
     private void Start()
     {
@@ -59,6 +68,9 @@ public class UI_WaterWindow : MonoBehaviour
 
     private void OnDisable()
     {
+        if (GameManager.Instance != null && GameManager.Instance.WaterWindow == this)
+            GameManager.Instance.WaterWindow = null;
+
         OnWaterWindowHeightChanged -= SetActiveWindowButton;
     }
 

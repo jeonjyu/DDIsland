@@ -11,6 +11,9 @@ public class GameManager : Singleton<GameManager>
     [Header("StageControl 클래스")]
     [field: SerializeField] public StageControl StageController { get; set; }
 
+    public UI_IslandWindow IslandWindow{ get; set; }
+    public UI_WaterWindow WaterWindow { get; set; }
+
     public event Action<int> OnGoldChanged;
 
     [SerializeField] private int playerGold;
@@ -48,8 +51,10 @@ public class GameManager : Singleton<GameManager>
         OnGoldChanged?.Invoke(PlayerGold);
     }
 
-    private void OnApplicationQuit()
+    protected override void OnApplicationQuit()
     {
+        base.OnApplicationQuit();
+
         PlayerPrefs.Save();
     }
 }
