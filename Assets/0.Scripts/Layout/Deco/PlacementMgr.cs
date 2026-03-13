@@ -119,7 +119,6 @@ public class PlacementMgr : MonoBehaviour
             CloseEditMenu();
         }
     }
-    // ToDo: 배치중 회전 방식을 추가해야하는데 아직 추가 안함
     private void OnRotate(InputAction.CallbackContext ctx)
     {
         OnClickRotate();

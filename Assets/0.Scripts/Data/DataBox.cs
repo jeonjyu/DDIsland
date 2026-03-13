@@ -9,23 +9,26 @@ using UnityEngine;
 public class UserAllData
 {
     //환경 및 시간
-    public EnvironmentData Environment = new ();
+    public Environment_Data Environment = new ();
 
     //재화 및 능력치
     public Charcter_Data Character = new ();
+
+    // 상점 관련
+    public Store_Data Store = new();
 
     //배치 및 꾸미기
     public Decoration_Data Decoration = new ();
 
     //수집 및 도감
-    public CollectionData Collection = new ();
+    public Collection_Data Collection = new ();
 
     //진행도
-    public ProgressData Progress = new ();
+    public Progress_Data Progress = new ();
 }
 
 [Serializable]
-public class EnvironmentData
+public class Environment_Data
 {
     public int[] _calculation;
 }
@@ -47,17 +50,23 @@ public class Decoration_Data
 public class PlacedObject
 {
     public int _id;
-    public float _posX, _posY; // 배치 좌표
+    public int _posX, _posY; // 배치 좌표
+    public int _rotation;
 }
 [Serializable]
-public class CollectionData
+public class Collection_Data
 {
     public List<int> _unlockedAlbumIds = new (); // 해금된 음반 ID
     public List<int> _unlockedBookIds = new ();  // 해금된 도감 ID
 }
 [Serializable]
-public class ProgressData
+public class Progress_Data
 {
     public List<int> activeQuestIds = new ();   // 현재 진행 중인 퀘스트
     public List<int> shopPurchaseCounts = new (); // 상점 품목별 구매 횟수
+}
+
+public class Store_Data
+{
+    public int gold = new();
 }

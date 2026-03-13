@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class EnvironmentModel
 {
-    EnvironmentData _data;
+    Environment_Data _data;
 
     public event Action<Season> OnSeasonChanged;
     public event Action<DayilyCycle> OnDailyChanged;
@@ -120,9 +120,9 @@ public class EnvironmentModel
         };
     }
     //데이터 저장 메서드
-    public EnvironmentData SaveData(DateTime now)
+    public Environment_Data SaveData(DateTime now)
     {
-        EnvironmentData box = new()
+        Environment_Data box = new()
         {
             _calculation = (int[])_seasonDuration.Clone()
         };
@@ -131,7 +131,7 @@ public class EnvironmentModel
 
         return box;
     }
-    public void LoadData(EnvironmentData box)
+    public void LoadData(Environment_Data box)
     {
         _data = box;
         _seasonDuration = (int[])_data._calculation.Clone();

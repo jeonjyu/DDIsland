@@ -91,7 +91,7 @@ public class EnvironmentPresenter : MonoBehaviour
 
         Debug.Log($"<color=cyan>테스트 날짜: {now} 현재 시점: {_model.CurrentDay} 현재 계절: {_model.CurrentSeason}</color>");
 
-        EnvironmentData envData = _model.SaveData(now);
+        Environment_Data envData = _model.SaveData(now);
         
         DataMgr.Instance._allUserData.Environment = envData;
 
@@ -101,7 +101,7 @@ public class EnvironmentPresenter : MonoBehaviour
     public void SyncWithDataMgr()
     {
         // 데이터 꺼내오는거
-        EnvironmentData env = DataMgr.Instance._allUserData.Environment;
+        Environment_Data env = DataMgr.Instance._allUserData.Environment;
 
         if (env != null)
         {

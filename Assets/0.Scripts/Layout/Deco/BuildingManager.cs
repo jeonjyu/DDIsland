@@ -113,6 +113,19 @@ public class BuildingManager : MonoBehaviour
         // 그리드에서 삭제
         RemoveBuildingFromGrid(target);
 
+
+        if (_allBuildings.Contains(target) && !_movedSnapshots.ContainsKey(target))
+        {
+            _movedSnapshots.Add(target, new BuildingSnapshot
+            {
+                Target = target,
+                Pos = target.PlacedIndex,
+                Size = target.PlacedSize,
+                Rotation = target.transform.eulerAngles.y,
+                IsRotated = target.IsRotated
+            });
+        }
+
         // 먼저 삭제하지 않고 나중에 되돌리기 될 수 있기 때문에 비활성화 처리
         target.gameObject.SetActive(false);
 
@@ -124,6 +137,10 @@ public class BuildingManager : MonoBehaviour
         {
             _activeBuildings.Remove(target);
         }
+        if (_allBuildings.Contains(target))
+        {
+            _allBuildings.Remove(target);
+        }
     }
     private void RemoveBuildingFromGrid(Placeable3D target)
     {
@@ -131,7 +148,6 @@ public class BuildingManager : MonoBehaviour
                                target.PlacedSize.x, target.PlacedSize.y);
     }
 
-    // 인테리어 데이터 SO를 받게 바꿔야함
     public void StartPlacement(int itemId)
     {
         var obj = DataManager.Instance.DecorationDatabase.InteriorData[itemId];
@@ -218,6 +234,9 @@ public class BuildingManager : MonoBehaviour
             }
         }
         _activeBuildings.Clear();
+
+        SyncDataSave();
+
         OnConfirm?.Invoke(); // 저장 알림 
         ClearSession();
     }
@@ -273,9 +292,13 @@ public class BuildingManager : MonoBehaviour
             {
                 b.gameObject.SetActive(true);
                 _gridSystem.PlaceItem(b.PlacedIndex.x, b.PlacedIndex.y, b.PlacedSize.x, b.PlacedSize.y, b);
-                if (!_activeBuildings.Contains(b))
+                if (_movedSnapshots.ContainsKey(b))
                 {
-                    _activeBuildings.Add(b);
+                    if (!_allBuildings.Contains(b)) _allBuildings.Add(b);
+                }
+                else
+                {
+                    if (!_activeBuildings.Contains(b)) _activeBuildings.Add(b);
                 }
             }
 
@@ -329,14 +352,16 @@ public class BuildingManager : MonoBehaviour
         }
 
         _gridSystem.ClearGrid();
-        
+
+        SyncDataClear();
+
         ClearSession();
         OnClearAll?.Invoke(); // 초기화 알림
     }
     #endregion
     private void Update()
     {
-        
+
         //배치 가능한 물건이 배치되었으면
         if (_activePlaceable != null && _activePlaceable.ItemState == ItemState.Placed)
         {
@@ -344,6 +369,90 @@ public class BuildingManager : MonoBehaviour
             // 매니저의 관리 대상에서 해제
             _activePlaceable = null;
         }
-       
+
     }
+
+    #region 파이어베이스 데이터 저장
+    private void SyncDataSave()
+    {
+        List<PlacedObject> syncList = new ();
+
+        foreach (var b in _allBuildings)
+        {
+            if (b == null) continue;
+
+            syncList.Add(new PlacedObject
+            {
+                _id = b.GetItemId(),
+                _posX = b.PlacedIndex.x,
+                _posY = b.PlacedIndex.y,
+                _rotation = b.IsRotated
+
+            });
+        }
+
+        DataMgr.Instance._allUserData.Decoration._buildings = syncList;
+        DataMgr.Instance.SaveAllData();
+
+        Debug.Log("<color=green>모든 배치 정보가 서버와 동기화되었습니다!</color>");
+    }
+    private void SyncDataClear()
+    {
+        DataMgr.Instance._allUserData.Decoration._buildings.Clear();
+
+        DataMgr.Instance.SaveAllData();
+
+        Debug.Log("<color=red>전체 삭제 완료: 서버 데이터도 초기화되었습니다.</color>");
+    }
+    public void SyncDataLoad()
+    {
+        var savedData = DataMgr.Instance._allUserData.Decoration._buildings;
+        if (savedData == null || savedData.Count == 0) return;
+
+        var database = DataManager.Instance.DecorationDatabase;
+
+        foreach (var data in savedData)
+        {
+            InteriorDataSO interiorData = null;
+            try
+            {
+                interiorData = database.InteriorData[data._id];
+            }
+            catch
+            {
+                Debug.LogError($"ID {data._id}를 찾을 수 없어 로드에 실패했습니다.");
+                continue;
+            }
+            if (interiorData == null) continue;
+            GameObject go = Instantiate(interiorData.InteriorPath_GameObject, _gridSystem.transform);
+            if (!go.TryGetComponent(out Placeable3D placeable))
+            {
+                placeable = go.AddComponent<Placeable3D>();
+            }
+
+            placeable.Initialize(_gridSystem, this, interiorData);
+
+            Vector3 worldPos = _gridSystem.GetWorldPosition(data._posX, data._posY, interiorData.GridSizeX, interiorData.GridSizeY);
+            placeable.RestoreState(worldPos, data._rotation * 90f, data._rotation);
+
+            Vector2Int size = (data._rotation % 2 == 1) ?
+                new Vector2Int(interiorData.GridSizeY, interiorData.GridSizeX) :
+                new Vector2Int(interiorData.GridSizeX, interiorData.GridSizeY);
+
+            if (_gridSystem.IsCellEmpty(data._posX, data._posY, size.x, size.y, placeable))
+            {
+                _gridSystem.PlaceItem(data._posX, data._posY, size.x, size.y, placeable);
+
+                if (!_allBuildings.Contains(placeable)) _allBuildings.Add(placeable);
+
+                placeable.SetBakeData(new Vector2Int(data._posX, data._posY), size);
+            }
+            else
+            {
+                Debug.LogWarning($"{interiorData.InteriorName_String}: 해당 위치에 이미 물체가 있습니다.");
+                Destroy(go);
+            }
+        }
+    }
+    #endregion
 }
