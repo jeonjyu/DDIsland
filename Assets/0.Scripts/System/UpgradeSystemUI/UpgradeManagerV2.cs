@@ -22,7 +22,12 @@ public class UpgradeManagerV2 : MonoBehaviour
     public TextMeshProUGUI statNameText;      // 스탯 이름
     public Image levelFillImage;              // 피자 
     public TextMeshProUGUI levelProgressText; // 1/10 
-    public TextMeshProUGUI statChangeText;    // 변동스탯 
+                                              //    public TextMeshProUGUI statChangeText;    // 변동스탯 
+
+    [Header("변동 스탯 표시 (좌측 패널)")]                      
+    public TextMeshProUGUI statCurrentValueText;  // 첫째줄 현재 MAX
+    public TextMeshProUGUI statNextValueText;     // 둘째줄 업글 후 MAX
+
     [Header("스탯별 이미지")]
     public Sprite[] statIcons;        // 포만감, 스태미너, 이동속도, 낚시, 휴식
 
@@ -36,6 +41,11 @@ public class UpgradeManagerV2 : MonoBehaviour
     public Transform dotContainer;  // 도트들이 들어갈 빈 옵젝 
     public GameObject nowDot;   // 현재 페이지 
     public GameObject waitDot;  // 다른 페이지
+    [Header("캐릭터 현재 스탯")]       
+    public TextMeshProUGUI doongDoongStatText;  // 둥둥 스탯
+    public TextMeshProUGUI currentStaminaText;  // 스태미너
+    public TextMeshProUGUI currentHungerText;   // 포만감
+
     #endregion
 
     private List<UpgradeData> upgradeTable = new List<UpgradeData>();
@@ -54,16 +64,16 @@ public class UpgradeManagerV2 : MonoBehaviour
    
     void Start()
     {
-        if (playerData != null) // 둥둥스탯 이미지 
-            playerData.OnDoongDoongChanged += OnDoongDoongChanged;
-       
         if (playerController == null)
             playerController = FindObjectOfType<PlayerController>();
         if (playerController != null)
             playerData = playerController.PlayerDataOld;
         else
             playerData = new PlayerData();
-       
+
+        if (playerData != null) // 둥둥스탯 이미지 
+            playerData.OnDoongDoongChanged += OnDoongDoongChanged;
+              
         upgradeTable = UpgradeTempData.GetAll();
 
         // 페이지 인디케이터 
@@ -307,6 +317,8 @@ public class UpgradeManagerV2 : MonoBehaviour
             int bodyIndex = GetBodyIndex(playerData.DoongDoongStat);
             characterImage.sprite = bodySprites[bodyIndex];
         }
+
+        UpdateLeftPanelStats();  // 현재 스탯
         // 구매 버튼
         UpdatebuyButton(currentStat, currentLevel);
 
@@ -317,17 +329,20 @@ public class UpgradeManagerV2 : MonoBehaviour
     // 현재스탯 → 변동스탯
     void UpdateStatChangeText(StatType type, int level)
     {
-        if (statChangeText == null) return; 
+        if (statCurrentValueText == null || statNextValueText == null) return;
 
         UpgradeData currentLevelData = FindCurrentLevelData(type, level);
         if (currentLevelData == null) return;
 
+        // MAX 도달
         if (currentLevelData.IsMax)
         {
             if (currentLevelData.applyType == ApplyType.Add)
-                statChangeText.text = GetCurrentAddValue(type).ToString("F0");
+                statCurrentValueText.text = GetCurrentAddValue(type).ToString("F0");
             else
-                statChangeText.text = currentLevelData.Value.ToString("F2");
+                statCurrentValueText.text = currentLevelData.Value.ToString("F2");
+
+            statNextValueText.text = "MAX";
             return;
         }
 
@@ -337,12 +352,29 @@ public class UpgradeManagerV2 : MonoBehaviour
         if (currentLevelData.applyType == ApplyType.Add)
         {
             float curTotal = GetCurrentAddValue(type);
-            statChangeText.text = curTotal.ToString("F0") + " → " + (curTotal + currentLevelData.Value).ToString("F0");
+            statCurrentValueText.text = curTotal.ToString("F0");       // 첫째줄: 현재 MAX
+            statNextValueText.text = (curTotal + currentLevelData.Value).ToString("F0"); // 셋째줄: 업글 후
         }
         else
         {
-            statChangeText.text = currentLevelData.Value.ToString("F2") + " → " + nextLevelData.Value.ToString("F2");
+            statCurrentValueText.text = currentLevelData.Value.ToString("F2");  // 첫째줄
+            statNextValueText.text = nextLevelData.Value.ToString("F2");        // 셋째줄
         }
+    }
+
+    // 왼쪽 패널 현재 스탯 3개 
+    void UpdateLeftPanelStats()
+    {
+        if (playerData == null) return;
+
+        if (doongDoongStatText != null)
+            doongDoongStatText.text = playerData.DoongDoongStat.ToString();
+
+        if (currentStaminaText != null)
+            currentStaminaText.text = playerData.Stamina.ToString("F0");
+
+        if (currentHungerText != null)
+            currentHungerText.text = playerData.Hunger.ToString("F0");
     }
 
     // Add 전용 (현재 최종 누적값)
