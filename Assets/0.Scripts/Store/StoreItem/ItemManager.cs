@@ -24,6 +24,10 @@ public class ItemManager : Singleton<ItemManager>
     [SerializeField] IslandStoreDatabaseSO InteriorDatabase;
     [SerializeField] CostumeStoreDatabaseSO CostumeDatabase;
     [SerializeField] FishingStoreDatabaseSO FishingDatabase;
+   
+    // 아이템 변동 이벤트 
+    public event System.Action<IStoreItem, StoreCat> OnPlayerItemAdded;
+    public event System.Action<IStoreItem, StoreCat> OnPlayerItemRemoved;
 
     // Start시 카탈로그 딕셔너리, 플레이어 소유 아이템 딕셔너리 넣어주기
     // 카탈로그 딕셔너리에 넣어둔 아이템 항목들로 아이템 딕셔너리 만들기
@@ -59,8 +63,10 @@ public class ItemManager : Singleton<ItemManager>
         //if (playerItemDatas[storeCat][item.ID] is null)// ContainsKey(item.ID))
         //{
             playerItemDatas[storeCat].AddToDatabase(item);
-            //Debug.Log($"[ItemManager] 플레이어 아이템 딕셔너리에 {item.ItemName}({item.ID}) 추가");
+        //Debug.Log($"[ItemManager] 플레이어 아이템 딕셔너리에 {item.ItemName}({item.ID}) 추가");
         //}
+
+        OnPlayerItemAdded?.Invoke(item, storeCat);
     }
 
     public void RemoveFromPlayerItem(IStoreItem item, StoreCat storeCat)
@@ -79,6 +85,7 @@ public class ItemManager : Singleton<ItemManager>
                 playerItemDatas[storeCat].RemoveFromDatabase(item);
             //    Debug.Log($"[ItemManager] 플레이어 아이템 딕셔너리에서 {item.ItemName}({item.ID}) 제거");
             //}
+            OnPlayerItemRemoved?.Invoke(item, storeCat);
         }
     }
 

@@ -1260,6 +1260,50 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1945439924}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &431356645
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 431356647}
+  - component: {fileID: 431356646}
+  m_Layer: 0
+  m_Name: DecoInventoryManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &431356646
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 431356645}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8685fee7a90c85489386733cb6af9d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DecoInventoryManager
+--- !u!4 &431356647
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 431356645}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 1184.7028, y: 617.6284, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &461171560
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1336,6 +1380,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1d89d051a6b9924fb7f0a3a71a0a26c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeManagerV2
+--- !u!114 &512486343 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1354574806714480731, guid: 846220ee5306cf247baba951fc994cf3, type: 3}
+  m_PrefabInstance: {fileID: 986866591}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
 --- !u!1 &538781003
 GameObject:
   m_ObjectHideFlags: 0
@@ -1919,6 +1974,11 @@ SkinnedMeshRenderer:
 Transform:
   m_CorrespondingSourceObject: {fileID: 8490637365132602459, guid: c51cbf701a496cd42942d1227b685435, type: 3}
   m_PrefabInstance: {fileID: 768502849}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &780747423 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5155519963193412186, guid: 846220ee5306cf247baba951fc994cf3, type: 3}
+  m_PrefabInstance: {fileID: 986866591}
   m_PrefabAsset: {fileID: 0}
 --- !u!114 &798000055 stripped
 MonoBehaviour:
@@ -2531,6 +2591,22 @@ PrefabInstance:
       propertyPath: m_Name
       value: IslandWindow
       objectReference: {fileID: 0}
+    - target: {fileID: 5005399231331102496, guid: 846220ee5306cf247baba951fc994cf3, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: -70
+      objectReference: {fileID: 0}
+    - target: {fileID: 5005399231331102496, guid: 846220ee5306cf247baba951fc994cf3, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 7.0409
+      objectReference: {fileID: 0}
+    - target: {fileID: 5005399231331102496, guid: 846220ee5306cf247baba951fc994cf3, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 35
+      objectReference: {fileID: 0}
+    - target: {fileID: 5005399231331102496, guid: 846220ee5306cf247baba951fc994cf3, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -73.52045
+      objectReference: {fileID: 0}
     - target: {fileID: 5155209476522902462, guid: 846220ee5306cf247baba951fc994cf3, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
@@ -2538,6 +2614,10 @@ PrefabInstance:
     - target: {fileID: 5155209476522902462, guid: 846220ee5306cf247baba951fc994cf3, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: OnOffUISettings
+      objectReference: {fileID: 0}
+    - target: {fileID: 5155519963193412186, guid: 846220ee5306cf247baba951fc994cf3, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5741951668722677620, guid: 846220ee5306cf247baba951fc994cf3, type: 3}
       propertyPath: m_AnchorMax.y
@@ -2898,6 +2978,17 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1139924154 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 383896062579590742, guid: 846220ee5306cf247baba951fc994cf3, type: 3}
+  m_PrefabInstance: {fileID: 986866591}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
 --- !u!1001 &1180655688
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4569,6 +4660,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e660d4befd8dd0b4296790381f5104a0, type: 3}
+--- !u!114 &1768557761 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5690273197348921940, guid: 846220ee5306cf247baba951fc994cf3, type: 3}
+  m_PrefabInstance: {fileID: 986866591}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
 --- !u!23 &1788665962 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 8418427592042729452, guid: b799f69a9dd686e438c063b8f9beb472, type: 3}
@@ -8006,7 +8108,7 @@ MonoBehaviour:
   gridManager: {fileID: 818127581732768013}
   objectActionPanel: {fileID: 8788950818625610020}
   aquariumMgr: {fileID: 109933960}
-  lakeBackground: {fileID: 0}
+  lakeBackground: {fileID: 362971060}
   floorPlane: {fileID: 0}
   btnObjRecall: {fileID: 934060944676993299}
   btnObjMove: {fileID: 1126430732058785398}
@@ -8020,10 +8122,10 @@ MonoBehaviour:
   btnReset: {fileID: 4584195094063347922}
   btnSave: {fileID: 8698565672330544083}
   btnExit: {fileID: 5376210655268689352}
-  btnDecoMode: {fileID: 0}
-  dropdownPanel: {fileID: 0}
-  btnLakeDecoMode: {fileID: 0}
-  btnIslandDecoMode: {fileID: 0}
+  btnDecoMode: {fileID: 512486343}
+  dropdownPanel: {fileID: 780747423}
+  btnLakeDecoMode: {fileID: 1139924154}
+  btnIslandDecoMode: {fileID: 1768557761}
   animTime: 0.3
   bottomPanelHeight: 240
   gridMoveUp: 240
@@ -12077,6 +12179,7 @@ SceneRoots:
   - {fileID: 1529161626}
   - {fileID: 1945439924}
   - {fileID: 980108764}
+  - {fileID: 431356647}
   - {fileID: 1744364720}
   - {fileID: 1102774304}
   - {fileID: 1996450808}

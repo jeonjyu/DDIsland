@@ -45,6 +45,8 @@ public class Decoration_Data
     public List<int> _ownedCostumes = new (); // 소유한 코스튬 ID
     public int _currentCostumeId;  // 현재 착용 중인 ID
     public List<PlacedObject> _buildings = new (); // 배치된 건물들
+
+    public List<LakeInvenSlot> _ownedDecoItems = new(); // 소유한 꾸미기 아이템 (인벤토리) 
 }
 [Serializable]
 public class PlacedObject
