@@ -16,11 +16,11 @@ public class StoreItemDatabase : IStoreItemDatabase
         //Debug.Log(database.GetType().Name);
         switch (database)
         {
-            case TableDatabase<int, InteriorStoreDataSO> interiorDatabase:
+            case TableDatabase<int, IslandStoreDataSO> interiorDatabase:
                 foreach (var item in interiorDatabase.datas)
                 {
-                    InteriorStoreDataSO data = item;
-                    StoreItem<InteriorStoreDataSO> storeItem = new InteriorStoreItem(data);
+                    IslandStoreDataSO data = item;
+                    StoreItem<IslandStoreDataSO> storeItem = new IslandStoreItem(data);
                     Items.Add(storeItem);
                 }
                 break;

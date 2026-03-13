@@ -32,6 +32,15 @@ public enum Interior_ItemType
     Free = 3,         //자유장식물
 }
 
+// 레이어 우선순위
+[Serializable]
+public enum LakeLayerType
+{
+    None = 0,
+     Flooring = 1,                 //Layer0 바닥재
+     Decorations = 2,              //Layer1 장식물
+}
+
 
 [CreateAssetMenu(fileName = "InteriorDataSO", menuName = "Scriptable Objects/Data/InteriorDataSO")]
 public class InteriorDataSO : TableBase<int>
@@ -64,6 +73,9 @@ public class InteriorDataSO : TableBase<int>
 
     // 배치 방식
     [field: SerializeField] public Interior_ItemType interior_itemType { get; private set; }
+
+    // 레이어 우선순위
+    [field: SerializeField] public LakeLayerType lakelayerType { get; private set; }
 
     // 리소스 경로
     [field: SerializeField] public GameObject InteriorPath_GameObject { get; private set; }

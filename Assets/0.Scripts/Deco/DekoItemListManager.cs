@@ -207,7 +207,7 @@ public class DecoItemListManager : MonoBehaviour
             else if (currentMode == DecoMode.Island)
             {
                 // 상점SO에서 아이콘 가져오기 (InteriorId로 검색)
-                var storeDatas = DataManager.Instance.StoreDatabase.InteriorStoreData.datas;
+                var storeDatas = DataManager.Instance.StoreDatabase.IslandStoreData.datas;
                 foreach (var sd in storeDatas)
                 {
                     if (sd.InteriorId == slotData.itemId && sd.InteriorImgPath_Sprite != null)

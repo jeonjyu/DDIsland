@@ -21,7 +21,7 @@ public class ItemManager : Singleton<ItemManager>
 
 
     [Header("파서로 받아온 상점 데이터 베이스")]
-    [SerializeField] InteriorStoreDatabaseSO InteriorDatabase;
+    [SerializeField] IslandStoreDatabaseSO InteriorDatabase;
     [SerializeField] CostumeStoreDatabaseSO CostumeDatabase;
     [SerializeField] FishingStoreDatabaseSO FishingDatabase;
 
@@ -35,7 +35,7 @@ public class ItemManager : Singleton<ItemManager>
    
     public void CreateDatabase()
     {
-        InteriorDatabase = DataManager.Instance.StoreDatabase.InteriorStoreData;
+        InteriorDatabase = DataManager.Instance.StoreDatabase.IslandStoreData;
         CostumeDatabase = DataManager.Instance.StoreDatabase.CostumeStoreData;
         FishingDatabase = DataManager.Instance.StoreDatabase.FishingStoreData;
 
