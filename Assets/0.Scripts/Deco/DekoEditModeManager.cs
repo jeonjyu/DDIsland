@@ -608,6 +608,8 @@ public class DecoEditModeManager : MonoBehaviour
     }
     void OnReset() // 초기화, 저장한 상태로 불러오기
     {
+        if (!isChanged) return; // 변경사항 없으면 무시 
+
         // TODO:  (파베 연결 후에 나중에 구현)
         if (currentMode == DecoMode.Lake) // 호수 모드
         {

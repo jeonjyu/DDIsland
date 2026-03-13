@@ -358,7 +358,9 @@ public class BuildingManager : MonoBehaviour
                 if (id >= 0) destroyedIds.Add(id);         
 
                 RemoveBuildingFromGrid(b);
-                Destroy(b.gameObject);
+                // Destroy(b.gameObject);
+                b.gameObject.SetActive(false); // 파괴 대신 비활성화
+                _deletedBuildings.Add(b);      // 복원할 수 있게 보관
             }
         }
         _activeBuildings.Clear();
@@ -380,7 +382,10 @@ public class BuildingManager : MonoBehaviour
 
         //SyncDataClear();
 
-        ClearSession();
+        //ClearSession(); // _deletedBuildings 까지 비우지는 않고 직접 정리
+        _movedSnapshots.Clear();          
+        _activePlaceable = null;
+
         OnClearAll?.Invoke(destroyedIds);  // 초기화 알림
     }
     #endregion
