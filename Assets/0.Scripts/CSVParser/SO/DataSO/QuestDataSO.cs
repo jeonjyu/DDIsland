@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using UnityEngine;
 
 // 퀘스트 종류
@@ -30,6 +30,7 @@ public enum JournalType
 {
     None = 0,
 }
+
 
 [CreateAssetMenu(fileName = "QuestDataSO", menuName = "Scriptable Objects/Data/QuestDataSO")]
 public class QuestDataSO : TableBase<int>

@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using UnityEditor.Animations;
 using UnityEngine;
 
 // 사는 공간
@@ -78,7 +79,7 @@ public class FishDataSO : TableBase<int>
     [field: SerializeField] public Sprite FishImgPath_Sprite { get; private set; }
 
     // 애니메이터 컨트롤러
-    [field: SerializeField] public string FishAnimPath_Animtor { get; private set; }
+    [field: SerializeField] public AnimatorOverrideController FishAnimPath_Animator { get; private set; }
 
     // 부모 클래스의 ID 반환 추상 메서드
     public override int GetID() => ID;
