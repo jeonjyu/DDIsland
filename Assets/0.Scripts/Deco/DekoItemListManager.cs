@@ -66,33 +66,6 @@ public class DecoItemListManager : MonoBehaviour
             slotTemplate.SetActive(false);
     }
 
-    // 상점에서 구매한 인테리어 아이템을 LakeInvenSlot 리스트로 변환
-    List<LakeInvenSlot> CreateInven()
-    {
-        List<LakeInvenSlot> list = new List<LakeInvenSlot>();
-
-        // playerItemDatas에 interior 카테고리가 없으면 빈 리스트 반환
-        if (!ItemManager.Instance.playerItemDatas.ContainsKey(StoreCat.interior))
-            return list;
-
-        var playerItems = ItemManager.Instance.playerItemDatas[StoreCat.interior].Items;
-    
-        foreach (var item in playerItems)
-        {
-            // 보유 중이고 수량이 1이상인 것만
-            if (item.IsGained && item.ItemCount > 0)
-            {
-                list.Add(new LakeInvenSlot
-                {
-                    itemId = item.ObjectId,  // InteriorId (20001~ 등)
-                    quantity = item.ItemCount
-                });
-            }
-        }
-
-        return list;
-    }
-
     public void SetupInventory()
     {
         // 이전 모드 인벤 저장 
@@ -109,7 +82,8 @@ public class DecoItemListManager : MonoBehaviour
         else if (currentMode == DecoMode.Island) // 섬 인벤  
         {   
             //SetupInventory(islandInvenSave ?? CreateInven());
-            SetupInventory(CreateInven());
+            //SetupInventory(CreateInven());
+            SetupInventory(DecoInventoryManager.Instance.GetInven());
         }
         else
         {
@@ -355,6 +329,8 @@ public class DecoItemListManager : MonoBehaviour
     // 아이템 배치 성공 시 수량 차감
     public void UseItem(int itemId)
     {
+        DecoInventoryManager.Instance.UseItem(itemId);
+
         int dataIdx = -1; // invenData 인덱스 추적
         for (int i = 0; i < invenData.Count; i++)
         {
@@ -387,6 +363,8 @@ public class DecoItemListManager : MonoBehaviour
     // 아이템 회수 시 수량 복구
     public void RestoreItem(int itemId)
     {
+        DecoInventoryManager.Instance.RestoreItem(itemId);
+
         int dataIdx = -1;
         for (int i = 0; i < invenData.Count; i++)
         {
