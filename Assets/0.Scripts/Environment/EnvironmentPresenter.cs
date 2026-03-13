@@ -25,8 +25,9 @@ public class EnvironmentPresenter : MonoBehaviour
         _model.OnDailyChanged += (daily) => _view.PlaySeasonParticle(_model.CurrentSeason);
 
 
-        if (DataMgr.Instance != null)
-            DataMgr.Instance.OnDataLoaded += SyncWithDataMgr;
+        if (DataHub.Instance != null)
+            DataHub.Instance.OnRequestSave += SyncEnvironmentDataSave;
+            DataHub.Instance.OnDataLoaded += SyncWithDataMgr;
     }
     private void OnDisable()
     {
@@ -38,8 +39,9 @@ public class EnvironmentPresenter : MonoBehaviour
         _model.OnDailyChanged -= _view.ChangeDailySprite;
         _model.OnDailyChanged -= (daily) => _view.PlaySeasonParticle(_model.CurrentSeason);
 
-        if (DataMgr.Instance != null)
-            DataMgr.Instance.OnDataLoaded -= SyncWithDataMgr;
+        if (DataHub.Instance != null)
+            DataHub.Instance.OnRequestSave -= SyncEnvironmentDataSave;
+            DataHub.Instance.OnDataLoaded -= SyncWithDataMgr;
     }
 
     private void Start()
@@ -73,15 +75,21 @@ public class EnvironmentPresenter : MonoBehaviour
     }
     //이 친구 인스펙터에서 우클릭 후 해당 메서드 이름 누르시면 실행돼요!
     //현 기능은 JSON 저장용입니다
-    [ContextMenu("JSONSave")]
-    public void SaveMenu()
+    //[ContextMenu("JSONSave")]
+    //public void SaveMenu()
+    //{
+    //    DateTime now = DateTime.UtcNow.AddHours(9);
+    //    //DateTime now = new DateTime(2026, 1, 1).AddDays(UnityEngine.Random.Range(0, 365))
+    //    //                      .AddHours(UnityEngine.Random.Range(0, 24))
+    //    //                      .AddMinutes(UnityEngine.Random.Range(0, 60));
+    //    Save(now);
+    //}
+
+    private void SyncEnvironmentDataSave()
     {
-        DateTime now = DateTime.UtcNow.AddHours(9);
-        //DateTime now = new DateTime(2026, 1, 1).AddDays(UnityEngine.Random.Range(0, 365))
-        //                      .AddHours(UnityEngine.Random.Range(0, 24))
-        //                      .AddMinutes(UnityEngine.Random.Range(0, 60));
         Save(now);
     }
+
     public void Save(DateTime now)
     {
         //데이터 저장하는거   
@@ -93,17 +101,17 @@ public class EnvironmentPresenter : MonoBehaviour
 
         Environment_Data envData = _model.SaveData(now);
         
-        DataMgr.Instance._allUserData.Environment = envData;
+        DataHub.Instance._allUserData.Environment = envData;
 
-        DataMgr.Instance.GetEnvJson();
+        DataHub.Instance.GetEnvJson();
     }
     
     public void SyncWithDataMgr()
     {
         // 데이터 꺼내오는거
-        Environment_Data env = DataMgr.Instance._allUserData.Environment;
+        Environment_Data env = DataHub.Instance._allUserData.Environment;
 
-        if (env != null)
+        if (env != null && env._calculation != null)
         {
             _model._seasonDuration = env._calculation;
 

@@ -314,7 +314,7 @@ public class Placeable3D : Placeable
     {
         _cachedIndex = index;
         _lastPlacedIndex = index; 
-        _lastPlacedSize = size;   
+        _lastPlacedSize = size;
         _sizeX = size.x;
         _sizeY = size.y;
         ItemState = ItemState.Placed;

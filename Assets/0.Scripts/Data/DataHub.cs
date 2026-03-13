@@ -3,9 +3,11 @@ using UnityEngine;
 /// <summary>
 /// 데이터를 저장하고 저장한 데이터를 다시 받아오는 매니저 클래스
 /// </summary>
-public class DataMgr : MonoBehaviour
+public class DataHub : MonoBehaviour
 {
-    public static DataMgr Instance;
+    public static DataHub Instance;
+
+    public event Action OnRequestSave;
 
     public UserAllData _allUserData = new();
 
@@ -16,10 +18,17 @@ public class DataMgr : MonoBehaviour
     public string GetEnvJson() => JsonUtility.ToJson(_allUserData.Environment);
     public string GetCharJson() => JsonUtility.ToJson(_allUserData.Character);
     public string GetDecoJson() => JsonUtility.ToJson(_allUserData.Decoration);
+    
+    public void SaveAllData()
+    {
+        OnRequestSave?.Invoke();
+        Debug.Log("<color=cyan>모든 데이터를 내부에 저장했습니다</color>");
+    }
+
 
     [ContextMenu("DB")]
     //얘를 인스펙터에서 누르시면 실제로 DB에 값이 전송됩니다
-    public void SaveAllData()
+    public void UploadAllData()
     {
         //string enviroment = GetEnvJson();
         //string character = GetCharJson();
@@ -59,7 +68,7 @@ public class DataMgr : MonoBehaviour
            
             SetNewUserData();
 
-            SaveAllData();
+            UploadAllData();
 
             //if (_allUserData.Decoration != null)
             //{

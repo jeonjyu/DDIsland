@@ -235,7 +235,7 @@ public class BuildingManager : MonoBehaviour
         }
         _activeBuildings.Clear();
 
-        //SyncDataSave();
+        DataHub.Instance.SaveAllData();
 
         OnConfirm?.Invoke(); // 저장 알림 
         ClearSession();
@@ -365,8 +365,16 @@ public class BuildingManager : MonoBehaviour
         OnClearAll?.Invoke(); // 초기화 알림
     }
     #endregion
-    
+
     #region 파이어베이스 데이터 저장
+    private void OnEnable()
+    {
+        DataHub.Instance.OnRequestSave += SyncDataSave;
+    }
+    private void OnDisable()
+    {
+        DataHub.Instance.OnRequestSave -= SyncDataSave;
+    }
     private void SyncDataSave()
     {
         List<PlacedObject> syncList = new ();
@@ -385,22 +393,14 @@ public class BuildingManager : MonoBehaviour
             });
         }
 
-        DataMgr.Instance._allUserData.Decoration._buildings = syncList;
-        DataMgr.Instance.SaveAllData();
+        DataHub.Instance._allUserData.Decoration._buildings = syncList;
+        DataHub.Instance.UploadAllData();
 
         Debug.Log("<color=green>모든 배치 정보가 서버와 동기화되었습니다!</color>");
     }
-    private void SyncDataClear()
-    {
-        DataMgr.Instance._allUserData.Decoration._buildings.Clear();
-
-        DataMgr.Instance.SaveAllData();
-
-        Debug.Log("<color=red>전체 삭제 완료: 서버 데이터도 초기화되었습니다.</color>");
-    }
     public void SyncDataLoad()
     {
-        var savedData = DataMgr.Instance._allUserData.Decoration._buildings;
+        var savedData = DataHub.Instance._allUserData.Decoration._buildings;
         if (savedData == null || savedData.Count == 0) return;
 
         var database = DataManager.Instance.DecorationDatabase;

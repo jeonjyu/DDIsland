@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using UnityEngine;
 
 /// <summary>
 /// 유저의 모든 데이터를 관리하는 클래스
@@ -35,7 +34,6 @@ public class Environment_Data
 [Serializable]
 public class Charcter_Data
 {
-    public long _gold;           
     public float[] stats;       // 공격력, 속도 등 (인덱스로 관리)
     public int[] upgrades;      // 각 스탯의 강화 단계
 }
@@ -45,7 +43,6 @@ public class Decoration_Data
     public List<int> _ownedCostumes = new (); // 소유한 코스튬 ID
     public int _currentCostumeId;  // 현재 착용 중인 ID
     public List<PlacedObject> _buildings = new (); // 배치된 건물들
-
     public List<LakeInvenSlot> _ownedDecoItems = new(); // 소유한 꾸미기 아이템 (인벤토리) 
 }
 [Serializable]
@@ -58,7 +55,7 @@ public class PlacedObject
 [Serializable]
 public class Collection_Data
 {
-    public List<int> _unlockedAlbumIds = new (); // 해금된 음반 ID
+    public List<int> _unlockedAlbumIds = new (); // 해금된 음반 ID 
     public List<int> _unlockedBookIds = new ();  // 해금된 도감 ID
 }
 [Serializable]
@@ -67,8 +64,20 @@ public class Progress_Data
     public List<int> activeQuestIds = new ();   // 현재 진행 중인 퀘스트
     public List<int> shopPurchaseCounts = new (); // 상점 품목별 구매 횟수
 }
-
+[Serializable]
 public class Store_Data
 {
     public int gold = new();
 }
+[Serializable]
+public class Fishstorage_Data
+{
+
+}
+[Serializable]
+public class Foodstorage_Data
+{
+
+}
+
+
