@@ -13,7 +13,6 @@ public class SellUnitView : TradeUnitViewBase
         //Debug.Log(this.name);
     }
 
-
     public override ITradeStrategy GetTradeStrategy()
     {
         return strategy;
@@ -46,6 +45,7 @@ public class SellUnitView : TradeUnitViewBase
             SetBtnInteractable(tradeBtn, false);
             return;
         }
+
         if (viewModel.ItemCount == 0 && viewModel.IsGained == false)
         {
             Debug.Log("판매 유닛 | 보유하지 않은 아이템 " + viewModel.IsGained);
@@ -60,7 +60,23 @@ public class SellUnitView : TradeUnitViewBase
 
             SetBtnInteractable(CountIncBtn, false);
             SetBtnInteractable(CountMaxBtn, false);
-            return;
+        }
+
+        // 카테고리가 코스튬, 낚시일 때
+        if(StoreManager.Instance.currentCat == StoreCat.costume || StoreManager.Instance.currentCat == StoreCat.fishing)
+        {
+        // 보유중, 착용중인 아이템 판매 불가능
+            if (viewModel.IsGained == true)
+            {
+                if(PlayerManager.Instance.CompareID(viewModel.Model))
+                    SetAllButtonAvailablity(false);
+                else
+                    SetAllButtonAvailablity(true);
+            }
+            else
+            {
+                SetAllButtonAvailablity(false);
+            }
         }
     }
 
