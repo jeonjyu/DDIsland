@@ -67,6 +67,10 @@ public class UI_IslandWindow : MonoBehaviour
                 GetScaleRatio(value.z));
 
             OnScaleChanged?.Invoke((float)Math.Round((islandWindowRect.localScale.x - minRatio) / (maxRatio - minRatio), 2));
+
+            OnPosChanged?.Invoke(
+                GetCenterPos().x / islandWindowRect.sizeDelta.x,
+                GetCenterPos().y / islandWindowRect.sizeDelta.y);
         }
     }
     #endregion
@@ -84,7 +88,6 @@ public class UI_IslandWindow : MonoBehaviour
         WindowScale = new Vector3(defaultRatio, defaultRatio, defaultRatio);
 #endif
     }
-
 
     private IEnumerator Start()
     {
@@ -160,14 +163,28 @@ public class UI_IslandWindow : MonoBehaviour
     }
 
     /// <summary>
-    /// 섬 창(Window)의 Scale 값을 소수점 두 자리까지 정리 후 최소, 최대 비율 범위 내로 반환하는 메서드
+    /// 섬 창(Window)의 Scale 값을 소수점 네 자리까지 정리 후 최소, 최대 비율 범위 내로 반환하는 메서드
     /// </summary>
-    /// <param name="scale"></param>
+    /// <param name="scale"> 받아온 비율 </param>
     /// <returns></returns>
     private float GetScaleRatio(float scale)
     {
         scale = (float)Math.Round(scale, 4);
         return Mathf.Clamp(scale, minRatio, maxFitRatio);
+    }
+
+    /// <summary>
+    /// 현재 섬 창(Window)의 중앙 피봇(0.5f, 0.5f) 위치를 반환하는 메서드
+    /// </summary>
+    /// <returns></returns>
+    private Vector2 GetCenterPos()
+    {
+        // 현재 피봇에서 중앙 피봇(0.5f, 0.5f)까지의 상대적 거리
+        Vector2 pivotOffset = new Vector2(0.5f - IslandWindowRect.pivot.x, 0.5f - IslandWindowRect.pivot.y);
+
+        return new Vector2(
+            IslandWindowRect.position.x + (pivotOffset.x * WidthOffset * 2),
+            IslandWindowRect.position.y + (pivotOffset.y * HeightOffset * 2));
     }
 
     private void OnDestroy()

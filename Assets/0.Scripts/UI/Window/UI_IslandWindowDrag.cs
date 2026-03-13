@@ -11,7 +11,7 @@ public class UI_IslandWindowDrag : MonoBehaviour, IDragHandler, IBeginDragHandle
 
     private float startDistance;
     private Vector3 startScale;
-    private Vector2 gapPos;
+    private Vector2 clickPos;
 
     private bool isDragging;
 
@@ -27,11 +27,9 @@ public class UI_IslandWindowDrag : MonoBehaviour, IDragHandler, IBeginDragHandle
 
             RectTransform targetRect = ui_IslandWindow.IslandWindowRect;
 
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                targetRect, targetRect.position, eventData.pressEventCamera, out _);
-            gapPos = RectTransformUtility.WorldToScreenPoint(eventData.pressEventCamera, targetRect.position);
+            clickPos = RectTransformUtility.WorldToScreenPoint(eventData.pressEventCamera, targetRect.position);
 
-            startDistance = Vector2.Distance(gapPos, eventData.position);
+            startDistance = Vector2.Distance(clickPos, eventData.position);
             startScale = targetRect.localScale;
         }
     }
@@ -40,7 +38,7 @@ public class UI_IslandWindowDrag : MonoBehaviour, IDragHandler, IBeginDragHandle
     {
         if (eventData.button == PointerEventData.InputButton.Left)
         {
-            float currentDistance = Vector2.Distance(gapPos, eventData.position);
+            float currentDistance = Vector2.Distance(clickPos, eventData.position);
 
             float ratio = currentDistance / startDistance;
 

@@ -9,18 +9,17 @@ public class CameraController : MonoBehaviour
     [SerializeField] private float minSize = 25f;
     [SerializeField] private float maxSize = 50f;
 
-    private Vector3 startVec;           // 스크린 좌표 (0, 0) 기준 카메라 위치 → 오브젝트는 (Screen.Width, Screen.Height) 위치에 있음
-    private Vector3 endVec;             // 스크린 좌표 (Screen.Width, Screen.Height) 기준 카메라 위치 → 오브젝트는 (0, 0) 위치에 있음
-    private Vector3 gapDistance;        // 스크린 좌표 (0, 0) ~ (Screen.Width, Screen.Height)의 월드 좌표 거리
+    private Vector3 originPos;      // 시작 카메라 포지션
+
+    private void Awake()
+    {
+        originPos = transform.position;
+    }
 
     private void Start()
     {
         GameManager.Instance.IslandWindow.OnScaleChanged += SetCamSize;
         GameManager.Instance.IslandWindow.OnPosChanged += SetCamPos;
-
-        startVec = mainCam.ScreenToWorldPoint(Vector3.zero);
-        endVec = mainCam.ScreenToWorldPoint(GameManager.Instance.IslandWindow.IslandWindowRect.sizeDelta);
-        gapDistance = endVec - startVec;
     }
 
     private void SetCamSize(float ratio)
@@ -35,8 +34,14 @@ public class CameraController : MonoBehaviour
     /// <param name="heightRatio"> 세로 비율 </param>
     private void SetCamPos(float widthRatio, float heightRatio)
     {
-        transform.position = startVec + (transform.right * gapDistance.x * ( 1f - widthRatio)) + (transform.up * gapDistance.y * (1f - heightRatio));
+        float height = mainCam.orthographicSize * 2f;
+        float width = mainCam.aspect * height;
 
+        // 1f에 받아온 비율을 빼주는 이유는 카메라의 위치를 변경시키기 때문에 실제 오브젝트는 반대방향으로 이동하는 것처럼 보이기 때문
+        float xOffset = (1f - widthRatio - 0.5f) * width;
+        float yOffset = (1f - heightRatio - 0.5f) * height;
+
+        transform.position = originPos + (transform.right * xOffset) + (transform.up * yOffset);
     }
 
     private void OnDestroy()

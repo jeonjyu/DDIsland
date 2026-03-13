@@ -30,10 +30,6 @@ public class UI_IslandWindowDragBar : MonoBehaviour, IBeginDragHandler, IDragHan
         if (eventData.button == PointerEventData.InputButton.Left)
         {
             ui_IslandWindow.WindowPosition = eventData.position + gapPos;
-
-            Vector3 pos = Camera.main.ScreenToWorldPoint(ui_IslandWindow.WindowPosition);
-            pos.z = 10f;
-            Camera.main.transform.position = pos;
         }
     }
 
