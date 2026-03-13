@@ -235,7 +235,7 @@ public class BuildingManager : MonoBehaviour
         }
         _activeBuildings.Clear();
 
-        SyncDataSave();
+        //SyncDataSave();
 
         OnConfirm?.Invoke(); // 저장 알림 
         ClearSession();
@@ -279,12 +279,11 @@ public class BuildingManager : MonoBehaviour
                 Vector3 worldPos = _gridSystem.GetWorldPosition(snap.Pos.x, snap.Pos.y, snap.Size.x, snap.Size.y);
                 snap.Target.RestoreState(worldPos, snap.Rotation, snap.IsRotated);
 
-                if (!_activeBuildings.Contains(snap.Target))
-                {
-                    _activeBuildings.Add(snap.Target);
-                }
+                if (!_allBuildings.Contains(snap.Target)) _allBuildings.Add(snap.Target);
             }
+        
         }
+
         // 삭제한 건물 부활 시키기
         foreach (var b in _deletedBuildings)
         {
@@ -302,6 +301,13 @@ public class BuildingManager : MonoBehaviour
                 }
             }
 
+        }
+        if (_activePlaceable != null)
+        {
+            if (!_movedSnapshots.ContainsKey(_activePlaceable))
+            {
+                Destroy(_activePlaceable.gameObject);
+            }
         }
 
         ClearSession();
@@ -353,25 +359,13 @@ public class BuildingManager : MonoBehaviour
 
         _gridSystem.ClearGrid();
 
-        SyncDataClear();
+        //SyncDataClear();
 
         ClearSession();
         OnClearAll?.Invoke(); // 초기화 알림
     }
     #endregion
-    private void Update()
-    {
-
-        //배치 가능한 물건이 배치되었으면
-        if (_activePlaceable != null && _activePlaceable.ItemState == ItemState.Placed)
-        {
-            OnPlaceSuccess?.Invoke(_activePlaceable.gameObject); // 배치 성공 알림
-            // 매니저의 관리 대상에서 해제
-            _activePlaceable = null;
-        }
-
-    }
-
+    
     #region 파이어베이스 데이터 저장
     private void SyncDataSave()
     {
