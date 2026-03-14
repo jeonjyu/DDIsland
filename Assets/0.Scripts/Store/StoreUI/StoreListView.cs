@@ -58,13 +58,13 @@ public class StoreListView : MonoBehaviour
 
         if (isSelected)
         {
-            Debug.Log("선택된 색");
+            //Debug.Log("선택된 색");
             colorBlock.normalColor = selectedColor;
             colorBlock.selectedColor = selectedColor;
         }
         else
         {
-            Debug.Log("기본 색");
+            //Debug.Log("기본 색");
             colorBlock.normalColor = normalColor;
             colorBlock.selectedColor = normalColor;
         }

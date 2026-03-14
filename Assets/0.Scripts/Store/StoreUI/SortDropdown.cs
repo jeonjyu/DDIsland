@@ -99,7 +99,7 @@ public class SortDropdown : StoreDropdownBase
 
     public void ApplySortPriority()
     {
-        Debug.Log("정렬");
+        //Debug.Log("정렬");
         //Debug.Log("[SortDropdown] ApplySortPriority | SelectedOption : " + (StoreSort)SelectedOption);
         // 선택된 옵션에 따라 StoreSort 적용 후 정렬
         switch ((StoreSort)(SelectedOption))
