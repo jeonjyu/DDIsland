@@ -30,11 +30,11 @@ public class PlayerData
     public float MaxFishingSpeed = 100f;
     public float MaxRestSpeed = 2f;
 
-    public int HungerLevel = 1;
-    public int StaminaLevel = 1;
-    public int MoveSpeedLevel = 1;
-    public int FishingSpeedLevel = 1;
-    public int RestSpeedLevel = 1;
+    public int HungerLevel = 0;
+    public int StaminaLevel = 0;
+    public int MoveSpeedLevel = 0;
+    public int FishingSpeedLevel = 0;
+    public int RestSpeedLevel = 0;
     //
 
     public void Initialize(CharacterDataSO SO)
@@ -54,11 +54,11 @@ public class PlayerData
         VisualGroupID = SO.VisualGroupID;
         UpgradGroupID = SO.UpgradGroupID;
 
-        HungerLevel = 1;
-        StaminaLevel = 1;
-        MoveSpeedLevel = 1;
-        FishingSpeedLevel = 1;
-        RestSpeedLevel = 1;
+        HungerLevel = 0;
+        StaminaLevel = 0;
+        MoveSpeedLevel = 0;
+        FishingSpeedLevel = 0;
+        RestSpeedLevel = 0;
     }
 
     //이렇게 쓰면 된다
