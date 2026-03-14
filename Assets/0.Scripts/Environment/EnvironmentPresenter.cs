@@ -25,9 +25,9 @@ public class EnvironmentPresenter : MonoBehaviour
         _model.OnDailyChanged += (daily) => _view.PlaySeasonParticle(_model.CurrentSeason);
 
 
-        if (DataHub.Instance != null)
-            DataHub.Instance.OnRequestSave += SyncEnvironmentDataSave;
-            DataHub.Instance.OnDataLoaded += SyncWithDataMgr;
+        if (DataManager.Instance.Hub != null)
+            DataManager.Instance.Hub.OnRequestSave += SyncEnvironmentDataSave;
+            DataManager.Instance.Hub.OnDataLoaded += SyncWithDataMgr;
     }
     private void OnDisable()
     {
@@ -39,9 +39,9 @@ public class EnvironmentPresenter : MonoBehaviour
         _model.OnDailyChanged -= _view.ChangeDailySprite;
         _model.OnDailyChanged -= (daily) => _view.PlaySeasonParticle(_model.CurrentSeason);
 
-        if (DataHub.Instance != null)
-            DataHub.Instance.OnRequestSave -= SyncEnvironmentDataSave;
-            DataHub.Instance.OnDataLoaded -= SyncWithDataMgr;
+        if (DataManager.Instance.Hub != null)
+            DataManager.Instance.Hub.OnRequestSave -= SyncEnvironmentDataSave;
+            DataManager.Instance.Hub.OnDataLoaded -= SyncWithDataMgr;
     }
 
     private void Start()
@@ -70,7 +70,6 @@ public class EnvironmentPresenter : MonoBehaviour
         
         now = now.AddSeconds(Time.deltaTime * 1800f);
         _model.UpdateTimeSet(now);
-        _view.TextedTimer(now);
 
     }
     //이 친구 인스펙터에서 우클릭 후 해당 메서드 이름 누르시면 실행돼요!
@@ -101,15 +100,13 @@ public class EnvironmentPresenter : MonoBehaviour
 
         Environment_Data envData = _model.SaveData(now);
         
-        DataHub.Instance._allUserData.Environment = envData;
-
-        DataHub.Instance.GetEnvJson();
+        DataManager.Instance.Hub._allUserData.Environment = envData;
     }
     
     public void SyncWithDataMgr()
     {
         // 데이터 꺼내오는거
-        Environment_Data env = DataHub.Instance._allUserData.Environment;
+        Environment_Data env = DataManager.Instance.Hub._allUserData.Environment;
 
         if (env != null && env._calculation != null)
         {

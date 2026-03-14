@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using System;
 using System.Collections.Generic;
 
@@ -24,6 +25,9 @@ public class UserAllData
 
     //진행도
     public Progress_Data Progress = new ();
+
+    //물고기 보관함
+    public Fishstoage_Data fishstoage = new();
 }
 
 [Serializable]
@@ -40,10 +44,7 @@ public class Charcter_Data
 [Serializable]
 public class Decoration_Data
 {
-    public List<int> _ownedCostumes = new (); // 소유한 코스튬 ID
-    public int _currentCostumeId;  // 현재 착용 중인 ID
-    public List<PlacedObject> _buildings = new (); // 배치된 건물들
-    public List<LakeInvenSlot> _ownedDecoItems = new(); // 소유한 꾸미기 아이템 (인벤토리) 
+    public List<PlacedObject> _buildings = new (); // 섬에 배치된 건물들
 }
 [Serializable]
 public class PlacedObject
@@ -65,17 +66,31 @@ public class Progress_Data
     public List<int> shopPurchaseCounts = new (); // 상점 품목별 구매 횟수
 }
 [Serializable]
-public class Store_Data
+public class Currency_Data
 {
-    public int gold = new();
+    public int gold;
+    
 }
 [Serializable]
-public class Fishstorage_Data
+public class Store_Data
+{
+    public List<int> _ownedCostumes = new(); // 소유한 코스튬 ID
+    public List<int> _ownedFishings = new(); // 소유한 낚시 장비 ID
+    public List<LakeInvenSlot> _inventory = new(); // 구매해서 현재 보유한 건물들
+    public int _currentCostumeId;  // 현재 착용 중인 ID
+}
+[Serializable]
+public class Fishstoage_Data
 {
 
 }
 [Serializable]
 public class Foodstorage_Data
+{
+
+}
+[Serializable]
+public class Record_Data
 {
 
 }

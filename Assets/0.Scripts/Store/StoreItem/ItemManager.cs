@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using UnityEngine;
 
 public class ItemManager : Singleton<ItemManager>
@@ -36,7 +37,14 @@ public class ItemManager : Singleton<ItemManager>
         base.Awake();
         CreateDatabase();
     }
-   
+    private void OnEnable()
+    {
+        DataManager.Instance.Hub.OnRequestSave += SyncInventoryDataSave;
+    }
+    private void OnDisable()
+    {
+        DataManager.Instance.Hub.OnRequestSave -= SyncInventoryDataSave;
+    }
     public void CreateDatabase()
     {
         InteriorDatabase = DataManager.Instance.StoreDatabase.IslandStoreData;
@@ -101,5 +109,86 @@ public class ItemManager : Singleton<ItemManager>
         //Debug.Log("[ItemManger] 현재 카테고리 딕셔너리 : " + storeCat.ToString());
 
         //Debug.Log("정렬 완료: " + string.Join(", ", ItemManager.Instance.displayDatas.Select(x => x.ItemName + "(" + x.ID + "):" + x.PurchasePrice)));
+    }
+
+    private void SyncInventoryDataSave()
+    {
+        var box = DataManager.Instance.Box;
+
+        if (playerItemDatas.TryGetValue(StoreCat.interior, out var interiorDb))
+        {
+            box.Store._inventory = interiorDb.Items
+                .Where(x => x.IsGained && x.ItemCount > 0)
+                .Select(x => new LakeInvenSlot
+                {
+                    itemId = x.ObjectId, 
+                    quantity = x.ItemCount
+                })
+                .ToList();
+        }
+
+        if (playerItemDatas.ContainsKey(StoreCat.costume))
+        {
+            box.Store._ownedCostumes = playerItemDatas[StoreCat.costume].Items
+                .Select(x => x.ID)
+                .Distinct()
+                .ToList();
+        }
+
+        if (playerItemDatas.ContainsKey(StoreCat.fishing))
+        {
+            box.Store._ownedCostumes = playerItemDatas[StoreCat.fishing].Items
+                .Select(x => x.ID)
+                .Distinct()
+                .ToList();
+        }
+
+        Debug.Log("<color=yellow> 인벤토리 데이터가 저장되었습니다 </color>");
+    }
+    private void SyncInventoryDataLoad()
+    {
+        var box = DataManager.Instance.Box;
+        playerItemDatas.Clear();
+
+        var interiorDict = storeDatas[StoreCat.interior].Items.ToDictionary(x => x.ObjectId);
+        var costumeDict = storeDatas[StoreCat.costume].Items.ToDictionary(x => x.ID);
+        var fishingDict = storeDatas[StoreCat.fishing].Items.ToDictionary(x => x.ID);
+
+        if (box.Store._inventory != null)
+        {
+            foreach (var slot in box.Store._inventory)
+            {
+                if (interiorDict.TryGetValue(slot.itemId, out IStoreItem original))
+                {
+                    original.ItemCount = slot.quantity;
+                    original.IsGained = true;
+                    AddToPlayerItem(original, StoreCat.interior);
+                }
+            }
+        }
+
+        if (box.Store._ownedCostumes != null)
+        {
+            foreach (int id in box.Store._ownedCostumes)
+            {
+                if (costumeDict.TryGetValue(id, out IStoreItem costume))
+                {
+                    costume.IsGained = true;
+                    AddToPlayerItem(costume, StoreCat.costume);
+                }
+            }
+        }
+
+        if (box.Store._ownedFishings != null)
+        {
+            foreach (int id in box.Store._ownedFishings)
+            {
+                if (fishingDict.TryGetValue(id, out IStoreItem fishingItem))
+                {
+                    fishingItem.IsGained = true;
+                    AddToPlayerItem(fishingItem, StoreCat.fishing);
+                }
+            }
+        }
     }
 }

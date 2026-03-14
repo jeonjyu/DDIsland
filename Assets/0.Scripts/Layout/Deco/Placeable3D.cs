@@ -307,7 +307,7 @@ public class Placeable3D : Placeable
     }
 
     /// <summary>
-    /// 빌드에 직접적으로 포함되지 않는 베이크 전용 함수입니다
+    /// 베이크 전용 함수입니다
     /// </summary>
     #region 베이크전용함수
     public void SetBakeData(Vector2Int index, Vector2Int size)

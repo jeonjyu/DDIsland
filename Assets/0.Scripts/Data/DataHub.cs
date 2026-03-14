@@ -5,15 +5,9 @@ using UnityEngine;
 /// </summary>
 public class DataHub : MonoBehaviour
 {
-    public static DataHub Instance;
-
-    public event Action OnRequestSave;
-
     public UserAllData _allUserData = new();
-
+    public event Action OnRequestSave;
     public event Action OnDataLoaded;
-
-    private void Awake() => Instance = this;
 
     public string GetEnvJson() => JsonUtility.ToJson(_allUserData.Environment);
     public string GetCharJson() => JsonUtility.ToJson(_allUserData.Character);

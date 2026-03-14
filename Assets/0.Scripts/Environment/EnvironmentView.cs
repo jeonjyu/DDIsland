@@ -69,10 +69,5 @@ public class EnvironmentView : MonoBehaviour
              _dailyImage.sprite = _dayliySprite[index];
         }
     }
-    
-
-    public void TextedTimer(DateTime now)
-    {
-        _timeText.text = now.ToString("yyyy - MM - dd HH : mm : ss");
-    }
+   
 }
