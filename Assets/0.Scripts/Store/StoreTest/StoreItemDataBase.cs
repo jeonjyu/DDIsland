@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -18,30 +19,24 @@ public class StoreItemDatabase : IStoreItemDatabase
         {
             case TableDatabase<int, IslandStoreDataSO> interiorDatabase:
                 foreach (var item in interiorDatabase.datas)
-                {
-                    IslandStoreDataSO data = item;
-                    StoreItem<IslandStoreDataSO> storeItem = new IslandStoreItem(data);
-                    Items.Add(storeItem);
-                }
+                    Items.Add(new IslandStoreItem(item));
                 break;
+// todo : 호수 인테리어 Database 만들어주기
             case TableDatabase<int, FishingStoreDataSO> fishingDatabase:
                 foreach (var item in fishingDatabase.datas)
-                {
-                    FishingStoreDataSO data = item;
-                    StoreItem<FishingStoreDataSO> storeItem = new FishingStoreItem(data);
-                    Items.Add(storeItem);
-                }
+                    Items.Add(new FishingStoreItem(item));
                 break;
             case TableDatabase<int, CostumeStoreDataSO> costumeDatabase:
                 foreach (var item in costumeDatabase.datas)
-                {
-                    CostumeStoreDataSO data = item;
-                    StoreItem<CostumeStoreDataSO> storeItem = new CostumeStoreItem(data);
                     Items.Add(new CostumeStoreItem(item));
-                }
+                break;
+            case TableDatabase<int, FoodDataSO> foodDatabase:
+                foreach(var item in foodDatabase.datas)
+                    Items.Add(new RecipeStoreItem(item));
                 break;
         }
     }
+
     public void AddToDatabase(IStoreItem data)
     {   
         if(!Items.Contains(data))
