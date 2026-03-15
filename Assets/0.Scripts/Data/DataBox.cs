@@ -1,4 +1,3 @@
-using JetBrains.Annotations;
 using System;
 using System.Collections.Generic;
 
@@ -12,12 +11,12 @@ public class UserAllData
     public Environment_Data Environment = new ();
 
     //재화 및 능력치
-    public Charcter_Data Character = new ();
+    public Character_Data Character = new ();
 
     // 상점 관련
     public Store_Data Store = new();
 
-    //배치 및 꾸미기
+    //배치 상태
     public Decoration_Data Decoration = new ();
 
     //수집 및 도감
@@ -28,6 +27,9 @@ public class UserAllData
 
     //물고기 보관함
     public Fishstoage_Data fishstoage = new();
+
+    //음식 보관함
+    public Foodstorage_Data Foodstorage = new();
 }
 
 [Serializable]
@@ -36,29 +38,30 @@ public class Environment_Data
     public int[] _calculation;
 }
 [Serializable]
-public class Charcter_Data
+public class Character_Data
 {
-    public float[] stats;       // 공격력, 속도 등 (인덱스로 관리)
-    public int[] upgrades;      // 각 스탯의 강화 단계
+    public StatData _hunger = new();
+    public StatData _stamina = new();
+    public StatData _moveSpeed = new();
+    public StatData _fishingSpeed = new();
+    public StatData _restSpeed = new();
+
+    public int _doongdoongStat;
 }
 [Serializable]
 public class Decoration_Data
 {
-    public List<PlacedObject> _buildings = new (); // 섬에 배치된 건물들
+    public List<PlacedObjectData> _buildings = new (); // 섬에 배치된 건물들
 }
-[Serializable]
-public class PlacedObject
-{
-    public int _id;
-    public int _posX, _posY; // 배치 좌표
-    public int _rotation;
-}
+
 [Serializable]
 public class Collection_Data
 {
     public List<int> _unlockedAlbumIds = new (); // 해금된 음반 ID 
     public List<int> _unlockedBookIds = new ();  // 해금된 도감 ID
 }
+
+// 얘는 아직 어떻게 활용해야할지 모르겠음. 필요 없으면 그냥 갖다 버릴 것
 [Serializable]
 public class Progress_Data
 {
@@ -82,12 +85,19 @@ public class Store_Data
 [Serializable]
 public class Fishstoage_Data
 {
+    public int StorageLevel = 1;      
+    public long AcquireCounter = 0;   // 획득 순서 카운터
 
+    public List<SavedFishSlotData> SlotList = new();
 }
 [Serializable]
 public class Foodstorage_Data
 {
+    public int StorageLevel;       
+    public long AcquireCounter;  
 
+    
+    public List<SavedFoodSlotData> SavedSlots = new();
 }
 [Serializable]
 public class Record_Data
@@ -95,4 +105,36 @@ public class Record_Data
 
 }
 
-
+#region 변수 저장 클래스
+[Serializable]
+public class PlacedObjectData
+{
+    public int _id;
+    public int _posX, _posY; // 배치 좌표
+    public int _rotation;
+}
+[Serializable]
+public class SavedFishSlotData
+{
+    public int Index; // 보관함 위치 인덱스
+    public int FishId;
+    public int Count;
+    public int MaxPrice;
+    public int TotalPrice;
+    public long LastAcquiredOrder;
+}
+[Serializable]
+public class SavedFoodSlotData
+{
+    public int Index; // 보관함 위치 인덱스
+    public int FoodId;
+    public int Count;  
+    public long LastAcquiredOrder;
+}
+[Serializable]
+public class StatData
+{
+    public float Value; // 현재 수치
+    public int Level;   // 강화 단계
+}
+#endregion

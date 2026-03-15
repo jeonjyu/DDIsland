@@ -17,50 +17,55 @@ public class EnvironmentPresenter : MonoBehaviour
     private void OnEnable()
     {
         // 켜질 때 구독 (이벤트 연결)
-        _model.OnSeasonChanged += _view.PlaySeasonParticle;
         _model.OnSeasonChanged += _view.ChangeSeasonSprite;
 
         _model.OnDailyChanged += _view.ChangeDayilyBackGround;
         _model.OnDailyChanged += _view.ChangeDailySprite;
-        _model.OnDailyChanged += (daily) => _view.PlaySeasonParticle(_model.CurrentSeason);
+        _model.OnWeatherChanged += _view.PlaySeasonParticle;
 
 
-        if (DataManager.Instance.Hub != null)
+        if (DataManager.Instance != null && DataManager.Instance.Hub != null)
+        {
             DataManager.Instance.Hub.OnRequestSave += SyncEnvironmentDataSave;
-            DataManager.Instance.Hub.OnDataLoaded += SyncWithDataMgr;
+        }
     }
     private void OnDisable()
     {
         // 꺼질 때 해제 (중복 구독 및 메모리 누수 방지)
-        _model.OnSeasonChanged -= _view.PlaySeasonParticle;
         _model.OnSeasonChanged -= _view.ChangeSeasonSprite;
-
         _model.OnDailyChanged -= _view.ChangeDayilyBackGround;
         _model.OnDailyChanged -= _view.ChangeDailySprite;
-        _model.OnDailyChanged -= (daily) => _view.PlaySeasonParticle(_model.CurrentSeason);
+        _model.OnWeatherChanged -= _view.PlaySeasonParticle;
 
-        if (DataManager.Instance.Hub != null)
+        if (DataManager.Instance != null &&DataManager.Instance.Hub != null)
+        {
             DataManager.Instance.Hub.OnRequestSave -= SyncEnvironmentDataSave;
-            DataManager.Instance.Hub.OnDataLoaded -= SyncWithDataMgr;
+        }
     }
 
     private void Start()
     {
+        if (DataManager.Instance?.Hub != null)
+        {
+            if (DataManager.Instance.Hub.IsLoaded)
+            {
+                SyncEnvironmentDataLoad();
+            }
+            else
+            {
+                DataManager.Instance.Hub.OnDataLoaded += SyncEnvironmentDataLoad;
+            }
+        }
 
         //처음 시작할 때 현재 시각 기억
-        DateTime now = DateTime.UtcNow.AddHours(9);
+        now = DateTime.UtcNow.AddHours(9);
         //DateTime now = new DateTime(2026,1,1).AddDays(UnityEngine.Random.Range(0, 365))
         //                       .AddHours(UnityEngine.Random.Range(0, 24))
         //                       .AddMinutes(UnityEngine.Random.Range(0, 60));
-        _model.UpdateTimeSet(now);
-
-        _view.ChangeDayilyBackGround(_model.CurrentDay);
-        _view.PlaySeasonParticle(_model.CurrentSeason);
 
         Debug.Log($"<color=cyan>테스트 날짜: {now} 현재 시점: {_model.CurrentDay} 현재 계절: {_model.CurrentSeason}</color>");
 
-        _view.ChangeDailySprite(_model.CurrentDay);
-        _view.ChangeSeasonSprite(_model.CurrentSeason);
+        RefreshAll();
 
     }
 
@@ -84,42 +89,48 @@ public class EnvironmentPresenter : MonoBehaviour
     //    Save(now);
     //}
 
-    private void SyncEnvironmentDataSave()
-    {
-        Save(now);
-    }
-
-    public void Save(DateTime now)
+   
+    public void SyncEnvironmentDataSave()
     {
         //데이터 저장하는거   
         _model.UpdateTimeSet(now);
-        _view.ChangeDayilyBackGround(_model.CurrentDay);
-        _view.PlaySeasonParticle(_model.CurrentSeason);
 
         Debug.Log($"<color=cyan>테스트 날짜: {now} 현재 시점: {_model.CurrentDay} 현재 계절: {_model.CurrentSeason}</color>");
 
-        Environment_Data envData = _model.SaveData(now);
+        Environment_Data envData = _model.SaveData();
         
         DataManager.Instance.Hub._allUserData.Environment = envData;
     }
     
-    public void SyncWithDataMgr()
+    public void SyncEnvironmentDataLoad()
     {
+        if (DataManager.Instance != null && DataManager.Instance.Hub != null)
+        {
+            DataManager.Instance.Hub.OnDataLoaded -= SyncEnvironmentDataLoad;
+        }
         // 데이터 꺼내오는거
         Environment_Data env = DataManager.Instance.Hub._allUserData.Environment;
 
         if (env != null && env._calculation != null)
         {
-            _model._seasonDuration = env._calculation;
+            _model.LoadData(env);
 
-           //Model에서 갖고 있는 시간에 따른 변화 - 근데 이거 Update에서 하고 있는데...혹시나 몰라서 넣어놨습니다 
-           // + 테스트용
-           
-            _view.ChangeDayilyBackGround(_model.CurrentDay);
-            _view.PlaySeasonParticle(_model.CurrentSeason);
+            //Model에서 갖고 있는 시간에 따른 변화 - 근데 이거 Update에서 하고 있는데...혹시나 몰라서 넣어놨습니다 
+            // + 테스트용
+
+            RefreshAll();
 
             Debug.Log($"<color=cyan> 데이터 복구 완료 {_model.CurrentSeason} / {_model.CurrentDay}</color>");
         }
+    }
+
+    private void RefreshAll()
+    {
+        _model.UpdateTimeSet(now);
+
+        _view.ChangeDayilyBackGround(_model.CurrentDay);
+        _view.ChangeDailySprite(_model.CurrentDay);
+        _view.ChangeSeasonSprite(_model.CurrentSeason);
     }
 
 }
