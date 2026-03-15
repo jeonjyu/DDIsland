@@ -36,7 +36,7 @@ public class StoreListView : MonoBehaviour
         foreach (Button button in storeListPanel.GetComponentsInChildren<Button>())
             stores.Add(button);
 
-        List<string> catList = StoreManager.Instance.GetEnumList<StoreCat>(Enum.GetValues(typeof(StoreCat)));
+        List<string> catList = DescriptionExtracter.GetEnumList<StoreCat>(Enum.GetValues(typeof(StoreCat)));
         foreach (string item in catList)
         {
             int idx = catList.IndexOf(item);
