@@ -95,7 +95,6 @@ public class Foodstorage_Data
 {
     public int StorageLevel;       
     public long AcquireCounter;  
-
     
     public List<SavedFoodSlotData> SavedSlots = new();
 }
