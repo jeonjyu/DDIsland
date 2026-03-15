@@ -151,7 +151,7 @@ public class BuildingManager : MonoBehaviour
     public void StartPlacement(int itemId)
     {
         var obj = DataManager.Instance.DecorationDatabase.InteriorData[itemId];
-        
+
         //현재 배치 중인 물건이 있으면 들고 있는 물체를 제거
         if (_activePlaceable != null && _activePlaceable.ItemState == ItemState.Preview)
         {
@@ -167,11 +167,11 @@ public class BuildingManager : MonoBehaviour
             _activePlaceable = go.AddComponent<Placeable3D>();
         }
 
-            _currentSnapshot = new() { Pos = new Vector2Int(-1, -1) };
+        _currentSnapshot = new() { Pos = new Vector2Int(-1, -1) };
 
-            // 인테리어 데이터 SO 추가해야함
-            _activePlaceable.Initialize(_gridSystem, this,obj); //배치할 물건 초기화
-        if(!go.TryGetComponent(out _activePlaceable))
+        // 인테리어 데이터 SO 추가해야함
+        _activePlaceable.Initialize(_gridSystem, this, obj); //배치할 물건 초기화
+        if (!go.TryGetComponent(out _activePlaceable))
         {
             Debug.LogError($"{go.name}에 스크립트가 없습니다!");
             Destroy(go);
@@ -211,7 +211,7 @@ public class BuildingManager : MonoBehaviour
 
         }
 
-            _gridSystem.ClearGrid();
+        _gridSystem.ClearGrid();
         OnPlaceCancel?.Invoke(null); // 배치 취소 알림 
         _activePlaceable = null;
     }
@@ -281,13 +281,13 @@ public class BuildingManager : MonoBehaviour
 
                 if (!_allBuildings.Contains(snap.Target)) _allBuildings.Add(snap.Target);
             }
-        
+
         }
 
         // 삭제한 건물 부활 시키기
         foreach (var b in _deletedBuildings)
         {
-            if(b!=null)
+            if (b != null)
             {
                 b.gameObject.SetActive(true);
                 _gridSystem.PlaceItem(b.PlacedIndex.x, b.PlacedIndex.y, b.PlacedSize.x, b.PlacedSize.y, b);
@@ -323,9 +323,9 @@ public class BuildingManager : MonoBehaviour
 
         if (_activePlaceable != null)
         {
-            processed.Add(_activePlaceable);              
-            int id = _activePlaceable.GetItemId();        
-            if (id >= 0) destroyedIds.Add(id);            
+            processed.Add(_activePlaceable);
+            int id = _activePlaceable.GetItemId();
+            if (id >= 0) destroyedIds.Add(id);
 
             Destroy(_activePlaceable.gameObject);
             _activePlaceable = null;
@@ -336,9 +336,9 @@ public class BuildingManager : MonoBehaviour
             var b = _activeBuildings[i];
             if (b != null && !processed.Contains(b))
             {
-                processed.Add(b);                         
-                int id = b.GetItemId();                   
-                if (id >= 0) destroyedIds.Add(id);        
+                processed.Add(b);
+                int id = b.GetItemId();
+                if (id >= 0) destroyedIds.Add(id);
 
                 RemoveBuildingFromGrid(b);
                 Destroy(b.gameObject);
@@ -353,9 +353,9 @@ public class BuildingManager : MonoBehaviour
             {
                 if (!b.IsEditable) continue;
 
-                processed.Add(b);                          
-                int id = b.GetItemId();                    
-                if (id >= 0) destroyedIds.Add(id);         
+                processed.Add(b);
+                int id = b.GetItemId();
+                if (id >= 0) destroyedIds.Add(id);
 
                 RemoveBuildingFromGrid(b);
                 // Destroy(b.gameObject);
@@ -370,9 +370,9 @@ public class BuildingManager : MonoBehaviour
         {
             if (b != null && !processed.Contains(b))
             {
-                processed.Add(b);                          
-                int id = b.GetItemId();                    
-                if (id >= 0) destroyedIds.Add(id);         
+                processed.Add(b);
+                int id = b.GetItemId();
+                if (id >= 0) destroyedIds.Add(id);
 
                 Destroy(b.gameObject);
             }
@@ -383,31 +383,99 @@ public class BuildingManager : MonoBehaviour
         //SyncDataClear();
 
         //ClearSession(); // _deletedBuildings 까지 비우지는 않고 직접 정리
-        _movedSnapshots.Clear();          
+        _movedSnapshots.Clear();
         _activePlaceable = null;
 
         OnClearAll?.Invoke(destroyedIds);  // 초기화 알림
     }
     #endregion
+    public void SwapFixBuilding(Placeable3D oldBuilding, int newItemId)
+    {
+        if (oldBuilding == null) return;
+
+        // 1. 교체할 새로운 건물 데이터(SO) 가져오기
+        var newData = DataManager.Instance.DecorationDatabase.InteriorData[newItemId];
+        if (newData == null) return;
+
+        // 2. 기존 건물의 정보(위치, 회전) 백업해두기
+        Vector2Int pos = oldBuilding.PlacedIndex;
+        int rotation = oldBuilding.IsRotated;
+        float yRot = oldBuilding.CurrentYRotation;
+
+        // 3. 기존 건물 철거 (그리드 비우기 + 관리 리스트에서 제거 + 파괴)
+        _gridSystem.RemoveItem(pos.x, pos.y, oldBuilding.PlacedSize.x, oldBuilding.PlacedSize.y);
+
+        if (_allBuildings.Contains(oldBuilding)) _allBuildings.Remove(oldBuilding);
+        if (_activeBuildings.Contains(oldBuilding)) _activeBuildings.Remove(oldBuilding);
+
+        Destroy(oldBuilding.gameObject);
+
+        // 4. 새로운 건물(프리팹) 생성
+        GameObject newGo = Instantiate(newData.InteriorPath_GameObject, _gridSystem.transform);
+        if (!newGo.TryGetComponent(out Placeable3D newPlaceable))
+        {
+            newPlaceable = newGo.AddComponent<Placeable3D>();
+        }
+
+        // 5. 새 건물 초기화
+        newPlaceable.Initialize(_gridSystem, this, newData);
+
+        Vector3 worldPos = _gridSystem.GetWorldPosition(pos.x, pos.y, newData.GridSizeX, newData.GridSizeY);
+        newPlaceable.RestoreState(worldPos, yRot, rotation);
+
+        // 방향에 따른 사이즈 재계산 (만약 기본집과 큰집의 크기가 다르다면 매우 중요!)
+        Vector2Int newSize = (rotation % 2 == 1) ?
+            new Vector2Int(newData.GridSizeY, newData.GridSizeX) :
+            new Vector2Int(newData.GridSizeX, newData.GridSizeY);
+
+        // 6. 그리드에 다시 꽂아넣고 좌표 정보 주입(Bake)
+        _gridSystem.PlaceItem(pos.x, pos.y, newSize.x, newSize.y, newPlaceable);
+        newPlaceable.SetBakeData(pos, newSize);
+
+        // 7. 관리 리스트에 새 건물 넣기 (나중에 세이브할 때 싹 다 저장되도록)
+        _allBuildings.Add(newPlaceable);
+
+        // 8. (선택) 교체되자마자 DB에 바로 덮어씌우기
+        DataManager.Instance.Hub.SaveAllData();
+
+        Debug.Log($"<color=cyan>[Fix건물 교체] {newData.InteriorName_String}으로 업그레이드 완료!</color>");
+    }
 
     #region 파이어베이스 데이터 저장
+
+    private void Start()
+    {
+        if (DataManager.Instance != null && DataManager.Instance.Hub != null)
+        {
+            if (DataManager.Instance.Hub.IsLoaded)
+            {
+                SyncBuidlingDataLoad();
+            }
+            else
+            {
+                DataManager.Instance.Hub.OnDataLoaded += SyncBuidlingDataLoad;
+            }
+        }
+    }
     private void OnEnable()
     {
-        DataManager.Instance.Hub.OnRequestSave += SyncBuildingDataSave;
+        if (DataManager.Instance != null && DataManager.Instance.Hub != null)
+            DataManager.Instance.Hub.OnRequestSave += SyncBuildingDataSave;
     }
     private void OnDisable()
     {
-        DataManager.Instance.Hub.OnRequestSave -= SyncBuildingDataSave;
+        if (DataManager.Instance != null && DataManager.Instance.Hub != null)
+            DataManager.Instance.Hub.OnRequestSave -= SyncBuildingDataSave;
     }
     private void SyncBuildingDataSave()
     {
-        List<PlacedObject> syncList = new ();
+        List<PlacedObjectData> syncList = new();
 
         foreach (var b in _allBuildings)
         {
             if (b == null) continue;
 
-            syncList.Add(new PlacedObject
+            syncList.Add(new PlacedObjectData
             {
                 _id = b.GetItemId(),
                 _posX = b.PlacedIndex.x,
@@ -421,9 +489,15 @@ public class BuildingManager : MonoBehaviour
 
         Debug.Log("<color=green>모든 배치 정보가 서버와 동기화되었습니다!</color>");
     }
-    public void SyncDataLoad()
+    public void SyncBuidlingDataLoad()
     {
         var savedData = DataManager.Instance.Hub._allUserData.Decoration._buildings;
+
+        if (DataManager.Instance != null && DataManager.Instance.Hub != null)
+        {
+            DataManager.Instance.Hub.OnDataLoaded -= SyncBuidlingDataLoad;
+        }
+
         if (savedData == null || savedData.Count == 0) return;
 
         var database = DataManager.Instance.DecorationDatabase;
@@ -469,7 +543,9 @@ public class BuildingManager : MonoBehaviour
                 Debug.LogWarning($"{interiorData.InteriorName_String}: 해당 위치에 이미 물체가 있습니다.");
                 Destroy(go);
             }
+
         }
+       
     }
     #endregion
 }
