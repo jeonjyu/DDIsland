@@ -466,9 +466,9 @@ RectTransform:
   - {fileID: 7987600080202632115}
   m_Father: {fileID: 3844751887770275296}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 350.7818, y: -33.76795}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 140, y: 55}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7297839927195726257
@@ -879,9 +879,9 @@ RectTransform:
   - {fileID: 4455628373790538558}
   m_Father: {fileID: 3844751887770275296}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 502.7818, y: -33.76795}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 140, y: 55}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &9075780771985769713
@@ -1020,14 +1020,14 @@ MonoBehaviour:
   btnObjMove: {fileID: 0}
   btnObjRotate: {fileID: 0}
   btnObjCancel: {fileID: 0}
-  dimBackground: {fileID: 0}
-  topButtonPanel: {fileID: 0}
-  bottomPanel: {fileID: 0}
-  itemListManager: {fileID: 0}
-  btnRecallAll: {fileID: 0}
-  btnReset: {fileID: 0}
-  btnSave: {fileID: 0}
-  btnExit: {fileID: 0}
+  dimBackground: {fileID: 6523918558006237187}
+  topButtonPanel: {fileID: 3844751887770275296}
+  bottomPanel: {fileID: 6228825435422397959}
+  itemListManager: {fileID: 6030560385489122355}
+  btnRecallAll: {fileID: 8883974704311922089}
+  btnReset: {fileID: 551126336891396935}
+  btnSave: {fileID: 6185632321647390293}
+  btnExit: {fileID: 4421155381264807333}
   btnDecoMode: {fileID: 0}
   dropdownPanel: {fileID: 0}
   btnLakeDecoMode: {fileID: 0}
@@ -1076,9 +1076,9 @@ RectTransform:
   - {fileID: 8299304284267670815}
   m_Father: {fileID: 3844751887770275296}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 611.5318, y: -33.76795}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 53.5, y: 55}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4713278857570947171
@@ -1300,15 +1300,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64a2db8b942358848bf9ae2222196515, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DecoItemListManager
-  itemContent: {fileID: 0}
-  btnArrowLeft: {fileID: 0}
-  btnArrowRight: {fileID: 0}
-  slotTemplate: {fileID: 0}
-  pageCountParent: {fileID: 0}
+  itemContent: {fileID: 4545267864032830566}
+  btnArrowLeft: {fileID: 5488491248016708159}
+  btnArrowRight: {fileID: 2965545242219103694}
+  slotTemplate: {fileID: 3564771316253638973}
+  pageCountParent: {fileID: 4455092562895532231}
   NowCount: {fileID: 3731089512179192681, guid: 23b35db81fcc4244a898af6a0c3dcd97, type: 3}
   WaitCount: {fileID: 8988176465940424137, guid: 880865ac61dad0548a8132a699228b29, type: 3}
   slotsPerPage: 6
-  maxPages: 5
+  maxPages: 3
   _interiorDatabaseSO: {fileID: 0}
   currentMode: 0
 --- !u!1 &3475916196888974413
@@ -1386,6 +1386,7 @@ GameObject:
   - component: {fileID: 124262423323903626}
   - component: {fileID: 3765098267890957954}
   - component: {fileID: 219090285499209685}
+  - component: {fileID: 4706423235337455821}
   m_Layer: 5
   m_Name: ItemSlot_0
   m_TagString: Untagged
@@ -1411,9 +1412,9 @@ RectTransform:
   - {fileID: 7899516710294207750}
   m_Father: {fileID: 4545267864032830566}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 152.50098, y: -107.4746}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 285.00195, y: 182.657}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6412481309479027405
@@ -1499,6 +1500,22 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
 --- !u!114 &219090285499209685
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3564771316253638973}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba693eacdb9fec7469634704e08f2b52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DecoSlotUI
+  itemButton: {fileID: 0}
+  itemImage: {fileID: 0}
+  quantityText: {fileID: 0}
+  nameText: {fileID: 0}
+--- !u!114 &4706423235337455821
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1669,9 +1686,9 @@ RectTransform:
   - {fileID: 6648125786925832454}
   m_Father: {fileID: 3844751887770275296}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 198.7818, y: -33.76795}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 140, y: 55}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &931696603225837909

@@ -201,11 +201,18 @@ public class DecoItemListManager : MonoBehaviour
             slotObjects[i].SetActive(i >= startIndex && i < endIndex);
 
         // 화살표 활성/비활성 (1페이지뿐이면 둘 다 비활성)
+        //if (btnArrowLeft != null)
+        //    btnArrowLeft.interactable = (currentPage > 0);
+
+        //if (btnArrowRight != null)
+        //    btnArrowRight.interactable = (currentPage < totalPages - 1);
+
+        // 1페이지거나 마지막 페이지면  안 보여줌 
         if (btnArrowLeft != null)
-            btnArrowLeft.interactable = (currentPage > 0);
+            btnArrowLeft.gameObject.SetActive(currentPage > 0);
 
         if (btnArrowRight != null)
-            btnArrowRight.interactable = (currentPage < totalPages - 1);
+            btnArrowRight.gameObject.SetActive(currentPage < totalPages - 1);
 
         // 페이지 수 갱신
         UpdateIndicators();
