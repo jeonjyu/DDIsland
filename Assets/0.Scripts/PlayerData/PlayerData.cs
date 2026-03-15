@@ -1,7 +1,8 @@
 using System;
+using UnityEngine;
 using UnityEngine.TextCore.Text;
 
-public class PlayerData
+public class PlayerData : MonoBehaviour
 {
     public int CharID{ get; private set; }
     public string NameKey { get; private set; }
