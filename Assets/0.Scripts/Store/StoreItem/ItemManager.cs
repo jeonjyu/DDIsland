@@ -37,13 +37,29 @@ public class ItemManager : Singleton<ItemManager>
         base.Awake();
         CreateDatabase();
     }
+    private void Start()
+    {
+        if (DataManager.Instance != null && DataManager.Instance.Hub != null)
+        {
+            if (DataManager.Instance.Hub.IsLoaded)
+            {
+                SyncInventoryDataSave();
+            }
+            else
+            {
+                DataManager.Instance.Hub.OnDataLoaded += SyncInventoryDataLoad;
+            }
+        }
+    }
     private void OnEnable()
     {
-        DataManager.Instance.Hub.OnRequestSave += SyncInventoryDataSave;
+        if (DataManager.Instance != null && DataManager.Instance.Hub != null)
+            DataManager.Instance.Hub.OnRequestSave += SyncInventoryDataSave;
     }
     private void OnDisable()
     {
-        DataManager.Instance.Hub.OnRequestSave -= SyncInventoryDataSave;
+        if (DataManager.Instance != null && DataManager.Instance.Hub != null)
+            DataManager.Instance.Hub.OnRequestSave -= SyncInventoryDataSave;
     }
     public void CreateDatabase()
     {

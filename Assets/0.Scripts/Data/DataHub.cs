@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 /// <summary>
 /// 데이터를 저장하고 저장한 데이터를 다시 받아오는 매니저 클래스
@@ -9,10 +10,24 @@ public class DataHub : MonoBehaviour
     public event Action OnRequestSave;
     public event Action OnDataLoaded;
 
+    public bool IsLoaded { get; private set; } = false;
+
     public string GetEnvJson() => JsonUtility.ToJson(_allUserData.Environment);
     public string GetCharJson() => JsonUtility.ToJson(_allUserData.Character);
     public string GetDecoJson() => JsonUtility.ToJson(_allUserData.Decoration);
-    
+
+    private void Start()
+    {
+        StartCoroutine(InitLoadingSequence());
+    }
+
+    private IEnumerator InitLoadingSequence()
+    {
+        yield return null;
+
+        LoadAllData();
+    }
+
     public void SaveAllData()
     {
         OnRequestSave?.Invoke();
@@ -51,7 +66,7 @@ public class DataHub : MonoBehaviour
             //_allUserData.Decoration._buildings ??= new List<PlacedObject>();
 
             Debug.Log("<color=green>서버 데이터 로드 완료</color>");
-
+            IsLoaded = true;
             OnDataLoaded?.Invoke();
         }
         else
@@ -68,7 +83,7 @@ public class DataHub : MonoBehaviour
             //{
             //    _allUserData.Decoration._buildings ??= new List<PlacedObject>();
             //}
-
+            IsLoaded = true;
             OnDataLoaded?.Invoke();
         }
     }
@@ -80,11 +95,11 @@ public class DataHub : MonoBehaviour
         EnvironmentModel env = new ();
         DateTime now = DateTime.UtcNow;
         env.UpdateTimeSet(now); // 계절 및 시간대 계산 실행
-        _allUserData.Environment = env.SaveData(now);
+        _allUserData.Environment = env.SaveData();
 
-        _allUserData.Character = new ();
-        _allUserData.Decoration = new ();
-        _allUserData.Collection = new ();
-        _allUserData.Progress = new ();
+        //_allUserData.Character = new ();
+        //_allUserData.Decoration = new ();
+        //_allUserData.Collection = new ();
+        //_allUserData.Progress = new ();
     }
 }

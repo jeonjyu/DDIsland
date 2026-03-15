@@ -33,6 +33,32 @@ public class FoodStorageManager : Singleton<FoodStorageManager>
         base.Awake();
         foodSlots = new FoodStackSlot?[_storageCapacity];
     }
+    private void OnEnable()
+    {
+        if (DataManager.Instance != null && DataManager.Instance.Hub != null)
+            DataManager.Instance.Hub.OnRequestSave += SyncFoodStorageSaveData;
+    }
+
+    private void OnDisable()
+    {
+        if (DataManager.Instance != null && DataManager.Instance.Hub != null)
+            DataManager.Instance.Hub.OnRequestSave -= SyncFoodStorageSaveData;
+    }
+    private void Start()
+    {
+        if (DataManager.Instance != null && DataManager.Instance.Hub != null)
+        {
+            if (DataManager.Instance.Hub.IsLoaded)
+            {
+                SyncFoodStorageLoadData();
+            }
+            else
+            {
+                DataManager.Instance.Hub.OnDataLoaded += SyncFoodStorageLoadData;
+            }
+        }
+    }
+
     public bool TryAddToFoodStorage(FoodInstance food)
     {
         if (foodSlots == null || foodSlots.Length == 0)
@@ -198,5 +224,51 @@ public class FoodStorageManager : Singleton<FoodStorageManager>
             if (foodSlots[i].Value.FoodId == foodId) return true;
         }
         return false;
+    }
+
+    private void SyncFoodStorageSaveData()
+    {
+        var data = DataManager.Instance.Box.Foodstorage;
+        data.StorageLevel = _storagelevel;
+        data.AcquireCounter = _acquireCounter;
+        data.SavedSlots.Clear();
+
+        for (int i = 0; i < foodSlots.Length; i++)
+        {
+            if (foodSlots[i].HasValue)
+            {
+                data.SavedSlots.Add(new SavedFoodSlotData
+                {
+                    Index = i,
+                    FoodId = foodSlots[i].Value.FoodId,
+                    Count = foodSlots[i].Value.Count,
+                    LastAcquiredOrder = foodSlots[i].Value.LastAcquiredOrder
+                });
+            }
+        }
+    }
+
+    private void SyncFoodStorageLoadData()
+    {
+        var data = DataManager.Instance.Box.Foodstorage;
+        _storagelevel = data.StorageLevel > 0 ? data.StorageLevel : 1;
+        _acquireCounter = data.AcquireCounter;
+
+        ApplyFoodCapacityByLevel(); 
+
+        for (int i = 0; i < foodSlots.Length; i++) foodSlots[i] = null;
+        foreach (var saved in data.SavedSlots)
+        {
+            if (saved.Index >= 0 && saved.Index < foodSlots.Length)
+            {
+                foodSlots[saved.Index] = new FoodStackSlot
+                {
+                    FoodId = saved.FoodId,
+                    Count = saved.Count,
+                    LastAcquiredOrder = saved.LastAcquiredOrder
+                };
+                OnSlotChanged?.Invoke(saved.Index);
+            }
+        }
     }
 }
