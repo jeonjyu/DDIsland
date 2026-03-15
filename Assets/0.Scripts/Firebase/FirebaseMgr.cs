@@ -106,7 +106,7 @@ public class FirebaseMgr : MonoBehaviour
             }
             else
             {
-                Debug.LogError($"[기타 오류] {e.Message}");
+                Debug.LogError($"[기타 오류] {e}");
             }
         }
 

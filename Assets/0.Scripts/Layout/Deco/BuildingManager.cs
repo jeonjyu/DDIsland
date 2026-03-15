@@ -389,56 +389,59 @@ public class BuildingManager : MonoBehaviour
         OnClearAll?.Invoke(destroyedIds);  // 초기화 알림
     }
     #endregion
-    public void SwapFixBuilding(Placeable3D oldBuilding, int newItemId)
+    public void SwapGridFixBuilding(Placeable3D oldBuilding, int newItemId)
     {
         if (oldBuilding == null) return;
 
-        // 1. 교체할 새로운 건물 데이터(SO) 가져오기
         var newData = DataManager.Instance.DecorationDatabase.InteriorData[newItemId];
         if (newData == null) return;
 
-        // 2. 기존 건물의 정보(위치, 회전) 백업해두기
         Vector2Int pos = oldBuilding.PlacedIndex;
         int rotation = oldBuilding.IsRotated;
         float yRot = oldBuilding.CurrentYRotation;
+        Vector2Int size = oldBuilding.PlacedSize;
 
-        // 3. 기존 건물 철거 (그리드 비우기 + 관리 리스트에서 제거 + 파괴)
-        _gridSystem.RemoveItem(pos.x, pos.y, oldBuilding.PlacedSize.x, oldBuilding.PlacedSize.y);
-
+        _gridSystem.RemoveItem(pos.x, pos.y, size.x, size.y);
         if (_allBuildings.Contains(oldBuilding)) _allBuildings.Remove(oldBuilding);
         if (_activeBuildings.Contains(oldBuilding)) _activeBuildings.Remove(oldBuilding);
-
         Destroy(oldBuilding.gameObject);
 
-        // 4. 새로운 건물(프리팹) 생성
         GameObject newGo = Instantiate(newData.InteriorPath_GameObject, _gridSystem.transform);
         if (!newGo.TryGetComponent(out Placeable3D newPlaceable))
         {
             newPlaceable = newGo.AddComponent<Placeable3D>();
         }
 
-        // 5. 새 건물 초기화
         newPlaceable.Initialize(_gridSystem, this, newData);
-
         Vector3 worldPos = _gridSystem.GetWorldPosition(pos.x, pos.y, newData.GridSizeX, newData.GridSizeY);
         newPlaceable.RestoreState(worldPos, yRot, rotation);
 
-        // 방향에 따른 사이즈 재계산 (만약 기본집과 큰집의 크기가 다르다면 매우 중요!)
-        Vector2Int newSize = (rotation % 2 == 1) ?
-            new Vector2Int(newData.GridSizeY, newData.GridSizeX) :
-            new Vector2Int(newData.GridSizeX, newData.GridSizeY);
+        _gridSystem.PlaceItem(pos.x, pos.y, size.x, size.y, newPlaceable);
+        newPlaceable.SetBakeData(pos, size);
 
-        // 6. 그리드에 다시 꽂아넣고 좌표 정보 주입(Bake)
-        _gridSystem.PlaceItem(pos.x, pos.y, newSize.x, newSize.y, newPlaceable);
-        newPlaceable.SetBakeData(pos, newSize);
+        Debug.Log($"<color=cyan>[그리드 안] {newData.InteriorName_String}으로 교체 완료!</color>");
+    }
 
-        // 7. 관리 리스트에 새 건물 넣기 (나중에 세이브할 때 싹 다 저장되도록)
-        _allBuildings.Add(newPlaceable);
+    public void SwapOutGridBuilding(FixedBuilding oldBuilding, int newItemId)
+    {
+        if (oldBuilding == null) return;
 
-        // 8. (선택) 교체되자마자 DB에 바로 덮어씌우기
-        DataManager.Instance.Hub.SaveAllData();
+        var newData = DataManager.Instance.DecorationDatabase.InteriorData[newItemId];
+        if (newData == null) return;
 
-        Debug.Log($"<color=cyan>[Fix건물 교체] {newData.InteriorName_String}으로 업그레이드 완료!</color>");
+        Vector3 pos = oldBuilding.transform.position;
+        Quaternion rot = oldBuilding.transform.rotation;
+        int locId = oldBuilding.LocationID;
+
+        Destroy(oldBuilding.gameObject);
+
+        GameObject newGo = Instantiate(newData.InteriorPath_GameObject, pos, rot);
+
+        FixedBuilding newFix = newGo.AddComponent<FixedBuilding>();
+        newFix.Setup(locId, newItemId);
+
+
+        Debug.Log($"<color=green>[그리드 밖] {newData.InteriorName_String}으로 교체 완료!</color>");
     }
 
     #region 파이어베이스 데이터 저장

@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class PlayerData : MonoBehaviour
+public class PlayerData
 {
     public int CharID{ get; private set; }
     public string NameKey { get; private set; }
@@ -125,7 +125,7 @@ public class PlayerData : MonoBehaviour
 
         data._doongdoongStat = DoongDoongStat;
 
-        UnityEngine.Debug.Log("<color=cyan>캐릭터 스탯 저장</color>");
+        Debug.Log("<color=cyan>캐릭터 스탯 저장</color>");
     }
 
     public void SyncCharacterDataLoad()
