@@ -309,23 +309,29 @@ public class JournalManager : MonoBehaviour
     {
         // Collection_Data에 ID 추가 (중복 방지)
         var collection = DataManager.Instance.Box.Collection;
+        bool newUnlocked = false;
+
         switch (category) 
         {
             case JournalCategory.Fish:
                 if (!collection._unlockedFishIds.Contains(itemId))
                     collection._unlockedFishIds.Add(itemId);
+                newUnlocked = true;
                 break;
             case JournalCategory.Costume:
                 if (!collection._unlockedCostumeIds.Contains(itemId))
                     collection._unlockedCostumeIds.Add(itemId);
+                newUnlocked = true;
                 break;
             case JournalCategory.Interior:
                 if (!collection._unlockedInteriorIds.Contains(itemId))
                     collection._unlockedInteriorIds.Add(itemId);
+                newUnlocked = true;
                 break;
             case JournalCategory.Food:
                 if (!collection._unlockedFoodIds.Contains(itemId))
                     collection._unlockedFoodIds.Add(itemId);
+                newUnlocked = true;
                 break;
         }
 
@@ -334,6 +340,18 @@ public class JournalManager : MonoBehaviour
         {
             RefreshSlots();
         }
+
+        if (newUnlocked)
+        {
+            DataManager.Instance.Hub.SaveAllData();
+
+            // UI가 켜져있다면 즉시 새로고침
+            if (currentCategory == category && journalPanel.activeSelf)
+            {
+                RefreshSlots();
+            }
+        }
+
     }
 
     private void OnDestroy()
