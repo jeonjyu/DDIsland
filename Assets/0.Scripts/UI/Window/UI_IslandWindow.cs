@@ -85,10 +85,7 @@ public class UI_IslandWindow : MonoBehaviour
         maxFitRatio = maxRatio;
     }
 
-    /// <summary>
-    /// UI_WaterWindow 스크립트와 실행 순서가 정해져 있으므로 Init() 메서드를 통해 관리
-    /// </summary>
-    public void Init()
+    private void Start()
     {
 #if !UNITY_EDITOR
         islandWindowRect.sizeDelta = WindowController.Instance.WindowSize;
