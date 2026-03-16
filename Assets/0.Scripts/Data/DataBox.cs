@@ -117,7 +117,7 @@ public class Record_Data
 [Serializable]
 public class FixedObjectData
 {
-    public int _locationID; // 자리값
+    public FixGroup _locationID; // 자리값
     public int _id;         // 프리팹 ID
 }
 [Serializable]
