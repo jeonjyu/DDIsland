@@ -30,8 +30,6 @@ public class GameManager : Singleton<GameManager>
 
         IslandWindow?.Init();
         WaterWindow?.Init();
-
-        Debug.Log($"GameManager");
     }
 
     private IEnumerator AutoAddGold()
