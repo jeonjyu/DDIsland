@@ -3,6 +3,7 @@ using Firebase.Auth;
 using Firebase.Database;
 using Firebase.Extensions;
 using System.Threading.Tasks;
+using System;
 using UnityEngine;
 
 public class FirebaseMgr : MonoBehaviour
@@ -73,27 +74,40 @@ public class FirebaseMgr : MonoBehaviour
     }
     public async Task<string> FirebaseDataGet(string path = "")
     {
-        if (!_isInitialized && _database == null)
+        if (!_isInitialized || _database == null)
         {
             Debug.LogWarning("Firebase가 아직 초기화되지 않았습니다.");
             return null;
         }
 
-        DatabaseReference dbRef = Database.GetReference("Users").Child(DeviceID);
-
-        if (!string.IsNullOrEmpty(path))
+        try
         {
-            dbRef = dbRef.Child(path);
+            DatabaseReference dbRef = Database.GetReference("Users").Child(DeviceID);
+
+            if (!string.IsNullOrEmpty(path))
+            {
+                dbRef = dbRef.Child(path);
+            }
+
+            DataSnapshot snapshot = await dbRef.GetValueAsync();
+
+            if (snapshot != null && snapshot.Exists)
+            {
+                // JSON 문자열을 반환
+                return snapshot.GetRawJsonValue();
+            }
         }
-
-        DataSnapshot snapshot = await dbRef.GetValueAsync();
-
-
-
-        if (snapshot != null && snapshot.Exists)
+        catch(Exception e)
         {
-            // JSON 문자열을 반환
-            return snapshot.GetRawJsonValue();
+            if (e is FirebaseException firebaseEx)
+            {
+                // 에러코드 및 상세 메세지를 출력
+                Debug.LogError($"[파이어베이스 오류] 코드: {firebaseEx.ErrorCode} / 메세지: {firebaseEx.Message}");
+            }
+            else
+            {
+                Debug.LogError($"[기타 오류] {e}");
+            }
         }
 
         return null; // 데이터가 없으면 null 반환

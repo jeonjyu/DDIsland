@@ -1,13 +1,17 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.Rendering.DebugUI.Table;
 
 public class EnvironmentModel
 {
-    EnvironmentData _data;
+    Environment_Data _data;
 
     public event Action<Season> OnSeasonChanged;
     public event Action<DayilyCycle> OnDailyChanged;
+    public event Action<Season, bool> OnWeatherChanged;
+
+    public DateTime CurrentTime { get; private set; }
 
     private Season _currentSeason;
     public Season CurrentSeason { 
@@ -30,11 +34,13 @@ public class EnvironmentModel
             {
                 _currentDay = value;
                 OnDailyChanged?.Invoke(_currentDay); // 낮, 밤이 바뀔 때만 실행
+
+                UpdateWeather();
             }
         }
     }
 
-    public int[] _seasonDuration = new int[4];
+    private int[] _seasonDuration = new int[4];
     private int _lastMonth = -1;
     private int _lastDay = -1;
 
@@ -51,35 +57,43 @@ public class EnvironmentModel
     //전체적인 시간 계산 메서드
     public void UpdateTimeSet(DateTime now)
     {
+        CurrentTime = now;
+
         if (now.Month != _lastMonth) //달이 바뀔 때 마다
         {
             _lastMonth = now.Month;
-            SeasonalCalculation(now);
+            SeasonalCalculation();
         }
         if (now.Day != _lastDay) //일이 바뀔 때 마다
         {
             _lastDay = now.Day;
-            CurrentSeason = SetSeason(now);
+            CurrentSeason = SetSeason();
+            UpdateWeather();
         }
-        SetDay(now); //얘는 계속 해줘야하니까
+        SetDay(); //얘는 계속 해줘야하니까
     }
 
-    private Season SetSeason(DateTime now)
+    private Season SetSeason()
     {
         //이 부분 반복문 안쓰고 더 깔끔하게 할 수 있을거 같은데...
         for (int i = 0; i < _seasonDuration.Length; i++)
         {
-            if (now.Day <= _seasonDuration[i]) //만약 아래에서 계산한 날짜별 계절 마지막날보다 적으면
+            if (CurrentTime.Day <= _seasonDuration[i]) //만약 아래에서 계산한 날짜별 계절 마지막날보다 적으면
             {
                 return (Season)i; //Season에 있는 enum값에 따라 계절 설정
             }
         }
         return Season.Winter; //얘를 안하면 오류떠서 기본값은 마지막날인 겨울로 설정
     }
-    private void SeasonalCalculation(DateTime now)
+    private void UpdateWeather()
+    {
+        bool isParticle = UnityEngine.Random.Range(1, 101) <= 35;
+        OnWeatherChanged?.Invoke(CurrentSeason, isParticle);
+    }
+    private void SeasonalCalculation()
     {
 
-        int days = DateTime.DaysInMonth(now.Year, now.Month); //현재 시간 계산
+        int days = DateTime.DaysInMonth(CurrentTime.Year, CurrentTime.Month); //현재 시간 계산
         int extra = days - 28; //29,30,31일 등 나머지 날짜
 
         HashSet<int> additional = new();
@@ -89,7 +103,7 @@ public class EnvironmentModel
             additional.Add(UnityEngine.Random.Range(0, 4)); //계절이 4개니까 0,1,2,3 중 하나 선택
         }
         int currentDaySum = 0; //계절별 마지막 날짜 구하기 위한 장치
-        for (int i = 0; i < additional.Count; i++)
+        for (int i = 0; i < _seasonDuration.Length; i++)
         {
             int duration = 7; //계절별 기본 날짜
             if (additional.Contains(i))
@@ -102,9 +116,9 @@ public class EnvironmentModel
         }
     }
 
-    private void SetDay(DateTime now)
+    private void SetDay()
     {
-        float currentSeconds = (now.Minute * 60) + now.Second; //분과 초를 종합해서 계산 ex)3600초
+        float currentSeconds = (CurrentTime.Minute * 60) + CurrentTime.Second; //분과 초를 종합해서 계산 ex)3600초
         float[] mult = _seasonWeights[CurrentSeason]; //딕셔너리에 있는 가중치 들고옴
 
         float dayEnd = _dayDuration * mult[0];
@@ -120,21 +134,20 @@ public class EnvironmentModel
         };
     }
     //데이터 저장 메서드
-    public EnvironmentData SaveData(DateTime now)
+    public Environment_Data SaveData()
     {
-        EnvironmentData box = new()
+        Environment_Data box = new()
         {
             _calculation = (int[])_seasonDuration.Clone()
         };
-
+        string arrayString = string.Join(", ", box._calculation);
         Debug.Log($"계절 마지막 일자: [{box._calculation}] 저장완료</color>");
 
         return box;
     }
-    public void LoadData(EnvironmentData box)
+    public void LoadData(Environment_Data box)
     {
-        _data = box;
-        _seasonDuration = (int[])_data._calculation.Clone();
+        _seasonDuration = (int[])box._calculation.Clone();
 
         Debug.Log($"<color=yellow>{_lastMonth}월{_lastDay}일 로드 완료</color>");
     }

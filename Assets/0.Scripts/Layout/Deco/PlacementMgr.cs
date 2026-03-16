@@ -26,6 +26,8 @@ public class PlacementMgr : MonoBehaviour
     [SerializeField] private BuildingManager _buildingManager;
     public event Action<Placeable3D> OnBuildingPick;
     public event Action OnBuildingDrop;
+    public event Action<FixedBuilding> OnFixedBuildingPick;
+    public event Action<Placeable3D> OnGridFixBuildingPick;
 
     [Header("Zoom Settings")]
     [SerializeField] private float _zoomSpeed = 10f; // 줌 속도
@@ -119,7 +121,6 @@ public class PlacementMgr : MonoBehaviour
             CloseEditMenu();
         }
     }
-    // ToDo: 배치중 회전 방식을 추가해야하는데 아직 추가 안함
     private void OnRotate(InputAction.CallbackContext ctx)
     {
         OnClickRotate();
@@ -161,17 +162,27 @@ public class PlacementMgr : MonoBehaviour
         {
             Placeable3D target = hit.collider.GetComponentInParent<Placeable3D>();
 
+            FixedBuilding fixTarget = hit.collider.GetComponentInParent<FixedBuilding>();
+
             if (target != null && target.ItemState == ItemState.Placed)
             {
-                if(target.IsEditable)
+                if (target.IsEditable)
                 {
                     ShowEditMenu(target); // 편집 메뉴 표시
                 }
                 else
-                {   
-                    //TODO : 프리팹 교체 UI 추가
+                {
+                    CloseEditMenu();
+                    OnGridFixBuildingPick?.Invoke(target);
                 }
             }
+            else if (fixTarget != null)
+            {
+                CloseEditMenu(); 
+
+                OnFixedBuildingPick?.Invoke(fixTarget);
+            }
+            
             else
             {
                 // 빈 땅을 클릭하면 메뉴 닫기

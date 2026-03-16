@@ -83,29 +83,19 @@ public class UI_IslandWindow : MonoBehaviour
         }
 
         maxFitRatio = maxRatio;
-
-#if UNITY_EDITOR
-        WindowScale = new Vector3(defaultRatio, defaultRatio, defaultRatio);
-#endif
     }
 
-    private IEnumerator Start()
+    /// <summary>
+    /// UI_WaterWindow 스크립트와 실행 순서가 정해져 있으므로 Init() 메서드를 통해 관리
+    /// </summary>
+    public void Init()
     {
-        yield return null;
-
 #if !UNITY_EDITOR
         islandWindowRect.sizeDelta = WindowController.Instance.WindowSize;
         WindowScale = new Vector3(defaultRatio, defaultRatio, defaultRatio);
+#elif UNITY_EDITOR
+        WindowScale = new Vector3(defaultRatio, defaultRatio, defaultRatio);
 #endif
-    }
-
-    private void Update()
-    {
-        if(Keyboard.current.fKey.wasPressedThisFrame)
-        {
-            Debug.Log(islandWindowRect.position.x + WidthOffset / islandWindowRect.sizeDelta.x);
-            Debug.Log((islandWindowRect.sizeDelta.y - islandWindowRect.position.y + HeightOffset) / islandWindowRect.sizeDelta.y);
-        }
     }
 
     /// <summary>

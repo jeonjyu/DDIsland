@@ -28,7 +28,6 @@ public class TradeViewBase : MonoBehaviour
     private void OnEnable()
     {
         SetView();
-
     }
 
     public void SetView()
@@ -48,13 +47,16 @@ public class TradeViewBase : MonoBehaviour
 
     private void OnViewModelPropChanged(object sender, PropertyChangedEventArgs e)
     {
+        Debug.Log(this.name + " " + e.PropertyName + " " + sender);
         switch (e.PropertyName)
         {
             case null:
             case "":
                 SetView();
                 break;
-
+            //case nameof(viewModel.IsGained):
+            //    _equipTradeView?.UpdateEquipBtn();
+            //    break;
 
         }
     }

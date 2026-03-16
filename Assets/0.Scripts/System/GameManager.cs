@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-[RequireComponent(typeof(InputHandler))]
+[DefaultExecutionOrder(-50), RequireComponent(typeof(InputHandler))]
 public class GameManager : Singleton<GameManager>
 {
     [Header("InputHandler 클래스")]
@@ -23,10 +23,40 @@ public class GameManager : Singleton<GameManager>
     {
         base.Awake();
     }
+    private void OnEnable()
+    {
+        if (DataManager.Instance != null && DataManager.Instance.Hub != null)
+            DataManager.Instance.Hub.OnRequestSave += SyncGoldSave;
+    }
+
+    private void OnDisable()
+    {
+        if (DataManager.Instance != null && DataManager.Instance.Hub != null)
+        {
+            DataManager.Instance.Hub.OnRequestSave -= SyncGoldSave;
+        }
+    }
 
     private void Start()
     {
+        if (DataManager.Instance != null && DataManager.Instance.Hub != null)
+        {
+            if (DataManager.Instance.Hub.IsLoaded)
+            {
+                SyncGoldLoad();
+            }
+            else
+            {
+                DataManager.Instance.Hub.OnDataLoaded += SyncGoldLoad;
+            }
+        }
+
         StartCoroutine(AutoAddGold());
+
+        IslandWindow?.Init();
+        WaterWindow?.Init();
+
+        Debug.Log($"GameManager");
     }
 
     private IEnumerator AutoAddGold()
@@ -56,5 +86,26 @@ public class GameManager : Singleton<GameManager>
         base.OnApplicationQuit();
 
         PlayerPrefs.Save();
+    }
+
+    private void SyncGoldSave()
+    {
+        var userData = DataManager.Instance.Hub._allUserData.Currency;
+        if (userData != null)
+        {
+            userData._gold = playerGold;
+        }
+    }
+
+    private void SyncGoldLoad()
+    {
+        DataManager.Instance.Hub.OnDataLoaded -= SyncGoldLoad;
+
+        var userData = DataManager.Instance.Hub._allUserData.Currency;
+        if (userData != null)
+        {
+            playerGold = userData._gold;
+            OnGoldChanged?.Invoke(playerGold);
+        }
     }
 }

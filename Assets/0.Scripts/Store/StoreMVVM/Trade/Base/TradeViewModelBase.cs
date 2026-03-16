@@ -14,6 +14,7 @@ using UnityEngine;
 
 public class TradeViewModelBase : MonoBehaviour, INotifyPropertyChanged
 {
+    public TradeViewBase view;
 
     public IStoreItem Model
     {
@@ -23,7 +24,6 @@ public class TradeViewModelBase : MonoBehaviour, INotifyPropertyChanged
         //    StoreManager.Instance.TradeModel = value;
         //}
     }
-    public TradeViewBase view;
 
     public int Gold
     {
@@ -59,6 +59,8 @@ public class TradeViewModelBase : MonoBehaviour, INotifyPropertyChanged
             if (isGained != value)
             {
                 isGained = value;
+                Debug.Log(this.name + " 아이템 보유 여부 변경 " + isGained);
+                OnPropertyChanged(nameof(IsGained));
             }
         }
     }
@@ -77,6 +79,8 @@ public class TradeViewModelBase : MonoBehaviour, INotifyPropertyChanged
     {
         StoreManager.Instance.ChangeDropdownAvailability(true);
     }
+
+  
 
     protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
     {

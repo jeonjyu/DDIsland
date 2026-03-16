@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using UnityEngine;
 
 /// <summary>
 /// 유저의 모든 데이터를 관리하는 클래스
@@ -9,55 +8,143 @@ using UnityEngine;
 public class UserAllData
 {
     //환경 및 시간
-    public EnvironmentData Environment = new ();
+    public Environment_Data Environment = new ();
 
-    //재화 및 능력치
-    public Charcter_Data Character = new ();
+    //재화
+    public Character_Data Character = new ();
 
-    //배치 및 꾸미기
+    // 상점 관련
+    public Store_Data Store = new();
+
+    //배치 상태
     public Decoration_Data Decoration = new ();
 
     //수집 및 도감
-    public CollectionData Collection = new ();
+    public Collection_Data Collection = new ();
 
     //진행도
-    public ProgressData Progress = new ();
+    public Progress_Data Progress = new ();
+
+    //물고기 보관함
+    public Fishstoage_Data fishstoage = new();
+
+    //음식 보관함
+    public Foodstorage_Data Foodstorage = new();
+
+    //재화
+    public Currency_Data Currency = new();
 }
 
 [Serializable]
-public class EnvironmentData
+public class Environment_Data
 {
     public int[] _calculation;
 }
 [Serializable]
-public class Charcter_Data
+public class Character_Data
 {
-    public long _gold;           
-    public float[] stats;       // 공격력, 속도 등 (인덱스로 관리)
-    public int[] upgrades;      // 각 스탯의 강화 단계
+    public StatData _hunger = new();
+    public StatData _stamina = new();
+    public StatData _moveSpeed = new();
+    public StatData _fishingSpeed = new();
+    public StatData _restSpeed = new();
+
+    public int _doongdoongStat;
 }
 [Serializable]
 public class Decoration_Data
 {
-    public List<int> _ownedCostumes = new (); // 소유한 코스튬 ID
-    public int _currentCostumeId;  // 현재 착용 중인 ID
-    public List<PlacedObject> _buildings = new (); // 배치된 건물들
+    public List<PlacedObjectData> _buildings = new (); // 섬에 배치된 건물들
+
+    public List<FixedObjectData> _fixedBuildings = new();
 }
+
 [Serializable]
-public class PlacedObject
+public class Collection_Data
 {
-    public int _id;
-    public float _posX, _posY; // 배치 좌표
-}
-[Serializable]
-public class CollectionData
-{
-    public List<int> _unlockedAlbumIds = new (); // 해금된 음반 ID
+    public List<int> _unlockedAlbumIds = new (); // 해금된 음반 ID 
     public List<int> _unlockedBookIds = new ();  // 해금된 도감 ID
 }
+
+// 얘는 아직 어떻게 활용해야할지 모르겠음. 필요 없으면 그냥 갖다 버릴 것
 [Serializable]
-public class ProgressData
+public class Progress_Data
 {
     public List<int> activeQuestIds = new ();   // 현재 진행 중인 퀘스트
     public List<int> shopPurchaseCounts = new (); // 상점 품목별 구매 횟수
 }
+[Serializable]
+public class Currency_Data
+{
+    public int _gold;
+    
+}
+[Serializable]
+public class Store_Data
+{
+    public List<int> _ownedCostumes = new(); // 소유한 코스튬 ID
+    public List<int> _ownedFishings = new(); // 소유한 낚시 장비 ID
+    public List<LakeInvenSlot> _inventory = new(); // 구매해서 현재 보유한 건물들
+    public int _currentCostumeId;  // 현재 착용 중인 ID
+}
+[Serializable]
+public class Fishstoage_Data
+{
+    public int StorageLevel = 1;      
+    public long AcquireCounter = 0;   // 획득 순서 카운터
+
+    public List<SavedFishSlotData> SlotList = new();
+}
+[Serializable]
+public class Foodstorage_Data
+{
+    public int StorageLevel;       
+    public long AcquireCounter;  
+    
+    public List<SavedFoodSlotData> SavedSlots = new();
+}
+[Serializable]
+public class Record_Data
+{
+
+}
+
+#region 변수 저장 클래스
+[Serializable]
+public class FixedObjectData
+{
+    public int _locationID; // 자리값
+    public int _id;         // 프리팹 ID
+}
+[Serializable]
+public class PlacedObjectData
+{
+    public int _id;
+    public int _posX, _posY; // 배치 좌표
+    public int _rotation;
+}
+[Serializable]
+public class SavedFishSlotData
+{
+    public int Index; // 보관함 위치 인덱스
+    public int FishId;
+    public int Count;
+    public int MaxPrice;
+    public int TotalPrice;
+    public long LastAcquiredOrder;
+}
+[Serializable]
+public class SavedFoodSlotData
+{
+    public int Index; // 보관함 위치 인덱스
+    public int FoodId;
+    public int Count;  
+    public long LastAcquiredOrder;
+}
+[Serializable]
+public class StatData
+{
+    public float Value; // 현재 수치
+    public int Level;   // 강화 단계
+}
+#endregion

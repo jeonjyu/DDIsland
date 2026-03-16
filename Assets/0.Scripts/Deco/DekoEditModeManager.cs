@@ -4,7 +4,7 @@ using DG.Tweening;
 using System.Collections.Generic;
 using UnityEngine.InputSystem;
 
-/// [호수 꾸미기 편집 모드 전환 관리]
+/// [꾸미기 편집 모드 전환 관리]
 public class DecoEditModeManager : MonoBehaviour
 {
     #region 변수 
@@ -16,8 +16,7 @@ public class DecoEditModeManager : MonoBehaviour
     public RectTransform lakeBackground; // 호수 이미지 
     public RectTransform floorPlane; // 바닥재
    
-
-    [Header("3D 액션 패널 버튼")] 
+    [Header("3D배치템 상호작용 버튼")] 
     public Button btnObjRecall;   // 회수
     public Button btnObjMove;     // 이동
     public Button btnObjRotate;   // 회전 (3D 전용)
@@ -34,10 +33,11 @@ public class DecoEditModeManager : MonoBehaviour
     public Button btnSave;      // 저장
     public Button btnExit;      // 나가기
  
-    [Header("꾸미기 버튼")]
+    [Header("꾸미기 진입 버튼")]
     public Button btnDecoMode;
     public GameObject dropdownPanel;
-    public Button btnLakeDecoMode;      // 꾸미기 모드 (편집 모드 토글) 
+    public GameObject dropdownBlocker; // 드롭다운 열었을때 취소용 
+    public Button btnLakeDecoMode;      // 호수 꾸미기 진입
     public Button btnIslandDecoMode;    // 섬 꾸미기 진입
 
     [Header("하단 인벤")]
@@ -67,6 +67,9 @@ public class DecoEditModeManager : MonoBehaviour
     Vector2 placedObjOriginPos; // 배치템 원래 위치 
     Vector2 floorOriginPos; // 바닥재 원래 위치 
     Placeable3D selectedIslandTarget; // 3d 오브젝트 선택
+    int UnlockCount = 0;
+    float UnlockFirstTime;
+    bool isUnlocked = false;     
     #endregion
 
     // 버튼들 초기화   
@@ -106,12 +109,18 @@ public class DecoEditModeManager : MonoBehaviour
         if (btnReset != null)
             btnReset.onClick.AddListener(OnReset);
 
-        // 드롭다운 메인 버튼 
+        // 드롭다운 편집모드 진입버튼 
         if (btnDecoMode != null)
             btnDecoMode.onClick.AddListener(ToggleDropdown);
         if (dropdownPanel != null)
             dropdownPanel.SetActive(false); // 초기화
-
+        if (dropdownBlocker != null)
+        {
+            dropdownBlocker.SetActive(false);
+            dropdownBlocker.GetComponent<Button>().onClick.AddListener(HideDropdown);
+        }
+        if (btnLakeDecoMode != null)
+            btnLakeDecoMode.gameObject.SetActive(false);
         if (itemListManager != null) // 섬 편집모드 인벤 템 클릭 
             itemListManager.OnSlotPick += OnIslandPick;
 
@@ -155,6 +164,8 @@ public class DecoEditModeManager : MonoBehaviour
             exitPopupPanel.SetActive(false);
    
     }
+
+   
     #region  섬 전용 
     // 섬 전용 오브젝트 액션패널
     void ShowIslandActionPanel(Placeable3D target)
@@ -279,11 +290,19 @@ public class DecoEditModeManager : MonoBehaviour
     }
 
     // 섬 초기화 
-    void OnIslandClearAll()
+    void OnIslandClearAll(List<int> destroyedIds)
     {
         if (currentMode != DecoMode.Island) return;
         //if (itemListManager != null)
         //    itemListManager.ReturnAllItems();
+
+        foreach (int itemId in destroyedIds)                   
+        {                                                      
+            DecoInventoryManager.Instance.RestoreItem(itemId); 
+        }                                                      
+
+        if (itemListManager != null)                           
+            itemListManager.SetupInventory();                  
     }
 
     #endregion
@@ -300,17 +319,25 @@ public class DecoEditModeManager : MonoBehaviour
         HideDropdown();
     }
 
-    // 드롭다운 
+    #region 드롭다운중 취소전용  
+    // 드롭다운 토글 
     void ToggleDropdown()
     {
-        if (dropdownPanel != null)
-            dropdownPanel.SetActive(!dropdownPanel.activeSelf);
+        if (dropdownPanel == null) return;
+        dropdownPanel.SetActive(!dropdownPanel.activeSelf);
+        if (dropdownBlocker != null)
+            dropdownBlocker.SetActive(dropdownPanel.activeSelf);
     }
+    // 드롭다운 닫기
     void HideDropdown()
     {
         if (dropdownPanel != null)
             dropdownPanel.SetActive(false);
+        if (dropdownBlocker != null) dropdownBlocker.SetActive(false);
     }
+    #endregion
+
+
     // 배치 모드 중 상단버튼 잠금 
     public void LockTopButtons(bool active)
     {
@@ -519,6 +546,10 @@ public class DecoEditModeManager : MonoBehaviour
                 foreach (var renderer in playerObject.GetComponentsInChildren<Renderer>())
                     renderer.enabled = true;
             }
+            if (UnlockCount == 0 || Time.unscaledTime - UnlockFirstTime > 10f)
+            { UnlockCount = 0; UnlockFirstTime = Time.unscaledTime; }
+            if (++UnlockCount >= 10 && btnLakeDecoMode != null)
+                isUnlocked = true;
         }
 
         // 인벤 
@@ -541,7 +572,7 @@ public class DecoEditModeManager : MonoBehaviour
 
         // 편집 모드 나가면 꺼진 불도 다시보기
         if (btnLakeDecoMode != null)
-            btnLakeDecoMode.gameObject.SetActive(true);
+            btnLakeDecoMode.gameObject.SetActive(isUnlocked);
         if (btnIslandDecoMode != null)
             btnIslandDecoMode.gameObject.SetActive(true);
         if (btnDecoMode != null)
@@ -600,6 +631,8 @@ public class DecoEditModeManager : MonoBehaviour
     }
     void OnReset() // 초기화, 저장한 상태로 불러오기
     {
+        if (!isChanged) return; // 변경사항 없으면 무시 
+
         // TODO:  (파베 연결 후에 나중에 구현)
         if (currentMode == DecoMode.Lake) // 호수 모드
         {
@@ -614,7 +647,9 @@ public class DecoEditModeManager : MonoBehaviour
         else if (currentMode == DecoMode.Island) // 섬모드 
         {
             PlacementMgr.Instance?.OnClickCancelSession(); // 모든 변경사항 취소
-           
+          
+            if (itemListManager != null)
+                itemListManager.ReturnAllItems();
             //if (buildingMgr != null)
             //{
             //    buildingMgr.RevertAll();          // 되돌리기
@@ -648,12 +683,10 @@ public class DecoEditModeManager : MonoBehaviour
             //}
 
             // ClearAll이 전부 파괴하니까 인벤도 처음 상태로 복원
-            if (itemListManager != null)
-            {
-                //if (currentMode == DecoMode.Island)
-                //    itemListManager.SetupInventory(IslandDecoTestData.CreateInventory());
-                itemListManager.LoadSnapshot(); // 마지막 저장 시점으로 복구
-            }
+            //if (itemListManager != null)
+            //{
+            //    itemListManager.ReturnAllItems();
+            //}
             isChanged = true;
         }
     }
@@ -705,12 +738,14 @@ public class DecoEditModeManager : MonoBehaviour
         }
         else if (currentMode == DecoMode.Island)
         {
-            // PlacementMgr.Instance?.OnClickCancelSession();
+            // PlacementMgr.Instance?.OnClickCancelSession(); 
             if (buildingMgr != null)
             {
                 buildingMgr.RevertAll();          // 되돌리기
                 buildingMgr.CancelCurrentAction(); // 들고있는 거 취소
             }
+            if (itemListManager != null)
+                itemListManager.ReturnAllItems();
         }
 
         if (exitPopupPanel != null)

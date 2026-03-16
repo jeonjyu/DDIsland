@@ -1,5 +1,4 @@
 using System;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using System.Collections.Generic;
 
@@ -38,6 +37,31 @@ public class FishStorageManager : Singleton<FishStorageManager>
     {
         base.Awake();
         FishSlots = new FishStackSlot?[_storageCapacity];
+    }
+    private void Start()
+    {
+        if (DataManager.Instance != null && DataManager.Instance.Hub != null)
+        {
+            if (DataManager.Instance.Hub.IsLoaded)
+            {
+                SyncFishStorageLoadData();
+            }
+            else
+            {
+                DataManager.Instance.Hub.OnDataLoaded += SyncFishStorageLoadData;
+            }
+        }
+    }
+
+    private void OnEnable()
+    {
+        if (DataManager.Instance != null && DataManager.Instance.Hub != null)
+            DataManager.Instance.Hub.OnRequestSave += SyncFishStorageSaveData;
+    }
+    private void OnDisable()
+    {
+        if (DataManager.Instance != null && DataManager.Instance.Hub != null)
+            DataManager.Instance.Hub.OnRequestSave -= SyncFishStorageSaveData;
     }
 
     public bool TryAddToStorage(FishInstance fish)
@@ -255,5 +279,69 @@ public class FishStorageManager : Singleton<FishStorageManager>
         if (_storagelevel == 3) return 300;
         if (_storagelevel == 4) return 400;
         return 500; 
+    }
+
+    private void SyncFishStorageSaveData() 
+    {
+        var userData = DataManager.Instance.Hub._allUserData;
+        if (userData == null || userData.fishstoage == null) return;
+
+        userData.fishstoage.StorageLevel = _storagelevel;
+        userData.fishstoage.AcquireCounter = _acquireCounter;
+
+        userData.fishstoage.SlotList.Clear();
+
+        for (int i = 0; i < FishSlots.Length; i++)
+        {
+            if (FishSlots[i].HasValue)
+            {
+                var slot = FishSlots[i].Value;
+                userData.fishstoage.SlotList.Add(new SavedFishSlotData
+                {
+                    Index = i,
+                    FishId = slot.FishId,
+                    Count = slot.Count,
+                    LastAcquiredOrder = slot.LastAcquiredOrder,
+                    MaxPrice = slot.MaxPrice,
+                    TotalPrice = slot.TotalPrice
+                });
+            }
+        }
+        Debug.Log("<color=cyan>보관함 데이터가 저장되었습니다</color>");
+    }
+
+    private void SyncFishStorageLoadData()
+    {
+        DataManager.Instance.Hub.OnDataLoaded -= SyncFishStorageLoadData;
+
+        var userData = DataManager.Instance.Hub._allUserData;
+        if (userData == null || userData.fishstoage == null) return;
+
+        _storagelevel = userData.fishstoage.StorageLevel;
+        _acquireCounter = userData.fishstoage.AcquireCounter;
+
+        ApplyCapacityByLevel();
+
+        // 기존 슬롯 초기화
+        for (int i = 0; i < FishSlots.Length; i++) FishSlots[i] = null;
+
+        foreach (var savedSlot in userData.fishstoage.SlotList)
+        {
+            if (savedSlot.Index >= 0 && savedSlot.Index < FishSlots.Length)
+            {
+                FishSlots[savedSlot.Index] = new FishStackSlot
+                {
+                    FishId = savedSlot.FishId,
+                    Count = savedSlot.Count,
+                    LastAcquiredOrder = savedSlot.LastAcquiredOrder,
+                    MaxPrice = savedSlot.MaxPrice,
+                    TotalPrice = savedSlot.TotalPrice
+                };
+            }
+        }
+
+        for (int i = 0; i < FishSlots.Length; i++) OnSlotChanged?.Invoke(i);
+
+        Debug.Log("서버 데이터로부터 보관함이 복구되었습니다");
     }
 }

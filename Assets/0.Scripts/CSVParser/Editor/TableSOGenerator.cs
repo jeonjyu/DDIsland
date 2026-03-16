@@ -19,6 +19,9 @@ public class TableSOGenerator
 
     private const int descColumn = 1;                   // 설명이 들어있는 열 → 데이터 취급 X
 
+    // 중복된 Enum명을 방지하기 위해 정의한 Enum 명을 따로 저장해둠
+    public static List<string> definedEnumNames = new List<string>();
+
     // 클래스를 작성할 때 사용할 stringbuilder
     private static StringBuilder sb_fileName = new StringBuilder();
 
@@ -86,6 +89,9 @@ public class TableSOGenerator
         Debug.Log($"[Generator SUCCESS] 총 {successCount * 2}개의 클래스 파일 생성 완료.");
         EditorUtility.DisplayDialog("클래스 생성 완료", $"총 {successCount}개의 SO 데이터 클래스 파일이 다음 경로에 생성되었습니다:\n{dataSOPath}" +
             $"\n총 {successCount}개의 SO 데이터베이스 클래스 파일이 다음 경로에 생성되었습니다:\n{databaseSOPath}", "확인");
+
+        // 정의한 Enum명을 담는 리스트 초기화
+        definedEnumNames.Clear();
     }
 
     /// <summary>
@@ -229,11 +235,12 @@ public class TableSOGenerator
         {
             string type = col.Type;
 
-            // Enum 타입이 아닌 경우 무시
-            if (string.IsNullOrEmpty(type) || !type.ToLower().Contains("enum")) continue;
+            // 공백이거나, 이미 정의한 Enum 명이거나, Enum 타입이 아닌 경우 무시
+            if (string.IsNullOrEmpty(type) || definedEnumNames.Contains(col.Name) || !type.ToLower().Contains("enum")) continue;
 
             string name = col.Name.ToLower();
             string desc = col.Desc;
+            definedEnumNames.Add(col.Name);
 
             // name이나 desc에 값이 없을 경우
             if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(desc)) continue;
@@ -350,9 +357,9 @@ public class TableSOGenerator
                     // 필드명에 "_gameobject"가 들어가면 타입을 GameObject로 지정
                     type = "GameObject";
                 }
-                else if(name.Contains("_Animator"))
+                else if(name.Contains("_overrideanimator"))
                 {
-                    type = "Animator";
+                    type = "AnimatorOverrideController";
                 }
             }
             else if (name.Contains("_string"))

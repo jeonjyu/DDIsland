@@ -121,6 +121,20 @@ public class PlayerController : MonoBehaviour
     {
         if (PlayerDataSO == null) return;
         ApplyPlayerStats(PlayerDataSO);
+
+        // 데이터 불러오기 추가
+        if (DataManager.Instance != null && DataManager.Instance.Hub != null)
+        {
+            if (DataManager.Instance.Hub.IsLoaded)
+            {
+                PlayerDataOld.SyncCharacterDataLoad(); 
+            }
+            else
+            {
+                DataManager.Instance.Hub.OnDataLoaded += PlayerDataOld.SyncCharacterDataLoad;
+            }
+        }
+
         _baseMoveSpeed = PlayerDataOld.MoveSpeed;
         _fishingRod.gameObject.SetActive(false);
         _fork.gameObject.SetActive(false);
@@ -154,6 +168,9 @@ public class PlayerController : MonoBehaviour
 
         if (FoodStorageManager.Instance != null)
             FoodStorageManager.Instance.OnSlotChanged += OnFoodStorageChanged;
+
+        if (DataManager.Instance != null && DataManager.Instance.Hub != null)
+            DataManager.Instance.Hub.OnRequestSave += PlayerDataOld.SyncCharacterDataSave;
     }
 
     private void OnDisable()
@@ -163,6 +180,9 @@ public class PlayerController : MonoBehaviour
 
         if (FoodStorageManager.Instance != null)
             FoodStorageManager.Instance.OnSlotChanged -= OnFoodStorageChanged;
+
+        if (DataManager.Instance != null && DataManager.Instance.Hub != null)
+            DataManager.Instance.Hub.OnRequestSave -= PlayerDataOld.SyncCharacterDataSave;
     }
 
     public void ApplyPlayerStats(CharacterDataSO SO)

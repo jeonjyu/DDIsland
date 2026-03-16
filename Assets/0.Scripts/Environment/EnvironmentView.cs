@@ -9,7 +9,6 @@ public class EnvironmentView : MonoBehaviour
     [SerializeField] private Image _seasonImage;
     [SerializeField] private Image _dailyImage;
     [SerializeField] private ParticleSystem[] _particles; //반드시 봄, 여름, 가을, 겨울 순서대로 넣어줄 것
-    [SerializeField] private TextMeshProUGUI _timeText;
     private ParticleSystem _currentParticle;
     private Color targetColor;
 
@@ -19,26 +18,35 @@ public class EnvironmentView : MonoBehaviour
     [Range(0.1f,2)]
     public float _transitionDuration = 0.5f; //배경 색상 전환 시간. 숫자가 적어지면 적어질 수록 느리게 바뀜
 
-    public void PlaySeasonParticle(Season season)
+    public void PlaySeasonParticle(Season season, bool isPlaying)
     {
         //미리 계절을 정수로 변환
         int seasonIndex = (int)season;
+        if (seasonIndex < 0 || seasonIndex >= _particles.Length) return;
 
-        int rnd = UnityEngine.Random.Range(1, 101);
-
-        if (rnd <= 35)
+        if (isPlaying)
         {
-            //해당 계절 파티클 재생
-            _currentParticle = _particles[seasonIndex]; //현재 파티클을 설정
-            _particles[seasonIndex].gameObject.SetActive(true);
-            _particles[seasonIndex].Play();
+            // 이미 켜져 있으면 무시
+            if (_currentParticle == _particles[seasonIndex] && _currentParticle.isPlaying) return;
+
+            StopCurrentParticle();
+
+            _currentParticle = _particles[seasonIndex];
+            _currentParticle.gameObject.SetActive(true);
+            _currentParticle.Play();
         }
-        //만약 랜덤값이 35보다 크고 현재 재생중인 파티클이 있다면 멈추고 비활성화
-        else if (_currentParticle != null)
+        else
+        {
+            StopCurrentParticle();
+        }
+    }
+    private void StopCurrentParticle()
+    {
+        if (_currentParticle != null)
         {
             _currentParticle.Stop();
             _currentParticle.gameObject.SetActive(false);
-            _currentParticle = null; //밑에서 만약 파티클이 안나올 수 있기 때문에 null로 설정
+            _currentParticle = null;
         }
     }
     public void ChangeDayilyBackGround(DayilyCycle dayily)
@@ -69,10 +77,5 @@ public class EnvironmentView : MonoBehaviour
              _dailyImage.sprite = _dayliySprite[index];
         }
     }
-    
-
-    public void TextedTimer(DateTime now)
-    {
-        _timeText.text = now.ToString("yyyy - MM - dd HH : mm : ss");
-    }
+   
 }

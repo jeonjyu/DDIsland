@@ -292,6 +292,7 @@ public class Placeable3D : Placeable
         // 저장된 회전값과 회전 상태 복원
         _currentYRotation = yRotation;
         _isRotated = isRotated;
+        _lastPlacedSize = GetRotatedSize();
 
         // 저장 되어 있던 상태 정리
         ItemState = ItemState.Placed;
@@ -304,20 +305,19 @@ public class Placeable3D : Placeable
     {
         return _data != null ? _data.InteriorID : -1;
     }
-#if UNITY_EDITOR
+
     /// <summary>
-    /// 빌드에 직접적으로 포함되지 않는 베이크 전용 함수입니다
+    /// 베이크 전용 함수입니다
     /// </summary>
     #region 베이크전용함수
     public void SetBakeData(Vector2Int index, Vector2Int size)
     {
         _cachedIndex = index;
         _lastPlacedIndex = index; 
-        _lastPlacedSize = size;   
+        _lastPlacedSize = size;
         _sizeX = size.x;
         _sizeY = size.y;
         ItemState = ItemState.Placed;
     }
     #endregion
-#endif
 }

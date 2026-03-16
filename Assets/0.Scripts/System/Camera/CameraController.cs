@@ -1,9 +1,11 @@
+using Unity.Cinemachine;
 using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
     [Header("카메라")]
-    [SerializeField] private Camera mainCam;
+    [SerializeField] private Camera mainCam;                        // 메인 카메라
+    [SerializeField] private CinemachineCamera cinemachineCam;      // 일반적인 상황의 시네머신 카메라
 
     [Header("Projection-Size 수치 설정")]
     [SerializeField] private float minSize = 25f;
@@ -16,15 +18,9 @@ public class CameraController : MonoBehaviour
         originPos = transform.position;
     }
 
-    private void Start()
-    {
-        GameManager.Instance.IslandWindow.OnScaleChanged += SetCamSize;
-        GameManager.Instance.IslandWindow.OnPosChanged += SetCamPos;
-    }
-
     private void SetCamSize(float ratio)
     {
-        mainCam.orthographicSize = minSize + ((maxSize - minSize) * (1f - ratio));
+        cinemachineCam.Lens.OrthographicSize = minSize + ((maxSize - minSize) * (1f - ratio));
     }
 
     /// <summary>
@@ -34,7 +30,7 @@ public class CameraController : MonoBehaviour
     /// <param name="heightRatio"> 세로 비율 </param>
     private void SetCamPos(float widthRatio, float heightRatio)
     {
-        float height = mainCam.orthographicSize * 2f;
+        float height = cinemachineCam.Lens.OrthographicSize * 2f;
         float width = mainCam.aspect * height;
 
         // 1f에 받아온 비율을 빼주는 이유는 카메라의 위치를 변경시키기 때문에 실제 오브젝트는 반대방향으로 이동하는 것처럼 보이기 때문
@@ -44,9 +40,20 @@ public class CameraController : MonoBehaviour
         transform.position = originPos + (transform.right * xOffset) + (transform.up * yOffset);
     }
 
-    private void OnDestroy()
+    private void OnEnable()
     {
-        if(GameManager.Instance != null && GameManager.Instance.IslandWindow != null)
+        if (GameManager.Instance != null && GameManager.Instance.IslandWindow != null)
+        {
+            GameManager.Instance.IslandWindow.OnScaleChanged += SetCamSize;
+            GameManager.Instance.IslandWindow.OnPosChanged += SetCamPos;
+        }
+
+        Debug.Log($"Camera");
+    }
+
+    private void OnDisable()
+    {
+        if (GameManager.Instance != null && GameManager.Instance.IslandWindow != null)
         {
             GameManager.Instance.IslandWindow.OnScaleChanged -= SetCamSize;
             GameManager.Instance.IslandWindow.OnPosChanged -= SetCamPos;

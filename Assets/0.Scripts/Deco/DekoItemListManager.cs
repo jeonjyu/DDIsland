@@ -35,7 +35,7 @@ public class DecoItemListManager : MonoBehaviour
 
 
     // 내부 변수
-    List<LakeInvenSlot> invenData = new List<LakeInvenSlot>();
+    List<LakeInvenSlot> invenData; // invenData는 DecoInventoryManager의 리스트를 참조
     List<GameObject> slotObjects = new List<GameObject>();
     List<DecoSlotUI> slotUIs = new List<DecoSlotUI>();
     List<int> slotDataIndex = new List<int>(); // slotObjects[i]가 invenData[몇번]인지 매핑 (수량0 스킵 시 인덱스 삐끗 방지)
@@ -66,62 +66,18 @@ public class DecoItemListManager : MonoBehaviour
             slotTemplate.SetActive(false);
     }
 
-    // 상점에서 구매한 인테리어 아이템을 LakeInvenSlot 리스트로 변환
-    List<LakeInvenSlot> CreateInven()
-    {
-        List<LakeInvenSlot> list = new List<LakeInvenSlot>();
-
-        // playerItemDatas에 interior 카테고리가 없으면 빈 리스트 반환
-        if (!ItemManager.Instance.playerItemDatas.ContainsKey(StoreCat.interior))
-            return list;
-
-        var playerItems = ItemManager.Instance.playerItemDatas[StoreCat.interior].Items;
-    
-        foreach (var item in playerItems)
-        {
-            // 보유 중이고 수량이 1이상인 것만
-            if (item.IsGained && item.ItemCount > 0)
-            {
-                list.Add(new LakeInvenSlot
-                {
-                    itemId = item.ObjectId,  // InteriorId (20001~ 등)
-                    quantity = item.ItemCount
-                });
-            }
-        }
-
-        return list;
-    }
-
+    // 인벤토리 데이터 넣고 슬롯 생성 (편집 모드 진입 시 호출)
     public void SetupInventory()
     {
-        // 이전 모드 인벤 저장 
-        if (lastMode == DecoMode.Lake && invenData.Count > 0)
-            lakeInvenSave = invenData;
-        else if (lastMode == DecoMode.Island && invenData.Count > 0)
-            islandInvenSave = invenData;
-        lastMode = currentMode;
-
-        if (currentMode == DecoMode.Lake) // 호수 인벤
+        if (currentMode == DecoMode.Island) // 섬 인벤 
         {
-            SetupInventory(lakeInvenSave ?? LakeDecoTestData.CreateTestInventory());
+            invenData = DecoInventoryManager.Instance.GetInven();
         }
-        else if (currentMode == DecoMode.Island) // 섬 인벤  
-        {   
-            //SetupInventory(islandInvenSave ?? CreateInven());
-            SetupInventory(CreateInven());
-        }
-        else
+        else if (currentMode == DecoMode.Lake) // 호수 인벤
         {
-            SetupInventory(new List<LakeInvenSlot>()); // 빈 인벤
+            invenData = LakeDecoTestData.CreateTestInventory();
         }
-    }
-
-    #region 인벤토리 세팅 
-    // 인벤토리 데이터 넣고 슬롯 생성 (편집 모드 진입 시 호출)
-    public void SetupInventory(List<LakeInvenSlot> inventory)
-    {
-        invenData = inventory;
+          
         selectedIndex = -1;
         currentPage = 0;
 
@@ -130,6 +86,9 @@ public class DecoItemListManager : MonoBehaviour
         RecalcPages();
         UpdatePageDisplay();
     }
+
+    #region 인벤토리 세팅 
+
     // 기존 슬롯 전부 삭제
     void ClearSlots()
     {
@@ -242,11 +201,18 @@ public class DecoItemListManager : MonoBehaviour
             slotObjects[i].SetActive(i >= startIndex && i < endIndex);
 
         // 화살표 활성/비활성 (1페이지뿐이면 둘 다 비활성)
+        //if (btnArrowLeft != null)
+        //    btnArrowLeft.interactable = (currentPage > 0);
+
+        //if (btnArrowRight != null)
+        //    btnArrowRight.interactable = (currentPage < totalPages - 1);
+
+        // 1페이지거나 마지막 페이지면  안 보여줌 
         if (btnArrowLeft != null)
-            btnArrowLeft.interactable = (currentPage > 0);
+            btnArrowLeft.gameObject.SetActive(currentPage > 0);
 
         if (btnArrowRight != null)
-            btnArrowRight.interactable = (currentPage < totalPages - 1);
+            btnArrowRight.gameObject.SetActive(currentPage < totalPages - 1);
 
         // 페이지 수 갱신
         UpdateIndicators();
@@ -355,12 +321,14 @@ public class DecoItemListManager : MonoBehaviour
     // 아이템 배치 성공 시 수량 차감
     public void UseItem(int itemId)
     {
+        DecoInventoryManager.Instance.UseItem(itemId); // 수량 차감 
+
         int dataIdx = -1; // invenData 인덱스 추적
         for (int i = 0; i < invenData.Count; i++)
         {
             if (invenData[i].itemId == itemId)
             {
-                invenData[i].quantity--;
+               // invenData[i].quantity--;
                 dataIdx = i; 
                 break;
             }
@@ -387,6 +355,8 @@ public class DecoItemListManager : MonoBehaviour
     // 아이템 회수 시 수량 복구
     public void RestoreItem(int itemId)
     {
+    
+
         int dataIdx = -1;
         for (int i = 0; i < invenData.Count; i++)
         {
@@ -399,8 +369,8 @@ public class DecoItemListManager : MonoBehaviour
         if (dataIdx < 0) return; 
 
         bool wasZero = (invenData[dataIdx].quantity <= 0);
-        invenData[dataIdx].quantity++;
-
+        // invenData[dataIdx].quantity++;
+        DecoInventoryManager.Instance.RestoreItem(itemId); // 수량 복구
         if (wasZero) // 슬롯이 없으면 다시 생성
         {
             AddSlot(invenData[dataIdx], dataIdx); 
@@ -417,6 +387,10 @@ public class DecoItemListManager : MonoBehaviour
     public void ReturnAllItems()
     {
         if (snapshotData == null) return;
+        foreach (var slot in snapshotData)
+        {
+            DecoInventoryManager.Instance.SetItemCount(slot.itemId, slot.quantity);
+        }
         LoadSnapshot();
     }
     #region 스냅샷 
@@ -439,16 +413,16 @@ public class DecoItemListManager : MonoBehaviour
     {
         if (snapshotData == null) return;
 
-        var restored = new List<LakeInvenSlot>();
-        for (int i = 0; i < snapshotData.Count; i++)
-        {
-            restored.Add(new LakeInvenSlot
-            {
-                itemId = snapshotData[i].itemId,
-                quantity = snapshotData[i].quantity
-            });
-        }
-        SetupInventory(restored);
+        //var restored = new List<LakeInvenSlot>();
+        //for (int i = 0; i < snapshotData.Count; i++)
+        //{
+        //    restored.Add(new LakeInvenSlot
+        //    {
+        //        itemId = snapshotData[i].itemId,
+        //        quantity = snapshotData[i].quantity
+        //    });
+        //}
+        SetupInventory();
     }
     #endregion   
     // 슬롯 제거 (수량 0 됐을 때)
