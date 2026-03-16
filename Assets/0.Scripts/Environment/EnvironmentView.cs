@@ -44,7 +44,6 @@ public class EnvironmentView : MonoBehaviour
         if (_currentParticle != null)
         {
             _currentParticle.Stop();
-            _currentParticle.gameObject.SetActive(false);
             _currentParticle = null;
         }
     }
