@@ -10,15 +10,24 @@ public class DataHub : MonoBehaviour
     public event Action OnRequestSave;
     public event Action OnDataLoaded;
 
+    [Header("자동 동기화 설정")]
+    [SerializeField] private float _syncInterval = 2f;
+    private WaitForSeconds wait;
+
     public bool IsLoaded { get; private set; } = false;
 
     public string GetEnvJson() => JsonUtility.ToJson(_allUserData.Environment);
     public string GetCharJson() => JsonUtility.ToJson(_allUserData.Character);
     public string GetDecoJson() => JsonUtility.ToJson(_allUserData.Decoration);
 
+    private void Awake()
+    {
+        wait = new(_syncInterval);
+    }
     private void Start()
     {
         StartCoroutine(InitLoadingSequence());
+        StartCoroutine(AutoDataBoxSyncRoutine());
     }
 
     private IEnumerator InitLoadingSequence()
@@ -28,11 +37,22 @@ public class DataHub : MonoBehaviour
         LoadAllData();
     }
 
+    private IEnumerator AutoDataBoxSyncRoutine()
+    {
+        while (true)
+        {
+            yield return wait;
+
+            SaveAllData();
+        }
+    }
+
     public void SaveAllData()
     {
         OnRequestSave?.Invoke();
         Debug.Log("<color=cyan>모든 데이터를 내부에 저장했습니다</color>");
     }
+
 
 
     [ContextMenu("DB")]
