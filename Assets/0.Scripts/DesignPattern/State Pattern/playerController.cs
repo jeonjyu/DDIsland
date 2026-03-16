@@ -599,6 +599,8 @@ public class PlayerController : MonoBehaviour
     {
         FishManager.Instance.PickRandomSeasonFish();
 
+        QuestManager.Instance.AddSimpleProgress(QuestConditionKey.FishingCount, 1);
+
         if (FishStorageManager.Instance.FishFullCheck())  //낚시 한마리 낚을떄마다 검사
         {
             ExitFishingState();
