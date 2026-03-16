@@ -1,6 +1,17 @@
 ﻿using System;
 using UnityEngine;
 
+// 고정 장식물 그룹
+[Serializable]
+public enum FixGroup
+{
+    None = 0,
+    House = 1,            //집
+    Box = 2,              //보관함
+    LpPlayer = 3,         //LP플레이어
+    Bed = 4,              //침대
+}
+
 // 상호작용 종류
 [Serializable]
 public enum InteractionType
@@ -37,7 +48,7 @@ public enum Interior_ItemType
 public enum LakeLayerType
 {
     None = 0,
-     Flooring = 1,                 //Layer0 바닥재
+     Terrain = 1,                  //Layer0 바닥재
      Decorations = 2,              //Layer1 장식물
 }
 
@@ -48,13 +59,16 @@ public class InteriorDataSO : TableBase<int>
     // 인테리어 ID
     [field: SerializeField] public int InteriorID { get; private set; }
 
-    // 인테리어명
+    //  
     [SerializeField] private string interiorName;
     public string InteriorName_String => LocalizationManager.Instance.GetString(interiorName);
 
     // 설명 텍스트
     [SerializeField] private string interiorDesc;
     public string InteriorDesc_String => LocalizationManager.Instance.GetString(interiorDesc);
+
+    // 고정 장식물 그룹
+    [field: SerializeField] public FixGroup fixgroupType { get; private set; }
 
     // 가로 점유 칸 수
     [field: SerializeField] public int GridSizeX { get; private set; }
@@ -77,8 +91,11 @@ public class InteriorDataSO : TableBase<int>
     // 레이어 우선순위
     [field: SerializeField] public LakeLayerType lakelayerType { get; private set; }
 
-    // 리소스 경로
+    // 3D 리소스 경로
     [field: SerializeField] public GameObject InteriorPath_GameObject { get; private set; }
+
+    // 2D 리소스 경로
+    [field: SerializeField] public Sprite InteriorPath_Sprite { get; private set; }
 
     // 부모 클래스의 ID 반환 추상 메서드
     public override int GetID() => InteriorID;

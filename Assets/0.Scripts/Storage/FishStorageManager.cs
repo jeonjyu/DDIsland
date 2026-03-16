@@ -312,6 +312,8 @@ public class FishStorageManager : Singleton<FishStorageManager>
 
     private void SyncFishStorageLoadData()
     {
+        DataManager.Instance.Hub.OnDataLoaded -= SyncFishStorageLoadData;
+
         var userData = DataManager.Instance.Hub._allUserData;
         if (userData == null || userData.fishstoage == null) return;
 

@@ -10,7 +10,7 @@ public class UserAllData
     //환경 및 시간
     public Environment_Data Environment = new ();
 
-    //재화 및 능력치
+    //재화
     public Character_Data Character = new ();
 
     // 상점 관련
@@ -30,6 +30,9 @@ public class UserAllData
 
     //음식 보관함
     public Foodstorage_Data Foodstorage = new();
+
+    //재화
+    public Currency_Data Currency = new();
 }
 
 [Serializable]
@@ -52,6 +55,8 @@ public class Character_Data
 public class Decoration_Data
 {
     public List<PlacedObjectData> _buildings = new (); // 섬에 배치된 건물들
+
+    public List<FixedObjectData> _fixedBuildings = new();
 }
 
 [Serializable]
@@ -71,7 +76,7 @@ public class Progress_Data
 [Serializable]
 public class Currency_Data
 {
-    public int gold;
+    public int _gold;
     
 }
 [Serializable]
@@ -105,6 +110,12 @@ public class Record_Data
 }
 
 #region 변수 저장 클래스
+[Serializable]
+public class FixedObjectData
+{
+    public int _locationID; // 자리값
+    public int _id;         // 프리팹 ID
+}
 [Serializable]
 public class PlacedObjectData
 {

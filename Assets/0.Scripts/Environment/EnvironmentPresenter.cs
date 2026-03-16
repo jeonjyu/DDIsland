@@ -95,7 +95,7 @@ public class EnvironmentPresenter : MonoBehaviour
         //데이터 저장하는거   
         _model.UpdateTimeSet(now);
 
-        Debug.Log($"<color=cyan>테스트 날짜: {now} 현재 시점: {_model.CurrentDay} 현재 계절: {_model.CurrentSeason}</color>");
+        //Debug.Log($"<color=cyan>테스트 날짜: {now} 현재 시점: {_model.CurrentDay} 현재 계절: {_model.CurrentSeason}</color>");
 
         Environment_Data envData = _model.SaveData();
         
