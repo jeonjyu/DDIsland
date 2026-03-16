@@ -18,6 +18,8 @@ GameObject:
   - component: {fileID: 2696265373571662090}
   - component: {fileID: 1511301407840568267}
   - component: {fileID: 7202889330313061700}
+  - component: {fileID: -5235198117822851481}
+  - component: {fileID: -5939273068440672368}
   m_Layer: 0
   m_Name: DataManager
   m_TagString: Untagged
@@ -52,6 +54,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a6ac311209307e43932d5892b3e595e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DataManager
+  _hub: {fileID: 0}
   <CharacterDatabase>k__BackingField: {fileID: 1652024204880346904}
   <CurrencyDatabase>k__BackingField: {fileID: 4319663135619139181}
   <FishingDatabase>k__BackingField: {fileID: 8401348486315703230}
@@ -60,6 +63,8 @@ MonoBehaviour:
   <DecorationDatabase>k__BackingField: {fileID: 4946444882785808218}
   <QuestDatabase>k__BackingField: {fileID: 1511301407840568267}
   <JournalDatabase>k__BackingField: {fileID: 7202889330313061700}
+  <RecordDatabase>k__BackingField: {fileID: -5235198117822851481}
+  <StringUIDatabase>k__BackingField: {fileID: -5939273068440672368}
 --- !u!114 &1652024204880346904
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -174,3 +179,29 @@ MonoBehaviour:
   <JournalInteriorData>k__BackingField: {fileID: 11400000, guid: 16c02b00096edb4489c4a41915b54778, type: 2}
   <JournalFoodData>k__BackingField: {fileID: 11400000, guid: 14d5cad07f8342d46b7c46f3b7c91dc9, type: 2}
   <JournalFishData>k__BackingField: {fileID: 11400000, guid: fe3d953e84615094db9a951314048fcc, type: 2}
+--- !u!114 &-5235198117822851481
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4924133292910811244}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b4821fcf74ee364c94bcfc031b75264, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RecordData
+  <RecordInfoData>k__BackingField: {fileID: 11400000, guid: e8cc65db4ed159943aa537c16e0f274b, type: 2}
+--- !u!114 &-5939273068440672368
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4924133292910811244}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34b737a5246bcc44699cd3cf80056ab2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StringUIData
+  <StringUIInfoData>k__BackingField: {fileID: 11400000, guid: 333aa9a35aa5b2640b5e5f1d227719d2, type: 2}
