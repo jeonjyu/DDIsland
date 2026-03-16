@@ -77,8 +77,8 @@ public class JournalSlot : MonoBehaviour
             backgroundImage.color = UNLOCKEDBGCOLOR;
 
         if (itemImage != null) // 이미지 
-            itemImage.material = defaultMaterial; // 원본 머테리얼 
-
+          //  itemImage.material = defaultMaterial; // 원본 머테리얼 
+          itemImage.color = Color.white;
         if (nameText != null) // 이름 
             nameText.text = itemData.ItemName;
     }
@@ -90,8 +90,9 @@ public class JournalSlot : MonoBehaviour
             backgroundImage.color = LOCKEDBGCOLOR;
 
         if (itemImage != null && silhouetteMaterial != null) // 이미지 
-            itemImage.material = silhouetteMaterial; // 실루엣 셰이더
-
+           // itemImage.material = silhouetteMaterial; // 실루엣 셰이더
+            itemImage.color = Color.black;
+       
         if (nameText != null) // 이름 폴백 
             nameText.text = "???";
     }
