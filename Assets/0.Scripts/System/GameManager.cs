@@ -11,8 +11,8 @@ public class GameManager : Singleton<GameManager>
     [Header("StageControl 클래스")]
     [field: SerializeField] public StageControl StageController { get; set; }
 
-    public UI_IslandWindow IslandWindow{ get; set; }
-    public UI_WaterWindow WaterWindow { get; set; }
+    [field: SerializeField] public UI_IslandWindow IslandWindow{ get; set; }
+    [field: SerializeField] public UI_WaterWindow WaterWindow { get; set; }
 
     public event Action<int> OnGoldChanged;
 
@@ -52,11 +52,6 @@ public class GameManager : Singleton<GameManager>
         }
 
         StartCoroutine(AutoAddGold());
-
-        IslandWindow?.Init();
-        WaterWindow?.Init();
-
-        Debug.Log($"GameManager");
     }
 
     private IEnumerator AutoAddGold()

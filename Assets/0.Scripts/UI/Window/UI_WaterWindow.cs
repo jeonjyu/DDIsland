@@ -44,7 +44,7 @@ public class UI_WaterWindow : MonoBehaviour
     /// <summary>
     /// UI_IslandWindow 스크립트와 실행 순서가 정해져 있으므로 Init() 메서드를 통해 관리
     /// </summary>
-    public void Init()
+    private void Start()
     {
 #if !UNITY_EDITOR
         defaultHeight = Mathf.RoundToInt(WindowController.Instance.WindowSize.y * defaultRatio);

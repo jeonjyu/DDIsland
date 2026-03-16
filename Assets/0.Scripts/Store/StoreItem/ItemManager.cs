@@ -25,7 +25,7 @@ public class ItemManager : Singleton<ItemManager>
     [SerializeField] IslandStoreDatabaseSO InteriorDatabase;
     [SerializeField] CostumeStoreDatabaseSO CostumeDatabase;
     [SerializeField] FishingStoreDatabaseSO FishingDatabase;
-   
+
     // 아이템 변동 이벤트 
     public event System.Action<IStoreItem, StoreCat> OnPlayerItemAdded;
     public event System.Action<IStoreItem, StoreCat> OnPlayerItemRemoved;
@@ -86,7 +86,7 @@ public class ItemManager : Singleton<ItemManager>
         // 아이템이 딕셔너리에 존재하는지 검색
         //if (playerItemDatas[storeCat][item.ID] is null)// ContainsKey(item.ID))
         //{
-            playerItemDatas[storeCat].AddToDatabase(item);
+        playerItemDatas[storeCat].AddToDatabase(item);
         //Debug.Log($"[ItemManager] 플레이어 아이템 딕셔너리에 {item.ItemName}({item.ID}) 추가");
         //}
 
@@ -101,12 +101,12 @@ public class ItemManager : Singleton<ItemManager>
             //Debug.LogWarning($"[ItemManager] RemoveFromPlayerItem | {item.ItemName}({item.ID})에 해당하는 플레이어 아이템 딕셔너리가 없음");
             return;
         }
-        else 
+        else
         {
             // 아이템이 딕셔너리에 존재하는지 검색
             //if (playerItemDatas[storeCat][item.ID] is not null)
             //{
-                playerItemDatas[storeCat].RemoveFromDatabase(item);
+            playerItemDatas[storeCat].RemoveFromDatabase(item);
             //    Debug.Log($"[ItemManager] 플레이어 아이템 딕셔너리에서 {item.ItemName}({item.ID}) 제거");
             //}
             OnPlayerItemRemoved?.Invoke(item, storeCat);
@@ -117,7 +117,7 @@ public class ItemManager : Singleton<ItemManager>
     public void SetCurrentCategory(StoreCat storeCat = StoreCat.interior)
     {
         // StorePanel 활성화 한 채 실행하면 에러 발생
-        if(!storeDatas.ContainsKey(StoreCat.interior)) Debug.LogError("아이템 딕셔너리 생성 전에 StorePanel 활성화 한 채 실행하면 에러 발생, 비활성화한 뒤 재시작해주세요");
+        if (!storeDatas.ContainsKey(StoreCat.interior)) Debug.LogError("아이템 딕셔너리 생성 전에 StorePanel 활성화 한 채 실행하면 에러 발생, 비활성화한 뒤 재시작해주세요");
 
         currentDatabase = storeDatas[storeCat].Items;
         displayDatas = currentDatabase;
@@ -137,7 +137,7 @@ public class ItemManager : Singleton<ItemManager>
                 .Where(x => x.IsGained && x.ItemCount > 0)
                 .Select(x => new LakeInvenSlot
                 {
-                    itemId = x.ObjectId, 
+                    itemId = x.ObjectId,
                     quantity = x.ItemCount
                 })
                 .ToList();
@@ -153,7 +153,7 @@ public class ItemManager : Singleton<ItemManager>
 
         if (playerItemDatas.ContainsKey(StoreCat.fishing))
         {
-            box.Store._ownedCostumes = playerItemDatas[StoreCat.fishing].Items
+            box.Store._ownedFishings = playerItemDatas[StoreCat.fishing].Items
                 .Select(x => x.ID)
                 .Distinct()
                 .ToList();
@@ -164,6 +164,15 @@ public class ItemManager : Singleton<ItemManager>
     private void SyncInventoryDataLoad()
     {
         var box = DataManager.Instance.Box;
+
+        if (box.Store._inventory == null &&
+        box.Store._ownedCostumes == null &&
+        box.Store._ownedFishings == null)
+        {
+
+            return;
+        }
+
         playerItemDatas.Clear();
 
         var interiorDict = storeDatas[StoreCat.interior].Items.ToDictionary(x => x.ObjectId);

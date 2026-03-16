@@ -47,8 +47,6 @@ public class CameraController : MonoBehaviour
             GameManager.Instance.IslandWindow.OnScaleChanged += SetCamSize;
             GameManager.Instance.IslandWindow.OnPosChanged += SetCamPos;
         }
-
-        Debug.Log($"Camera");
     }
 
     private void OnDisable()

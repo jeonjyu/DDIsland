@@ -16,6 +16,8 @@ public class DataManager : Singleton<DataManager>
     [field: SerializeField] public DecorationData DecorationDatabase { get; private set; }
     [field: SerializeField] public QuestData QuestDatabase { get; private set; }
     [field: SerializeField] public JournalData JournalDatabase { get; private set; }
+    [field: SerializeField] public RecordData RecordDatabase { get; private set; }
+    [field: SerializeField] public StringUIData StringUIDatabase { get; private set; }
 
     protected override void Awake()
     {
