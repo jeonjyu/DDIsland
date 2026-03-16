@@ -1057,6 +1057,17 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &302628708 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5515597901871171723, guid: 07b51678b12a33646ad9be8bd32a319e, type: 3}
+  m_PrefabInstance: {fileID: 1216921263}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
 --- !u!114 &305929856 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6726254333807634570, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
@@ -1615,6 +1626,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
+--- !u!114 &530456533 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4664313795081340146, guid: 07b51678b12a33646ad9be8bd32a319e, type: 3}
+  m_PrefabInstance: {fileID: 1216921263}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
 --- !u!1 &538781003
 GameObject:
   m_ObjectHideFlags: 0
@@ -1954,7 +1976,6 @@ MonoBehaviour:
       _unlockedCostumeIds: 
       _unlockedInteriorIds: 
       _unlockedFoodIds: 
-      _unlockedAlbumIds: 
     Progress:
       activeQuestIds: 
       shopPurchaseCounts: 
@@ -7038,10 +7059,42 @@ PrefabInstance:
       propertyPath: m_AnchorMin.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2028397478938202689, guid: 14fe81f784969bf40ac153713f475d32, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2028397478938202689, guid: 14fe81f784969bf40ac153713f475d32, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2028397478938202689, guid: 14fe81f784969bf40ac153713f475d32, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2028397478938202689, guid: 14fe81f784969bf40ac153713f475d32, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2028397478938202689, guid: 14fe81f784969bf40ac153713f475d32, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2028397478938202689, guid: 14fe81f784969bf40ac153713f475d32, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3248499355356574431, guid: 14fe81f784969bf40ac153713f475d32, type: 3}
       propertyPath: _foodStorageUI
       value: 
       objectReference: {fileID: 1464006469}
+    - target: {fileID: 3248499355356574431, guid: 14fe81f784969bf40ac153713f475d32, type: 3}
+      propertyPath: _ofFoodFishButton
+      value: 
+      objectReference: {fileID: 302628708}
+    - target: {fileID: 3248499355356574431, guid: 14fe81f784969bf40ac153713f475d32, type: 3}
+      propertyPath: _ofFoodFoodButton
+      value: 
+      objectReference: {fileID: 530456533}
     - target: {fileID: 5119343673333239001, guid: 14fe81f784969bf40ac153713f475d32, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -7176,7 +7229,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7468540511988330609, guid: 14fe81f784969bf40ac153713f475d32, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
