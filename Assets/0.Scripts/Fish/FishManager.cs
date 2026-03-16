@@ -33,7 +33,7 @@ public class FishManager : Singleton<FishManager>
     List<FishDataSO> _allFish;
     // 추가한 부분입니다
     Dictionary<(ArriveSeason, FishType), List<FishDataSO>> _fishData;
-
+    public event System.Action<int> OnFishGet; // 도감 연동용 이벤트
     private EnvironmentModel _environment;
 
     private ArriveSeason _currentSeason;
@@ -224,6 +224,7 @@ public class FishManager : Singleton<FishManager>
         Debug.Log($"Name: {fish.FishName_String}, price: {price}, Length: {length}");
 
         FishToStorage(fish, length, price);
+        OnFishGet?.Invoke(fish.ID); // 낚았다 
     }
 
     public void FishToStorage(FishDataSO randomFish, float length, int price)

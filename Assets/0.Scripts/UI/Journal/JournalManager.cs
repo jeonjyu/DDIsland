@@ -61,19 +61,46 @@ public class JournalManager : MonoBehaviour
 
     private void Start()
     {   
-        // UI 라벨은 무조건 세팅, 데이터 로드만 분리
+        // UI 라벨 세팅
         UpdateCategoryLabels();
-        
-        // 기본 상태: 도감 탭 > 어종 카테고리 > 전체 필터
-        //SwitchMainTab(MainTab.Journal);
-        //SwitchCategory(JournalCategory.Fish);
 
-        // 음반 카테고리 비활성화
-        // TODO: 앨범 데이터 들어오면 아래 줄 삭제
+
+        // TODO: 음반 카테고리 비활성화, 앨범 데이터 들어오면 아래 줄 삭제
         if (categoryButtons.Length > (int)JournalCategory.Album)
             categoryButtons[(int)JournalCategory.Album].interactable = false;
+
+
+       
+        if (ItemManager.Instance != null) // 상점 구매 이벤트 구독
+            ItemManager.Instance.OnPlayerItemAdded += OnStoreItemAdded;
+        if (FishManager.Instance != null) // 낚시 이벤트 구독
+            FishManager.Instance.OnFishGet += OnFishGet;
+        if (CookingManager.Instance != null) // 요리 이벤트 구독
+            CookingManager.Instance.OnFoodCooked += OnFoodCooked;
     }
 
+    private void OnFishGet(int fishId)
+    {
+        OnItemUnlocked(JournalCategory.Fish, fishId);
+    }
+    private void OnFoodCooked(int foodId)
+    {
+        OnItemUnlocked(JournalCategory.Food, foodId);
+    }
+
+    // 상점 구매 시 도감 해금 처리
+    private void OnStoreItemAdded(IStoreItem item, StoreCat storeCat)
+    {
+        switch (storeCat)
+        {
+            case StoreCat.interior:
+                OnItemUnlocked(JournalCategory.Interior, item.ObjectId);
+                break;
+            case StoreCat.costume:
+                OnItemUnlocked(JournalCategory.Costume, item.ObjectId);
+                break;
+        }
+    }
     // 버튼들 초기화
     private void SetupButtons()
     {
@@ -280,8 +307,27 @@ public class JournalManager : MonoBehaviour
     // 외부 연동, 아이템 해금 시 호출 (상점 구매, 낚시 획득, 요리 완성 등)
     public void OnItemUnlocked(JournalCategory category, int itemId)
     {
-        // TODO: CollectionData 업데이트 로직 연결
-        // DataBox.Collection.unlockedFishIds.Add(itemId) 등
+        // Collection_Data에 ID 추가 (중복 방지)
+        var collection = DataManager.Instance.Box.Collection;
+        switch (category) 
+        {
+            case JournalCategory.Fish:
+                if (!collection._unlockedFishIds.Contains(itemId))
+                    collection._unlockedFishIds.Add(itemId);
+                break;
+            case JournalCategory.Costume:
+                if (!collection._unlockedCostumeIds.Contains(itemId))
+                    collection._unlockedCostumeIds.Add(itemId);
+                break;
+            case JournalCategory.Interior:
+                if (!collection._unlockedInteriorIds.Contains(itemId))
+                    collection._unlockedInteriorIds.Add(itemId);
+                break;
+            case JournalCategory.Food:
+                if (!collection._unlockedFoodIds.Contains(itemId))
+                    collection._unlockedFoodIds.Add(itemId);
+                break;
+        }
 
         // 현재 보고 있는 카테고리면 슬롯 갱신
         if (currentCategory == category && journalPanel.activeSelf)
@@ -297,5 +343,12 @@ public class JournalManager : MonoBehaviour
             if (slot != null)
                 slot.OnSlotClicked -= OnSlotClicked;
         }
+        // 이벤트 구독 해제
+        if (ItemManager.Instance != null)
+            ItemManager.Instance.OnPlayerItemAdded -= OnStoreItemAdded;
+        if (FishManager.Instance != null)
+            FishManager.Instance.OnFishGet -= OnFishGet;
+        if (CookingManager.Instance != null)
+            CookingManager.Instance.OnFoodCooked -= OnFoodCooked;
     }
 }

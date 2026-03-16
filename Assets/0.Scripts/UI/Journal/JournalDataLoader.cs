@@ -77,14 +77,16 @@ public class JournalDataLoader : MonoBehaviour
         // DataManager에서 DatabaseSO 가져오기
         var journalDB = DataManager.Instance.JournalDatabase.JournalFishData;  
         var fishDB = DataManager.Instance.FishingDatabase.FishData;
-
+        var unlockedIds = DataManager.Instance.Box.Collection._unlockedFishIds; // 런타임 해금 데이터
         foreach (var journal in journalDB.datas)
         {
+            
+            bool isUnlocked = unlockedIds.Contains(journal.FishID); // 고정된 SO 대신 Collection_Data에서 판단
             var item = new JournalItemData
             {
                 JournalId = journal.JournalFishID,
                 ItemId = journal.FishID,
-                IsUnlocked = journal.IsUnlocked,
+                IsUnlocked = isUnlocked,
                 ItemSprite = journal.FishImgPath_Sprite,
                 Category = JournalCategory.Fish,
                 SpecialInfo = new Dictionary<string, string>()
@@ -93,8 +95,8 @@ public class JournalDataLoader : MonoBehaviour
             var fishSO = fishDB[journal.FishID];
             if (fishSO != null)
             {
-                item.ItemName = item.IsUnlocked ? fishSO.FishName_String : "???";
-                item.Description = item.IsUnlocked ? fishSO.FishDesc_String : "";
+                item.ItemName = isUnlocked ? fishSO.FishName_String : "???";
+                item.Description = isUnlocked ? fishSO.FishDesc_String : "";
                 item.SpecialInfo["등급"] = fishSO.gradeType.ToString();       
                 item.SpecialInfo["서식지"] = fishSO.fishType.ToString();      
                 item.SpecialInfo["계절"] = fishSO.arriveseasonType.ToString();
@@ -103,7 +105,7 @@ public class JournalDataLoader : MonoBehaviour
             }
             else
             {
-                item.ItemName = item.IsUnlocked ? $"Fish{journal.FishID}" : "???";
+                item.ItemName = isUnlocked ? $"Fish{journal.FishID}" : "???"; 
                 item.Description = "";
             }
 
@@ -118,15 +120,18 @@ public class JournalDataLoader : MonoBehaviour
         var items = new List<JournalItemData>();
         // DataManager에서 가져오기
         var journalDB = DataManager.Instance.JournalDatabase.JournalCostumeData;
-        var costumeDB = DataManager.Instance.DecorationDatabase.CostumeData; 
+        var costumeDB = DataManager.Instance.DecorationDatabase.CostumeData;
+        var unlockedIds = DataManager.Instance.Box.Collection._unlockedCostumeIds;
 
         foreach (var journal in journalDB.datas)
         {
+            bool isUnlocked = unlockedIds.Contains(journal.CostumeID);
+
             var item = new JournalItemData
             {
                 JournalId = journal.JournalCostumeID,
                 ItemId = journal.CostumeID,
-                IsUnlocked = journal.IsUnlocked,
+                IsUnlocked = isUnlocked,
                 ItemSprite = journal.CostumeImgPath_Sprite,
                 Category = JournalCategory.Costume,
                 SpecialInfo = new Dictionary<string, string>()
@@ -137,13 +142,13 @@ public class JournalDataLoader : MonoBehaviour
             var costumeSO = costumeDB[journal.CostumeID];
             if (costumeSO != null)
             {
-                item.ItemName = item.IsUnlocked ? costumeSO.CostumeName_String : "???";
-                item.Description = item.IsUnlocked ? costumeSO.CostumeDesc_String : "";
+                item.ItemName = isUnlocked ? costumeSO.CostumeName_String : "???"; 
+                item.Description = isUnlocked ? costumeSO.CostumeDesc_String : ""; 
                 item.SpecialInfo["장착 파츠"] = costumeSO.costumeType.ToString();
             }
             else
             {
-                item.ItemName = item.IsUnlocked ? $"Costume{journal.CostumeID}" : "???";
+                item.ItemName = isUnlocked ? $"Costume{journal.CostumeID}" : "???";
                 item.Description = "";
             }
 
@@ -158,15 +163,17 @@ public class JournalDataLoader : MonoBehaviour
         var items = new List<JournalItemData>();
         // DataManager에서 가져오기
         var journalDB = DataManager.Instance.JournalDatabase.JournalInteriorData;
-        var interiorDB = DataManager.Instance.DecorationDatabase.InteriorData; 
+        var interiorDB = DataManager.Instance.DecorationDatabase.InteriorData;
+        var unlockedIds = DataManager.Instance.Box.Collection._unlockedInteriorIds; 
 
         foreach (var journal in journalDB.datas) 
         {
+            bool isUnlocked = unlockedIds.Contains(journal.InteriorID);
             var item = new JournalItemData
             {
                 JournalId = journal.JournalInteriorID,
                 ItemId = journal.InteriorID,
-                IsUnlocked = journal.IsUnlocked,
+                IsUnlocked = isUnlocked, 
                 ItemSprite = journal.InteriorImgPath_Sprite,
                 Category = JournalCategory.Interior,
                 SpecialInfo = new Dictionary<string, string>()
@@ -175,13 +182,13 @@ public class JournalDataLoader : MonoBehaviour
             var interiorSO = interiorDB[journal.InteriorID];
             if (interiorSO != null)
             {
-                item.ItemName = item.IsUnlocked ? interiorSO.InteriorName_String : "???";
-                item.Description = item.IsUnlocked ? interiorSO.InteriorDesc_String : "";
+                item.ItemName = isUnlocked ? interiorSO.InteriorName_String : "???"; 
+                item.Description = isUnlocked ? interiorSO.InteriorDesc_String : ""; 
                 item.SpecialInfo["배치 공간"] = interiorSO.locationType.ToString();
             }
             else
             {
-                item.ItemName = item.IsUnlocked ? $"Interior{journal.InteriorID}" : "???";
+                item.ItemName = isUnlocked ? $"Interior{journal.InteriorID}" : "???"; 
                 item.Description = "";
             }
 
@@ -198,14 +205,17 @@ public class JournalDataLoader : MonoBehaviour
         // DataManager에서 가져오기
         var journalDB = DataManager.Instance.JournalDatabase.JournalFoodData;
         var foodDB = DataManager.Instance.FoodDatabase.FoodInfoData;
+        var unlockedIds = DataManager.Instance.Box.Collection._unlockedFoodIds; 
 
         foreach (var journal in journalDB.datas) 
         {
+            bool isUnlocked = unlockedIds.Contains(journal.FoodID); 
+
             var item = new JournalItemData
             {
                 JournalId = journal.JournalFoodID,
                 ItemId = journal.FoodID,
-                IsUnlocked = journal.IsUnlocked,
+                IsUnlocked = isUnlocked,
                 ItemSprite = journal.FoodImgPath_Sprite,
                 Category = JournalCategory.Food,
                 SpecialInfo = new Dictionary<string, string>()
@@ -214,15 +224,15 @@ public class JournalDataLoader : MonoBehaviour
             var foodSO = foodDB[journal.FoodID];
             if (foodSO != null)
             {
-                item.ItemName = item.IsUnlocked ? foodSO.FoodName_String : "???";
-                item.Description = item.IsUnlocked ? foodSO.FoodDesc_String : "";
+                item.ItemName = isUnlocked ? foodSO.FoodName_String : "???"; 
+                item.Description = isUnlocked ? foodSO.FoodDesc_String : ""; 
                 item.SpecialInfo["등급"] = foodSO.foodrateType.ToString();
                 item.SpecialInfo["배고픔 지수"] = foodSO.HungerBuffRate.ToString();
                 item.SpecialInfo["둥둥 지수"] = foodSO.DoongDoongBuffRate.ToString();
             }
             else
             {
-                item.ItemName = item.IsUnlocked ? $"Food{journal.FoodID}" : "???";
+                item.ItemName = isUnlocked ? $"Food{journal.FoodID}" : "???";
                 item.Description = "";
             }
 

@@ -62,8 +62,12 @@ public class Decoration_Data
 [Serializable]
 public class Collection_Data
 {
+    public List<int> _unlockedFishIds = new();    // 해금된 어종 ID
+    public List<int> _unlockedCostumeIds = new(); // 해금된 코스튬 ID
+    public List<int> _unlockedInteriorIds = new();// 해금된 인테리어 ID
+    public List<int> _unlockedFoodIds = new();    // 해금된 음식 ID
     public List<int> _unlockedAlbumIds = new (); // 해금된 음반 ID 
-    public List<int> _unlockedBookIds = new ();  // 해금된 도감 ID
+  //  public List<int> _unlockedBookIds = new ();  // 해금된 도감 ID
 }
 
 // 얘는 아직 어떻게 활용해야할지 모르겠음. 필요 없으면 그냥 갖다 버릴 것
