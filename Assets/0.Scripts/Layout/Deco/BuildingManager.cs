@@ -390,40 +390,7 @@ public class BuildingManager : MonoBehaviour
         OnClearAll?.Invoke(destroyedIds);  // 초기화 알림
     }
     #endregion
-    public void SwapInGridFixBuilding(Placeable3D oldBuilding, int newItemId)
-    {
-        if (oldBuilding == null) return;
-
-        var newData = DataManager.Instance.DecorationDatabase.InteriorData[newItemId];
-        if (newData == null) return;
-
-        Vector2Int pos = oldBuilding.PlacedIndex;
-        int rotation = oldBuilding.IsRotated;
-        float yRot = oldBuilding.CurrentYRotation;
-        Vector2Int size = oldBuilding.PlacedSize;
-
-        _gridSystem.RemoveItem(pos.x, pos.y, size.x, size.y);
-        if (_allBuildings.Contains(oldBuilding)) _allBuildings.Remove(oldBuilding);
-        if (_activeBuildings.Contains(oldBuilding)) _activeBuildings.Remove(oldBuilding);
-        Destroy(oldBuilding.gameObject);
-
-        GameObject newGo = Instantiate(newData.InteriorPath_GameObject, _gridSystem.transform);
-        if (!newGo.TryGetComponent(out Placeable3D newPlaceable))
-        {
-            newPlaceable = newGo.AddComponent<Placeable3D>();
-        }
-
-        newPlaceable.Initialize(_gridSystem, this, newData);
-        Vector3 worldPos = _gridSystem.GetWorldPosition(pos.x, pos.y, newData.GridSizeX, newData.GridSizeY);
-        newPlaceable.RestoreState(worldPos, yRot, rotation);
-
-        _gridSystem.PlaceItem(pos.x, pos.y, size.x, size.y, newPlaceable);
-        newPlaceable.SetBakeData(pos, size);
-
-        Debug.Log($"<color=cyan>[In] {newData.InteriorName_String}으로 교체</color>");
-    }
-
-    public void SwapOutGridFixBuilding(FixedBuilding oldBuilding, int newItemId)
+    public void SwapFixBuilding(FixedBuilding oldBuilding, int newItemId)
     {
         if (oldBuilding == null) return;
 
@@ -432,17 +399,22 @@ public class BuildingManager : MonoBehaviour
 
         Vector3 pos = oldBuilding.transform.position;
         Quaternion rot = oldBuilding.transform.rotation;
-        FixGroup locId = (FixGroup)oldBuilding.LocationID;
+        FixGroup locId = oldBuilding.LocationID;
 
+        _locationBuildings.Remove(oldBuilding);
         Destroy(oldBuilding.gameObject);
 
         GameObject newGo = Instantiate(newData.InteriorPath_GameObject, pos, rot);
 
-        FixedBuilding newFix = newGo.AddComponent<FixedBuilding>();
+        if (!newGo.TryGetComponent(out FixedBuilding newFix))
+        {
+            newFix = newGo.AddComponent<FixedBuilding>();
+        }
+
         newFix.Setup(locId, newItemId);
+        _locationBuildings.Add(newFix);
 
-
-        Debug.Log($"<color=green>[Out] {newData.InteriorName_String}으로 교체</color>");
+        Debug.Log($"<color=green>{locId} 자리가 {newData.InteriorName_String}으로 교체</color>");
     }
 
     #region 파이어베이스 데이터 저장
@@ -474,6 +446,7 @@ public class BuildingManager : MonoBehaviour
     private void SyncBuildingDataSave()
     {
         List<PlacedObjectData> syncList = new();
+        List<FixedObjectData> fixedSyncList = new ();
 
         foreach (var b in _allBuildings)
         {
@@ -490,6 +463,19 @@ public class BuildingManager : MonoBehaviour
         }
 
         DataManager.Instance.Hub._allUserData.Decoration._buildings = syncList;
+
+        foreach (var fb in _locationBuildings)
+        {
+            if (fb == null) continue;
+
+            fixedSyncList.Add(new FixedObjectData
+            {
+                _locationID = fb.LocationID, 
+                _id = fb.CurrentItemID       
+            });
+        }
+
+        DataManager.Instance.Hub._allUserData.Decoration._fixedBuildings = fixedSyncList;
 
         Debug.Log("<color=green>모든 배치 정보가 서버와 동기화되었습니다!</color>");
     }
@@ -549,7 +535,22 @@ public class BuildingManager : MonoBehaviour
             }
 
         }
-       
+
+        var savedFixedData = DataManager.Instance.Hub._allUserData.Decoration._fixedBuildings;
+
+        if (savedFixedData != null)
+        {
+            foreach (var data in savedFixedData)
+            {
+                FixedBuilding targetMarker = _locationBuildings.Find(x => x.LocationID == data._locationID);
+
+                if (targetMarker != null && targetMarker.CurrentItemID != data._id)
+                {
+                    SwapFixBuilding(targetMarker, data._id);
+                }
+            }
+        }
+
     }
     #endregion
 }

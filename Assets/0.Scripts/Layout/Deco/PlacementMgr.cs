@@ -270,6 +270,11 @@ public class PlacementMgr : MonoBehaviour
 
         CloseEditMenu();
 
+        if (DataManager.Instance != null && DataManager.Instance.Hub != null)
+        {
+            DataManager.Instance.Hub.SaveAllData();
+        }
+
         Debug.Log("모든 변경 사항이 확정되어 저장되었습니다.");
     }
     public void OnClickCancelSession()
