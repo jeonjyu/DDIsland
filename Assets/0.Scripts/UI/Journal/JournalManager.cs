@@ -22,7 +22,10 @@ public class JournalManager : MonoBehaviour
     [SerializeField] private Button journalTabButton;   // 도감 탭
     [SerializeField] private GameObject questTabHighlight;   // 퀘스트 탭 활성화 표시
     [SerializeField] private GameObject journalTabHighlight; // 도감 탭 활성화 표시
-
+  
+    [Header("도감 영역")]
+    [SerializeField] private GameObject journalArea;
+    
     [Header("소분류 카테고리 버튼")]
     [SerializeField] private Button[] categoryButtons;  // 5개 카테고리 버튼
     [SerializeField] private TextMeshProUGUI[] categoryTexts; // 카테고리 버튼 텍스트
@@ -168,13 +171,15 @@ public class JournalManager : MonoBehaviour
             questTabHighlight.SetActive(tab == MainTab.Quest);
         if (journalTabHighlight != null)
             journalTabHighlight.SetActive(tab == MainTab.Journal);
-
-        // 카테고리 라벨 변경
-        UpdateCategoryLabels();
+        
+        // 도감 영역 통째로 끄기
+        if (journalArea != null)
+            journalArea.SetActive(tab == MainTab.Journal);
 
         // 도감 탭이면 슬롯 갱신
         if (tab == MainTab.Journal) // 도감 모드 
         {
+            UpdateCategoryLabels();  // 카테고리 라벨 변경
             SwitchCategory(currentCategory);
         }
         else
