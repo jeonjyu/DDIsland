@@ -49,7 +49,7 @@ public class UI_PlayRecordInfo : MonoBehaviour
     /// </summary>
     public void OnValueChanged_PlayTime()
     {
-        SoundManager.Instance.BgmSource.time = Mathf.Clamp(processBar.value * record.RecordSoundPath_AudioClip.length, 0f, 1f);
+        SoundManager.Instance.BgmSource.time = Mathf.Clamp(processBar.value * record.RecordSoundPath_AudioClip.length, 0f, record.RecordSoundPath_AudioClip.length - 1f);
     }
 
     /// <summary>
