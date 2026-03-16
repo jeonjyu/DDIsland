@@ -250,6 +250,8 @@ public class FoodStorageManager : Singleton<FoodStorageManager>
 
     private void SyncFoodStorageLoadData()
     {
+        DataManager.Instance.Hub.OnDataLoaded -= SyncFoodStorageLoadData;
+
         var data = DataManager.Instance.Box.Foodstorage;
         _storagelevel = data.StorageLevel > 0 ? data.StorageLevel : 1;
         _acquireCounter = data.AcquireCounter;

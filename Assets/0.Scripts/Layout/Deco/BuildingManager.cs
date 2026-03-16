@@ -28,6 +28,7 @@ public class BuildingManager : MonoBehaviour
     //건물 담당
     private List<Placeable3D> _activeBuildings = new();
     private List<Placeable3D> _allBuildings = new();
+    private List<FixedBuilding> _locationBuildings = new();
 
     #region 배치 결과 이벤트
     public event Action<GameObject> OnPlaceSuccess; // 배치 성공
@@ -389,7 +390,7 @@ public class BuildingManager : MonoBehaviour
         OnClearAll?.Invoke(destroyedIds);  // 초기화 알림
     }
     #endregion
-    public void SwapGridFixBuilding(Placeable3D oldBuilding, int newItemId)
+    public void SwapInGridFixBuilding(Placeable3D oldBuilding, int newItemId)
     {
         if (oldBuilding == null) return;
 
@@ -419,10 +420,10 @@ public class BuildingManager : MonoBehaviour
         _gridSystem.PlaceItem(pos.x, pos.y, size.x, size.y, newPlaceable);
         newPlaceable.SetBakeData(pos, size);
 
-        Debug.Log($"<color=cyan>[그리드 안] {newData.InteriorName_String}으로 교체 완료!</color>");
+        Debug.Log($"<color=cyan>[In] {newData.InteriorName_String}으로 교체</color>");
     }
 
-    public void SwapOutGridBuilding(FixedBuilding oldBuilding, int newItemId)
+    public void SwapOutGridFixBuilding(FixedBuilding oldBuilding, int newItemId)
     {
         if (oldBuilding == null) return;
 
@@ -431,7 +432,7 @@ public class BuildingManager : MonoBehaviour
 
         Vector3 pos = oldBuilding.transform.position;
         Quaternion rot = oldBuilding.transform.rotation;
-        int locId = oldBuilding.LocationID;
+        FixGroup locId = (FixGroup)oldBuilding.LocationID;
 
         Destroy(oldBuilding.gameObject);
 
@@ -441,7 +442,7 @@ public class BuildingManager : MonoBehaviour
         newFix.Setup(locId, newItemId);
 
 
-        Debug.Log($"<color=green>[그리드 밖] {newData.InteriorName_String}으로 교체 완료!</color>");
+        Debug.Log($"<color=green>[Out] {newData.InteriorName_String}으로 교체</color>");
     }
 
     #region 파이어베이스 데이터 저장
