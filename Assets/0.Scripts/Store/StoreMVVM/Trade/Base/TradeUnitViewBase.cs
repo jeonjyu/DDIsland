@@ -6,67 +6,53 @@ using UnityEngine.UI;
 public abstract class TradeUnitViewBase : MonoBehaviour
 {
     [SerializeField] protected Button tradeBtn;
-    [SerializeField] protected Button countIncBtn;
-    [SerializeField] protected Button countDecBtn;
-    [SerializeField] protected Button countMaxBtn;
     [SerializeField] protected TMP_Text priceTxt;
-    [SerializeField] protected TMP_Text countTxt;
-
+    
     protected TradeUnitViewModelBase viewModel;
 
     public Button TradeBtn => tradeBtn;
-    public Button CountIncBtn => countIncBtn;
-    public Button CountDecBtn => countDecBtn;   
-    public Button CountMaxBtn => countMaxBtn;
 
     protected virtual void Awake()
     {
         viewModel = GetComponent<TradeUnitViewModelBase>();
-        viewModel.PropertyChanged += UpdateTradeUnitUI;
+
         //Debug.Log("공통의 모델 이벤트 구독");
     }
 
-    private void OnEnable()
+    protected virtual void OnEnable()
     {
+        viewModel.PropertyChanged += UpdateTradeUnitUI;
         SetEventListener();
     }
 
-    private void OnDisable()
+    protected virtual void OnDisable()
     {
         UnsetEventListener();
+        viewModel.PropertyChanged -= UpdateTradeUnitUI;
+
     }
 
-    protected void SetEventListener()
+    protected virtual void SetEventListener()
     {
+        Debug.Log("이벤트 등록해주기 " + GetTradeStrategy());
         tradeBtn.onClick.AddListener(() => viewModel.ExcuteTrade(GetTradeStrategy()));
-        countIncBtn.onClick.AddListener(() => viewModel.IncreaseCount());
-        countDecBtn.onClick.AddListener(() => viewModel.DecreaseCount());
-        countMaxBtn.onClick.AddListener(() => viewModel.SetMaxCount());
     }
 
-    protected void UnsetEventListener()
+    protected virtual void UnsetEventListener()
     {
+        Debug.Log("이벤트 삭제해주기 " + GetTradeStrategy());
         tradeBtn.onClick.RemoveAllListeners();
-        countIncBtn.onClick.RemoveAllListeners();
-        countDecBtn.onClick.RemoveAllListeners();
     }
 
     public abstract ITradeStrategy GetTradeStrategy();
 
-    /// <summary>
-    /// 버튼 클릭 가능 여부 설정
-    /// </summary>
-    /// <param name="btn">버튼</param>
-    /// <param name="isAvailable">클릭 가능 여부</param>
+    // 버튼 클릭 가능 여부 설정
     public void SetBtnInteractable(Button btn, bool isAvailable)
     {
         btn.interactable = isAvailable;
     }
 
-    /// <summary>
-    /// 거래 유닛 UI의 최종 거래 가격 설정
-    /// </summary>
-    /// <param name="price">거래할 아이템의 총 가격</param>
+    // 거래 유닛 UI의 최종 거래 가격 설정
     public void SetTotalPriceText(int price)
     {
         priceTxt.text = price.ToString();
@@ -76,10 +62,8 @@ public abstract class TradeUnitViewBase : MonoBehaviour
     /// 거래 유닛 UI의 거래 개수 설정
     /// </summary>
     /// <param name="count">거래할 아이템 개수</param>
-    public void SetTradeCountText(int count)
-    {
-        countTxt.text = count.ToString(); 
-    }
+    public virtual void SetTradeCountText(int count) { }
+
 
     // 버튼이 변경되어야 할 경우
     // 아이템 미보유시 > 판매 유닛 버튼들 비활성화
@@ -94,22 +78,17 @@ public abstract class TradeUnitViewBase : MonoBehaviour
         SetAllButtonAvailablity(true);
     }
     
-    public void SetAllButtonAvailablity(bool isAvailable)
+    public virtual void SetAllButtonAvailablity(bool isAvailable)
     {
         tradeBtn.interactable = isAvailable;
-        countIncBtn.interactable = isAvailable;
-        countDecBtn.interactable = isAvailable;
-        countMaxBtn.interactable = isAvailable;
     }
 
     protected virtual void UpdateUI()
     {
         viewModel.SetTotalPrice();
-        SetTradeCountText(viewModel.TradeCount);
         SetButton();
     }
 
-    // StoreManager의 Model과 TradeItemCount 변경시 이거 아님
     // TradeUnitViewModelBase의 TradeCount, ItemCount 변경시 실행
     private void UpdateTradeUnitUI(object sender, PropertyChangedEventArgs e)
     {
@@ -129,6 +108,4 @@ public abstract class TradeUnitViewBase : MonoBehaviour
                 break;
         }
     }
-
-
 }

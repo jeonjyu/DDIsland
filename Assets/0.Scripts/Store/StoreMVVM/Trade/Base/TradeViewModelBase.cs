@@ -72,17 +72,17 @@ public class TradeViewModelBase : MonoBehaviour, INotifyPropertyChanged
     void Start()
     {
         view = GetComponent<TradeViewBase>();
-        //Init(StoreManager.Instance.tradeModel);
     }
 
-    public void OnDisable()
+    protected virtual void OnDisable()
     {
+        PropertyChanged = null;
         StoreManager.Instance.ChangeDropdownAvailability(true);
     }
 
   
 
-    protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+    protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }

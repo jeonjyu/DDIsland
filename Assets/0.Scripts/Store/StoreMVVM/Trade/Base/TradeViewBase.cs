@@ -7,57 +7,56 @@ using UnityEngine;
 
 public class TradeViewBase : MonoBehaviour
 {
-    [SerializeField] TMP_Text itemName;
-    [SerializeField] TMP_Text itemDesc;
+    [SerializeField] protected TMP_Text itemName;
+    [SerializeField] protected TMP_Text itemDesc;
 
-    TradeViewModelBase viewModel;
-    public EquipTradeView _equipTradeView;
+    protected TradeViewModelBase viewModel;
 
 
-    public void Awake()
+    public virtual void Awake()
     {
         viewModel = GetComponent<TradeViewModelBase>();
     }
 
     public void Start()
     {
-        viewModel.PropertyChanged += OnViewModelPropChanged;
-
     }
 
-    private void OnEnable()
+    protected virtual void OnEnable()
     {
+        if (viewModel == null || viewModel.Model == null) return;
+
+        Debug.Log("이벤트 추가");
+        viewModel.PropertyChanged -= OnViewModelPropChanged;
+
+        viewModel.PropertyChanged += OnViewModelPropChanged;
         SetView();
     }
 
-    public void SetView()
+    protected virtual void OnDisable()
+    {
+        if (viewModel.Model != null)
+        {
+            Debug.Log("이벤트 제거");
+            viewModel.PropertyChanged -= OnViewModelPropChanged;
+        }
+    }
+
+    public virtual void SetView()
     {
         itemName.text = viewModel.Model.ItemName;
         itemDesc.text = viewModel.Model.ItemDesc;
-        switch (viewModel.storeCat)
-        {
-            case StoreCat.interior:
-                _equipTradeView.EquipButton.gameObject.SetActive(false);
-                break;
-            default:
-                _equipTradeView.EquipButton.gameObject.SetActive(true);
-                break;
-        }
     }
 
     private void OnViewModelPropChanged(object sender, PropertyChangedEventArgs e)
     {
-        Debug.Log(this.name + " " + e.PropertyName + " " + sender);
+        Debug.Log(this.name + " " + this.GetInstanceID() + " "+ e.PropertyName + " " + sender);
         switch (e.PropertyName)
         {
             case null:
             case "":
                 SetView();
                 break;
-            //case nameof(viewModel.IsGained):
-            //    _equipTradeView?.UpdateEquipBtn();
-            //    break;
-
         }
     }
 }

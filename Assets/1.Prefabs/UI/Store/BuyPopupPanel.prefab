@@ -90,8 +90,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 953949292096940274, guid: ee3cb6636df60164b854f0df52804f8f, type: 3}
       propertyPath: m_Name
-      value: BuyPopupPanel Variant
+      value: BuyPopupPanel
       objectReference: {fileID: 0}
+    - target: {fileID: 953949292096940274, guid: ee3cb6636df60164b854f0df52804f8f, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1399633667956710138, guid: ee3cb6636df60164b854f0df52804f8f, type: 3}
+      propertyPath: view
+      value: 
+      objectReference: {fileID: 5982260780247127322}
     - target: {fileID: 1922359553625175345, guid: ee3cb6636df60164b854f0df52804f8f, type: 3}
       propertyPath: _equipBtn
       value: 
@@ -130,6 +138,9 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 1922359553625175345, guid: ee3cb6636df60164b854f0df52804f8f, type: 3}
+    - {fileID: 9086050232554904237, guid: ee3cb6636df60164b854f0df52804f8f, type: 3}
+    - {fileID: 5015139877481430810, guid: ee3cb6636df60164b854f0df52804f8f, type: 3}
+    - {fileID: 7029403782545697110, guid: ee3cb6636df60164b854f0df52804f8f, type: 3}
     m_RemovedGameObjects:
     - {fileID: 2634622952912209095, guid: ee3cb6636df60164b854f0df52804f8f, type: 3}
     - {fileID: 1973492541364489697, guid: ee3cb6636df60164b854f0df52804f8f, type: 3}
@@ -139,8 +150,71 @@ PrefabInstance:
     - {fileID: 8424977349562411720, guid: ee3cb6636df60164b854f0df52804f8f, type: 3}
     - {fileID: 347363157521465480, guid: ee3cb6636df60164b854f0df52804f8f, type: 3}
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 953949292096940274, guid: ee3cb6636df60164b854f0df52804f8f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5982260780247127322}
+    - targetCorrespondingSourceObject: {fileID: 3806774567852589423, guid: ee3cb6636df60164b854f0df52804f8f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1186505204626183123}
+    - targetCorrespondingSourceObject: {fileID: 3806774567852589423, guid: ee3cb6636df60164b854f0df52804f8f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 327303235280264256}
   m_SourcePrefab: {fileID: 100100000, guid: ee3cb6636df60164b854f0df52804f8f, type: 3}
+--- !u!114 &5411673193187297956 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2941809110774410057, guid: ee3cb6636df60164b854f0df52804f8f, type: 3}
+  m_PrefabInstance: {fileID: 7190357256282153453}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+--- !u!1 &6277215893994987650 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3806774567852589423, guid: ee3cb6636df60164b854f0df52804f8f, type: 3}
+  m_PrefabInstance: {fileID: 7190357256282153453}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1186505204626183123
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6277215893994987650}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 07482d4b5624d974cae8604635ee977f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RecipePurchaseUnitView
+  tradeBtn: {fileID: 6904758869888793980}
+  priceTxt: {fileID: 7306144622051606822}
+--- !u!114 &327303235280264256
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6277215893994987650}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3514018d84fb9394ea5c9d50afcd41e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SingleItemUnitViewModel
+  TradeConfirmPanel: {fileID: 0}
+--- !u!114 &6904758869888793980 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4331308697510435985, guid: ee3cb6636df60164b854f0df52804f8f, type: 3}
+  m_PrefabInstance: {fileID: 7190357256282153453}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
 --- !u!114 &7306144622051606822 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 481291453643743435, guid: ee3cb6636df60164b854f0df52804f8f, type: 3}
@@ -152,3 +226,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+--- !u!1 &7995116426408347935 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 953949292096940274, guid: ee3cb6636df60164b854f0df52804f8f, type: 3}
+  m_PrefabInstance: {fileID: 7190357256282153453}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &5982260780247127322
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7995116426408347935}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 35f0fdd891982dc42954ea45ac07a526, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RecipeTradeView
+  itemName: {fileID: 5411673193187297956}
+  itemDesc: {fileID: 7306144622051606822}

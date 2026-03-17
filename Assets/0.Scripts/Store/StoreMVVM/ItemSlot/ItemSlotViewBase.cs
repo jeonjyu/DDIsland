@@ -4,33 +4,34 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class ItemSlotView : MonoBehaviour, IStoreItemView, IPointerClickHandler
+public class ItemSlotViewBase : MonoBehaviour, IStoreItemView, IPointerClickHandler
 {
 //field
-    ItemSlotViewModel viewModel;
-    IStoreItem modelData;
-    Image slotImage;
+    protected ItemSlotViewModelBase viewModel;
+    protected IStoreItem modelData;
+    protected Image slotImage;
 
 
-    // 인테리어 타입에 따라 다른 UI 테두리 표시 >> 기획서에 업데이트 없어 보류된 기능
-    [SerializeField] private Image _slotBackground;
-    [SerializeField] private TMP_Text _itemPrice;
-    [SerializeField] private TMP_Text _itemName;
-    [SerializeField] private TMP_Text _itemCount;
-    [SerializeField] private Image _itemImage;
+    [SerializeField] protected Image _slotBackground;
+    //[SerializeField] private TMP_Text _itemPrice;
+    //[SerializeField] private TMP_Text _itemName;
+    //[SerializeField] private TMP_Text _itemCount;
+    [SerializeField] protected Image _itemImage;
 
-    EventTrigger eventTrigger;
+    protected EventTrigger eventTrigger;
 
-// property
+    // property
+    public ItemSlotViewModelBase ViewModel => viewModel;
+    public IStoreItem ModelData => modelData;
     public Image SlotBackground => _slotBackground;
-    public TMP_Text ItemPrice => _itemPrice;
-    public TMP_Text ItemName => _itemName;
-    public TMP_Text ItemCount => _itemCount;
+    //public TMP_Text ItemPrice => _itemPrice;
+    //public TMP_Text ItemName => _itemName;
+    //public TMP_Text ItemCount => _itemCount;
     public Image ItemImage => _itemImage;
 
     void Awake()
     {
-        viewModel = GetComponent<ItemSlotViewModel>();
+        viewModel = GetComponent<ItemSlotViewModelBase>();
     }
     void Start()
     {
@@ -50,7 +51,7 @@ public class ItemSlotView : MonoBehaviour, IStoreItemView, IPointerClickHandler
     }
 
     // 뷰 초기화 및 업데이트 메서드
-    public void Init()
+    public virtual void Init()
     {
         //Debug.Log("[ItemSlotView] Init");
         modelData = viewModel.Model;
@@ -63,23 +64,23 @@ public class ItemSlotView : MonoBehaviour, IStoreItemView, IPointerClickHandler
             return;
         }
         UpdateSlotColor(modelData.IsGained);
-        _itemName.text = modelData.ItemName;
-        _itemPrice.text = modelData.PurchasePrice.ToString();
-        _itemCount.text = modelData.ItemCount.ToString();
+        //_itemName.text = modelData.ItemName;
+        //_itemPrice.text = modelData.PurchasePrice.ToString();
+        //_itemCount.text = modelData.ItemCount.ToString();
         _itemImage.sprite = modelData.ImgSprite;
     }
 
-    public void ResetSlot()
+    public virtual void ResetSlot()
     {
         UpdateSlotColor(false);
-        _itemName.text = "";
-        _itemPrice.text = "";
-        _itemCount.text = "0";
+        //_itemName.text = "";
+        //_itemPrice.text = "";
+        //_itemCount.text = "0";
     }
-    public void UpdateItemCount(int count)
-    {
-        _itemCount.text = count.ToString();
-    }
+    //public void UpdateItemCount(int count)
+    //{
+    //    _itemCount.text = count.ToString();
+    //}
 
     public void UpdateSlotColor(bool isGained)
     {
@@ -96,9 +97,14 @@ public class ItemSlotView : MonoBehaviour, IStoreItemView, IPointerClickHandler
         // 구매보다 카테고리 변경을 더 자주하니까 구매창 킬 때 카테고리에 따라 다른 구매창 열도록 설정
         viewModel.SetPopupModel();
         StoreManager.Instance.TradeItemSlot = this.viewModel;
-        StoreManager.Instance.BuyAndSellPanel.SetActive(true);
+        if (StoreManager.Instance.BuyAndSellPanel != null)
+            StoreManager.Instance.BuyAndSellPanel.SetActive(true);
+        else
+            Debug.LogError("패널이없어요");
         StoreManager.Instance.ChangeDropdownAvailability(false);
     }
+
+    public virtual void UpdateSlotUI(int count){}
 
     private void OnViewModelPropChanged(object sender, PropertyChangedEventArgs e)
     {
@@ -119,12 +125,10 @@ public class ItemSlotView : MonoBehaviour, IStoreItemView, IPointerClickHandler
             //    break;
             case "IsGained":
             case "ItemCount":
-                UpdateItemCount(modelData.ItemCount);
+                UpdateSlotUI(modelData.ItemCount);
                 UpdateSlotColor(modelData.IsGained);
                 StoreManager.Instance.sortDropdown.ApplySortPriority();
                 StoreManager.Instance.StoreListVM.LoadSlotList();
-
-                //StoreManager.Instance.sortDropdown.SortSlots((Comparer)StoreManager.Instance.sortDropdown.SelectedOption);
                 break;
         }
     }

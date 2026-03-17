@@ -1,55 +1,68 @@
 using System.ComponentModel;
 using UnityEngine;
 
-public class EquipTradeView : MonoBehaviour
+public class EquipTradeView : TradeViewBase
 {
     [SerializeField] EquipButton _equipBtn;
-    protected TradeViewModelBase viewModel;
-
+    EquipTradeViewModel equipViewModel;
     public EquipButton EquipButton => _equipBtn;
-    public void Awake()
+
+    public override void Awake()
     {
-        viewModel = GetComponent<TradeViewModelBase>();
+        base.Awake();
+        equipViewModel = GetComponent<EquipTradeViewModel>();
+    }
+
+    protected override void OnEnable()
+    {
+        base.OnEnable();
         StoreManager.Instance.PropertyChanged += UpdateTradeModel;
     }
+
+    protected override void OnDisable()
+    {
+        base.OnDisable();
+        StoreManager.Instance.PropertyChanged -= UpdateTradeModel;
+    }
+
+
 
     // 장착 버튼 업데이트
     public void UpdateEquipBtn()
     {
-        if (viewModel.Model.IsGained)
+        if(_equipBtn != null)
         {
-            _equipBtn.SetBtnAvailability(true);
-            // 장착중인 아이템의 타입과 비교
-            if (PlayerManager.Instance.CompareID(viewModel.Model))
-            {
-                // 장착중
-                Debug.Log("이거 장착중");
-                _equipBtn.ChangeBtnText(true, viewModel.Model.IsGained);
-            }
-            else
-            {
-                // 다른 아이템 장착중일 때
-                Debug.Log("다른거 장착중");
-                _equipBtn.ChangeBtnText(false, viewModel.Model.IsGained);
-            }
-        }
-        else
-        {
-            Debug.Log("장착 안함");
-            _equipBtn.SetBtnAvailability(false);
+            Debug.Log("보유 여부 :" + equipViewModel.IsGained);
+            _equipBtn.ChangeBtnUI(equipViewModel.IsGained);
         }
     }
 
+    //public override void SetView()
+    //{
+    //    base.SetView();
+    //    Debug.Log("SetView override");
+    //}
 
     // todo : 보유 여부, 장착 여부 따라 변경되도록 구현하기
     // viewModel에서 
     public void UpdateTradeModel(object sender, PropertyChangedEventArgs e)
     {
-        Debug.Log("장착/해제 여부 변경되니? " + e.PropertyName + " " + nameof(StoreManager.Instance.IsTradeItemGained));
-        if (e.PropertyName == nameof(StoreManager.Instance.IsTradeItemGained))
+        if(_equipBtn == null)
         {
-            Debug.Log("장착/해제 여부 변경되는듯");
+            Debug.Log("장착 버튼이 없음");
+            return;
+        }
+        Debug.Log("이거는? " + this);
+        Debug.Log("장착/해제 여부 변경되니? " + e.PropertyName + " " + nameof(StoreManager.Instance.IsTradeItemGained));
+        if(e.PropertyName == nameof(StoreManager.Instance.TradeItemCount))
+        {
+            Debug.Log("아이템 개수로 장착/해제 여부 변경되는듯");
             UpdateEquipBtn();
         }
+        //if (e.PropertyName == nameof(equipViewModel.IsGained) || e.PropertyName == nameof(equipViewModel.IsEquipped))
+        //{
+        //    Debug.Log("장착/해제 여부 변경되는듯");
+        //    UpdateEquipBtn();
+        //}
     }
 }

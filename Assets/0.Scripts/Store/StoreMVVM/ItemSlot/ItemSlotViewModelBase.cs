@@ -2,7 +2,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 
-public class ItemSlotViewModel : MonoBehaviour, INotifyPropertyChanged
+public class ItemSlotViewModelBase : MonoBehaviour, INotifyPropertyChanged
 {
 
     // 해당 속성이 변경되면 뷰가 수정되어야 한다
@@ -53,6 +53,8 @@ public class ItemSlotViewModel : MonoBehaviour, INotifyPropertyChanged
         get => _model.IsGained;
         set
         {
+            if (_model == null) Debug.Log("_model이 null");
+            //Debug.Log(value);
             if (_model.IsGained != value)
             {
                 _model.IsGained = value;
@@ -61,8 +63,6 @@ public class ItemSlotViewModel : MonoBehaviour, INotifyPropertyChanged
             }
         }
     }
-
-    private string _itemName;
 
     public string ItemName
     {

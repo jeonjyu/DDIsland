@@ -1,9 +1,9 @@
 using UnityEngine;
 
-public class RecipePurchaseView : TradeUnitViewBase
+public class EquipPurchaseUnitView : TradeUnitViewBase
 {
     PurchaseStrategy strategy;
-
+    public EquipTradeView _equipTradeView;
 
     protected override void Awake()
     {
@@ -19,5 +19,6 @@ public class RecipePurchaseView : TradeUnitViewBase
     public override void SetButton()
     {
         base.SetButton();
+        SetBtnInteractable(tradeBtn, !viewModel.IsGained);
     }
 }
