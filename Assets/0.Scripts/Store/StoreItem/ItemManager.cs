@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEngine;
@@ -23,9 +23,9 @@ public class ItemManager : Singleton<ItemManager>
 
 
     [Header("파서로 받아온 상점 데이터 베이스")]
-    [SerializeField] IslandStoreDatabaseSO InteriorDatabase;
-    [SerializeField] CostumeStoreDatabaseSO CostumeDatabase;
-    [SerializeField] FishingStoreDatabaseSO FishingDatabase;
+    IslandStoreDatabaseSO InteriorDatabase;
+    CostumeStoreDatabaseSO CostumeDatabase;
+    FishingStoreDatabaseSO FishingDatabase;
     FoodDatabaseSO FoodDatabase;
    
     // 아이템 변동 이벤트 
@@ -63,6 +63,7 @@ public class ItemManager : Singleton<ItemManager>
         if (DataManager.Instance != null && DataManager.Instance.Hub != null)
             DataManager.Instance.Hub.OnRequestSave -= SyncInventoryDataSave;
     }
+
     public void CreateDatabase()
     {
         InteriorDatabase = DataManager.Instance.StoreDatabase.IslandStoreData;
@@ -87,12 +88,8 @@ public class ItemManager : Singleton<ItemManager>
             playerItemDatas.Add(storeCat, new StoreItemDatabase());
             //Debug.LogWarning($"[ItemManager] AddToPlayerItem | {item.ItemName}({item.ID})에 해당하는 플레이어 아이템 딕셔너리가 없습니다");
         }
-        // 아이템이 딕셔너리에 존재하는지 검색
-        //if (playerItemDatas[storeCat][item.ID] is null)// ContainsKey(item.ID))
-        //{
+
         playerItemDatas[storeCat].AddToDatabase(item);
-        //Debug.Log($"[ItemManager] 플레이어 아이템 딕셔너리에 {item.ItemName}({item.ID}) 추가");
-        //}
 
         OnPlayerItemAdded?.Invoke(item, storeCat);
     }
@@ -108,11 +105,7 @@ public class ItemManager : Singleton<ItemManager>
         else
         {
             // 아이템이 딕셔너리에 존재하는지 검색
-            //if (playerItemDatas[storeCat][item.ID] is not null)
-            //{
             playerItemDatas[storeCat].RemoveFromDatabase(item);
-            //    Debug.Log($"[ItemManager] 플레이어 아이템 딕셔너리에서 {item.ItemName}({item.ID}) 제거");
-            //}
             OnPlayerItemRemoved?.Invoke(item, storeCat);
         }
     }
@@ -126,7 +119,6 @@ public class ItemManager : Singleton<ItemManager>
         currentDatabase = storeDatas[storeCat].Items;
         displayDatas = currentDatabase;
         displayDatas = displayDatas.OrderBy(x => x.IsGained).ThenBy(x => x.PurchasePrice).ThenBy(x => x.ID).ToList();
-        //Debug.Log("[ItemManger] 현재 카테고리 딕셔너리 : " + storeCat.ToString());
 
         //Debug.Log("정렬 완료: " + string.Join(", ", ItemManager.Instance.displayDatas.Select(x => x.ItemName + "(" + x.ID + "):" + x.PurchasePrice)));
     }

@@ -114,8 +114,8 @@ public class ItemSlotViewBase : MonoBehaviour, IStoreItemView, IPointerClickHand
             Init();
             return;
         }
-        else
-            Debug.Log(this.name + " 변경됨 " + e.PropertyName + " " + sender);
+        //else
+        //    Debug.Log(this.name + " 변경됨 " + e.PropertyName + " " + sender);
         
         switch (e.PropertyName)
         {

@@ -26,7 +26,6 @@ public class TradeViewBase : MonoBehaviour
     {
         if (viewModel == null || viewModel.Model == null) return;
 
-        Debug.Log("이벤트 추가");
         viewModel.PropertyChanged -= OnViewModelPropChanged;
 
         viewModel.PropertyChanged += OnViewModelPropChanged;
@@ -37,7 +36,6 @@ public class TradeViewBase : MonoBehaviour
     {
         if (viewModel.Model != null)
         {
-            Debug.Log("이벤트 제거");
             viewModel.PropertyChanged -= OnViewModelPropChanged;
         }
     }
