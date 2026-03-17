@@ -15,5 +15,7 @@ public interface IStoreItem
     int PurchasePrice { get; }
     int SellPrice { get; }
     Sprite ImgSprite { get; }
+    Sprite MainIngSprite { get; }
+    Sprite SubIngSprite { get; }
     Enum Filter { get; }
 }

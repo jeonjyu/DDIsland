@@ -17,18 +17,20 @@ public abstract class StoreItem<T> : IStoreItem where T : TableBase<int>
     //property
 
     public abstract int ID { get; }
-    public abstract int ObjectId { get; }
+    public virtual int ObjectId { get; }
     public abstract bool IsGained { get; set; }
-    public abstract bool IsSaleable { get; }
+    public virtual bool IsSaleable { get; }
     public abstract bool IsDefault { get; }
-    public abstract int MaxCount { get; } 
-    public abstract int ItemCount { get; set; } 
+    public virtual int MaxCount { get; } 
+    public virtual int ItemCount { get; set; } 
     public abstract int PurchasePrice { get; } 
-    public abstract int SellPrice { get; } 
+    public virtual int SellPrice { get; } 
     public abstract string ItemName { get; } 
     public abstract string ItemDesc { get; } 
     public abstract Sprite ImgSprite { get; }
-    public abstract Enum Filter { get; }
+    public virtual Enum Filter { get; }
+    public virtual Sprite MainIngSprite { get; }
+    public virtual Sprite SubIngSprite { get; }
 
     public StoreItem(T data)
     {
