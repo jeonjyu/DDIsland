@@ -232,9 +232,9 @@ public class JournalManager : MonoBehaviour
             {
                 int bgIndex = boxBackground.GetSiblingIndex();
                 if (isSelected)
-                    categoryButtons[i].transform.SetSiblingIndex(bgIndex - 1); // 배경 뒤 = 앞에 보임
+                    categoryButtons[i].transform.SetSiblingIndex(bgIndex + 1); // 배경 뒤 = 앞에 보임
                 else
-                    categoryButtons[i].transform.SetSiblingIndex(bgIndex + 1); // 배경 앞 = 뒤에 가림
+                    categoryButtons[i].transform.SetSiblingIndex(bgIndex - 1); // 배경 앞 = 뒤에 가림
             }
         }
 
