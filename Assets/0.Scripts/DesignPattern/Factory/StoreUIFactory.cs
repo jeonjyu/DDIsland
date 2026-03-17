@@ -15,6 +15,7 @@ public class StoreUIFactory : MonoBehaviour
 
     void Awake()
     {
+        StoreManager.Instance.storeUIFactory = this; 
         popupList = GetComponentsInChildren<TradeViewModelBase>(true).ToList();
         popups.Clear();
      
