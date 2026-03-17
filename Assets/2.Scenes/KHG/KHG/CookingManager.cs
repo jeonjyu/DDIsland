@@ -19,6 +19,7 @@ public struct CookingContext
 }
 public class CookingManager : Singleton<CookingManager>
 {
+    public event System.Action<int> OnFoodCooked; // 도감 연동용 이벤트 
     Dictionary<int, FoodDataSO> _foodById;
     List<FoodDataSO> _allfood;
     private void Awake()
@@ -102,6 +103,7 @@ public class CookingManager : Singleton<CookingManager>
     {
         //음식생성
         FoodToStorage(food);
+        OnFoodCooked?.Invoke(food.ID); 
     }
     public void FoodIngredientsRemove(FoodDataSO food)  //재료차감
     {

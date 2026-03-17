@@ -8,7 +8,7 @@ public class FixedBuilding : MonoBehaviour
     private int _currentItemID;
 
     public int CurrentItemID => _currentItemID;
-    public int LocationID => (int)_locationID;    
+    public FixGroup LocationID => _locationID;    
 
     // 초기화용 메서드
     public void Setup(FixGroup locationId, int itemId)

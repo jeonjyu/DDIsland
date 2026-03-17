@@ -102,6 +102,8 @@ GameObject:
   - component: {fileID: 2410481623440255707}
   - component: {fileID: 3257013496498611637}
   - component: {fileID: 8700203241005481150}
+  - component: {fileID: 6972699824503476110}
+  - component: {fileID: 1425247873351909227}
   m_Layer: 5
   m_Name: Img_WaterBackground
   m_TagString: Untagged
@@ -189,3 +191,29 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &6972699824503476110
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6615638564417610095}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2177502772ab1124fb31f32e0308db01, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LakeImage
+  _lakeAnimator: {fileID: 8700203241005481150}
+  _transitionSpeed: 1
+--- !u!225 &1425247873351909227
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6615638564417610095}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0

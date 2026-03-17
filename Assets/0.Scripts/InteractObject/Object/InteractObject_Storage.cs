@@ -26,8 +26,6 @@ public class InteractObject_Storage : InteractObject
 
     public override void OnInteract()
     {
-        // todo: 보관함 UI 키기
-
         if (ui_Storage != null && !ui_Storage.gameObject.activeSelf)
             ui_Storage.OpenStorageUI();
     }

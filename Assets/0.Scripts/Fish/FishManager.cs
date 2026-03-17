@@ -33,10 +33,12 @@ public class FishManager : Singleton<FishManager>
     List<FishDataSO> _allFish;
     // 추가한 부분입니다
     Dictionary<(ArriveSeason, FishType), List<FishDataSO>> _fishData;
-
+    public event System.Action<int> OnFishGet; // 도감 연동용 이벤트
     private EnvironmentModel _environment;
 
     private ArriveSeason _currentSeason;
+
+    public ArriveSeason CurrentSeason => _currentSeason;
 
     int _seasonChangeCount;  //실러캔스
     bool _canCoelacanth = false;
@@ -46,7 +48,6 @@ public class FishManager : Singleton<FishManager>
     private void Awake()
     {
         base.Awake();
-        _environment = new EnvironmentModel();
     }
 
     private void Start()
@@ -58,12 +59,7 @@ public class FishManager : Singleton<FishManager>
         {
             _fishById[fish.ID] = fish;
         }
-
-        if (_environment != null)
-        {
-            _currentSeason = ConvertSeason(_environment.CurrentSeason);
-        }
-
+       
         // 추가한 부분입니다
         _fishData = new();
         ArriveSeason[] seasons = { ArriveSeason.Spring, ArriveSeason.Summer, ArriveSeason.Autumn, ArriveSeason.Winter };
@@ -97,7 +93,6 @@ public class FishManager : Singleton<FishManager>
     }
     private void Update()
     {
-        _environment.UpdateTimeSet(DateTime.Now);
         if (_canCanPiraruque)
         {
             _pirarukuTimer += Time.deltaTime;
@@ -115,7 +110,6 @@ public class FishManager : Singleton<FishManager>
             _environment.OnDailyChanged += OpenPiraruku;
         }
     }
-
     private void OnDisable()
     {
         if (_environment != null)
@@ -124,6 +118,14 @@ public class FishManager : Singleton<FishManager>
             _environment.OnDailyChanged -= OpenPiraruku;
         }
     }
+    public void SetEnvironment(EnvironmentModel time)
+    {
+        _environment = time;
+       
+        _currentSeason = ConvertSeason(_environment.CurrentSeason);
+    }
+
+
     private ArriveSeason ConvertSeason(Season season)
     {
         return season switch
@@ -224,6 +226,7 @@ public class FishManager : Singleton<FishManager>
         Debug.Log($"Name: {fish.FishName_String}, price: {price}, Length: {length}");
 
         FishToStorage(fish, length, price);
+        OnFishGet?.Invoke(fish.ID); // 낚았다 
     }
 
     public void FishToStorage(FishDataSO randomFish, float length, int price)

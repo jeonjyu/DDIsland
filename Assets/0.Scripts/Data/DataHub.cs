@@ -11,14 +11,11 @@ public class DataHub : MonoBehaviour
     public event Action OnDataLoaded;
 
     [Header("자동 동기화 설정")]
-    [SerializeField] private float _syncInterval = 2f;
+    [SerializeField] private float _syncInterval = 300f;
     private WaitForSeconds wait;
 
     public bool IsLoaded { get; private set; } = false;
 
-    public string GetEnvJson() => JsonUtility.ToJson(_allUserData.Environment);
-    public string GetCharJson() => JsonUtility.ToJson(_allUserData.Character);
-    public string GetDecoJson() => JsonUtility.ToJson(_allUserData.Decoration);
 
     private void Awake()
     {
@@ -29,10 +26,15 @@ public class DataHub : MonoBehaviour
         StartCoroutine(InitLoadingSequence());
         StartCoroutine(AutoDataBoxSyncRoutine());
     }
-
+    private void OnApplicationQuit()
+    {
+        UploadAllData();
+        Debug.Log("게임 종료. 서버에 데이터 업로드");
+    }
     private IEnumerator InitLoadingSequence()
     {
         yield return null;
+
 
         LoadAllData();
     }
@@ -43,29 +45,31 @@ public class DataHub : MonoBehaviour
         {
             yield return wait;
 
-            SaveAllData();
+            UploadAllData();
         }
     }
 
     public void SaveAllData()
     {
         OnRequestSave?.Invoke();
+
+        string localJson = JsonUtility.ToJson(_allUserData);
+        PlayerPrefs.SetString("LocalSaveData", localJson);
+        PlayerPrefs.Save();
+
         Debug.Log("<color=cyan>모든 데이터를 내부에 저장했습니다</color>");
     }
-
+    
 
 
     [ContextMenu("DB")]
     //얘를 인스펙터에서 누르시면 실제로 DB에 값이 전송됩니다
     public void UploadAllData()
     {
-        //string enviroment = GetEnvJson();
-        //string character = GetCharJson();
-        //string decoration = GetDecoJson();
-
         string finalJson = JsonUtility.ToJson(_allUserData);
-
+        
         FirebaseMgr.Instance.FirebaseDataTransfer(finalJson, "");
+        
         Debug.Log("<color=yellow>모든 파트의 JSON 변환을 확인하고 저장을 실행합니다.</color>");
     }
 

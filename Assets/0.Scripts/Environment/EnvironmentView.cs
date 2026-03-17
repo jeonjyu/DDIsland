@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -45,7 +44,6 @@ public class EnvironmentView : MonoBehaviour
         if (_currentParticle != null)
         {
             _currentParticle.Stop();
-            _currentParticle.gameObject.SetActive(false);
             _currentParticle = null;
         }
     }

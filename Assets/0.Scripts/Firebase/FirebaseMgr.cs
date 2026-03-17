@@ -70,8 +70,9 @@ public class FirebaseMgr : MonoBehaviour
                 Debug.LogError("<color=red>저장 실패</color>");
             }
         });
-
+        
     }
+    
     public async Task<string> FirebaseDataGet(string path = "")
     {
         if (!_isInitialized || _database == null)
