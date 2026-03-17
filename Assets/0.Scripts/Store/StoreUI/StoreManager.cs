@@ -22,7 +22,7 @@ public class StoreManager : Singleton<StoreManager>, INotifyPropertyChanged
     [SerializeField] private IStoreItem tradeModel;
     ItemSlotViewModelBase tradeItemSlot;
     [SerializeField] StoreListViewModel storeListVM;
-    [SerializeField] StoreUIFactory storeUIFactory;
+    public StoreUIFactory storeUIFactory;
 
     public event PropertyChangedEventHandler PropertyChanged;
 

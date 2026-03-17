@@ -154,7 +154,7 @@ public class PlayerController : MonoBehaviour
 
 
         ApplyTier();  //둥둥수치에 따른 외형변화
-        _currentState?.Execute(); 
+        _currentState?.Execute();
     }
 
     private void FixedUpdate()

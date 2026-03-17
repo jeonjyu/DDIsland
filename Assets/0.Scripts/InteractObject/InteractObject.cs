@@ -9,7 +9,10 @@ public abstract class InteractObject : MonoBehaviour, IInteract
     protected virtual void Awake()
     {
         outline = GetComponent<Outline>();
+    }
 
+    protected void Start()
+    {
         outline.enabled = false;
     }
 

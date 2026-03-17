@@ -548,8 +548,15 @@ public class TableSOGenerator
             // csvFileName에 맞는 CSV 파일이 있으면 받아오기
             if (assetGUID.Length > 0)
             {
-                string path = AssetDatabase.GUIDToAssetPath(assetGUID[0]);
-                csvClassData = ParseCsvHeaders(AssetDatabase.LoadAssetAtPath<TextAsset>(path));
+                foreach(var file in assetGUID)
+                {
+                    string path = AssetDatabase.GUIDToAssetPath(file);
+
+                    if (csvFileName != Path.GetFileNameWithoutExtension(path))
+                        continue;
+                    else
+                        csvClassData = ParseCsvHeaders(AssetDatabase.LoadAssetAtPath<TextAsset>(path));
+                }
             }
             else
             {
