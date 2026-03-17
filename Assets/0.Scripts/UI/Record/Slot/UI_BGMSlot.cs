@@ -20,7 +20,7 @@ public class UI_BGMSlot : UI_RecordSlot
     public bool IsLocked
     {
         get { return isLocked; }
-        set
+        private set
         {
             isLocked = value;
             lockedObj.SetActive(value);
@@ -57,6 +57,12 @@ public class UI_BGMSlot : UI_RecordSlot
         {
             SoundManager.Instance.PlayBGM(Record.RecordSoundPath_AudioClip);
             bgmList.ShowRecordInfo(Record);
+            DataManager.Instance.RecordDatabase.CurrentRecord = Record;
+
+            if (!DataManager.Instance.RecordDatabase.CurrentPlayList.Contains(Record.RecordID))
+            {
+                DataManager.Instance.RecordDatabase.CurrentPlayList.Add(Record.RecordID);
+            }
         }
     }
 

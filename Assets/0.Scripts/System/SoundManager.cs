@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -37,9 +38,11 @@ public class SoundManager : Singleton<SoundManager>
 
     private List<AudioSource> sfxList = new List<AudioSource>();    // 현재 재생중인 효과음 오디오 소스를 가지고 있을 리스트
     private Coroutine sfxPlayCoroutine;                             // 현재 재생중인 효과음 오디오 소스들을 체크하는 코루틴 변수
-
     [SerializeField] private float clearSourceTime = 0.5f;
     private WaitForSeconds clearSourceWs;
+
+    private Coroutine BGMPlayDoneCoroutine;         // 배경음 재생이 끝났는지 체크하는 코루틴 변수
+    public event Action OnBGMPlayDone;              // 배경음 재생이 끝나면 실행할 이벤트
 
     protected override void Awake()
     {
@@ -78,6 +81,7 @@ public class SoundManager : Singleton<SoundManager>
     public void PlayBGM(AudioClip clip)
     {
         PlaySound(Soundtype.BGM, BgmSource, clip);
+        CheckBGMPlayDone();
     }
 
     public void PlayBGS(AudioClip clip)
@@ -189,12 +193,12 @@ public class SoundManager : Singleton<SoundManager>
 
         if (sfxPlayCoroutine == null)
         {
-            sfxPlayCoroutine = StartCoroutine(CheckPlayingSFX());
+            sfxPlayCoroutine = StartCoroutine(Co_CheckPlayingSFX());
         }
     }
 
     // sfxList중 재생이 완료된 오디오 소스 정리
-    private IEnumerator CheckPlayingSFX()
+    private IEnumerator Co_CheckPlayingSFX()
     {
         while (sfxList.Count > 0)
         {
@@ -212,6 +216,24 @@ public class SoundManager : Singleton<SoundManager>
         sfxPlayCoroutine = null;
     }
 
+    private void CheckBGMPlayDone()
+    {
+        if(BGMPlayDoneCoroutine != null)
+        {
+            StopCoroutine(BGMPlayDoneCoroutine);
+            BGMPlayDoneCoroutine = null;
+        }
+
+        BGMPlayDoneCoroutine = StartCoroutine(Co_CheckBGMPlayDone());
+    }
+
+    private IEnumerator Co_CheckBGMPlayDone()
+    {
+        yield return new WaitUntil(() => BgmSource.time >= BgmSource.clip.length && !BgmSource.isPlaying);
+
+        OnBGMPlayDone?.Invoke();
+    }
+
     private void OnEnable()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
@@ -222,6 +244,15 @@ public class SoundManager : Singleton<SoundManager>
         SceneManager.sceneLoaded -= OnSceneLoaded;
 
         if (sfxPlayCoroutine != null)
+        {
             StopCoroutine(sfxPlayCoroutine);
+            sfxPlayCoroutine = null;
+        }
+
+        if(BGMPlayDoneCoroutine != null)
+        {
+            StopCoroutine(BGMPlayDoneCoroutine);
+            BGMPlayDoneCoroutine = null;
+        }
     }
 }

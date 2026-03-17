@@ -1,8 +1,9 @@
 using UnityEngine;
 
-public class InteractObject_Storage : InteractObject
+public class InteractObject_LP : InteractObject
 {
-    [SerializeField] private UI_Storage ui_Storage;
+    [Header("LP플레이어")]
+    [SerializeField] private GameObject RecordUI;
 
     protected override void Awake()
     {
@@ -26,7 +27,8 @@ public class InteractObject_Storage : InteractObject
 
     public override void OnInteract()
     {
-        if (ui_Storage != null && !ui_Storage.gameObject.activeSelf)
-            ui_Storage.OpenStorageUI();
+        if (RecordUI == null || RecordUI.activeSelf) return;
+
+        RecordUI.SetActive(true);
     }
 }

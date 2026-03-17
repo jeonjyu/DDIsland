@@ -3,9 +3,6 @@ using UnityEngine.InputSystem;
 
 public class StageControl : MonoBehaviour
 {
-    [Header("현재 씬이 시작할 때 재생할 bgm")]
-    [SerializeField] private AudioClip stageBgmClip;
-
     private IInteract interactObj;      // 현재 마우스가 올라가있는 상호작용 오브젝트 (null이면 호버중인 오브젝트가 없는 상태)
     public IInteract InteractObj
     {
@@ -32,8 +29,6 @@ public class StageControl : MonoBehaviour
 
     private void Start()
     {
-        SoundManager.Instance.PlayBGM(stageBgmClip);
-
         GameManager.Instance.StageController = this;
     }
 
