@@ -102,7 +102,7 @@ public class JournalDataLoader : MonoBehaviour
                 ArriveSeason allSeasons = ArriveSeason.Spring | ArriveSeason.Summer | ArriveSeason.Autumn | ArriveSeason.Winter;
                 item.SpecialInfo["계절"] = (fishSO.arriveseasonType == allSeasons) ? "모든 계절" : fishSO.arriveseasonType.ToString();
                 // TODO: 최고 기록은 CollectionData에서 가져와야 함
-                item.SpecialInfo["최고 기록"] = "0cm";
+                // item.SpecialInfo["최고 기록"] = "0cm"; 
             }
             else
             {
