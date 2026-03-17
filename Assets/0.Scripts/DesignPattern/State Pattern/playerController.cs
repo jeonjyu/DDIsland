@@ -182,7 +182,12 @@ public class PlayerController : MonoBehaviour
             FoodStorageManager.Instance.OnSlotChanged -= OnFoodStorageChanged;
 
         if (DataManager.Instance != null && DataManager.Instance.Hub != null)
-            DataManager.Instance.Hub.OnRequestSave -= PlayerDataOld.SyncCharacterDataSave;
+        {
+            if (!DataManager.Instance.Hub.IsQuite)
+            {
+                DataManager.Instance.Hub.OnRequestSave -= PlayerDataOld.SyncCharacterDataSave;
+            }
+        }
     }
 
     public void ApplyPlayerStats(CharacterDataSO SO)

@@ -542,16 +542,12 @@ public class UpgradeManagerV2 : MonoBehaviour
         if (data == null) return;
 
         data._hunger.Level = 0;
-        data._stamina.Level = 0;
 
         data._moveSpeed.Level = 0;
-        data._moveSpeed.Value = 0;
 
         data._fishingSpeed.Level = 0;
-        data._fishingSpeed.Value = 0;
 
         data._restSpeed.Level = 0;
-        data._restSpeed.Value = 0;
 
         DataManager.Instance.SaveAll();
         DataManager.Instance.Hub.UploadAllData(); // 파베에도 반영

@@ -10,6 +10,8 @@ public class DataHub : MonoBehaviour
     public event Action OnRequestSave;
     public event Action OnDataLoaded;
 
+    public bool IsQuite {get; set;}
+
     [Header("자동 동기화 설정")]
     [SerializeField] private float _syncInterval = 300f;
     private WaitForSeconds wait;
@@ -29,6 +31,7 @@ public class DataHub : MonoBehaviour
     private void OnApplicationQuit()
     {
         UploadAllData();
+        IsQuite = true;
         Debug.Log("게임 종료. 서버에 데이터 업로드");
     }
     private IEnumerator InitLoadingSequence()
@@ -116,8 +119,7 @@ public class DataHub : MonoBehaviour
         _allUserData.Environment = env.SaveData();
 
         //_allUserData.Character = new ();
-        //_allUserData.Decoration = new ();
-        //_allUserData.Collection = new ();
-        //_allUserData.Progress = new ();
+        //_allUserData.Decoration = new();
+        //_allUserData.Collection = new();
     }
 }

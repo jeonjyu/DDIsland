@@ -133,7 +133,7 @@ public class ItemManager : Singleton<ItemManager>
                 .Where(x => x.IsGained && x.ItemCount > 0)
                 .Select(x => new LakeInvenSlot
                 {
-                    itemId = x.ObjectId,
+                    itemId = x.ID,
                     quantity = x.ItemCount
                 })
                 .ToList();
@@ -171,7 +171,7 @@ public class ItemManager : Singleton<ItemManager>
 
         playerItemDatas.Clear();
 
-        var interiorDict = storeDatas[StoreCat.interior].Items.ToDictionary(x => x.ObjectId);
+        var interiorDict = storeDatas[StoreCat.interior].Items.ToDictionary(x => x.ID);
         var costumeDict = storeDatas[StoreCat.costume].Items.ToDictionary(x => x.ID);
         var fishingDict = storeDatas[StoreCat.fishing].Items.ToDictionary(x => x.ID);
 
