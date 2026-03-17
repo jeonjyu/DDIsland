@@ -10,6 +10,8 @@ public class RecordData : MonoBehaviour
     private RecordServerData recordServerData = new RecordServerData();
     private RecordLocalData recordLocalData = new RecordLocalData();
 
+    public RecordDataSO CurrentRecord;
+
     #region 프로퍼티
     // 보유 음반 조각
     public int LpPieceCount
