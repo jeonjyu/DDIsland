@@ -13,6 +13,11 @@ public class EnvironmentPresenter : MonoBehaviour
     private void Awake()
     {
         _model = new EnvironmentModel();
+
+        if (FishManager.Instance != null)
+        {
+            FishManager.Instance.SetEnvironment(_model);
+        }
     }
 
     private void OnEnable()
