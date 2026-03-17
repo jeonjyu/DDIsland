@@ -6,7 +6,8 @@ public class UI_RecordUnlock : MonoBehaviour
     [SerializeField] private int requireLpPieceCount = 3;
 
     [Header("교환 결과 팝업창")]
-    [SerializeField] private GameObject resultPopup;
+    [SerializeField] private GameObject successPopup;
+    [SerializeField] private GameObject failurePopup;
 
     private UI_BGMSlot currentSlot;
 
@@ -34,12 +35,14 @@ public class UI_RecordUnlock : MonoBehaviour
             // 음반 교환 성공시
             currentSlot.UnlockRecord();
             gameObject.SetActive(false);
-            resultPopup.SetActive(true);
+            successPopup.SetActive(true);
+
+            currentSlot.Playrecord();
         }
         else
         {
             // 음반 교환 실패시
-            resultPopup.SetActive(true);
+            failurePopup.SetActive(true);
         }
     }
 }

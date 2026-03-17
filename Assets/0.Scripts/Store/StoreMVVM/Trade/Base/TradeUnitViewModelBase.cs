@@ -136,9 +136,6 @@ public class TradeUnitViewModelBase : MonoBehaviour, INotifyPropertyChanged
     /// </summary>
     public virtual void InitUnit()
     {
-        Debug.Log("[TradeUnitViewBase] InitUnit | 초기화");
-
-        //TradeCount = 1;
         SetTotalPrice();
         view.SetTradeCountText(TradeCount);
         view.SetButton();
@@ -146,19 +143,8 @@ public class TradeUnitViewModelBase : MonoBehaviour, INotifyPropertyChanged
 
     public void ExcuteTrade(ITradeStrategy tradeStrategy)
     {
-        //Debug.Log(tradeStrategy.ToString());
-
-        //view.SetButton();
         if (tradeStrategy.Trade(TradeCount, TotalPrice))
-        {
             TradeConfirmPanel.SetActive(true);
-        }
-        else
-        {
-            //GoldWarningPanel.SetActive(false);
-            Debug.Log("구매 실패");
-        }
-        //InitUnit();
     }
 
     // 아이템 갯수 변경
