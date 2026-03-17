@@ -20,8 +20,8 @@ public class JournalManager : MonoBehaviour
     [Header("대분류 탭")]
     [SerializeField] private Button questTabButton;     // 퀘스트 탭
     [SerializeField] private Button journalTabButton;   // 도감 탭
-    [SerializeField] private GameObject questTabHighlight;   // 퀘스트 탭 활성화 표시
-    [SerializeField] private GameObject journalTabHighlight; // 도감 탭 활성화 표시
+    [SerializeField] private Image questTabBackground;    // 퀘스트 탭 활성화 표시
+    [SerializeField] private Image journalTabBackground;  // 도감 탭 활성화 표시
   
     [Header("도감 영역")]
     [SerializeField] private GameObject journalArea;
@@ -29,7 +29,6 @@ public class JournalManager : MonoBehaviour
     [Header("소분류 카테고리 버튼")]
     [SerializeField] private Button[] categoryButtons;  // 5개 카테고리 버튼
     [SerializeField] private TextMeshProUGUI[] categoryTexts; // 카테고리 버튼 텍스트
-    [SerializeField] private GameObject[] categoryHighlights; // 활성화 표시
 
     [Header("슬롯 동적 생성")]                                  
     [SerializeField] private GameObject slotTemplate;             //  슬롯 프리팹 (비활성화 상태)
@@ -45,6 +44,21 @@ public class JournalManager : MonoBehaviour
 
     [Header("카테고리 라벨 설정")]
     [SerializeField] private string[] journalCategoryNames = { "어종", "코스튬", "인테리어", "음반", "음식" };
+
+    [Header("카테고리 버튼 색상")]
+    [SerializeField] private Image[] categoryBackgrounds;  // 각 버튼의 Background Image
+    [SerializeField] private Image[] categoryOutlines;     // 각 버튼의 Outline Image
+    [Header("카테고리 책갈피")]
+    [SerializeField] private Transform boxBackground;
+    // 탭 색상
+    private readonly Color selectedTabBg = new Color(0.99f, 0.97f, 0.91f, 1f);   // 크림색
+    private readonly Color unselectedTabBg = new Color(0.78f, 0.62f, 0.41f, 1f); // 갈색
+
+    // 선택/미선택 색상 (프리팹에서 뽑은 값)
+    private readonly Color selectedBg = new Color(0.99f, 0.97f, 0.91f, 1f);      // 크림색
+    private readonly Color unselectedBg = new Color(0.78f, 0.62f, 0.41f, 1f);    // 갈색
+    private readonly Color selectedOutline = new Color(0.88f, 0.80f, 0.66f, 1f);  // 밝은 테두리
+    private readonly Color unselectedOutline = new Color(0.56f, 0.44f, 0.29f, 1f);// 어두운 테두리
 
     // 현재 상태
     private MainTab currentMainTab = MainTab.Journal;
@@ -167,15 +181,20 @@ public class JournalManager : MonoBehaviour
         currentMainTab = tab;
 
         // 탭 하이라이트 전환
-        if (questTabHighlight != null)
-            questTabHighlight.SetActive(tab == MainTab.Quest);
-        if (journalTabHighlight != null)
-            journalTabHighlight.SetActive(tab == MainTab.Journal);
-        
+        if (questTabBackground != null)
+            questTabBackground.color = (tab == MainTab.Quest) ? selectedTabBg : unselectedTabBg;
+        if (journalTabBackground != null)
+            journalTabBackground.color = (tab == MainTab.Journal) ? selectedTabBg : unselectedTabBg;
+
         // 도감 영역 통째로 끄기
         if (journalArea != null)
             journalArea.SetActive(tab == MainTab.Journal);
-
+        // 도감 카테고리 버튼들도 같이 숨기기
+        for (int i = 0; i < categoryButtons.Length; i++)
+        {
+            if (categoryButtons[i] != null)
+                categoryButtons[i].gameObject.SetActive(tab == MainTab.Journal);
+        }
         // 도감 탭이면 슬롯 갱신
         if (tab == MainTab.Journal) // 도감 모드 
         {
@@ -196,10 +215,27 @@ public class JournalManager : MonoBehaviour
         currentCategory = category;
 
         // 카테고리 하이라이트 전환
-        for (int i = 0; i < categoryHighlights.Length; i++)
+        for (int i = 0; i < categoryButtons.Length; i++)
         {
-            if (categoryHighlights[i] != null)
-                categoryHighlights[i].SetActive(i == (int)category);
+            bool isSelected = (i == (int)category);
+
+            // 배경 색 전환
+            if (i < categoryBackgrounds.Length && categoryBackgrounds[i] != null)
+                categoryBackgrounds[i].color = isSelected ? selectedBg : unselectedBg;
+
+            // 테두리 색 전환
+            if (i < categoryOutlines.Length && categoryOutlines[i] != null)
+                categoryOutlines[i].color = isSelected ? selectedOutline : unselectedOutline;
+
+            // 선택된 버튼을 배경 앞으로 렌더링 순서 변경
+            if (boxBackground != null)
+            {
+                int bgIndex = boxBackground.GetSiblingIndex();
+                if (isSelected)
+                    categoryButtons[i].transform.SetSiblingIndex(bgIndex - 1); // 배경 뒤 = 앞에 보임
+                else
+                    categoryButtons[i].transform.SetSiblingIndex(bgIndex + 1); // 배경 앞 = 뒤에 가림
+            }
         }
 
         // 필터 초기화
@@ -320,31 +356,39 @@ public class JournalManager : MonoBehaviour
         {
             case JournalCategory.Fish:
                 if (!collection._unlockedFishIds.Contains(itemId))
+                {
                     collection._unlockedFishIds.Add(itemId);
-                newUnlocked = true;
+                    newUnlocked = true;
+                }
                 break;
             case JournalCategory.Costume:
                 if (!collection._unlockedCostumeIds.Contains(itemId))
+                {
                     collection._unlockedCostumeIds.Add(itemId);
-                newUnlocked = true;
+                    newUnlocked = true;
+                }
                 break;
             case JournalCategory.Interior:
                 if (!collection._unlockedInteriorIds.Contains(itemId))
+                {
                     collection._unlockedInteriorIds.Add(itemId);
-                newUnlocked = true;
+                    newUnlocked = true;
+                }
                 break;
             case JournalCategory.Food:
                 if (!collection._unlockedFoodIds.Contains(itemId))
+                {
                     collection._unlockedFoodIds.Add(itemId);
-                newUnlocked = true;
+                    newUnlocked = true;
+                }
                 break;
         }
 
-        // 현재 보고 있는 카테고리면 슬롯 갱신
-        if (currentCategory == category && journalPanel.activeSelf)
-        {
-            RefreshSlots();
-        }
+        //// 현재 보고 있는 카테고리면 슬롯 갱신
+        //if (currentCategory == category && journalPanel.activeSelf)
+        //{
+        //    RefreshSlots();
+        //}
 
         if (newUnlocked)
         {
