@@ -666,7 +666,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8511567440625557574, guid: 176da03993ea90d48a925d62d01fecd1, type: 3}
       propertyPath: _maxFlockSize
-      value: 10
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 8511567440625557574, guid: 176da03993ea90d48a925d62d01fecd1, type: 3}
       propertyPath: _minFlockSize
@@ -679,7 +679,7 @@ PrefabInstance:
     - target: {fileID: 8511567440625557574, guid: 176da03993ea90d48a925d62d01fecd1, type: 3}
       propertyPath: _themeButtonText
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 6169889199524850285}
     - target: {fileID: 8511567440625557574, guid: 176da03993ea90d48a925d62d01fecd1, type: 3}
       propertyPath: _themes.Array.size
       value: 2
@@ -1587,40 +1587,13 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 6615638564417610095, guid: b441b61efc3fedf448c59354b91df058, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 362971063}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b441b61efc3fedf448c59354b91df058, type: 3}
 --- !u!224 &362971060 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7869127711252119265, guid: b441b61efc3fedf448c59354b91df058, type: 3}
   m_PrefabInstance: {fileID: 362971059}
   m_PrefabAsset: {fileID: 0}
---- !u!95 &362971061 stripped
-Animator:
-  m_CorrespondingSourceObject: {fileID: 8700203241005481150, guid: b441b61efc3fedf448c59354b91df058, type: 3}
-  m_PrefabInstance: {fileID: 362971059}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &362971062 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6615638564417610095, guid: b441b61efc3fedf448c59354b91df058, type: 3}
-  m_PrefabInstance: {fileID: 362971059}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &362971063
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 362971062}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2177502772ab1124fb31f32e0308db01, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::LakeImage
-  _lakeAnimator: {fileID: 362971061}
-  _transitionSpeed: 1
 --- !u!114 &373350422 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4421155381264807333, guid: 7ecaabae7eca3324685afec5c3840fa3, type: 3}
@@ -1673,7 +1646,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnvironmentPresenter
   _view: {fileID: 1896981398}
-  _lakeImage: {fileID: 362971063}
+  _lakeImage: {fileID: 0}
 --- !u!4 &390024294
 Transform:
   m_ObjectHideFlags: 0

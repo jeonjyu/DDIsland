@@ -35,6 +35,7 @@ public class BackGroundFish : MonoBehaviour
     private Vector2 _velocity;
     private Vector2 _targetVelocity;
     private IMovement _movementPattern;
+    private Animator _animator;
     public FishStateData _patternData = new();
 
     [Header("물고기 관련")]
@@ -81,6 +82,7 @@ public class BackGroundFish : MonoBehaviour
     {
         _rectTransform = GetComponent<RectTransform>();
         _fishImage = GetComponent<Image>();
+        _animator = GetComponent<Animator>();
     }
 
     public void InitManager(AquariumMgr mgr)
@@ -94,10 +96,10 @@ public class BackGroundFish : MonoBehaviour
 
         _velocity = Vector2.Lerp(_velocity, _targetVelocity, dt * 1.5f);
 
-        float waveY = Mathf.Sin(Time.time * 1.5f + _floackID) * 15f;
-        Vector2 waveOffset = Vector2.up * waveY;
+        //float waveY = Mathf.Sin(Time.time * 1.5f + _floackID) * 15f;
+        //Vector2 waveOffset = Vector2.up * waveY;
 
-        _rectTransform.anchoredPosition += (_velocity+ waveOffset) * dt;
+        _rectTransform.anchoredPosition += (_velocity) * dt;
 
         // 다시 Atan2 사용(짐벌락 방지)
         float sqrMag = _velocity.sqrMagnitude;
@@ -149,6 +151,19 @@ public class BackGroundFish : MonoBehaviour
         if (data != null)
         {
             _fishImage.sprite = data.FishImgPath_Sprite;
+
+            if (data.FishAnimPath_AnimatorOverrideController != null)
+            {
+                _animator.runtimeAnimatorController = data.FishAnimPath_AnimatorOverrideController;
+                _animator.enabled = true;
+                _animator.Rebind(); 
+            }
+            else
+            {
+                _animator.enabled = false;
+            }
+
+
             _fishImage.SetNativeSize();
             _rectTransform.sizeDelta *= _fishScale;
         }
