@@ -140,7 +140,6 @@ public class EnvironmentModel
             _calculation = (int[])_seasonDuration.Clone()
         };
         string arrayString = string.Join(", ", box._calculation);
-        Debug.Log($"계절 마지막 일자: [{box._calculation}] 저장완료</color>");
 
         return box;
     }
@@ -148,6 +147,5 @@ public class EnvironmentModel
     {
         _seasonDuration = (int[])box._calculation.Clone();
 
-        Debug.Log($"<color=yellow>{_lastMonth}월{_lastDay}일 로드 완료</color>");
     }
 }

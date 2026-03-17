@@ -72,7 +72,6 @@ public class EnvironmentPresenter : MonoBehaviour
         //                       .AddHours(UnityEngine.Random.Range(0, 24))
         //                       .AddMinutes(UnityEngine.Random.Range(0, 60));
 
-        Debug.Log($"<color=cyan>테스트 날짜: {now} 현재 시점: {_model.CurrentDay} 현재 계절: {_model.CurrentSeason}</color>");
 
         RefreshAll();
 
@@ -115,7 +114,6 @@ public class EnvironmentPresenter : MonoBehaviour
 
             RefreshAll();
 
-            Debug.Log($"<color=cyan> 데이터 복구 완료 {_model.CurrentSeason} / {_model.CurrentDay}</color>");
         }
     }
 

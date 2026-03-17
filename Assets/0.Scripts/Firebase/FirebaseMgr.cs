@@ -47,7 +47,6 @@ public class FirebaseMgr : MonoBehaviour
     {
         if (!_isInitialized || _database == null)
         {
-            Debug.LogError("<color=red>Firebase Database가 초기화되지 않았습니다.</color>");
             return;
         }
 

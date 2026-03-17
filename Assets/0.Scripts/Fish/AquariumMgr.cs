@@ -180,7 +180,6 @@ public class AquariumMgr : MonoBehaviour
 
         FishDataSO selectedFishData = flockCandidates[Random.Range(0, flockCandidates.Count)];
 
-        Debug.Log($"<color=green>[군집 소환]  현재 계절: {FishManager.Instance.CurrentSeason} / 뽑힌 물고기: {selectedFishData.FishName_String}</color>");
 
         int flockID = Random.Range(0, 1000);
         bool isRight = (Random.value > 0.5f);
@@ -217,7 +216,6 @@ public class AquariumMgr : MonoBehaviour
 
         FishDataSO selectedData = singleCandidates[Random.Range(0, singleCandidates.Count)];
 
-        Debug.Log($"<color=yellow>[단일 소환] 현재 계절: {FishManager.Instance.CurrentSeason} / 뽑힌 물고기: {selectedData.FishName_String}</color>");
 
         int fishID = Random.Range(10000, 99999);
         _flockMemberCount[fishID] = 1;

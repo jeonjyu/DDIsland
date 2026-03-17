@@ -57,7 +57,6 @@ public class DataHub : MonoBehaviour
         PlayerPrefs.SetString("LocalSaveData", localJson);
         PlayerPrefs.Save();
 
-        Debug.Log("<color=cyan>모든 데이터를 내부에 저장했습니다</color>");
     }
     
 
@@ -72,7 +71,6 @@ public class DataHub : MonoBehaviour
         
         FirebaseMgr.Instance.FirebaseDataTransfer(finalJson, "");
         
-        Debug.Log("<color=yellow>모든 파트의 JSON 변환을 확인하고 저장을 실행합니다.</color>");
     }
 
     [ContextMenu("DBLoad")]
@@ -81,7 +79,6 @@ public class DataHub : MonoBehaviour
     {
         // JSON 받아오기
         string json = await FirebaseMgr.Instance.FirebaseDataGet();
-        Debug.Log("데이터 수신 완료: " + json);
 
         if (!string.IsNullOrEmpty(json))
         {
@@ -91,16 +88,11 @@ public class DataHub : MonoBehaviour
 
             //_allUserData.Decoration._buildings ??= new List<PlacedObject>();
 
-            Debug.Log("<color=green>서버 데이터 로드 완료</color>");
             IsLoaded = true;
             OnDataLoaded?.Invoke();
         }
         else
         {
-            Debug.Log("<color=yellow>저장된 데이터가 없습니다.</color>");
-
-            Debug.Log("<color=yellow>새로운 데이터로 진행합니다</color>");
-           
             SetNewUserData();
 
             UploadAllData();
