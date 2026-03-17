@@ -24,7 +24,7 @@ public class UpgradeManagerV2 : MonoBehaviour
     public TextMeshProUGUI levelProgressText; // 1/10 
                                               //    public TextMeshProUGUI statChangeText;    // 변동스탯 
 
-    [Header("변동 스탯 표시 (좌측 패널)")]                      
+    [Header("변동 스탯 표시 (좌측 패널)")]
     public TextMeshProUGUI statCurrentValueText;  // 첫째줄 현재 MAX
     public TextMeshProUGUI statNextValueText;     // 둘째줄 업글 후 MAX
 
@@ -41,7 +41,7 @@ public class UpgradeManagerV2 : MonoBehaviour
     public Transform dotContainer;  // 도트들이 들어갈 빈 옵젝 
     public GameObject nowDot;   // 현재 페이지 
     public GameObject waitDot;  // 다른 페이지
-    [Header("캐릭터 현재 스탯")]       
+    [Header("캐릭터 현재 스탯")]
     public TextMeshProUGUI doongDoongStatText;  // 둥둥 스탯
     public TextMeshProUGUI currentStaminaText;  // 스태미너
     public TextMeshProUGUI currentHungerText;   // 포만감
@@ -61,9 +61,10 @@ public class UpgradeManagerV2 : MonoBehaviour
         StatType.StaminaHeal       // 휴식속도 
     };
     private int currentPageIndex = 0;
-   
+
     void Start()
     {
+       // ResetUpgradeLevels();
         if (playerController == null)
             playerController = FindObjectOfType<PlayerController>();
         if (playerController != null)
@@ -73,9 +74,12 @@ public class UpgradeManagerV2 : MonoBehaviour
 
         if (playerData != null) // 둥둥스탯 이미지 
             playerData.OnDoongDoongChanged += OnDoongDoongChanged;
-              
-        upgradeTable = UpgradeTempData.GetAll();
 
+        upgradeTable = UpgradeTempData.GetAll();
+        ApplyLevel0Stats(); // 레벨 0 베이스 스탯 적용 TODO: 나중에 삭제
+
+        // Firebase 로드 완료 후 레벨 0 보정
+        DataManager.Instance.Hub.OnDataLoaded += OnDataLoaded;
         // 페이지 인디케이터 
         buyButton.onClick.AddListener(OnbuyClicked);
         prevButton.onClick.AddListener(OnPrevPage);
@@ -84,6 +88,19 @@ public class UpgradeManagerV2 : MonoBehaviour
 
         UpdatePage();
     }
+    // Firebase 로드 완료 콜백
+    void OnDataLoaded()
+    {
+        // 로드 후 playerData 레벨 다시 읽기
+        if (playerData != null)
+            playerData.SyncCharacterDataLoad();
+
+        // 레벨 0이면 베이스 스탯 복구
+        ApplyLevel0Stats();
+        UpdatePage();
+    }
+
+
     #region 둥둥스탯 이미지
     void OnDoongDoongChanged(int value)
     {
@@ -98,6 +115,9 @@ public class UpgradeManagerV2 : MonoBehaviour
     {
         if (playerData != null)
             playerData.OnDoongDoongChanged -= OnDoongDoongChanged;
+        // 이벤트 해제
+        if (DataManager.Instance != null && DataManager.Instance.Hub != null)
+            DataManager.Instance.Hub.OnDataLoaded -= OnDataLoaded;
     }
     #endregion
 
@@ -142,7 +162,7 @@ public class UpgradeManagerV2 : MonoBehaviour
     {
         currentPageIndex--;
         if (currentPageIndex < 0)
-            currentPageIndex = statPages.Length - 1; 
+            currentPageIndex = statPages.Length - 1;
         UpdatePage();
     }
 
@@ -151,7 +171,7 @@ public class UpgradeManagerV2 : MonoBehaviour
     {
         currentPageIndex++;
         if (currentPageIndex >= statPages.Length)
-            currentPageIndex = 0; 
+            currentPageIndex = 0;
         UpdatePage();
     }
 
@@ -184,7 +204,7 @@ public class UpgradeManagerV2 : MonoBehaviour
             case StatType.BaseStamina: BuyStamina(); break;
             case StatType.BaseMoveSpeed: BuyMoveSpeed(); break;
             case StatType.BaseFishingSpeed: BuyFishingSpeed(); break;
-            case StatType.StaminaHeal: BuyRestSpeed(); break; 
+            case StatType.StaminaHeal: BuyRestSpeed(); break;
         }
     }
 
@@ -277,10 +297,10 @@ public class UpgradeManagerV2 : MonoBehaviour
 
         GameManager.Instance.SetGold(-currentLevelData.Cost);
         // Set 방식
-  
+
         playerData.SetRestSpeed(nextLevelData.Value);
 
-        playerData.RestSpeedLevel = currentLevel + 1; 
+        playerData.RestSpeedLevel = currentLevel + 1;
         UpdatePage();
     }
 
@@ -337,11 +357,11 @@ public class UpgradeManagerV2 : MonoBehaviour
         // MAX 도달
         if (currentLevelData.IsMax)
         {
-            if (currentLevelData.applyType == ApplyType.Add)
-                statCurrentValueText.text = GetCurrentAddValue(type).ToString("F0");
-            else
-                statCurrentValueText.text = currentLevelData.Value.ToString("F2");
-
+            //if (currentLevelData.applyType == ApplyType.Add)
+            //    statCurrentValueText.text = GetCurrentAddValue(type).ToString("F0");
+            //else
+            //    statCurrentValueText.text = currentLevelData.Value.ToString("F2");
+            statCurrentValueText.text = GetCurrentStatValue(type);  // 항상 실제 스탯에서 읽기
             statNextValueText.text = "MAX";
             return;
         }
@@ -357,11 +377,24 @@ public class UpgradeManagerV2 : MonoBehaviour
         }
         else
         {
-            statCurrentValueText.text = currentLevelData.Value.ToString("F2");  // 첫째줄
+            //statCurrentValueText.text = currentLevelData.Value.ToString("F2");  // 첫째줄
+            statCurrentValueText.text = GetCurrentStatValue(type);  // 실제 playerData 값
             statNextValueText.text = nextLevelData.Value.ToString("F2");        // 셋째줄
         }
     }
-
+    // Add/Set 구분 없이 playerData에서 실제 현재 스탯값 반환
+    string GetCurrentStatValue(StatType type)
+    {
+        switch (type)
+        {
+            case StatType.BaseHunger: return playerData.MaxHunger.ToString("F0");
+            case StatType.BaseStamina: return playerData.MaxStamina.ToString("F0");
+            case StatType.BaseMoveSpeed: return playerData.MoveSpeed.ToString("F2");
+            case StatType.BaseFishingSpeed: return playerData.FishingSpeed.ToString("F2");
+            case StatType.StaminaHeal: return playerData.RestSpeed.ToString("F2");
+            default: return "0";
+        }
+    }
     // 왼쪽 패널 현재 스탯 3개 
     void UpdateLeftPanelStats()
     {
@@ -414,7 +447,7 @@ public class UpgradeManagerV2 : MonoBehaviour
             case StatType.BaseStamina: return playerData.StaminaLevel;
             case StatType.BaseMoveSpeed: return playerData.MoveSpeedLevel;
             case StatType.BaseFishingSpeed: return playerData.FishingSpeedLevel;
-            case StatType.StaminaHeal: return playerData.RestSpeedLevel; 
+            case StatType.StaminaHeal: return playerData.RestSpeedLevel;
             default: return 1;
         }
     }
@@ -433,7 +466,7 @@ public class UpgradeManagerV2 : MonoBehaviour
             else
                 playerData = new PlayerData();
         }
-
+        ApplyLevel0Stats(); // TODO: 나중에 삭제
         currentPageIndex = 0;
         UpdatePage();
     }
@@ -446,5 +479,81 @@ public class UpgradeManagerV2 : MonoBehaviour
         }
         return bodySprites.Length - 1;
     }
- 
+    void ApplyLevel0Stats() // TODO: 0렙 테이블 들어오면 삭제 
+    {
+        if (playerData == null) return;
+   
+        foreach (var stat in statPages)
+        {
+            int level = GetCurrentLevel(stat);
+            if (level != 0) continue;
+
+            UpgradeData data = FindCurrentLevelData(stat, 0);
+            if (data == null) continue;
+
+            switch (stat)
+            {
+                // Add 방식: Value를 Max로 세팅
+                case StatType.BaseHunger:
+                    if (playerData.MaxHunger <= 0f)
+                    {
+                        playerData.MaxHunger = data.Value;
+                        playerData.SetHunger(data.Value);
+                    }
+                    break;
+                case StatType.BaseStamina:
+                    if (playerData.MaxStamina <= 0f)
+                    {
+                        playerData.MaxStamina = data.Value;
+                        playerData.SetStamina(data.Value);
+                    }
+                    break;
+                // Set 방식: Value를 그대로 세팅
+                case StatType.BaseMoveSpeed:
+                    if (playerData.MoveSpeed <= 0f)
+                        playerData.SetMoveSpeed(data.Value);
+                    break;
+                case StatType.BaseFishingSpeed:
+                    if (playerData.FishingSpeed <= 0f)
+                        playerData.SetFishingSpeed(data.Value);
+                    break;
+                case StatType.StaminaHeal:
+                    if (playerData.RestSpeed <= 0f)
+                        playerData.SetRestSpeed(data.Value);
+                    break;
+            }
+        }
+    }
+
+    [ContextMenu("테스트용 업그레이드 레벨 리셋")]
+    void ResetUpgradeLevels()
+    {
+        // playerData 레벨도 같이 리셋
+        if (playerData != null)
+        {
+            playerData.HungerLevel = 0;
+            playerData.StaminaLevel = 0;
+            playerData.MoveSpeedLevel = 0;
+            playerData.FishingSpeedLevel = 0;
+            playerData.RestSpeedLevel = 0;
+        }
+
+        var data = DataManager.Instance.Box.Character;
+        if (data == null) return;
+
+        data._hunger.Level = 0;
+        data._stamina.Level = 0;
+
+        data._moveSpeed.Level = 0;
+        data._moveSpeed.Value = 0;
+
+        data._fishingSpeed.Level = 0;
+        data._fishingSpeed.Value = 0;
+
+        data._restSpeed.Level = 0;
+        data._restSpeed.Value = 0;
+
+        DataManager.Instance.SaveAll();
+        DataManager.Instance.Hub.UploadAllData(); // 파베에도 반영
+    }
 }
