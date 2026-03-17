@@ -133,7 +133,7 @@ public class StoreListViewModel : MonoBehaviour, INotifyPropertyChanged
             }
             else
             {
-                item.Reset();
+                //item.Reset();
                 item.transform.SetParent(ItemManager.Instance.itemSlotPool.transform);
                 ItemManager.Instance.itemSlotPool.Release(item);
             }

@@ -77,13 +77,21 @@ public class StoreListView : MonoBehaviour
 
     private void OnStoreListViewModelChanged(object sender, PropertyChangedEventArgs e)
     {
-        viewModel.Filter.UpdateFilter((Filter)viewModel.CurrentCat);
+        if(viewModel.CurrentCat != StoreCat.recipe)
+        {
+            viewModel.Filter.filterDrop.interactable = true;
+            viewModel.Filter.UpdateFilter((Filter)viewModel.CurrentCat);
+        }
+        else
+            viewModel.Filter.filterDrop.interactable = false;
+
         switch (e.PropertyName)
         {
             case null:
             case "":
                 //Debug.Log("전체 변경");
-                viewModel.Filter.FilterSlots(0); // 카테고리가 변할때만 
+                if (viewModel.CurrentCat != StoreCat.recipe)
+                    viewModel.Filter.FilterSlots(0); // 카테고리가 변할때만 
                 viewModel.Sort.SetOptions();
                 viewModel.Sort.ApplySortPriority();
                 break;

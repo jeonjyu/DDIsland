@@ -60,8 +60,8 @@ public class FilterDropdown : StoreDropdownBase
         else
             ItemManager.Instance.displayDatas = ItemManager.Instance.currentDatabase;
 
-        if (ItemManager.Instance.displayDatas != null)
-            Debug.Log("[FilterDropdown] 필터링 완료 : " + string.Join(", ", ItemManager.Instance.displayDatas.Select(x => x.ItemName + "(" + x.ID + ")" + x.Filter.ToString())));
+        //if (ItemManager.Instance.displayDatas != null)
+        //    Debug.Log("[FilterDropdown] 필터링 완료 : " + string.Join(", ", ItemManager.Instance.displayDatas.Select(x => x.ItemName + "(" + x.ID + ")" + x.Filter.ToString())));
     }
 
     public override void SetOptions()
