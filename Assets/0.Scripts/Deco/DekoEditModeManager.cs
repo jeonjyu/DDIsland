@@ -418,7 +418,7 @@ public class DecoEditModeManager : MonoBehaviour
                 gridManager.HideGrid();
 
             if (lakeBackground != null) // 호수 숨기기
-                lakeBackground.gameObject.SetActive(false);
+                lakeBackground.GetComponent<CanvasGroup>().alpha = 0f;
 
             // TODO: 섬 전용 로직, 섬 3d그리드 켜기 
             // 3D 그리드 편집모드 진입
@@ -530,7 +530,7 @@ public class DecoEditModeManager : MonoBehaviour
             if (gridPanel != null) // 호수 2d그리드 복구 
                 gridPanel.gameObject.SetActive(true);
             if (lakeBackground != null) // 호수 다시 보이기
-                lakeBackground.gameObject.SetActive(true);
+                lakeBackground.GetComponent<CanvasGroup>().alpha = 1f;
 
             // TODO: 섬 보이는거 비활성화 
             if (PlacementMgr.Instance != null)
