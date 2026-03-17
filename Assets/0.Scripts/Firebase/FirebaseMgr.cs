@@ -45,9 +45,14 @@ public class FirebaseMgr : MonoBehaviour
 
     public void FirebaseDataTransfer(string json, string path)
     {
-        if (!_isInitialized && _database == null)
+        if (!_isInitialized || _database == null)
         {
             Debug.LogError("<color=red>Firebase Database가 초기화되지 않았습니다.</color>");
+            return;
+        }
+
+        if (Database == null)
+        {
             return;
         }
 
@@ -60,14 +65,13 @@ public class FirebaseMgr : MonoBehaviour
 
         dbRef.SetRawJsonValueAsync(json).ContinueWithOnMainThread(task =>
         {
-            Debug.Log($"<color=yellow>데이터 전송 시도</color>");
-            if (task.IsCompleted)
+            if (task.IsFaulted || task.IsCanceled)
             {
-                Debug.Log("<color=green>파이어베이스에 저장 완료!</color>");
+                Debug.LogError($"<color=red>저장 실패:</color> {task.Exception?.ToString()}");
             }
             else
             {
-                Debug.LogError("<color=red>저장 실패</color>");
+                Debug.Log("<color=green>파이어베이스에 저장 완료!</color>");
             }
         });
         
