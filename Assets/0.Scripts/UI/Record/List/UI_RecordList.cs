@@ -12,7 +12,7 @@ public class UI_RecordList<T> : MonoBehaviour where T : UI_RecordSlot
     [Header("현재 리스트가 관리할 오디오 타입")]
     [SerializeField] private RecordType recordType;
 
-    private List<T> recordSlotList = new List<T>();
+    public List<T> recordSlotList = new List<T>();
 
     private void Start()
     {

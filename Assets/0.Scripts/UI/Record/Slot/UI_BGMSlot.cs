@@ -20,7 +20,7 @@ public class UI_BGMSlot : UI_RecordSlot
     public bool IsLocked
     {
         get { return isLocked; }
-        set
+        private set
         {
             isLocked = value;
             lockedObj.SetActive(value);

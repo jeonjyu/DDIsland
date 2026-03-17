@@ -18,4 +18,23 @@ public class UI_BGMList : UI_RecordList<UI_BGMSlot>
 
         playRecordInfo.SetRecordData(record);
     }
+
+    // 재생 목록이 없을 때 우선순위를 통해 재생시키는 메서드
+    public void AutoPlayRecord()
+    {
+        if (recordSlotList == null || recordSlotList.Count == 0) return;
+
+        // 현재 계절에 맞는 노래 재생
+        // todo: 추후에 우선순위 조건에 맞게 변경, 지금은 임시로 기본 노래 재생시켜둠
+        foreach(var record in recordSlotList)
+        {
+            if (record.IsLocked) continue;
+
+            if(record.Record.IsDefaultRecord)
+            {
+                ShowRecordInfo(record.Record);
+                return;
+            }    
+        }
+    }
 }

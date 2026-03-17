@@ -1,7 +1,6 @@
 using System.Collections;
 using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class UI_PlayRecordInfo : MonoBehaviour
@@ -20,14 +19,13 @@ public class UI_PlayRecordInfo : MonoBehaviour
     private RecordDataSO record;
 
     private Coroutine playRecordCoroutine;
-    private WaitForSeconds playRecordWs = new WaitForSeconds(0.5f);
+    private WaitForSeconds playRecordWs = new WaitForSeconds(0.1f);
 
     private bool isDragging;
 
 
     private void Start()
     {
-        Debug.Log(currentPlaySlider);
         currentPlaySlider.OnMouseDown += StartDrag;
         currentPlaySlider.OnMouseUp += EndDrag;
     }
@@ -49,20 +47,27 @@ public class UI_PlayRecordInfo : MonoBehaviour
         currentTimeText.text = SoundManager.Instance.BgmSource.GetSourceLength();
         endTimeText.text = record.RecordSoundPath_AudioClip.GetClipLength();
 
-        if(playRecordCoroutine != null)
+        CheckPlayTime();
+    }
+
+    private void CheckPlayTime()
+    {
+        if (!gameObject.activeInHierarchy) return;
+
+        if (playRecordCoroutine != null)
         {
             StopCoroutine(playRecordCoroutine);
             playRecordCoroutine = null;
         }
 
-        playRecordCoroutine = StartCoroutine(CheckPlayTime());
+        playRecordCoroutine = StartCoroutine(Co_CheckPlayTime());
     }
 
     /// <summary>
     /// 현재 재생중인 노래의 재생시간을 갱신하는 코루틴
     /// </summary>
     /// <returns></returns>
-    private IEnumerator CheckPlayTime()
+    private IEnumerator Co_CheckPlayTime()
     {
         while(true)
         {
@@ -95,6 +100,21 @@ public class UI_PlayRecordInfo : MonoBehaviour
             processBar.value * record.RecordSoundPath_AudioClip.length,
             0f,
             record.RecordSoundPath_AudioClip.length - 0.1f);
+    }
+
+    private void OnEnable()
+    {
+        if(record != null)
+            CheckPlayTime();
+    }
+
+    private void OnDisable()
+    {
+        if (playRecordCoroutine != null)
+        {
+            StopCoroutine(playRecordCoroutine);
+            playRecordCoroutine = null;
+        }
     }
 
     private void OnDestroy()
