@@ -10,11 +10,6 @@ public class InteractObject_LP : InteractObject
         base.Awake();
     }
 
-    protected override void Start()
-    {
-        base.Start();
-    }
-
     public override void OnMouseHoverIn()
     {
         base.OnMouseHoverIn();

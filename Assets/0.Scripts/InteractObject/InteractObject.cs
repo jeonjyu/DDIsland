@@ -9,12 +9,7 @@ public abstract class InteractObject : MonoBehaviour, IInteract
     protected virtual void Awake()
     {
         outline = GetComponent<Outline>();
-    }
 
-    protected virtual void Start()
-    {
-        outline.OutlineMode = Outline.Mode.OutlineVisible;
-        outline.OutlineWidth = 10f;
         outline.enabled = false;
     }
 

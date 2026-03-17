@@ -80,23 +80,9 @@ public class EnvironmentPresenter : MonoBehaviour
 
     private void Update()
     {
-        //여기서 초를 추가해 줬습니다 10분 마다요!
-        
-        now = now.AddSeconds(Time.deltaTime * 1800f);
         _model.UpdateTimeSet(now);
 
     }
-    //이 친구 인스펙터에서 우클릭 후 해당 메서드 이름 누르시면 실행돼요!
-    //현 기능은 JSON 저장용입니다
-    //[ContextMenu("JSONSave")]
-    //public void SaveMenu()
-    //{
-    //    DateTime now = DateTime.UtcNow.AddHours(9);
-    //    //DateTime now = new DateTime(2026, 1, 1).AddDays(UnityEngine.Random.Range(0, 365))
-    //    //                      .AddHours(UnityEngine.Random.Range(0, 24))
-    //    //                      .AddMinutes(UnityEngine.Random.Range(0, 60));
-    //    Save(now);
-    //}
 
    
     public void SyncEnvironmentDataSave()
