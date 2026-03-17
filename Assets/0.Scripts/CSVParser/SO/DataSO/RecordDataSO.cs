@@ -15,11 +15,12 @@ public enum RecordType
 public enum BgTheme
 {
     None = 0,
-    General = 1,     //기본
-    Spring = 2,      //봄
-    Summer = 3,      //여름
-    Autumn = 4,      //가을
-    Winter = 5,      //겨울
+    General = 1,             //기본
+    Spring = 2,              //봄
+    Summer = 3,              //여름
+    Autumn = 4,              //가을
+    Winter = 5,              //겨울
+    Collaboration = 6,       //콜라보
 }
 
 // 환경음 소스
@@ -30,6 +31,20 @@ public enum AmbSource
     Weather = 1,      //날씨
     Nature = 2,       //자연
     Life = 3,         //생활 소음
+}
+
+// 기본 환경음 유형
+[Serializable]
+public enum DefaultAmbType
+{
+    None = 0,
+    Spring = 1,     //봄
+    Summer = 2,     //여름
+    Autumn = 3,     //가을
+    Winter = 4,     //겨울
+    Day = 5,        //오전
+    Sunset = 6,     //오후
+    Night = 7,      //밤
 }
 
 
@@ -63,10 +78,13 @@ public class RecordDataSO : TableBase<int>
     // 환경음 소스
     [field: SerializeField] public AmbSource ambsourceType { get; private set; }
 
-    // 음반 이미지 리소스
+    // 기본 환경음 유형
+    [field: SerializeField] public DefaultAmbType defaultambType { get; private set; }
+
+    // 음반 이미지 리소스 경로
     [field: SerializeField] public Sprite RecordImgPath_Sprite { get; private set; }
 
-    // 음반 사운드 리소스
+    // 음반 사운드 리소스 경로
     [field: SerializeField] public AudioClip RecordSoundPath_AudioClip { get; private set; }
 
     // 부모 클래스의 ID 반환 추상 메서드

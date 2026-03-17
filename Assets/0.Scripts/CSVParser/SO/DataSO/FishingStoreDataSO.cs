@@ -21,6 +21,9 @@ public class FishingStoreDataSO : TableBase<int>
     // 낚시 아이템 id
     [field: SerializeField] public int FishingItemId { get; private set; }
 
+    // 외형 변화
+    [field: SerializeField] public bool IsChange { get; private set; }
+
     // 타입
     [field: SerializeField] public FishingCategory fishingcategoryType { get; private set; }
 
@@ -38,6 +41,9 @@ public class FishingStoreDataSO : TableBase<int>
 
     // UI 미니 이미지 리소스
     [field: SerializeField] public Sprite ItemImgPath_Sprite { get; private set; }
+
+    // 오브젝트 리소스 경로
+    [field: SerializeField] public Sprite ObjectPath_Sprite { get; private set; }
 
     // 부모 클래스의 ID 반환 추상 메서드
     public override int GetID() => ID;
