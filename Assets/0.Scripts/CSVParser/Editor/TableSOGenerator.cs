@@ -357,7 +357,7 @@ public class TableSOGenerator
                     // 필드명에 "_gameobject"가 들어가면 타입을 GameObject로 지정
                     type = "GameObject";
                 }
-                else if(name.Contains("_overrideanimator"))
+                else if(name.Contains("_animatoroverridecontroller"))
                 {
                     type = "AnimatorOverrideController";
                 }
