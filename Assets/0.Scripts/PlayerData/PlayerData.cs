@@ -49,7 +49,7 @@ public class PlayerData
         MaxStamina = SO.BaseStamina;
 
         CharID = SO.ID;
-        NameKey = SO.Name_String;
+        NameKey = SO.CharacterName_String;
         VisualGroupID = SO.VisualGroupID;
         UpgradGroupID = SO.UpgradGroupID;
 
