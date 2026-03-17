@@ -98,8 +98,9 @@ public class JournalDataLoader : MonoBehaviour
                 item.ItemName = isUnlocked ? fishSO.FishName_String : "???";
                 item.Description = isUnlocked ? fishSO.FishDesc_String : "";
                 item.SpecialInfo["등급"] = fishSO.gradeType.ToString();       
-                item.SpecialInfo["서식지"] = fishSO.fishType.ToString();      
-                item.SpecialInfo["계절"] = fishSO.arriveseasonType.ToString();
+                item.SpecialInfo["서식지"] = fishSO.fishType.ToString();
+                ArriveSeason allSeasons = ArriveSeason.Spring | ArriveSeason.Summer | ArriveSeason.Autumn | ArriveSeason.Winter;
+                item.SpecialInfo["계절"] = (fishSO.arriveseasonType == allSeasons) ? "모든 계절" : fishSO.arriveseasonType.ToString();
                 // TODO: 최고 기록은 CollectionData에서 가져와야 함
                 item.SpecialInfo["최고 기록"] = "0cm";
             }
