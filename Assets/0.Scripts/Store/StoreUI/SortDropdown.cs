@@ -33,7 +33,7 @@ public class SortDropdown : StoreDropdownBase
     {
         // 드롭다운 옵션 리스트 전달
         comparers = (Enum.GetValues(typeof(Comparer)) as Comparer[]).ToList();
-        optionList = StoreManager.Instance.GetEnumList<StoreSort>(Enum.GetValues(typeof(StoreSort)));
+        optionList = DescriptionExtracter.GetEnumList<StoreSort>(Enum.GetValues(typeof(StoreSort)));
         SetOptions();
     }
 
@@ -99,7 +99,7 @@ public class SortDropdown : StoreDropdownBase
 
     public void ApplySortPriority()
     {
-        Debug.Log("정렬");
+        //Debug.Log("정렬");
         //Debug.Log("[SortDropdown] ApplySortPriority | SelectedOption : " + (StoreSort)SelectedOption);
         // 선택된 옵션에 따라 StoreSort 적용 후 정렬
         switch ((StoreSort)(SelectedOption))

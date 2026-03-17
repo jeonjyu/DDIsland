@@ -41,7 +41,7 @@ public class PlayerManager : Singleton<PlayerManager>
         playerEquip.Clear();
         playerEquip.Add(CostumeType.Head.ToString(), _currentHatID);
         playerEquip.Add(CostumeType.Body.ToString(), _currentTieID);
-        playerEquip.Add(CostumeType.Tool.ToString(), _currentToolID);
+        playerEquip.Add(FishingItemType.Pole.ToString(), _currentToolID);
         playerEquip.Add(FishingItemType.Bait.ToString(), _currentBaitID);
         playerEquip.Add(FishingItemType.Bobber.ToString(), _currentBobberID);
     }
@@ -52,7 +52,7 @@ public class PlayerManager : Singleton<PlayerManager>
     {
         playerEquip[CostumeType.Head.ToString()] = 0;
         playerEquip[CostumeType.Body.ToString()] = 0;
-        playerEquip[CostumeType.Tool.ToString()] = 0;
+        playerEquip[FishingItemType.Pole.ToString()] = 0;
         playerEquip[FishingItemType.Bait.ToString()] = 0;
         playerEquip[FishingItemType.Bobber.ToString()] = 0;
     }
@@ -74,6 +74,8 @@ public class PlayerManager : Singleton<PlayerManager>
             logTxt += "에서 " + item.ObjectId + "로 변경";
             Debug.Log(logTxt);
         }
+
+        OnEquipChanged?.Invoke(playerEquip[item.Filter.ToString()] == item.ObjectId, true);
     }
 
     // 들어온 아이템과 현재 장착중인 아이템 비교

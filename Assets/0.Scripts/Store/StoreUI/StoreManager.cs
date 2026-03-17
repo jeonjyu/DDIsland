@@ -1,14 +1,13 @@
-using NUnit.Framework.Internal;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class StoreManager : Singleton<StoreManager>, INotifyPropertyChanged
-{ 
+{
+    #region field
     List<Enum> category = new List<Enum>();
 
     [SerializeField] GameObject storeListPanel;
@@ -18,14 +17,20 @@ public class StoreManager : Singleton<StoreManager>, INotifyPropertyChanged
 
     List<GameObject> stores = new List<GameObject>();
 
-    public StoreCat currentCat;
+    public StoreCat currentCat = 0;
 
     [SerializeField] private IStoreItem tradeModel;
-    ItemSlotViewModel tradeItemSlot;
+    ItemSlotViewModelBase tradeItemSlot;
     [SerializeField] StoreListViewModel storeListVM;
+    [SerializeField] StoreUIFactory storeUIFactory;
 
+    public event PropertyChangedEventHandler PropertyChanged;
+
+    #endregion
+
+    #region properties
     public GameObject BuyAndSellPanel => buyAndSellPanel;
-    public ItemSlotViewModel TradeItemSlot
+    public ItemSlotViewModelBase TradeItemSlot
     {
         get => tradeItemSlot;
         set => tradeItemSlot = value;
@@ -80,31 +85,13 @@ public class StoreManager : Singleton<StoreManager>, INotifyPropertyChanged
             }
         }
     }
+    #endregion
 
-    void Start() 
+    protected override void Awake() 
     {
+        base.Awake();
         // 초기 카테고리 설정
-        currentCat = (StoreCat)0;
-    }
-
-    // 각 enum에 설정된 Description으로 리스트 반환
-    public List<string> GetEnumList<T>(Array optionEnum) where T : Enum
-    {
-        List<string> lst = new List<string>(optionEnum.Length);
-
-        foreach (T option in optionEnum)
-            lst.Add(GetEnumDesc(option));
-
-        return lst;
-    }
-
-    // 각 enum에 지정된 description 반환
-    public string GetEnumDesc<T>(T value) where T : Enum
-    {
-        FieldInfo fieldInfo = value.GetType().GetField(value.ToString());
-        DescriptionAttribute description = fieldInfo.GetCustomAttribute(typeof(DescriptionAttribute), false) as DescriptionAttribute;
-
-        return description.Description;
+        //currentCat = (StoreCat)0;
     }
 
     /// <summary>
@@ -143,6 +130,7 @@ public class StoreManager : Singleton<StoreManager>, INotifyPropertyChanged
 
             TradeItemCount += inCount;
             //IsTradeItemGained = true;
+            //Debug.Log("IsTradeItemGained : " + IsTradeItemGained);
             TradeItemSlot.IsGained = IsTradeItemGained; // TradeModel.IsGained;
             TradeItemSlot.ItemCount = TradeItemCount;
         }
@@ -159,12 +147,17 @@ public class StoreManager : Singleton<StoreManager>, INotifyPropertyChanged
         sortDropdown.sortDrop.interactable = isAvailable;
     }
 
-    public event PropertyChangedEventHandler PropertyChanged;
+    public void ChangeLayout()
+    {
+        //Debug.Log("레이아웃 변경");
+        storeUIFactory.GetLayout(storeListVM.listGirdLayout, currentCat);
+        buyAndSellPanel = storeUIFactory.GetPopupPanel(currentCat);
+        ItemManager.Instance.itemSlot = storeUIFactory.GetItemSlot(currentCat);
+    }
 
     // TradeUnitViewModelBase에서 구독
     protected virtual void OnTradeModelChanged([CallerMemberName] string propertyName = null)
     {
-        //Debug.Log("[StoreManager] | " + propertyName);
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }

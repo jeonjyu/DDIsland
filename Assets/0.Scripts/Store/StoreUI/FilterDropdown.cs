@@ -20,7 +20,7 @@ public class FilterDropdown : StoreDropdownBase
     void Start()
     {
         // 초반 드롭다운 옵션 리스트 전달
-        optionList = StoreManager.Instance.GetEnumList<InteriorFilter>(Enum.GetValues(typeof(InteriorFilter)));
+        optionList = DescriptionExtracter.GetEnumList<InteriorFilter>(Enum.GetValues(typeof(InteriorFilter)));
         
         SetOptions();
         UpdateFilter(Filter.InteriorFilter);
@@ -32,15 +32,15 @@ public class FilterDropdown : StoreDropdownBase
         switch (filter)
         {
             case Filter.InteriorFilter:
-                optionList = StoreManager.Instance.GetEnumList<InteriorFilter>(Enum.GetValues(typeof(InteriorFilter)));
+                optionList = DescriptionExtracter.GetEnumList<InteriorFilter>(Enum.GetValues(typeof(InteriorFilter)));
                 currentFilter = typeof(InteriorFilter);
                 break;
             case Filter.CostumeFilter:
-                optionList = StoreManager.Instance.GetEnumList<CostumeFilter>(Enum.GetValues(typeof(CostumeFilter))); 
+                optionList = DescriptionExtracter.GetEnumList<CostumeFilter>(Enum.GetValues(typeof(CostumeFilter))); 
                 currentFilter = typeof(CostumeFilter);
                 break;
             case Filter.FishingFilter:
-                optionList = StoreManager.Instance.GetEnumList<FishingFilter>(Enum.GetValues(typeof(FishingFilter))); 
+                optionList = DescriptionExtracter.GetEnumList<FishingFilter>(Enum.GetValues(typeof(FishingFilter))); 
                 currentFilter = typeof(FishingFilter);
                 break;
         }
@@ -60,8 +60,8 @@ public class FilterDropdown : StoreDropdownBase
         else
             ItemManager.Instance.displayDatas = ItemManager.Instance.currentDatabase;
 
-        if (ItemManager.Instance.displayDatas != null)
-            Debug.Log("[FilterDropdown] 필터링 완료 : " + string.Join(", ", ItemManager.Instance.displayDatas.Select(x => x.ItemName + "(" + x.ID + ")" + x.Filter.ToString())));
+        //if (ItemManager.Instance.displayDatas != null)
+        //    Debug.Log("[FilterDropdown] 필터링 완료 : " + string.Join(", ", ItemManager.Instance.displayDatas.Select(x => x.ItemName + "(" + x.ID + ")" + x.Filter.ToString())));
     }
 
     public override void SetOptions()

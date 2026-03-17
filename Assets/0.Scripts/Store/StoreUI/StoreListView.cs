@@ -36,7 +36,7 @@ public class StoreListView : MonoBehaviour
         foreach (Button button in storeListPanel.GetComponentsInChildren<Button>())
             stores.Add(button);
 
-        List<string> catList = StoreManager.Instance.GetEnumList<StoreCat>(Enum.GetValues(typeof(StoreCat)));
+        List<string> catList = DescriptionExtracter.GetEnumList<StoreCat>(Enum.GetValues(typeof(StoreCat)));
         foreach (string item in catList)
         {
             int idx = catList.IndexOf(item);
@@ -58,13 +58,13 @@ public class StoreListView : MonoBehaviour
 
         if (isSelected)
         {
-            Debug.Log("선택된 색");
+            //Debug.Log("선택된 색");
             colorBlock.normalColor = selectedColor;
             colorBlock.selectedColor = selectedColor;
         }
         else
         {
-            Debug.Log("기본 색");
+            //Debug.Log("기본 색");
             colorBlock.normalColor = normalColor;
             colorBlock.selectedColor = normalColor;
         }
@@ -77,13 +77,21 @@ public class StoreListView : MonoBehaviour
 
     private void OnStoreListViewModelChanged(object sender, PropertyChangedEventArgs e)
     {
-        viewModel.Filter.UpdateFilter((Filter)viewModel.CurrentCat);
+        if(viewModel.CurrentCat != StoreCat.recipe)
+        {
+            viewModel.Filter.filterDrop.interactable = true;
+            viewModel.Filter.UpdateFilter((Filter)viewModel.CurrentCat);
+        }
+        else
+            viewModel.Filter.filterDrop.interactable = false;
+
         switch (e.PropertyName)
         {
             case null:
             case "":
                 //Debug.Log("전체 변경");
-                viewModel.Filter.FilterSlots(0); // 카테고리가 변할때만 
+                if (viewModel.CurrentCat != StoreCat.recipe)
+                    viewModel.Filter.FilterSlots(0); // 카테고리가 변할때만 
                 viewModel.Sort.SetOptions();
                 viewModel.Sort.ApplySortPriority();
                 break;

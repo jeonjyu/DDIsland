@@ -7,9 +7,9 @@ using UnityEngine;
 public class TradeUnitViewModelBase : MonoBehaviour, INotifyPropertyChanged
 {
     protected TradeUnitViewBase view;
-
+    private TradeViewModelBase tradeVM;
     [SerializeField] protected GameObject TradeConfirmPanel;
-    [SerializeField] GameObject GoldWarningPanel;
+    //[SerializeField] GameObject GoldWarningPanel;
 
 
     public ITradeStrategy purchaseStrategy;
@@ -73,6 +73,7 @@ public class TradeUnitViewModelBase : MonoBehaviour, INotifyPropertyChanged
     {
         get => StoreManager.Instance.TradeModel.IsGained;
     }
+    public TradeViewModelBase TradeVM => tradeVM; 
 
     void Awake()
     {
@@ -80,6 +81,10 @@ public class TradeUnitViewModelBase : MonoBehaviour, INotifyPropertyChanged
         view = GetComponent<TradeUnitViewBase>();
         purchaseStrategy = GetComponent<PurchaseStrategy>();
         sellStrategy = GetComponent<SellStrategy>();
+        tradeVM = GetComponent<TradeViewModelBase>();
+
+        TradeConfirmPanel = StoreManager.Instance.BuyAndSellPanel;
+        //GoldWarningPanel = gameObject.GetComponent<TradePopupBase>().gameObject; ;
 
         // StoreManager의 TradeModel,TradeItemCount이 변경되면 갱신되도록 알림 받도록
         StoreManager.Instance.PropertyChanged += UpdateTradeModel;
@@ -129,7 +134,7 @@ public class TradeUnitViewModelBase : MonoBehaviour, INotifyPropertyChanged
     /// <summary>
     /// 각 거래 유닛 초기화
     /// </summary>
-    public void InitUnit()
+    public virtual void InitUnit()
     {
         Debug.Log("[TradeUnitViewBase] InitUnit | 초기화");
 
@@ -150,7 +155,8 @@ public class TradeUnitViewModelBase : MonoBehaviour, INotifyPropertyChanged
         }
         else
         {
-            GoldWarningPanel.SetActive(false);
+            //GoldWarningPanel.SetActive(false);
+            Debug.Log("구매 실패");
         }
         //InitUnit();
     }
@@ -187,7 +193,7 @@ public class TradeUnitViewModelBase : MonoBehaviour, INotifyPropertyChanged
         }
     }
 
-    public void SetMaxCount()
+    public virtual void SetMaxCount()
     {
         if(view.GetTradeStrategy() is PurchaseStrategy)
         {
@@ -199,7 +205,7 @@ public class TradeUnitViewModelBase : MonoBehaviour, INotifyPropertyChanged
         }
     }
 
-    public void SetTotalPrice()
+    public virtual void SetTotalPrice()
     {
         if (TradeCount <= 0)
             view.SetTotalPriceText(0);

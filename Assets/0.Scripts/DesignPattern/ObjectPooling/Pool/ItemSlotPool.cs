@@ -1,5 +1,5 @@
 using UnityEngine;
 
-public class ItemSlotPool : SinglePoolManager<ItemSlotViewModel>
+public class ItemSlotPool : MultiPoolManager<ItemSlotViewModelBase>
 { 
 }
