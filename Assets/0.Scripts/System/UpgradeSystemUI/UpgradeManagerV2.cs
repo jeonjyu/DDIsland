@@ -77,6 +77,9 @@ public class UpgradeManagerV2 : MonoBehaviour
 
         upgradeTable = UpgradeTempData.GetAll();
         ApplyLevel0Stats(); // 레벨 0 베이스 스탯 적용 TODO: 나중에 삭제
+
+        // Firebase 로드 완료 후 레벨 0 보정
+        DataManager.Instance.Hub.OnDataLoaded += OnDataLoaded;
         // 페이지 인디케이터 
         buyButton.onClick.AddListener(OnbuyClicked);
         prevButton.onClick.AddListener(OnPrevPage);
@@ -85,6 +88,19 @@ public class UpgradeManagerV2 : MonoBehaviour
 
         UpdatePage();
     }
+    // Firebase 로드 완료 콜백
+    void OnDataLoaded()
+    {
+        // 로드 후 playerData 레벨 다시 읽기
+        if (playerData != null)
+            playerData.SyncCharacterDataLoad();
+
+        // 레벨 0이면 베이스 스탯 복구
+        ApplyLevel0Stats();
+        UpdatePage();
+    }
+
+
     #region 둥둥스탯 이미지
     void OnDoongDoongChanged(int value)
     {
@@ -99,6 +115,9 @@ public class UpgradeManagerV2 : MonoBehaviour
     {
         if (playerData != null)
             playerData.OnDoongDoongChanged -= OnDoongDoongChanged;
+        // 이벤트 해제
+        if (DataManager.Instance != null && DataManager.Instance.Hub != null)
+            DataManager.Instance.Hub.OnDataLoaded -= OnDataLoaded;
     }
     #endregion
 
