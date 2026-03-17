@@ -34,10 +34,18 @@ public class UI_BGMSlot : UI_RecordSlot
 
         bgmList = recordList as UI_BGMList;
 
-        artistText.text = record.RecordArtist_String;
         playTimeText.text = record.RecordSoundPath_AudioClip.GetClipLength();
 
         IsLocked = !record.IsDefaultRecord;
+
+        InitTextData();
+    }
+
+    public override void InitTextData()
+    {
+        base.InitTextData();
+
+        artistText.text = Record.RecordArtist_String;
     }
 
     public override void CheckUserData()
@@ -55,14 +63,19 @@ public class UI_BGMSlot : UI_RecordSlot
         }
         else
         {
-            SoundManager.Instance.PlayBGM(Record.RecordSoundPath_AudioClip);
-            bgmList.ShowRecordInfo(Record);
-            DataManager.Instance.RecordDatabase.CurrentRecord = Record;
+            Playrecord();
+        }
+    }
 
-            if (!DataManager.Instance.RecordDatabase.CurrentPlayList.Contains(Record.RecordID))
-            {
-                DataManager.Instance.RecordDatabase.CurrentPlayList.Add(Record.RecordID);
-            }
+    public void Playrecord()
+    {
+        SoundManager.Instance.PlayBGM(Record.RecordSoundPath_AudioClip);
+        bgmList.ShowRecordInfo(Record);
+        DataManager.Instance.RecordDatabase.CurrentRecord = Record;
+
+        if (!DataManager.Instance.RecordDatabase.CurrentPlayList.Contains(Record.RecordID))
+        {
+            DataManager.Instance.RecordDatabase.CurrentPlayList.Add(Record.RecordID);
         }
     }
 
