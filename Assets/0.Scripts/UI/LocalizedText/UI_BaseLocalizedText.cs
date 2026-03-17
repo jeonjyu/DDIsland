@@ -20,7 +20,7 @@ public class UI_BaseLocalizedText : MonoBehaviour
 
     protected virtual void SetText()
     {
-        text.text = $"<color=red>{DataManager.Instance.StringUIDatabase.StringUIInfoData[textId].ID_String}</color>";
+        text.text = $"{DataManager.Instance.StringUIDatabase.StringUIInfoData[textId].ID_String}";
     }
 
     protected void OnEnable()
