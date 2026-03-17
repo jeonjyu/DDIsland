@@ -10,7 +10,7 @@ public abstract class UI_RecordSlot : MonoBehaviour
     [Header("음반 제목 텍스트")]
     [SerializeField] private TMP_Text titleText;
 
-    [field: SerializeField] public RecordDataSO Record { get; private set; }
+    public RecordDataSO Record { get; private set; }
 
     // 슬롯 초기화
     public virtual void InitData<T>(RecordDataSO record, UI_RecordList<T> recordList) where T : UI_RecordSlot
@@ -18,10 +18,28 @@ public abstract class UI_RecordSlot : MonoBehaviour
         Record = record;
 
         recordImage.sprite = record.RecordImgPath_Sprite;
-        titleText.text = record.RecordName_String;
     }
+
+    public virtual void InitTextData()
+    {
+        titleText.text = Record.RecordName_String;
+    }
+
 
     public abstract void CheckUserData();       // 유저 저장 데이터 체크
 
     public abstract void OnClick_Slot();        // 음반 슬롯 클릭 메서드
+
+    protected void OnEnable()
+    {
+        PlayerPrefsDataManager.OnLanguageChanged += InitTextData;
+
+        if (DataManager.Instance != null && DataManager.Instance.StringUIDatabase != null && Record != null)
+            InitTextData();
+    }
+
+    protected void OnDisable()
+    {
+        PlayerPrefsDataManager.OnLanguageChanged -= InitTextData;
+    }
 }
