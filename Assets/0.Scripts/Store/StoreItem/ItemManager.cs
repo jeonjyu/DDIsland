@@ -19,6 +19,7 @@ public class ItemManager : Singleton<ItemManager>
 
     [Header("슬롯 아이템 풀")]
     [SerializeField] public ItemSlotPool itemSlotPool;
+    public ItemSlotViewModelBase itemSlot;
 
 
     [Header("파서로 받아온 상점 데이터 베이스")]
