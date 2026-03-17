@@ -163,8 +163,8 @@ GameObject:
   - component: {fileID: 5737947449617862370}
   - component: {fileID: 9223221916273710410}
   - component: {fileID: 3552978497234955327}
-  - component: {fileID: 1545544777064495666}
   - component: {fileID: 3250631288939812862}
+  - component: {fileID: -8699692401602353749}
   m_Layer: 5
   m_Name: ItemSlot
   m_TagString: Untagged
@@ -246,23 +246,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventTrigger
   m_Delegates: []
---- !u!114 &1545544777064495666
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4689650616756352908}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1ae363ff28b23904388813f76e45d9a8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ItemSlotView
-  _slotBackground: {fileID: 9223221916273710410}
-  _itemPrice: {fileID: 7900773351243472971}
-  _itemName: {fileID: 1581242828156105403}
-  _itemCount: {fileID: 1194021124230607945}
-  _itemImage: {fileID: 2190512478839835075}
 --- !u!114 &3250631288939812862
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -275,6 +258,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8e860cd9e290834aa69ec8198467770, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSlotViewModel
+--- !u!114 &-8699692401602353749
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4689650616756352908}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ecabd7e7ae2508478cd97177f070c2d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BasicSlot
+  _slotBackground: {fileID: 9223221916273710410}
+  _itemImage: {fileID: 2190512478839835075}
+  _itemPrice: {fileID: 7900773351243472971}
+  _itemName: {fileID: 1581242828156105403}
+  _itemCount: {fileID: 1194021124230607945}
 --- !u!1 &5719884204092387305
 GameObject:
   m_ObjectHideFlags: 0
