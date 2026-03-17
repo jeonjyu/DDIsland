@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEngine;
@@ -26,7 +26,8 @@ public class ItemManager : Singleton<ItemManager>
     [SerializeField] IslandStoreDatabaseSO InteriorDatabase;
     [SerializeField] CostumeStoreDatabaseSO CostumeDatabase;
     [SerializeField] FishingStoreDatabaseSO FishingDatabase;
-
+    FoodDatabaseSO FoodDatabase;
+   
     // 아이템 변동 이벤트 
     public event System.Action<IStoreItem, StoreCat> OnPlayerItemAdded;
     public event System.Action<IStoreItem, StoreCat> OnPlayerItemRemoved;
@@ -67,10 +68,12 @@ public class ItemManager : Singleton<ItemManager>
         InteriorDatabase = DataManager.Instance.StoreDatabase.IslandStoreData;
         CostumeDatabase = DataManager.Instance.StoreDatabase.CostumeStoreData;
         FishingDatabase = DataManager.Instance.StoreDatabase.FishingStoreData;
+        FoodDatabase = DataManager.Instance.FoodDatabase.FoodInfoData;
 
         storeDatas.Add(StoreCat.interior, new StoreItemDatabase(InteriorDatabase));
         storeDatas.Add(StoreCat.costume, new StoreItemDatabase(CostumeDatabase));
         storeDatas.Add(StoreCat.fishing, new StoreItemDatabase(FishingDatabase));
+        storeDatas.Add(StoreCat.recipe, new StoreItemDatabase(FoodDatabase));
 
         Debug.Log("[ItemManger] 데이터베이스 생성");
     }
@@ -118,7 +121,7 @@ public class ItemManager : Singleton<ItemManager>
     public void SetCurrentCategory(StoreCat storeCat = StoreCat.interior)
     {
         // StorePanel 활성화 한 채 실행하면 에러 발생
-        if (!storeDatas.ContainsKey(StoreCat.interior)) Debug.LogError("아이템 딕셔너리 생성 전에 StorePanel 활성화 한 채 실행하면 에러 발생, 비활성화한 뒤 재시작해주세요");
+        if(!storeDatas.ContainsKey(StoreCat.interior)) Debug.LogError("아이템 딕셔너리 생성 전에 StorePanel 활성화 한 채 실행하면 에러 발생, 비활성화한 뒤 재시작해주세요");
 
         currentDatabase = storeDatas[storeCat].Items;
         displayDatas = currentDatabase;
