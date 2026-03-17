@@ -28,6 +28,14 @@ public class SoundManager : Singleton<SoundManager>
     [Header("사운드 풀")]
     [SerializeField] private SoundPool soundPool;
 
+    [Header("오디오 클립 모음 SO 파일")]
+    [SerializeField] private AudioClipSO audioClipSO;
+
+    // 배경음, 효과음 오디오 클립을 저장할 딕셔너리
+    private Dictionary<string, AudioClip> bgmDic = new Dictionary<string, AudioClip>();
+    private Dictionary<string, AudioClip> sfxDic = new Dictionary<string, AudioClip>();
+    private Dictionary<string, AudioClip> bgsDic = new Dictionary<string, AudioClip>();
+
     private List<AudioSource> sfxList = new List<AudioSource>();    // 현재 재생중인 효과음 오디오 소스를 가지고 있을 리스트
     private Coroutine sfxPlayCoroutine;                             // 현재 재생중인 효과음 오디오 소스들을 체크하는 코루틴 변수
     [SerializeField] private float clearSourceTime = 0.5f;
@@ -53,6 +61,18 @@ public class SoundManager : Singleton<SoundManager>
     // 데이터 초기화
     private void InitData()
     {
+        if (audioClipSO.BgmClips == null || audioClipSO.SfxClips == null)
+        {
+            return;
+        }
+
+        // 배경음 딕셔너리에 오디오 클립 추가
+        audioClipSO.GetClips(audioClipSO.BgmClips, bgmDic);
+        // 효과음 딕셔너리에 오디오 클립 추가
+        audioClipSO.GetClips(audioClipSO.SfxClips, sfxDic);
+        // 환경음 딕셔너리에 오디오 클립 추가
+        audioClipSO.GetClips(audioClipSO.BgsClips, bgsDic);
+
         clearSourceWs = new WaitForSeconds(clearSourceTime);
     }
     #endregion
@@ -78,6 +98,31 @@ public class SoundManager : Singleton<SoundManager>
         AudioSource source = soundPool.Get(sfxSource);
 
         if (source == null) return;
+
+        PlaySound(Soundtype.SFX, source, clip);
+    }
+    #endregion
+
+    #region 오디오 클립 이름(string)을 받아와 재생
+    public void PlayBGM(string bgmName)
+    {
+        if (BgmSource == null || !bgmDic.TryGetValue(bgmName, out var clip)) return;
+
+        PlaySound(Soundtype.BGM, BgmSource, clip);
+    }
+
+    public void PlayBGS(string bgsName)
+    {
+        if (BgsSource == null || !bgsDic.TryGetValue(bgsName, out var clip)) return;
+
+        PlaySound(Soundtype.BGS, BgsSource, clip);
+    }
+
+    public void PlaySFX(string sfxName)
+    {
+        AudioSource source = soundPool.Get(sfxSource);
+
+        if (source == null || !sfxDic.TryGetValue(sfxName, out var clip)) return;
 
         PlaySound(Soundtype.SFX, source, clip);
     }

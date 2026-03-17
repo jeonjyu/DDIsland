@@ -34,10 +34,10 @@ public class UI_RecordUnlock : MonoBehaviour
         {
             // 음반 교환 성공시
             currentSlot.UnlockRecord();
-
-            currentSlot.Playrecord();
             gameObject.SetActive(false);
             successPopup.SetActive(true);
+
+            currentSlot.Playrecord();
         }
         else
         {
