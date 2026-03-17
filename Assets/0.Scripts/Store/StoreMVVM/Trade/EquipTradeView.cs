@@ -32,7 +32,7 @@ public class EquipTradeView : TradeViewBase
     {
         if(_equipBtn != null)
         {
-            Debug.Log("보유 여부 :" + equipViewModel.IsGained);
+            //Debug.Log("보유 여부 :" + equipViewModel.IsGained);
             _equipBtn.ChangeBtnUI(equipViewModel.IsGained);
         }
     }
@@ -52,17 +52,11 @@ public class EquipTradeView : TradeViewBase
             Debug.Log("장착 버튼이 없음");
             return;
         }
-        Debug.Log("이거는? " + this);
-        Debug.Log("장착/해제 여부 변경되니? " + e.PropertyName + " " + nameof(StoreManager.Instance.IsTradeItemGained));
+        //Debug.Log("장착/해제 여부 변경되니? " + e.PropertyName + " " + nameof(StoreManager.Instance.IsTradeItemGained));
         if(e.PropertyName == nameof(StoreManager.Instance.TradeItemCount))
         {
-            Debug.Log("아이템 개수로 장착/해제 여부 변경되는듯");
+            
             UpdateEquipBtn();
         }
-        //if (e.PropertyName == nameof(equipViewModel.IsGained) || e.PropertyName == nameof(equipViewModel.IsEquipped))
-        //{
-        //    Debug.Log("장착/해제 여부 변경되는듯");
-        //    UpdateEquipBtn();
-        //}
     }
 }

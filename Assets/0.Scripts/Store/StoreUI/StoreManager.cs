@@ -80,7 +80,7 @@ public class StoreManager : Singleton<StoreManager>, INotifyPropertyChanged
             if(tradeModel.IsGained != value)
             {
                 tradeModel.IsGained = value;
-                Debug.Log(this.name + " 아이템 보유 여부 변경 " + tradeModel.IsGained);
+                //Debug.Log(this.name + " 아이템 보유 여부 변경 " + tradeModel.IsGained);
                 OnTradeModelChanged(nameof(IsTradeItemGained));
             }
         }
@@ -100,7 +100,6 @@ public class StoreManager : Singleton<StoreManager>, INotifyPropertyChanged
     /// <param name="inCount">변동할 아이템 수량</param>
     public void ItemCountChanged(int inCount)
     {
-        Debug.Log("아이템 개수 변경");
         if (TradeModel != null)
         {
 
@@ -110,7 +109,6 @@ public class StoreManager : Singleton<StoreManager>, INotifyPropertyChanged
                 if (TradeItemCount == 0 && TradeModel.IsGained == false)
                 {
                     IsTradeItemGained = true;
-                    //Debug.Log("아이템 보유 여부 true" + IsTradeItemGained); 
                     ItemManager.Instance.AddToPlayerItem(TradeModel, currentCat);
                     Debug.Log($"[Storemanager] 새로운 아이템 추가 | IsGained : {TradeModel.IsGained} / TradeItemCount : {TradeItemCount + inCount}");
                     //TradeItemSlot.IsGained = IsTradeItemGained;
@@ -122,7 +120,6 @@ public class StoreManager : Singleton<StoreManager>, INotifyPropertyChanged
                 if (TradeItemCount + inCount == 0 && TradeModel.IsGained == true)
                 {
                     IsTradeItemGained = false;
-                    //Debug.Log("아이템 보유 여부 false" + IsTradeItemGained);
                     ItemManager.Instance.RemoveFromPlayerItem(TradeModel, currentCat);
                     Debug.Log($"[Storemanager] 아이템 삭제 | IsGained : {TradeModel.IsGained} / TradeItemCount : {TradeItemCount + inCount}");
                 }

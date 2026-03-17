@@ -25,12 +25,12 @@ public class RecipePurchaseUnitView : TradeUnitViewBase
         if(viewModel.ItemCount == 1 && viewModel.IsGained == true)
         {
             SetAllButtonAvailablity(false);
-            Debug.Log(this + " 레시피 구매 유닛 | 구매 가능");
+            //Debug.Log(this + " 레시피 구매 유닛 | 구매 가능");
         }
         else
         {
             SetAllButtonAvailablity(true);
-            Debug.Log(this + " 레시피 구매 유닛 | 구매 불가");
+            //Debug.Log(this + " 레시피 구매 유닛 | 구매 불가");
         }
 
     }
