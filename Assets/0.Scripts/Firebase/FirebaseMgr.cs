@@ -28,6 +28,8 @@ public class FirebaseMgr : MonoBehaviour
     }
     private void InitializeFirebase()
     {
+        FirebaseApp.LogLevel = LogLevel.Error;
+
         FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task =>
         {
             if (task.Result == DependencyStatus.Available)
