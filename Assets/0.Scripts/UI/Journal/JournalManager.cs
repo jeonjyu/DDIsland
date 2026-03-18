@@ -40,7 +40,7 @@ public class JournalManager : MonoBehaviour
     [SerializeField] private ScrollRect scrollRect;     // 스크롤뷰
 
     [Header("필터/정렬 드롭다운")]
-    [SerializeField] private TMP_Dropdown filterDropdown; // 전체/등록/미등록
+    [SerializeField] private JournalFilterDropdown filterDropdown; // 전체/등록/미등록
 
     [Header("카테고리 라벨 설정")]
     [SerializeField] private string[] journalCategoryNames = { "어종", "코스튬", "인테리어", "음반", "음식" };
@@ -151,11 +151,7 @@ public class JournalManager : MonoBehaviour
     private void SetupDropdown()
     {
         if (filterDropdown == null) return;
-
-        filterDropdown.ClearOptions();
-        filterDropdown.AddOptions(new List<string> { "전체", "등록", "미등록" });
-        filterDropdown.value = 0;
-        filterDropdown.onValueChanged.AddListener(OnFilterChanged);
+        filterDropdown.OnFilterChanged += OnFilterChanged;
     }
 
 
@@ -250,7 +246,7 @@ public class JournalManager : MonoBehaviour
         // 필터 초기화
         currentFilter = CollectionFilter.All;
         if (filterDropdown != null)
-            filterDropdown.SetValueWithoutNotify(0);
+            filterDropdown.ResetFilter();
 
         // 슬롯 갱신
         RefreshSlots();
@@ -258,9 +254,9 @@ public class JournalManager : MonoBehaviour
     }
 
     // 필터 변경 
-    private void OnFilterChanged(int index)
+    private void OnFilterChanged(CollectionFilter filter)
     {
-        currentFilter = (CollectionFilter)index;
+        currentFilter = filter;
         RefreshSlots();
     }
 
@@ -426,6 +422,8 @@ public class JournalManager : MonoBehaviour
                 slot.OnSlotClicked -= OnSlotClicked;
         }
         // 이벤트 구독 해제
+        if (filterDropdown != null)
+            filterDropdown.OnFilterChanged -= OnFilterChanged;
         if (ItemManager.Instance != null)
             ItemManager.Instance.OnPlayerItemAdded -= OnStoreItemAdded;
         if (FishManager.Instance != null)
