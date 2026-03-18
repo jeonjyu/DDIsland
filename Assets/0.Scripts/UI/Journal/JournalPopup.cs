@@ -87,12 +87,12 @@ public class JournalPopup : MonoBehaviour
     }
 
 
-    // "항목명 : 값" 한 줄 추가
+    // "항목명 : 값" 한 줄씩 출력
     private void AppendInfo(System.Text.StringBuilder sb, JournalDataLoader.JournalItemData data, string key)
     {
         if (data.SpecialInfo.TryGetValue(key, out string value))
         {
-            sb.AppendLine($"{key} : {value}");
+            sb.AppendLine($"{JournalLocalize.InfoKey(key)} : {value}"); 
         }
     }
 

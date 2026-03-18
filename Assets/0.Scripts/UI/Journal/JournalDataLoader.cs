@@ -97,10 +97,8 @@ public class JournalDataLoader : MonoBehaviour
             {
                 item.ItemName = isUnlocked ? fishSO.FishName_String : "???";
                 item.Description = isUnlocked ? fishSO.FishDesc_String : "";
-                item.SpecialInfo["등급"] = fishSO.gradeType.ToString();       
-                item.SpecialInfo["서식지"] = fishSO.fishType.ToString();
-                ArriveSeason allSeasons = ArriveSeason.Spring | ArriveSeason.Summer | ArriveSeason.Autumn | ArriveSeason.Winter;
-                item.SpecialInfo["계절"] = (fishSO.arriveseasonType == allSeasons) ? "모든 계절" : fishSO.arriveseasonType.ToString();
+                item.SpecialInfo["서식지"] = JournalLocalize.Enum(fishSO.fishType);
+                item.SpecialInfo["계절"] = JournalLocalize.Season(fishSO.arriveseasonType);
 
                 // Collection_Data에서 낚시한 물고기 최고 기록 가져오기
                 var records = DataManager.Instance.Box.Collection._fishRecords;
@@ -113,7 +111,7 @@ public class JournalDataLoader : MonoBehaviour
                         break;
                     }
                 }
-                item.SpecialInfo["최고 기록"] = maxLen > 0 ? maxLen.ToString("F1") + "cm" : "기록 없음";
+                item.SpecialInfo["최고 기록"] = maxLen > 0 ? maxLen.ToString("F1") + "cm" : JournalLocalize.NoRecord; 
             }
             else
             {
@@ -155,8 +153,8 @@ public class JournalDataLoader : MonoBehaviour
             if (costumeSO != null)
             {
                 item.ItemName = isUnlocked ? costumeSO.CostumeName_String : "???"; 
-                item.Description = isUnlocked ? costumeSO.CostumeDesc_String : ""; 
-                item.SpecialInfo["장착 파츠"] = costumeSO.costumeType.ToString();
+                item.Description = isUnlocked ? costumeSO.CostumeDesc_String : "";
+                item.SpecialInfo["장착 파츠"] = JournalLocalize.Enum(costumeSO.costumeType);
             }
             else
             {
@@ -195,8 +193,8 @@ public class JournalDataLoader : MonoBehaviour
             if (interiorSO != null)
             {
                 item.ItemName = isUnlocked ? interiorSO.InteriorName_String : "???"; 
-                item.Description = isUnlocked ? interiorSO.InteriorDesc_String : ""; 
-                item.SpecialInfo["배치 공간"] = interiorSO.locationType.ToString();
+                item.Description = isUnlocked ? interiorSO.InteriorDesc_String : "";
+                item.SpecialInfo["배치 공간"] = JournalLocalize.Enum(interiorSO.locationType);
             }
             else
             {
@@ -237,8 +235,8 @@ public class JournalDataLoader : MonoBehaviour
             if (foodSO != null)
             {
                 item.ItemName = isUnlocked ? foodSO.FoodName_String : "???"; 
-                item.Description = isUnlocked ? foodSO.FoodDesc_String : ""; 
-                item.SpecialInfo["등급"] = foodSO.foodrateType.ToString();
+                item.Description = isUnlocked ? foodSO.FoodDesc_String : "";
+                item.SpecialInfo["등급"] = JournalLocalize.Enum(foodSO.foodrateType);
                 item.SpecialInfo["배고픔 지수"] = foodSO.HungerBuffRate.ToString();
                 item.SpecialInfo["둥둥 지수"] = foodSO.DoongDoongBuffRate.ToString();
             }
@@ -277,10 +275,16 @@ public class JournalDataLoader : MonoBehaviour
             if (recordSO != null)
             {
                 item.ItemName = isUnlocked ? recordSO.RecordName_String : "???"; 
-                item.Description = isUnlocked ? recordSO.RecordDesc_String : ""; 
-                item.SpecialInfo["테마"] = recordSO.bgthemeType.ToString();
-                item.SpecialInfo["아티스트"] = recordSO.RecordArtist_String;      
-               // TODO:  item.SpecialInfo["재생 길이"] = "TODO";
+                item.Description = isUnlocked ? recordSO.RecordDesc_String : "";
+                item.SpecialInfo["테마"] = JournalLocalize.Enum(recordSO.bgthemeType);
+                item.SpecialInfo["아티스트"] = recordSO.RecordArtist_String;
+                // item.SpecialInfo["재생 길이"] = ""; 
+
+                // TODO: 재생길이가 데이터테이블에 추가되면 아래 삭제, 일단 임시로 AudioClip 길이로 계산 
+                item.SpecialInfo["재생 길이"] = recordSO.RecordSoundPath_AudioClip != null
+                     ? Mathf.FloorToInt(recordSO.RecordSoundPath_AudioClip.length / 60) + ":"
+                       + Mathf.FloorToInt(recordSO.RecordSoundPath_AudioClip.length % 60).ToString("D2")
+                     : "null"; //(JournalLocalize.IsKr ? "알 수 없음" : "Unknown"); 
             }
             items.Add(item);
         }
