@@ -96,10 +96,26 @@ public class JournalManager : MonoBehaviour
             CookingManager.Instance.OnFoodCooked += OnFoodCooked;
     }
 
-    private void OnFishGet(int fishId)
+    private void OnFishGet(int fishId, float length)
     {
+        UpdateFishRecord(fishId, length);
         OnItemUnlocked(JournalCategory.Fish, fishId);
     }
+    private void UpdateFishRecord(int fishId, float length)
+    {
+        var records = DataManager.Instance.Box.Collection._fishRecords;
+        for (int i = 0; i < records.Count; i++)
+        {
+            if (records[i].FishId == fishId)
+            {
+                if (length > records[i].MaxLength)
+                    records[i].MaxLength = length;
+                return;
+            }
+        }
+        records.Add(new FishRecordData { FishId = fishId, MaxLength = length });
+    }
+
     private void OnFoodCooked(int foodId)
     {
         OnItemUnlocked(JournalCategory.Food, foodId);
