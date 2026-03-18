@@ -21,7 +21,10 @@ public class StoreItemDatabase : IStoreItemDatabase
                 foreach (var item in interiorDatabase.datas)
                     Items.Add(new IslandStoreItem(item));
                 break;
-// todo : 호수 인테리어 Database 만들어주기
+            case TableDatabase<int, LakeStoreDataSO> lakeDatabase:
+                foreach (var item in lakeDatabase.datas)
+                    Items.Add(new LakeStoreItem(item));
+                break;
             case TableDatabase<int, FishingStoreDataSO> fishingDatabase:
                 foreach (var item in fishingDatabase.datas)
                     Items.Add(new FishingStoreItem(item));
