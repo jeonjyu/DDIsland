@@ -80,8 +80,8 @@ public class JournalDataLoader : MonoBehaviour
         var unlockedIds = DataManager.Instance.Box.Collection._unlockedFishIds; // 런타임 해금 데이터
         foreach (var journal in journalDB.datas)
         {
-            
-            bool isUnlocked = unlockedIds.Contains(journal.FishID); // 고정된 SO 대신 Collection_Data에서 판단
+            // 고정된 SO 대신 Collection_Data에서 판단 // 기본 제공템은 자동해금
+            bool isUnlocked = journal.IsUnlocked || unlockedIds.Contains(journal.FishID); 
             var item = new JournalItemData
             {
                 JournalId = journal.JournalFishID,
@@ -137,7 +137,7 @@ public class JournalDataLoader : MonoBehaviour
 
         foreach (var journal in journalDB.datas)
         {
-            bool isUnlocked = unlockedIds.Contains(journal.CostumeID);
+            bool isUnlocked = journal.IsUnlocked || unlockedIds.Contains(journal.CostumeID);
 
             var item = new JournalItemData
             {
@@ -180,7 +180,7 @@ public class JournalDataLoader : MonoBehaviour
 
         foreach (var journal in journalDB.datas) 
         {
-            bool isUnlocked = unlockedIds.Contains(journal.InteriorID);
+            bool isUnlocked = journal.IsUnlocked || unlockedIds.Contains(journal.InteriorID);
             var item = new JournalItemData
             {
                 JournalId = journal.JournalInteriorID,
@@ -221,7 +221,7 @@ public class JournalDataLoader : MonoBehaviour
 
         foreach (var journal in journalDB.datas) 
         {
-            bool isUnlocked = unlockedIds.Contains(journal.FoodID); 
+            bool isUnlocked = journal.IsUnlocked || unlockedIds.Contains(journal.FoodID);
 
             var item = new JournalItemData
             {
@@ -263,7 +263,7 @@ public class JournalDataLoader : MonoBehaviour
 
         foreach (var journal in journalDB.datas)
         {
-            bool isUnlocked = unlockedIds.Contains(journal.JournalID);           
+            bool isUnlocked = journal.IsUnlocked || unlockedIds.Contains(journal.JournalID);
             var item = new JournalItemData
             {
                 JournalId = journal.JournalRecordID,
