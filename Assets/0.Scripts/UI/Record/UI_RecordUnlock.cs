@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class UI_RecordUnlock : MonoBehaviour
@@ -9,6 +10,7 @@ public class UI_RecordUnlock : MonoBehaviour
     [SerializeField] private GameObject successPopup;
     [SerializeField] private GameObject failurePopup;
 
+    public event Action<RecordDataSO> OnRecordUnlock;
     private UI_BGMSlot currentSlot;
 
     // 해금 팝업창 띄우기
@@ -36,6 +38,7 @@ public class UI_RecordUnlock : MonoBehaviour
             currentSlot.UnlockRecord();
             gameObject.SetActive(false);
             successPopup.SetActive(true);
+            OnRecordUnlock?.Invoke(currentSlot.Record);
 
             currentSlot.Playrecord();
         }
