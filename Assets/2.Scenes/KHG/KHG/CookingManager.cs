@@ -41,16 +41,37 @@ public class CookingManager : Singleton<CookingManager>
     {
         var db = DataManager.Instance.FoodDatabase.FoodInfoData;
         var result = new List<FoodDataSO>();
+
         foreach (var food in db.datas)
         {
             if (food == null) continue;
+
+            //1 재료 검사
             if (!HasFish(food.MainIngredient))
                 continue;
+
             if (food.SubIngredient != 0 && !HasFish(food.SubIngredient))
                 continue;
-            //레시피 검사
+
+            //2 기본 회 처리
+            if (IsBasicSashimi(food))
+            {
+                // 같은 주재료를 쓰는 해금된 일반 레시피가 하나도 없을 때만 기본 회 허용
+                if (!HasUnlockedRecipeForMainIngredient(food.MainIngredient))
+                {
+                    result.Add(food);
+                }
+
+                continue;
+            }
+
+            //3 일반 음식은 레시피 해금된 것만 허용
+            if (!HasRecipeUnlocked(food.ID))
+                continue;
+
             result.Add(food);
         }
+
         return result;
     }
     public bool HasFish(int fishId)
@@ -60,6 +81,44 @@ public class CookingManager : Singleton<CookingManager>
         {
             if (!slot.HasValue) continue;
             if (slot.Value.FishId == fishId) return true;
+        }
+
+        return false;
+    }
+    private bool IsBasicSashimi(FoodDataSO food)
+    {
+        return food != null && food.ID == 50001;
+    }
+    private bool HasRecipeUnlocked(int foodId)
+    {
+        if (ItemManager.Instance == null) return false;
+
+        if (!ItemManager.Instance.playerItemDatas.TryGetValue(StoreCat.recipe, out var recipeDb)) return false;
+
+        if (recipeDb == null || recipeDb.Items == null) return false;
+
+        for (int i = 0; i < recipeDb.Items.Count; i++)
+        {
+            IStoreItem item = recipeDb.Items[i];
+            if (item == null) continue;
+
+            if (item.ID == foodId && item.IsGained) return true;
+        }
+
+        return false;
+    }
+    private bool HasUnlockedRecipeForMainIngredient(int fishId)
+    {
+        var db = DataManager.Instance.FoodDatabase.FoodInfoData;
+        if (db == null || db.datas == null) return false;
+
+        foreach (var food in db.datas)
+        {
+            if (food == null) continue;
+            if (food.MainIngredient != fishId) continue;
+            if (IsBasicSashimi(food)) continue; // 기본 회 제외
+
+            if (HasRecipeUnlocked(food.ID)) return true;
         }
 
         return false;

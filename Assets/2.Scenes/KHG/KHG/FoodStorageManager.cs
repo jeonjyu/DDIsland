@@ -18,11 +18,11 @@ public class FoodStorageManager : Singleton<FoodStorageManager>
 {
     FoodStackSlot?[] foodSlots;
 
-    int _storageCapacity = 10;  //인벤크기
+    int _storageCapacity = 5;  //인벤크기
     int _storagelevel = 1;
     long _acquireCounter = 0;
     public const int MaxLevel = 5;
-    public const int MaxCapacity = 50;
+    public const int MaxCapacity = 25;
 
     public event Action<int> OnSlotChanged;
     public int Capacity => foodSlots?.Length ?? 0;
@@ -137,13 +137,13 @@ public class FoodStorageManager : Singleton<FoodStorageManager>
     private void ApplyFoodCapacityByLevel()  //레벨에 맞게 창고용량 적용
     {
         int newCap = _storageCapacity; //현재 용량 기준으로 새 용량 계산
+      
 
-
-        if (_storagelevel <= 1) newCap = 10;
-        else if (_storagelevel == 2) newCap = 20;
-        else if (_storagelevel == 3) newCap = 30;
-        else if (_storagelevel == 4) newCap = 40;
-        else newCap = 50;
+        if (_storagelevel <= 1) newCap = 5;
+        else if (_storagelevel == 2) newCap = 10;
+        else if (_storagelevel == 3) newCap = 15;
+        else if (_storagelevel == 4) newCap = 20;
+        else newCap = 25;
         if (_storageCapacity == newCap) return;
 
         if (foodSlots == null) foodSlots = new FoodStackSlot?[newCap];   //실제 슬롯 배열 크기 변경(기존 데이터 유지)
