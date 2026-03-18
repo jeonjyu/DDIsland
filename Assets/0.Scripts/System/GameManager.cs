@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using UnityEngine;
 
 [DefaultExecutionOrder(-50), RequireComponent(typeof(InputHandler))]
@@ -11,8 +10,8 @@ public class GameManager : Singleton<GameManager>
     [Header("StageControl 클래스")]
     [field: SerializeField] public StageControl StageController { get; set; }
 
-    [field: SerializeField] public UI_IslandWindow IslandWindow{ get; set; }
-    [field: SerializeField] public UI_WaterWindow WaterWindow { get; set; }
+    [field: SerializeField] public UI_IslandWindow IslandWindow{ get; set; }        // 섬 창(Window) 조절 클래스
+    [field: SerializeField] public UI_WaterWindow WaterWindow { get; set; }         // 호수 창(Window) 조절 클래스
 
     public event Action<int> OnGoldChanged;
 
@@ -49,18 +48,6 @@ public class GameManager : Singleton<GameManager>
             {
                 DataManager.Instance.Hub.OnDataLoaded += SyncGoldLoad;
             }
-        }
-
-        StartCoroutine(AutoAddGold());
-    }
-
-    private IEnumerator AutoAddGold()
-    {
-        while(true)
-        {
-            SetGold(100);
-
-            yield return new WaitForSeconds(5f);
         }
     }
 
