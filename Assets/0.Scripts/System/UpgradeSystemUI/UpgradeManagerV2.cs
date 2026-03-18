@@ -76,10 +76,10 @@ public class UpgradeManagerV2 : MonoBehaviour
             playerData.OnDoongDoongChanged += OnDoongDoongChanged;
 
         upgradeTable = UpgradeTempData.GetAll();
-        ApplyLevel0Stats(); // 레벨 0 베이스 스탯 적용 TODO: 나중에 삭제
+  
+        //// Firebase 로드 완료 후 레벨 0 보정
+        //DataManager.Instance.Hub.OnDataLoaded += OnDataLoaded;
 
-        // Firebase 로드 완료 후 레벨 0 보정
-        DataManager.Instance.Hub.OnDataLoaded += OnDataLoaded;
         // 페이지 인디케이터 
         buyButton.onClick.AddListener(OnbuyClicked);
         prevButton.onClick.AddListener(OnPrevPage);
@@ -89,16 +89,14 @@ public class UpgradeManagerV2 : MonoBehaviour
         UpdatePage();
     }
     // Firebase 로드 완료 콜백
-    void OnDataLoaded()
-    {
-        // 로드 후 playerData 레벨 다시 읽기
-        if (playerData != null)
-            playerData.SyncCharacterDataLoad();
+    //void OnDataLoaded()
+    //{
+    //    // 로드 후 playerData 레벨 다시 읽기
+    //    if (playerData != null)
+    //        playerData.SyncCharacterDataLoad();
 
-        // 레벨 0이면 베이스 스탯 복구
-        ApplyLevel0Stats();
-        UpdatePage();
-    }
+    //    UpdatePage();
+    //}
 
 
     #region 둥둥스탯 이미지
@@ -115,9 +113,9 @@ public class UpgradeManagerV2 : MonoBehaviour
     {
         if (playerData != null)
             playerData.OnDoongDoongChanged -= OnDoongDoongChanged;
-        // 이벤트 해제
-        if (DataManager.Instance != null && DataManager.Instance.Hub != null)
-            DataManager.Instance.Hub.OnDataLoaded -= OnDataLoaded;
+        //// 이벤트 해제
+        //if (DataManager.Instance != null && DataManager.Instance.Hub != null)
+        //    DataManager.Instance.Hub.OnDataLoaded -= OnDataLoaded;
     }
     #endregion
 
@@ -466,7 +464,7 @@ public class UpgradeManagerV2 : MonoBehaviour
             else
                 playerData = new PlayerData();
         }
-        ApplyLevel0Stats(); // TODO: 나중에 삭제
+     
         currentPageIndex = 0;
         UpdatePage();
     }
@@ -479,77 +477,33 @@ public class UpgradeManagerV2 : MonoBehaviour
         }
         return bodySprites.Length - 1;
     }
-    void ApplyLevel0Stats() // TODO: 0렙 테이블 들어오면 삭제 
-    {
-        if (playerData == null) return;
-   
-        foreach (var stat in statPages)
-        {
-            int level = GetCurrentLevel(stat);
-            if (level != 0) continue;
+ 
 
-            UpgradeData data = FindCurrentLevelData(stat, 0);
-            if (data == null) continue;
+    //[ContextMenu("테스트용 업그레이드 레벨 리셋")]
+    //void ResetUpgradeLevels()
+    //{
+    //    // playerData 레벨도 같이 리셋
+    //    if (playerData != null)
+    //    {
+    //        playerData.HungerLevel = 0;
+    //        playerData.StaminaLevel = 0;
+    //        playerData.MoveSpeedLevel = 0;
+    //        playerData.FishingSpeedLevel = 0;
+    //        playerData.RestSpeedLevel = 0;
+    //    }
 
-            switch (stat)
-            {
-                // Add 방식: Value를 Max로 세팅
-                case StatType.BaseHunger:
-                    if (playerData.MaxHunger <= 0f)
-                    {
-                        playerData.MaxHunger = data.Value;
-                        playerData.SetHunger(data.Value);
-                    }
-                    break;
-                case StatType.BaseStamina:
-                    if (playerData.MaxStamina <= 0f)
-                    {
-                        playerData.MaxStamina = data.Value;
-                        playerData.SetStamina(data.Value);
-                    }
-                    break;
-                // Set 방식: Value를 그대로 세팅
-                case StatType.BaseMoveSpeed:
-                    if (playerData.MoveSpeed <= 0f)
-                        playerData.SetMoveSpeed(data.Value);
-                    break;
-                case StatType.BaseFishingSpeed:
-                    if (playerData.FishingSpeed <= 0f)
-                        playerData.SetFishingSpeed(data.Value);
-                    break;
-                case StatType.StaminaHeal:
-                    if (playerData.RestSpeed <= 0f)
-                        playerData.SetRestSpeed(data.Value);
-                    break;
-            }
-        }
-    }
+    //    var data = DataManager.Instance.Box.Character;
+    //    if (data == null) return;
 
-    [ContextMenu("테스트용 업그레이드 레벨 리셋")]
-    void ResetUpgradeLevels()
-    {
-        // playerData 레벨도 같이 리셋
-        if (playerData != null)
-        {
-            playerData.HungerLevel = 0;
-            playerData.StaminaLevel = 0;
-            playerData.MoveSpeedLevel = 0;
-            playerData.FishingSpeedLevel = 0;
-            playerData.RestSpeedLevel = 0;
-        }
+    //    data._hunger.Level = 0;
 
-        var data = DataManager.Instance.Box.Character;
-        if (data == null) return;
+    //    data._moveSpeed.Level = 0;
 
-        data._hunger.Level = 0;
+    //    data._fishingSpeed.Level = 0;
 
-        data._moveSpeed.Level = 0;
+    //    data._restSpeed.Level = 0;
 
-        data._fishingSpeed.Level = 0;
-
-        data._restSpeed.Level = 0;
-
-        DataManager.Instance.SaveAll();
-        DataManager.Instance.Hub.UploadAllData(); // 파베에도 반영
-    }
+    //    DataManager.Instance.SaveAll();
+    //    DataManager.Instance.Hub.UploadAllData(); // 파베에도 반영
+    //}
 }
