@@ -15,6 +15,13 @@ public class UI_DropdownText : UI_BaseLocalizedText
         dropdown = GetComponent<TMP_Dropdown>();
     }
 
+    protected override void Start()
+    {
+        base.Start();
+
+        dropdown.captionText.text = DataManager.Instance.StringUIDatabase.StringUIInfoData[textId].ID_String;
+    }
+
     protected override void SetText()
     {
         if (keys.Length == 0) return;

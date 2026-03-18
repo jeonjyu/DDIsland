@@ -12,7 +12,6 @@ public class EnvironmentCheat : MonoBehaviour
     [SerializeField] private InputActionReference _changeTime;
     [SerializeField] private InputActionReference _toggleParticle;
 
-
     private void OnEnable()
     {
         // 액션맵 활성화

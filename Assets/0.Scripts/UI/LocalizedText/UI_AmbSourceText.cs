@@ -13,6 +13,10 @@ public class UI_AmbSourceText : UI_BaseLocalizedText
         base.Awake();
     }
 
+    protected override void Start()
+    {
+        base.Start();
+    }
     protected override void SetText()
     {
         if (ambSlot == null || ambSlot.Record == null) return;

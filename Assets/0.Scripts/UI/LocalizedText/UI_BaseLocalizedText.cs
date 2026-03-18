@@ -13,7 +13,7 @@ public class UI_BaseLocalizedText : MonoBehaviour
         text = GetComponent<TMP_Text>();
     }
 
-    protected void Start()
+    protected virtual void Start()
     {
         SetText();
     }
