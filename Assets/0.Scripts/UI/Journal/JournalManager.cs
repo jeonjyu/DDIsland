@@ -246,9 +246,6 @@ public class JournalManager : MonoBehaviour
         // 슬롯 갱신
         RefreshSlots();
 
-        // 스크롤 위치 맨 위로
-        if (scrollRect != null)
-            scrollRect.verticalNormalizedPosition = 1f;
     }
 
     // 필터 변경 
@@ -306,9 +303,16 @@ public class JournalManager : MonoBehaviour
         // 슬롯에 데이터 세팅
         ClearSlots();
         CreateSlots(filteredItems);
+
+        // 스크롤 위치 맨 위로
+        if (scrollRect != null)
+        {
+            Canvas.ForceUpdateCanvases();
+            scrollRect.verticalNormalizedPosition = 1f;
+        }
     }
 
- 
+
     // 카테고리 라벨 업데이트
     private void UpdateCategoryLabels()
     {
