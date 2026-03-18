@@ -911,7 +911,6 @@ public class PlayerController : MonoBehaviour
     {
         if (!force && newState is not SleepState && _isResting)
             return;
-
         _currentState?.Exit();
         _currentState = newState;
         _currentState.Enter();
