@@ -77,10 +77,9 @@ public class JournalPopup : MonoBehaviour
                 break;
 
             case JournalCategory.Album:
-                // TODO: JournalRecordDataSO 들어오면 아래 주석 해제
-                // AppendInfo(sb, data, "테마");
-                // AppendInfo(sb, data, "아티스트");
-                // AppendInfo(sb, data, "재생 길이");
+                AppendInfo(sb, data, "테마");
+                AppendInfo(sb, data, "아티스트");
+                AppendInfo(sb, data, "재생 길이");
                 break;
         }
 

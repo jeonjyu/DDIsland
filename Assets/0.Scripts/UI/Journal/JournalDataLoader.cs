@@ -42,7 +42,7 @@ public class JournalDataLoader : MonoBehaviour
                 items = BuildFoodItems();
                 break;
             case JournalCategory.Album:
-                // items = BuildAlbumItems();  // TODO: 데이터 들오면 주석해제 
+                items = BuildAlbumItems();  
                 break;
         }
 
@@ -254,36 +254,37 @@ public class JournalDataLoader : MonoBehaviour
         return items;
     }
 
-    // TODO: 음반 데이터 들어오면 아래 주석 해제
-    // private List<JournalItemData> BuildAlbumItems()
-    // {
-    //     var items = new List<JournalItemData>();
-    //     var journalDB = DataManager.Instance.JournalDatabase.JournalRecordData;
-    //     var recordDB = DataManager.Instance.???;
-    //     foreach (var journal in journalDB.datas)
-    //     {
-    //         var item = new JournalItemData
-    //         {
-    //             JournalId = journal.JournalRecordID,
-    //             ItemId = journal.RecordID,
-    //             IsUnlocked = journal.IsUnlocked,
-    //             ItemSprite = journal.RecordImgPath_Sprite, 
-    //             Category = JournalCategory.Album,
-    //             SpecialInfo = new Dictionary<string, string>()
-    //         };
-    //         var recordSO = FindRecordData(journal.RecordID);
-    //         if (recordSO != null)
-    //         {
-    //             item.ItemName = item.IsUnlocked ? recordSO.RecordName_String : "???";
-    //             item.Description = item.IsUnlocked ? recordSO.RecordDesc_String : "";
-    //             item.SpecialInfo["테마"] = recordSO.bgthemeType.ToString();
-    //             item.SpecialInfo["아티스트"] = recordSO.RecordArtistString;
-    //             item.SpecialInfo["재생 길이"] = "TODO";
-    //         }
-    //         items.Add(item);
-    //     }
-    //     return items;
-    // }
+    private List<JournalItemData> BuildAlbumItems()
+    {
+        var items = new List<JournalItemData>();
+        var journalDB = DataManager.Instance.JournalDatabase.JournalRecordData;
+        var recordDB = DataManager.Instance.RecordDatabase.RecordInfoData;       
+        var unlockedIds = DataManager.Instance.Box.Collection._unlockedAlbumIds;
 
+        foreach (var journal in journalDB.datas)
+        {
+            bool isUnlocked = unlockedIds.Contains(journal.JournalID);           
+            var item = new JournalItemData
+            {
+                JournalId = journal.JournalRecordID,
+                ItemId = journal.JournalID,                                      
+                IsUnlocked = isUnlocked,                                         
+                ItemSprite = journal.RecordImgPath_Sprite,
+                Category = JournalCategory.Album,
+                SpecialInfo = new Dictionary<string, string>()
+            };
+            var recordSO = recordDB[journal.JournalID];                          
+            if (recordSO != null)
+            {
+                item.ItemName = isUnlocked ? recordSO.RecordName_String : "???"; 
+                item.Description = isUnlocked ? recordSO.RecordDesc_String : ""; 
+                item.SpecialInfo["테마"] = recordSO.bgthemeType.ToString();
+                item.SpecialInfo["아티스트"] = recordSO.RecordArtist_String;      
+               // TODO:  item.SpecialInfo["재생 길이"] = "TODO";
+            }
+            items.Add(item);
+        }
+        return items;
+    }
 
 }

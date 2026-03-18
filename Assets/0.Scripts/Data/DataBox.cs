@@ -66,7 +66,7 @@ public class Collection_Data
     public List<int> _unlockedCostumeIds = new(); // 해금된 코스튬 ID
     public List<int> _unlockedInteriorIds = new();// 해금된 인테리어 ID
     public List<int> _unlockedFoodIds = new();    // 해금된 음식 ID
-  //public List<int> _unlockedAlbumIds = new ();  // 해금된 음반 ID 
+    public List<int> _unlockedAlbumIds = new ();  // 해금된 음반 ID 
     public List<FishRecordData> _fishRecords = new(); // 어종 최고 기록
 }
 

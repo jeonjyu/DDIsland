@@ -80,13 +80,6 @@ public class JournalManager : MonoBehaviour
     {   
         // UI 라벨 세팅
         UpdateCategoryLabels();
-
-
-        // TODO: 음반 카테고리 비활성화, 앨범 데이터 들어오면 아래 줄 삭제
-        if (categoryButtons.Length > (int)JournalCategory.Album)
-            categoryButtons[(int)JournalCategory.Album].interactable = false;
-
-
        
         if (ItemManager.Instance != null) // 상점 구매 이벤트 구독
             ItemManager.Instance.OnPlayerItemAdded += OnStoreItemAdded;
@@ -339,11 +332,6 @@ public class JournalManager : MonoBehaviour
                 if (categoryTexts[i] != null && i < journalCategoryNames.Length)
                     categoryTexts[i].text = journalCategoryNames[i];
             }
-
-            // 음반 카테고리 비활성화
-            // TODO: JournalRecordDataSO 들어오면 아래 줄 삭제
-            if (categoryButtons.Length > (int)JournalCategory.Album)
-                categoryButtons[(int)JournalCategory.Album].interactable = false;
         }
         else
         {
@@ -392,6 +380,13 @@ public class JournalManager : MonoBehaviour
                 if (!collection._unlockedInteriorIds.Contains(itemId))
                 {
                     collection._unlockedInteriorIds.Add(itemId);
+                    newUnlocked = true;
+                }
+                break;
+            case JournalCategory.Album:
+                if (!collection._unlockedAlbumIds.Contains(itemId))
+                {
+                    collection._unlockedAlbumIds.Add(itemId);
                     newUnlocked = true;
                 }
                 break;
