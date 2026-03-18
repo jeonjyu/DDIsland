@@ -76,15 +76,6 @@ public class QuestManager : Singleton<QuestManager>
         SetRewardData(_reaward);
     }
 
-    private void Start()
-    {
-        QuestManager.Instance.AddDetailsProgress(QuestConditionKey.FishCatchById, "10001", 100);  //테스트
-        QuestManager.Instance.SetSimpleProgress(QuestConditionKey.FishGuideRegisteredCount, 10);
-        QuestManager.Instance.SetSimpleProgress(QuestConditionKey.CostumeGuideRegisteredCount, 10);
-        QuestManager.Instance.SetSimpleProgress(QuestConditionKey.FoodGuideRegisteredCount, 10);
-        QuestManager.Instance.SetSimpleProgress(QuestConditionKey.InteriorGuideRegisteredCount, 10);
-    }
-
     //데이터 보관용
     public void SetQuestData(List<QuestDataSO> data)
     {

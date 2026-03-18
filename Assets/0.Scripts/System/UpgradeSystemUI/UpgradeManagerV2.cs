@@ -224,6 +224,8 @@ public class UpgradeManagerV2 : MonoBehaviour
         playerData.SetHunger(playerData.Hunger + currentLevelData.Value);
 
         playerData.HungerLevel = currentLevel + 1;
+        playerData.HungerLevel = currentLevel + 1;
+        QuestManager.Instance.SetSimpleProgress(QuestConditionKey.HungerLevel,playerData.HungerLevel);
         UpdatePage();
     }
 
@@ -244,6 +246,7 @@ public class UpgradeManagerV2 : MonoBehaviour
         playerData.SetStamina(playerData.Stamina + currentLevelData.Value);
 
         playerData.StaminaLevel = currentLevel + 1;
+        QuestManager.Instance.SetSimpleProgress(QuestConditionKey.HungerLevel, playerData.StaminaLevel);
         UpdatePage();
     }
 
@@ -262,6 +265,7 @@ public class UpgradeManagerV2 : MonoBehaviour
         playerData.SetMoveSpeed(nextLevelData.Value);
 
         playerData.MoveSpeedLevel = currentLevel + 1;
+        QuestManager.Instance.SetSimpleProgress(QuestConditionKey.HungerLevel, playerData.MoveSpeedLevel);
         UpdatePage();
     }
 
@@ -280,6 +284,7 @@ public class UpgradeManagerV2 : MonoBehaviour
         playerData.SetFishingSpeed(nextLevelData.Value);
 
         playerData.FishingSpeedLevel = currentLevel + 1;
+        QuestManager.Instance.SetSimpleProgress(QuestConditionKey.HungerLevel, playerData.FishingSpeedLevel);
         UpdatePage();
     }
 
@@ -300,6 +305,7 @@ public class UpgradeManagerV2 : MonoBehaviour
         playerData.SetRestSpeed(nextLevelData.Value);
 
         playerData.RestSpeedLevel = currentLevel + 1;
+        QuestManager.Instance.SetSimpleProgress(QuestConditionKey.HungerLevel, playerData.RestSpeedLevel);
         UpdatePage();
     }
 

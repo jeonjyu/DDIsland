@@ -214,7 +214,12 @@ public class FishManager : Singleton<FishManager>
             Debug.LogWarning($"[FishManager] FishDataSO 못찾음 fishId={fishId}");
             return;
         }
+        QuestManager.Instance.AddSimpleProgress(QuestConditionKey.FishingCount, 1);
 
+        if (fishId == 10001 || fishId == 10005)
+        {
+            QuestManager.Instance.AddDetailsProgress(QuestConditionKey.FishCatchById,fishId.ToString(),1);
+        }
         CreateInstance(fishSO);  //길이,가격 계산 후 저장
     }
 

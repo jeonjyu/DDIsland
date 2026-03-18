@@ -373,6 +373,8 @@ public class JournalManager : MonoBehaviour
                 {
                     collection._unlockedFishIds.Add(itemId);
                     newUnlocked = true;
+                    collection._unlockedFishIds.Add(itemId);
+                    QuestManager.Instance.SetSimpleProgress(QuestConditionKey.FishGuideRegisteredCount,collection._unlockedFishIds.Count);
                 }
                 break;
             case JournalCategory.Costume:
@@ -380,6 +382,8 @@ public class JournalManager : MonoBehaviour
                 {
                     collection._unlockedCostumeIds.Add(itemId);
                     newUnlocked = true;
+                    collection._unlockedCostumeIds.Add(itemId);
+                    QuestManager.Instance.SetSimpleProgress(QuestConditionKey.CostumeGuideRegisteredCount,collection._unlockedCostumeIds.Count);
                 }
                 break;
             case JournalCategory.Interior:
@@ -387,6 +391,8 @@ public class JournalManager : MonoBehaviour
                 {
                     collection._unlockedInteriorIds.Add(itemId);
                     newUnlocked = true;
+                    collection._unlockedInteriorIds.Add(itemId);
+                    QuestManager.Instance.SetSimpleProgress(QuestConditionKey.InteriorGuideRegisteredCount,collection._unlockedInteriorIds.Count);
                 }
                 break;
             case JournalCategory.Album:
@@ -401,6 +407,7 @@ public class JournalManager : MonoBehaviour
                 {
                     collection._unlockedFoodIds.Add(itemId);
                     newUnlocked = true;
+                    collection._unlockedFoodIds.Add(itemId);QuestManager.Instance.SetSimpleProgress(QuestConditionKey.FoodGuideRegisteredCount,collection._unlockedFoodIds.Count);
                 }
                 break;
         }
