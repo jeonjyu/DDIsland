@@ -675,7 +675,7 @@ PrefabInstance:
     - target: {fileID: 7496785910796329605, guid: e660d4befd8dd0b4296790381f5104a0, type: 3}
       propertyPath: storeListPanel
       value: 
-      objectReference: {fileID: 4261510180227368521}
+      objectReference: {fileID: 0}
     - target: {fileID: 7496785910796329605, guid: e660d4befd8dd0b4296790381f5104a0, type: 3}
       propertyPath: storeUIFactory
       value: 
@@ -860,6 +860,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   <InputManager>k__BackingField: {fileID: 0}
   <StageController>k__BackingField: {fileID: 0}
+  <IslandWindow>k__BackingField: {fileID: 0}
+  <WaterWindow>k__BackingField: {fileID: 0}
   playerGold: 10000000
 --- !u!4 &1917259254
 Transform:
@@ -1250,15 +1252,11 @@ PrefabInstance:
       value: StoreUI
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 1771811453808620805, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
---- !u!1 &4261510180227368521 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3413719762691239773, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
-  m_PrefabInstance: {fileID: 4261510180227368517}
-  m_PrefabAsset: {fileID: 0}
 --- !u!224 &4412533036373564723
 RectTransform:
   m_ObjectHideFlags: 0

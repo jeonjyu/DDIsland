@@ -20,22 +20,20 @@ public class StoreListView : MonoBehaviour
 
     void Awake()
     {
-        SetStoreCat();
         viewModel = GetComponent<StoreListViewModel>();
         viewModel.PropertyChanged += OnStoreListViewModelChanged;
         normalColor = StoreButton.colors.normalColor;
         selectedColor = StoreButton.colors.pressedColor;
+
+        foreach (Button button in storeListPanel.transform.GetComponentsInChildren<Button>())
+            stores.Add(button);
+
+        SetStoreCat();
     }
 
     // 스토어 버튼 설정
     void SetStoreCat()
     {
-        if (stores != null)
-            stores.Clear();
-
-        foreach (Button button in storeListPanel.GetComponentsInChildren<Button>())
-            stores.Add(button);
-
         List<string> catList = DescriptionExtracter.GetEnumList<StoreCat>(Enum.GetValues(typeof(StoreCat)));
         foreach (string item in catList)
         {

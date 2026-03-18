@@ -29,6 +29,10 @@ public enum StoreType
 public enum JournalType
 {
     None = 0,
+     JournalFish = 1,              //물고기 도감
+     JournalCostume = 2,           //코스튬 도감
+     JournalFood = 3,              //음식 도감
+     JounalInterior = 4,           //인테리어 도감
 }
 
 

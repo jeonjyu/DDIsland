@@ -7,7 +7,7 @@ using UnityEngine;
 public class TradeUnitViewModelBase : MonoBehaviour, INotifyPropertyChanged
 {
     protected TradeUnitViewBase view;
-    private TradeViewModelBase tradeVM;
+    [SerializeField] private TradeViewModelBase tradeVM;
     [SerializeField] protected GameObject TradeConfirmPanel;
     //[SerializeField] GameObject GoldWarningPanel;
 

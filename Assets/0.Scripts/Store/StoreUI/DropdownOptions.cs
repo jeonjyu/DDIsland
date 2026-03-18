@@ -4,7 +4,8 @@ using System.ComponentModel;
 
 public enum StoreCat
 {
-    [Description("인테리어")] interior,
+    [Description("섬 인테리어")] interior,
+    [Description("호수 인테리어")] lake,
     [Description("코스튬")] costume,
     [Description("낚시")] fishing,
     [Description("레시피")] recipe
@@ -24,6 +25,7 @@ public enum StoreSort
 public enum Filter
 {
     InteriorFilter,
+    LakeFilter,
     CostumeFilter,
     FishingFilter
 }
@@ -35,9 +37,14 @@ public enum InteriorFilter
     [Description("섬 바닥")] floor,
     [Description("섬 고정 장식물")] fix,
     [Description("섬 자유 배치물")] free,
-    [Description("호수 바닥")] lakeFloor,
-    [Description("호수 고정 장식물")] lakeFix,
-    [Description("호수 자유 배치물")] lakeFree
+
+}
+
+public enum LakeFilter
+{
+    [Description("모든 아이템")] all,
+    [Description("바닥재")] floor,
+    [Description("장식물")] ornament
 }
 
 public enum CostumeFilter 
