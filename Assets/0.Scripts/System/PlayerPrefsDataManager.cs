@@ -12,6 +12,7 @@ public static class PlayerPrefsDataManager
     private const string KEY_BGMVOLUME = "BgmVolume";                   // BGM 볼륨 키
     private const string KEY_SFXVOLUME = "SfxVolume";                   // SFX 볼륨 키
     private const string KEY_BGSVOLUME = "BgsVolume";                   // BGS 볼륨 키
+    private const string KEY_PREVIEWVOLUME = "PreviewVolume";                   // Preview 볼륨 키
     private const string KEY_BGMVOLUME_MUTE = "BGMVolumeMute";          // BGM 뮤트 키
     private const string KEY_SFXVOLUME_MUTE = "SFXVolumeMute";          // SFX 뮤트 키
     private const string KEY_BGSVOLUME_MUTE = "BGSVolumeMute";          // BGS 뮤트 키
@@ -68,6 +69,16 @@ public static class PlayerPrefsDataManager
         {
             float vol = Mathf.Clamp(value, 0f, 1f);
             PlayerPrefs.SetFloat(KEY_BGSVOLUME, vol);
+        }
+    }
+
+    public static float PreviewVolume
+    {
+        get { return PlayerPrefs.GetFloat(KEY_PREVIEWVOLUME, 1f); }
+        set
+        {
+            float vol = Mathf.Clamp(value, 0f, 1f);
+            PlayerPrefs.SetFloat(KEY_PREVIEWVOLUME, vol);
         }
     }
 

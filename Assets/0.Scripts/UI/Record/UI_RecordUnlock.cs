@@ -40,6 +40,8 @@ public class UI_RecordUnlock : MonoBehaviour
             successPopup.SetActive(true);
             OnRecordUnlock?.Invoke(currentSlot.Record);
 
+            DataManager.Instance.RecordDatabase.LpPieceCount -= requireLpPieceCount;
+            DataManager.Instance.RecordDatabase.UnlockRecords.Add(currentSlot.Record.RecordID);
             currentSlot.Playrecord();
         }
         else

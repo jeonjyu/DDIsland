@@ -8,7 +8,7 @@ public class UI_BaseLocalizedText : MonoBehaviour
 
     protected TMP_Text text;
 
-    protected void Awake()
+    protected virtual void Awake()
     {
         text = GetComponent<TMP_Text>();
     }
