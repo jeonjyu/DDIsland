@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class DecoInventoryManager : Singleton<DecoInventoryManager>
@@ -64,7 +65,28 @@ public class DecoInventoryManager : Singleton<DecoInventoryManager>
     public void RestoreItem(int itemId)
     {
         var playerItem = FindPlayerItem(itemId);
-        if (playerItem == null) return;
+        if (playerItem == null)
+        {
+            var originalItem = ItemManager.Instance.storeDatas[StoreCat.interior].Items.FirstOrDefault(x => x.ID == itemId);
+
+            if (originalItem != null)
+            {
+                originalItem.ItemCount = 1;
+                originalItem.IsGained = true;
+                ItemManager.Instance.AddToPlayerItem(originalItem, StoreCat.interior);
+
+                invenList.Add(new LakeInvenSlot { itemId = itemId, quantity = 1 });
+
+                Debug.Log($"<color=cyan> 아이템 복구 </color>");
+            }
+            else
+            {
+                Debug.LogError($"해당 아이템 코드({itemId})를 찾을 수 없습니다!");
+            }
+
+
+            return;
+        }
 
         playerItem.ItemCount++;
         if (!playerItem.IsGained)
