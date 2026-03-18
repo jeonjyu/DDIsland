@@ -1,4 +1,5 @@
 {
+    "version": 1,
     "name": "InputSystem_Actions",
     "maps": [
         {
@@ -24,10 +25,10 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "Attack",
+                    "name": "LeftMouseClick",
                     "type": "Button",
                     "id": "6c2ab1b8-8984-453a-af3d-a3c78ae1679a",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -36,7 +37,7 @@
                     "name": "Interact",
                     "type": "Button",
                     "id": "852140f2-7766-474d-8707-702459ba45f3",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "Hold",
                     "initialStateCheck": false
@@ -81,7 +82,7 @@
                     "name": "Sprint",
                     "type": "Button",
                     "id": "641cd816-40e6-41b4-8c3d-04687c349290",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -260,7 +261,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Gamepad",
-                    "action": "Attack",
+                    "action": "LeftMouseClick",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -271,7 +272,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
-                    "action": "Attack",
+                    "action": "LeftMouseClick",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -282,7 +283,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Touch",
-                    "action": "Attack",
+                    "action": "LeftMouseClick",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -293,7 +294,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Joystick",
-                    "action": "Attack",
+                    "action": "LeftMouseClick",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -304,7 +305,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "XR",
-                    "action": "Attack",
+                    "action": "LeftMouseClick",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -315,7 +316,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse",
-                    "action": "Attack",
+                    "action": "LeftMouseClick",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -501,7 +502,7 @@
                     "name": "Cancel",
                     "type": "Button",
                     "id": "15cef263-9014-4fd5-94d9-4e4a6234a6ef",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -544,12 +545,12 @@
                 },
                 {
                     "name": "ScrollWheel",
-                    "type": "PassThrough",
+                    "type": "Value",
                     "id": "0489e84a-4833-4c40-bfae-cea84b696689",
                     "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": "",
-                    "initialStateCheck": false
+                    "initialStateCheck": true
                 },
                 {
                     "name": "TrackedDevicePosition",
@@ -565,6 +566,24 @@
                     "type": "PassThrough",
                     "id": "9caa3d8a-6b2f-4e8e-8bad-6ede561bd9be",
                     "expectedControlType": "Quaternion",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Rotation",
+                    "type": "Button",
+                    "id": "6fd86d88-8b92-4ee5-ba91-5da84287c162",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Select",
+                    "type": "Button",
+                    "id": "af0f7562-8989-4a66-a36e-9f852178326b",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -849,7 +868,7 @@
                 {
                     "name": "",
                     "id": "82627dcc-3b13-4ba9-841d-e4b746d6553e",
-                    "path": "*/{Cancel}",
+                    "path": "<Mouse>/rightButton",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse;Gamepad;Touch;Joystick;XR",
@@ -986,6 +1005,28 @@
                     "processors": "",
                     "groups": "XR",
                     "action": "TrackedDeviceOrientation",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "66e2f1b5-601f-470b-a001-6553557abd4c",
+                    "path": "<Keyboard>/r",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Rotation",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5c9627c7-1ec2-44ca-85c3-e0813fedf16d",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Select",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

@@ -1,0 +1,101 @@
+id,설명(참고),퀘스트 이름,퀘스트 그룹,선행 조건,"퀘스트 종류
+1: Store(상점)
+2: Fishing(낚시)
+3: Guide(도감)
+4: Growth(성장)","상점 종류
+1: IslandStore(섬 인테리어)
+2: LakeStore(호수 인테리어)
+3: CostumeStore(코스튬)
+4: FishingItemStore(낚시아이템)
+5: Food(레시피)","도감 종류
+1: JournalFish
+2: JournalCostume
+3: JournalFood
+4: JounalInterior","스탯 타입
+1:BaseHunger(배고픔 수치)
+2:BaseStamina(스태미너 수치)
+3:BaseMoveSpeed(이동 속도)
+4:BaseFishingSpeed(낚시 속도)
+5:StaminaHeal(스태미너 회복)",요구 아이템,요구 수치,시작 시간,종료 시간,보상 아이템ID1,보상 수량1,보상 아이템ID2,보상 수량2
+ID,x,QuestName_String,QuestGroup,Prerequisite,QuestType,StoreType,JournalType,StatType,RequireItem,Requirement,StartTime,FinishTime,RewardItemId1,RewardCount1,RewardItemId2,RewardCount2
+Int,x,String,Int,Int,Enum,Enum,Enum,Enum,Int,Int,DateTime,DateTime,Int,Int,Int,Int
+70001,붕어,Quest_Fish_Carp_Text,701,0,2,0,0,0,10001,10,0,0,202,5,0,0
+70002,붕어,Quest_Fish_Carp_Text,701,70001,2,0,0,0,10001,20,0,0,202,10,0,0
+70003,붕어,Quest_Fish_Carp_Text,701,70002,2,0,0,0,10001,30,0,0,202,15,0,0
+70004,붕어,Quest_Fish_Carp_Text,701,70003,2,0,0,0,10001,40,0,0,202,20,0,0
+70005,붕어,Quest_Fish_Carp_Text,701,70004,2,0,0,0,10001,50,0,0,202,25,201,1
+70006,섬 인테리어 상점 구매,Quest_IslandInterior_Buy_Text,702,0,1,1,0,0,0,3,0,0,202,5,0,0
+70007,섬 인테리어 상점 구매,Quest_IslandInterior_Buy_Text,702,70006,1,1,0,0,0,6,0,0,202,10,0,0
+70008,섬 인테리어 상점 구매,Quest_IslandInterior_Buy_Text,702,70007,1,1,0,0,0,9,0,0,202,15,0,0
+70009,섬 인테리어 상점 구매,Quest_IslandInterior_Buy_Text,702,70008,1,1,0,0,0,12,0,0,202,20,0,0
+70010,섬 인테리어 상점 구매,Quest_IslandInterior_Buy_Text,702,70009,1,1,0,0,0,15,0,0,202,25,201,1
+70011,물고기 도감 등록,Quest_Journal_Fish_Text,703,0,3,0,1,0,0,3,0,0,202,5,0,0
+70012,물고기 도감 등록,Quest_Journal_Fish_Text,703,70011,3,0,1,0,0,6,0,0,202,10,0,0
+70013,물고기 도감 등록,Quest_Journal_Fish_Text,703,70012,3,0,1,0,0,9,0,0,202,15,0,0
+70014,물고기 도감 등록,Quest_Journal_Fish_Text,703,70013,3,0,1,0,0,12,0,0,202,20,0,0
+70015,물고기 도감 등록,Quest_Journal_Fish_Text,703,70014,3,0,1,0,0,15,0,0,202,25,201,1
+70016,배고픔 수치 레벨,Quest_Stat_HungerLevel_Text,704,0,4,0,0,1,0,2,0,0,201,1,0,0
+70017,배고픔 수치 레벨,Quest_Stat_HungerLevel_Text,704,70016,4,0,0,1,0,4,0,0,201,1,0,0
+70018,배고픔 수치 레벨,Quest_Stat_HungerLevel_Text,704,70017,4,0,0,1,0,6,0,0,201,1,0,0
+70019,배고픔 수치 레벨,Quest_Stat_HungerLevel_Text,704,70018,4,0,0,1,0,8,0,0,201,1,0,0
+70020,배고픔 수치 레벨,Quest_Stat_HungerLevel_Text,704,70019,4,0,0,1,0,10,0,0,201,3,0,0
+70021,호수 인테리어 상점 구매,Quest_LakeInterior_Buy_Text,705,0,1,2,0,0,0,3,0,0,202,5,0,0
+70022,호수 인테리어 상점 구매,Quest_LakeInterior_Buy_Text,705,70021,1,2,0,0,0,6,0,0,202,10,0,0
+70023,호수 인테리어 상점 구매,Quest_LakeInterior_Buy_Text,705,70022,1,2,0,0,0,9,0,0,202,15,0,0
+70024,호수 인테리어 상점 구매,Quest_LakeInterior_Buy_Text,705,70023,1,2,0,0,0,12,0,0,202,20,0,0
+70025,호수 인테리어 상점 구매,Quest_LakeInterior_Buy_Text,705,70024,1,2,0,0,0,15,0,0,202,25,0,0
+70026,연어,Quest_Fish_Salmon_Text,706,0,2,0,0,0,10005,10,0,0,202,5,0,0
+70027,연어,Quest_Fish_Salmon_Text,706,70026,2,0,0,0,10005,20,0,0,202,10,0,0
+70028,연어,Quest_Fish_Salmon_Text,706,70027,2,0,0,0,10005,30,0,0,202,15,0,0
+70029,연어,Quest_Fish_Salmon_Text,706,70028,2,0,0,0,10005,40,0,0,202,20,0,0
+70030,연어,Quest_Fish_Salmon_Text,706,70029,2,0,0,0,10005,50,0,0,202,25,201,1
+70031,코스튬 상점 구매,Quest_Costume_Buy_Text,707,0,1,3,0,0,0,3,0,0,202,5,0,0
+70032,코스튬 상점 구매,Quest_Costume_Buy_Text,707,70031,1,3,0,0,0,6,0,0,202,10,0,0
+70033,코스튬 상점 구매,Quest_Costume_Buy_Text,707,70032,1,3,0,0,0,9,0,0,202,15,0,0
+70034,코스튬 상점 구매,Quest_Costume_Buy_Text,707,70033,1,3,0,0,0,12,0,0,202,20,0,0
+70035,코스튬 상점 구매,Quest_Costume_Buy_Text,707,70034,1,3,0,0,0,15,0,0,202,25,201,1
+70036,낚시 아이템 상점 구매,Quest_FishingItem_Buy_Text,708,0,1,4,0,0,0,3,0,0,202,5,0,0
+70037,낚시 아이템 상점 구매,Quest_FishingItem_Buy_Text,708,70036,1,4,0,0,0,6,0,0,202,10,0,0
+70038,낚시 아이템 상점 구매,Quest_FishingItem_Buy_Text,708,70037,1,4,0,0,0,9,0,0,202,15,0,0
+70039,낚시 아이템 상점 구매,Quest_FishingItem_Buy_Text,708,70038,1,4,0,0,0,12,0,0,202,20,0,0
+70040,낚시 아이템 상점 구매,Quest_FishingItem_Buy_Text,708,70039,1,4,0,0,0,15,0,0,202,25,201,1
+70041,레시피 상점 구매,Quest_Recipe_Buy_Text,709,0,1,5,0,0,0,3,0,0,202,5,0,0
+70042,레시피 상점 구매,Quest_Recipe_Buy_Text,709,70041,1,5,0,0,0,6,0,0,202,10,0,0
+70043,레시피 상점 구매,Quest_Recipe_Buy_Text,709,70042,1,5,0,0,0,9,0,0,202,15,0,0
+70044,레시피 상점 구매,Quest_Recipe_Buy_Text,709,70043,1,5,0,0,0,12,0,0,202,20,0,0
+70045,레시피 상점 구매,Quest_Recipe_Buy_Text,709,70044,1,5,0,0,0,15,0,0,202,25,201,1
+70046,코스튬 도감 등록,Quest_Journal_Costume_Text,710,0,3,0,2,0,0,3,0,0,202,5,0,0
+70047,코스튬 도감 등록,Quest_Journal_Costume_Text,710,70046,3,0,2,0,0,6,0,0,202,10,0,0
+70048,코스튬 도감 등록,Quest_Journal_Costume_Text,710,70047,3,0,2,0,0,9,0,0,202,15,0,0
+70049,코스튬 도감 등록,Quest_Journal_Costume_Text,710,70048,3,0,2,0,0,12,0,0,202,20,0,0
+70050,코스튬 도감 등록,Quest_Journal_Costume_Text,710,70049,3,0,2,0,0,15,0,0,202,25,201,1
+70051,음식 도감 등록,Quest_Journal_Food_Text,711,0,3,0,3,0,0,3,0,0,202,5,0,0
+70052,음식 도감 등록,Quest_Journal_Food_Text,711,70051,3,0,3,0,0,6,0,0,202,10,0,0
+70053,음식 도감 등록,Quest_Journal_Food_Text,711,70052,3,0,3,0,0,9,0,0,202,15,0,0
+70054,음식 도감 등록,Quest_Journal_Food_Text,711,70053,3,0,3,0,0,12,0,0,202,20,0,0
+70055,음식 도감 등록,Quest_Journal_Food_Text,711,70054,3,0,3,0,0,15,0,0,202,25,201,1
+70056,인테리어 도감 등록,Quest_Journal_Interior_Text,712,0,3,0,4,0,0,3,0,0,202,5,0,0
+70057,인테리어 도감 등록,Quest_Journal_Interior_Text,712,70056,3,0,4,0,0,6,0,0,202,10,0,0
+70058,인테리어 도감 등록,Quest_Journal_Interior_Text,712,70057,3,0,4,0,0,9,0,0,202,15,0,0
+70059,인테리어 도감 등록,Quest_Journal_Interior_Text,712,70058,3,0,4,0,0,12,0,0,202,20,0,0
+70060,인테리어 도감 등록,Quest_Journal_Interior_Text,712,70059,3,0,4,0,0,15,0,0,202,25,201,1
+70061,스태미너 수치 레벨,Quest_Stat_StaminaLevel_Text,713,0,4,0,0,2,0,2,0,0,201,1,0,0
+70062,스태미너 수치 레벨,Quest_Stat_StaminaLevel_Text,713,70061,4,0,0,2,0,4,0,0,201,1,0,0
+70063,스태미너 수치 레벨,Quest_Stat_StaminaLevel_Text,713,70062,4,0,0,2,0,6,0,0,201,1,0,0
+70064,스태미너 수치 레벨,Quest_Stat_StaminaLevel_Text,713,70063,4,0,0,2,0,8,0,0,201,1,0,0
+70065,스태미너 수치 레벨,Quest_Stat_StaminaLevel_Text,713,70064,4,0,0,2,0,10,0,0,201,3,0,0
+70066,이동 속도 레벨,Quest_Stat_MoveSpeedLevel_Text,714,0,4,0,0,3,0,2,0,0,201,1,0,0
+70067,이동 속도 레벨,Quest_Stat_MoveSpeedLevel_Text,714,70066,4,0,0,3,0,4,0,0,201,1,0,0
+70068,이동 속도 레벨,Quest_Stat_MoveSpeedLevel_Text,714,70067,4,0,0,3,0,6,0,0,201,1,0,0
+70069,이동 속도 레벨,Quest_Stat_MoveSpeedLevel_Text,714,70068,4,0,0,3,0,8,0,0,201,1,0,0
+70070,이동 속도 레벨,Quest_Stat_MoveSpeedLevel_Text,714,70069,4,0,0,3,0,10,0,0,201,3,0,0
+70071,낚시 속도 레벨,Quest_Stat_FishingSpeedLevel_Text,715,0,4,0,0,4,0,2,0,0,201,1,0,0
+70072,낚시 속도 레벨,Quest_Stat_FishingSpeedLevel_Text,715,70071,4,0,0,4,0,4,0,0,201,1,0,0
+70073,낚시 속도 레벨,Quest_Stat_FishingSpeedLevel_Text,715,70072,4,0,0,4,0,6,0,0,201,1,0,0
+70074,낚시 속도 레벨,Quest_Stat_FishingSpeedLevel_Text,715,70073,4,0,0,4,0,8,0,0,201,1,0,0
+70075,낚시 속도 레벨,Quest_Stat_FishingSpeedLevel_Text,715,70074,4,0,0,4,0,10,0,0,201,3,0,0
+70076,스태미너 회복 레벨,Quest_Stat_StaminaHealLevel_Text,716,0,4,0,0,5,0,2,0,0,201,1,0,0
+70077,스태미너 회복 레벨,Quest_Stat_StaminaHealLevel_Text,716,70076,4,0,0,5,0,4,0,0,201,1,0,0
+70078,스태미너 회복 레벨,Quest_Stat_StaminaHealLevel_Text,716,70077,4,0,0,5,0,6,0,0,201,1,0,0
+70079,스태미너 회복 레벨,Quest_Stat_StaminaHealLevel_Text,716,70078,4,0,0,5,0,8,0,0,201,1,0,0
+70080,스태미너 회복 레벨,Quest_Stat_StaminaHealLevel_Text,716,70079,4,0,0,5,0,10,0,0,201,3,0,0

@@ -1,0 +1,300 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1310585587738624602
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8854114139784642277}
+  - component: {fileID: 3825339070647249908}
+  m_Layer: 0
+  m_Name: DataHub
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8854114139784642277
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1310585587738624602}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3744847620700466291}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3825339070647249908
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1310585587738624602}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 942061910f6c1bf469ca4a8742417797, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DataHub
+  _allUserData:
+    Environment:
+      _calculation: 
+    Character:
+      _hunger:
+        Value: 0
+        Level: 0
+      _stamina:
+        Value: 0
+        Level: 0
+      _moveSpeed:
+        Value: 0
+        Level: 0
+      _fishingSpeed:
+        Value: 0
+        Level: 0
+      _restSpeed:
+        Value: 0
+        Level: 0
+      _doongdoongStat: 0
+    Store:
+      _ownedCostumes: 
+      _ownedFishings: 
+      _inventory: []
+      _currentCostumeId: 0
+    Decoration:
+      _buildings: []
+      _fixedBuildings: []
+    Collection:
+      _unlockedFishIds: 
+      _unlockedCostumeIds: 
+      _unlockedInteriorIds: 
+      _unlockedFoodIds: 
+    Progress:
+      activeQuestIds: 
+      shopPurchaseCounts: 
+    fishstoage:
+      StorageLevel: 1
+      AcquireCounter: 0
+      SlotList: []
+    Foodstorage:
+      StorageLevel: 0
+      AcquireCounter: 0
+      SavedSlots: []
+    Currency:
+      _gold: 0
+  _syncInterval: 300
+--- !u!1 &4924133292910811244
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3744847620700466291}
+  - component: {fileID: 2142102931881390183}
+  - component: {fileID: 1652024204880346904}
+  - component: {fileID: 4946444882785808218}
+  - component: {fileID: 4319663135619139181}
+  - component: {fileID: 8401348486315703230}
+  - component: {fileID: 5709479046935205811}
+  - component: {fileID: 2696265373571662090}
+  - component: {fileID: 1511301407840568267}
+  - component: {fileID: 7202889330313061700}
+  - component: {fileID: -5235198117822851481}
+  - component: {fileID: -5939273068440672368}
+  m_Layer: 0
+  m_Name: DataManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3744847620700466291
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4924133292910811244}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 8854114139784642277}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2142102931881390183
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4924133292910811244}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a6ac311209307e43932d5892b3e595e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DataManager
+  _hub: {fileID: 3825339070647249908}
+  <CharacterDatabase>k__BackingField: {fileID: 1652024204880346904}
+  <CurrencyDatabase>k__BackingField: {fileID: 4319663135619139181}
+  <FishingDatabase>k__BackingField: {fileID: 8401348486315703230}
+  <FoodDatabase>k__BackingField: {fileID: 5709479046935205811}
+  <StoreDatabase>k__BackingField: {fileID: 2696265373571662090}
+  <DecorationDatabase>k__BackingField: {fileID: 4946444882785808218}
+  <QuestDatabase>k__BackingField: {fileID: 1511301407840568267}
+  <JournalDatabase>k__BackingField: {fileID: 7202889330313061700}
+  <RecordDatabase>k__BackingField: {fileID: -5235198117822851481}
+  <StringUIDatabase>k__BackingField: {fileID: -5939273068440672368}
+--- !u!114 &1652024204880346904
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4924133292910811244}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95c73343aa93ee446995675834f07156, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CharacterData
+  <CharacterInfoData>k__BackingField: {fileID: 11400000, guid: eee66a1155b13c6439decb951930e38e, type: 2}
+  <CharacterUpgradeData>k__BackingField: {fileID: 11400000, guid: d6f9742f6ca24be4f8113528365670c4, type: 2}
+  <CharacterVisualData>k__BackingField: {fileID: 11400000, guid: ad3fb9a482f972048a7e63c5ce97b86d, type: 2}
+--- !u!114 &4946444882785808218
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4924133292910811244}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 321c412a3e56d0446b7e5eccc6b3f451, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DecorationData
+  <InteriorData>k__BackingField: {fileID: 11400000, guid: ba1975b4f425439418d5e092e468e353, type: 2}
+  <CostumeData>k__BackingField: {fileID: 11400000, guid: b67078f36f78838458600a796c757d63, type: 2}
+--- !u!114 &4319663135619139181
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4924133292910811244}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee7f9dd93ee96c64aa6a76fd361ee0b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CurrencyData
+  <CurrencyInfoData>k__BackingField: {fileID: 11400000, guid: 575ac18ad38c1e947b9ccce819e4437b, type: 2}
+--- !u!114 &8401348486315703230
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4924133292910811244}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d783abb3545f454c8770c5cbb4bcf88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FishingData
+  <FishData>k__BackingField: {fileID: 11400000, guid: cd265892634814b44a0bd54c1ffa4d5c, type: 2}
+  <FishingDropData>k__BackingField: {fileID: 11400000, guid: 4fca38c447bee3f448036ae0d42a0bbf, type: 2}
+  <FishingItemData>k__BackingField: {fileID: 11400000, guid: a6ff88db9aec22c4697aae7938cc501b, type: 2}
+--- !u!114 &5709479046935205811
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4924133292910811244}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd8f740c30ac251449b9bb01d4074e00, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FoodData
+  <FoodInfoData>k__BackingField: {fileID: 11400000, guid: dd06417ba2079ba46b4cdd23096438ea, type: 2}
+--- !u!114 &2696265373571662090
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4924133292910811244}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 322b26be45068db438b5077370872846, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StoreData
+  <FishingStoreData>k__BackingField: {fileID: 11400000, guid: d4e4dd8e66f63e948bcb1038f3379dc8, type: 2}
+  <CostumeStoreData>k__BackingField: {fileID: 11400000, guid: 14e4ec0ac8526924d99d25cac5e882ff, type: 2}
+  <IslandStoreData>k__BackingField: {fileID: 11400000, guid: 6c4ba374f8851564596f727ef02aed32, type: 2}
+--- !u!114 &1511301407840568267
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4924133292910811244}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 080e0d1d61a8cee4c8627747aa966058, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::QuestData
+  <QuestInfoData>k__BackingField: {fileID: 11400000, guid: 76a7adeffe92f5e4ba52ab29fa45716b, type: 2}
+--- !u!114 &7202889330313061700
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4924133292910811244}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb504b6b7c012f4c8cd3a45115a1f46, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::JournalData
+  <JournalCostumeData>k__BackingField: {fileID: 11400000, guid: 2aa82756163ceec468cf646a8873fb6a, type: 2}
+  <JournalInteriorData>k__BackingField: {fileID: 11400000, guid: 16c02b00096edb4489c4a41915b54778, type: 2}
+  <JournalFoodData>k__BackingField: {fileID: 11400000, guid: 14d5cad07f8342d46b7c46f3b7c91dc9, type: 2}
+  <JournalFishData>k__BackingField: {fileID: 11400000, guid: fe3d953e84615094db9a951314048fcc, type: 2}
+--- !u!114 &-5235198117822851481
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4924133292910811244}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b4821fcf74ee364c94bcfc031b75264, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RecordData
+  <RecordInfoData>k__BackingField: {fileID: 11400000, guid: e8cc65db4ed159943aa537c16e0f274b, type: 2}
+  CurrentRecord: {fileID: 0}
+--- !u!114 &-5939273068440672368
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4924133292910811244}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34b737a5246bcc44699cd3cf80056ab2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StringUIData
+  <StringUIInfoData>k__BackingField: {fileID: 11400000, guid: 333aa9a35aa5b2640b5e5f1d227719d2, type: 2}

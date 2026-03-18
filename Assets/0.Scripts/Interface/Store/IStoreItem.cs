@@ -1,0 +1,21 @@
+using System;
+using UnityEngine;
+
+public interface IStoreItem
+{
+    int ID { get; }
+    int ObjectId { get; }
+    string ItemName { get; }
+    string ItemDesc { get; }
+    int MaxCount { get; }
+    int ItemCount { get; set; }
+    bool IsGained { get; set; }
+    bool IsDefault { get; }
+    bool IsSaleable { get; }
+    int PurchasePrice { get; }
+    int SellPrice { get; }
+    Sprite ImgSprite { get; }
+    Sprite MainIngSprite { get; }
+    Sprite SubIngSprite { get; }
+    Enum Filter { get; }
+}
