@@ -10,6 +10,11 @@ public class EnvironmentModel
     public event Action<DayilyCycle> OnDailyChanged;
     public event Action<Season, bool> OnWeatherChanged;
 
+    #region 치트용 불 값
+    public bool IsCheatMode { get; set; } = false; 
+    public bool IsWeatherActive { get; private set; } = false;
+    #endregion
+
     public DateTime CurrentTime { get; private set; }
 
     private Season _currentSeason;
@@ -56,6 +61,8 @@ public class EnvironmentModel
     //전체적인 시간 계산 메서드
     public void UpdateTimeSet(DateTime now)
     {
+        if (IsCheatMode) return;
+
         CurrentTime = now;
 
         if (now.Month != _lastMonth) //달이 바뀔 때 마다
@@ -148,4 +155,22 @@ public class EnvironmentModel
         _seasonDuration = (int[])box._calculation.Clone();
 
     }
+
+    #region 치트용 메서드
+    public void ForceSetSeason(Season season)
+    {
+        CurrentSeason = season;
+    }
+
+    public void ForceSetDaily(DayilyCycle daily)
+    {
+        CurrentDay = daily;
+    }
+
+    public void ForceSetWeather(bool isPlaying)
+    {
+        IsWeatherActive = isPlaying;
+        OnWeatherChanged?.Invoke(CurrentSeason, isPlaying);
+    }
+    #endregion
 }
