@@ -97,6 +97,7 @@ public class JournalDataLoader : MonoBehaviour
             {
                 item.ItemName = isUnlocked ? fishSO.FishName_String : "???";
                 item.Description = isUnlocked ? fishSO.FishDesc_String : "";
+                item.SpecialInfo["등급"] = JournalLocalize.Enum(fishSO.gradeType);
                 item.SpecialInfo["서식지"] = JournalLocalize.Enum(fishSO.fishType);
                 item.SpecialInfo["계절"] = JournalLocalize.Season(fishSO.arriveseasonType);
 
