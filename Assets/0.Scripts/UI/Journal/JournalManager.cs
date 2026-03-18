@@ -93,6 +93,7 @@ public class JournalManager : MonoBehaviour
         if (uiRecord == null)
             uiRecord = FindObjectOfType<UI_Record>();
         if (uiRecord != null && uiRecord.recordUnlock != null) // 음반 이벤트 구독 
+            uiRecord.recordUnlock.OnRecordUnlock += OnRecordUnlocked;
     }
     private void OnRecordUnlocked(RecordDataSO record)
     {
