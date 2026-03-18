@@ -7,7 +7,7 @@ public class IslandStoreItem : StoreItem<IslandStoreDataSO>
     {
     }
 
-    public override int ID => _data.InteriorId;
+    public override int ID => _data.IDInteriorStore;
 
     public override int ObjectId => _data.InteriorId;
 
