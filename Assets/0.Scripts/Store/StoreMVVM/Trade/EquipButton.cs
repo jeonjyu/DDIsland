@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -33,9 +34,10 @@ public class EquipButton : MonoBehaviour
         _equipButton.onClick.RemoveAllListeners();
     }
 
-    private void EquipStatHander(bool isEquipped, bool isGained)
+    // 아이템 필터랑 아이템 아이디 받아오면 
+    private void EquipStatHander(Enum filter, int itemObjectId)
     {
-        ChangeBtnUI(isGained);
+        ChangeBtnUI(true); // 항상 true로 들어옴
     }
 
     public void ChangeBtnUI(bool isGained)

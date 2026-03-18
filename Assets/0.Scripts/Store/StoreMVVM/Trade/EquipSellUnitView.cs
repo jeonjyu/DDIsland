@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class EquipSellUnitView : TradeUnitViewBase
@@ -24,7 +25,7 @@ public class EquipSellUnitView : TradeUnitViewBase
         base.OnDisable();
         PlayerManager.Instance.OnEquipChanged -= EquipBtnHandler;
     }
-    public void EquipBtnHandler(bool isEquipped, bool isGained)
+    public void EquipBtnHandler(Enum filter, int itemObjectId)
     {
         SetButton();
     }

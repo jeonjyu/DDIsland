@@ -98,6 +98,7 @@ public class ItemManager : Singleton<ItemManager>
         OnPlayerItemAdded?.Invoke(item, storeCat);
     }
 
+    // 플레이어 소유 아이템 딕셔너리에서 제거
     public void RemoveFromPlayerItem(IStoreItem item, StoreCat storeCat)
     {
         // 카테고리에 해당하는 딕셔너리 검색

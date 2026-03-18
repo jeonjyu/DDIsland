@@ -1,6 +1,7 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using UnityEngine;
+using System;
 
 public class EquipTradeViewModel : TradeViewModelBase
 {
@@ -25,7 +26,7 @@ public class EquipTradeViewModel : TradeViewModelBase
             OnPropertyChanged(nameof(IsGained));
     }
 
-    private void OnEquipStateChanged(bool isEquipped, bool isGained)
+    private void OnEquipStateChanged(Enum filter, int itemObjectId)
     {
         OnPropertyChanged(nameof(IsEquipped));
         OnPropertyChanged(nameof(IsGained));

@@ -7,6 +7,7 @@ using UnityEngine;
 /// </summary>
 public class PlayerManager : Singleton<PlayerManager>
 {
+#region field
     [Header("씬에 배치된 플레이어 오브젝트")]
     [SerializeField] GameObject _player;
 
@@ -14,23 +15,30 @@ public class PlayerManager : Singleton<PlayerManager>
     [SerializeField] Transform _SocketCostumeHat;
     [SerializeField] Transform _SocketCostumeTie;
     
-    Dictionary<string, int> playerEquip = new Dictionary<string, int>();
 
     int _currentHatID = 0;
     int _currentTieID = 0;
-    int _currentToolID = 0;
+    int _currentPoleID = 0;
     int _currentBaitID = 0;
     int _currentBobberID = 0;
 
+    // 플레이어가 장비중인 아이템 딕셔너리
+    // 코스튬(모자, 한벌옷), 낚시 아이템 (미끼, 낚시대, 낚시찌)
+    Dictionary<string, int> playerEquip = new Dictionary<string, int>();
+
+#endregion
+
+#region property
     public int CurrentHatID {get => _currentHatID; private set { _currentHatID = value; } }
     public int CurrentTieID {get => _currentTieID; private set { _currentTieID = value; } }
-    public int CurrentToolID { get => _currentToolID; private set { _currentToolID = value; } }
+    public int CurrentPoleID { get => _currentPoleID; private set { _currentPoleID = value; } }
     public int CurrentBaitID { get => _currentBaitID; set => _currentBaitID = value; }
     public int CurrentBobberID { get => _currentBobberID; set => _currentBobberID = value; }
 
     public Dictionary<string, int> PlayerEquip = new Dictionary<string, int>();
 
-    public Action<bool, bool> OnEquipChanged;
+    public Action<Enum, int> OnEquipChanged; // 장착중인 아이템 변경시 알림 
+#endregion 
 
     protected override void Awake()
     {
@@ -41,7 +49,7 @@ public class PlayerManager : Singleton<PlayerManager>
         playerEquip.Clear();
         playerEquip.Add(CostumeType.Head.ToString(), _currentHatID);
         playerEquip.Add(CostumeType.Body.ToString(), _currentTieID);
-        playerEquip.Add(FishingItemType.Pole.ToString(), _currentToolID);
+        playerEquip.Add(FishingItemType.Pole.ToString(), _currentPoleID);
         playerEquip.Add(FishingItemType.Bait.ToString(), _currentBaitID);
         playerEquip.Add(FishingItemType.Bobber.ToString(), _currentBobberID);
     }
@@ -67,7 +75,7 @@ public class PlayerManager : Singleton<PlayerManager>
         }
         else
         {
-            string logTxt = "현재 : " + playerEquip[item.Filter.ToString()];
+            string logTxt = "장착 아이템 " + playerEquip[item.Filter.ToString()];
         
             playerEquip[item.Filter.ToString()] = item.ObjectId;
 
@@ -75,7 +83,7 @@ public class PlayerManager : Singleton<PlayerManager>
             Debug.Log(logTxt);
         }
 
-        OnEquipChanged?.Invoke(playerEquip[item.Filter.ToString()] == item.ObjectId, true);
+        OnEquipChanged?.Invoke(item.Filter, playerEquip[item.Filter.ToString()]);
     }
 
     // 들어온 아이템과 현재 장착중인 아이템 비교
