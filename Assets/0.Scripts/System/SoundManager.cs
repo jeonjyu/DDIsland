@@ -11,6 +11,7 @@ public enum Soundtype
     BGM,        // 배경음
     SFX,        // 효과음
     BGS,        // 환경음
+    Preview,    // 미리듣기
 }
 
 public class SoundManager : Singleton<SoundManager>
@@ -21,6 +22,7 @@ public class SoundManager : Singleton<SoundManager>
     [Header("브금을 재생할 오디오 소스")]
     [field: SerializeField] public AudioSource BgmSource { get; private set; }
     [field: SerializeField] public AudioSource BgsSource { get; private set; }
+    [field: SerializeField] public AudioSource previewSource { get; private set; }
 
     [Header("효과음을 재생할 오디오 소스 프리팹")]
     [SerializeField] private AudioSource sfxSource;
@@ -81,6 +83,11 @@ public class SoundManager : Singleton<SoundManager>
 
         PlaySound(Soundtype.SFX, source, clip);
     }
+
+    public void PlayPreview(AudioClip clip)
+    {
+        PlaySound(Soundtype.Preview, previewSource, clip);
+    }
     #endregion
 
     private void PlaySound(Soundtype type, AudioSource source, AudioClip clip)
@@ -125,6 +132,10 @@ public class SoundManager : Singleton<SoundManager>
                 PlayerPrefsDataManager.BGSVolume = volume;
                 PlayerPrefsDataManager.BGSVolumeMute = isMute;
                 SetVolume("BGS", volume, isMute);
+                break;
+            case Soundtype.Preview:
+                PlayerPrefsDataManager.PreviewVolume = volume;
+                SetVolume("Preview", volume, false);
                 break;
         }
     }

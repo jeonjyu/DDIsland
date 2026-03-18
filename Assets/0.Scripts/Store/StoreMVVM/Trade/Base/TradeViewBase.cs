@@ -48,7 +48,7 @@ public class TradeViewBase : MonoBehaviour
 
     private void OnViewModelPropChanged(object sender, PropertyChangedEventArgs e)
     {
-        Debug.Log(this.name + " " + this.GetInstanceID() + " "+ e.PropertyName + " " + sender);
+        //Debug.Log(this.name + " " + this.GetInstanceID() + " "+ e.PropertyName + " " + sender);
         switch (e.PropertyName)
         {
             case null:

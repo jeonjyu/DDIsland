@@ -51,6 +51,6 @@ public enum FishingFilter
 {
     [Description("모든 아이템")] all,
     [Description("낚싯대")] pole,
-    [Description("낚시찌")] bait,
-    [Description("미끼")] bobber
+    [Description("미끼")] bait,
+    [Description("낚시찌")] bobber
 }

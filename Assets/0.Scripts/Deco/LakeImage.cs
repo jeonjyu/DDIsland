@@ -62,4 +62,16 @@ public class LakeImage : MonoBehaviour
             yield return null;
         }
     }
+    public void ChangeAnimator(RuntimeAnimatorController newController)
+    {
+        if (newController == null || _lakeAnimator == null) return;
+
+        _lakeAnimator.runtimeAnimatorController = newController;
+
+        _sunsetLayerIndex = _lakeAnimator.GetLayerIndex("Sunset");
+        _nightLayerIndex = _lakeAnimator.GetLayerIndex("Night");
+
+        if (_sunsetLayerIndex != -1) _lakeAnimator.SetLayerWeight(_sunsetLayerIndex, _targetSunsetWeight);
+        if (_nightLayerIndex != -1) _lakeAnimator.SetLayerWeight(_nightLayerIndex, _targetNightWeight);
+    }
 }

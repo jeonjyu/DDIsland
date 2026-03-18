@@ -13,20 +13,14 @@ public class ItemSlotViewBase : MonoBehaviour, IStoreItemView, IPointerClickHand
 
 
     [SerializeField] protected Image _slotBackground;
-    //[SerializeField] private TMP_Text _itemPrice;
-    //[SerializeField] private TMP_Text _itemName;
-    //[SerializeField] private TMP_Text _itemCount;
     [SerializeField] protected Image _itemImage;
 
     protected EventTrigger eventTrigger;
 
-    // property
+// property
     public ItemSlotViewModelBase ViewModel => viewModel;
     public IStoreItem ModelData => modelData;
     public Image SlotBackground => _slotBackground;
-    //public TMP_Text ItemPrice => _itemPrice;
-    //public TMP_Text ItemName => _itemName;
-    //public TMP_Text ItemCount => _itemCount;
     public Image ItemImage => _itemImage;
 
     void Awake()
@@ -63,24 +57,15 @@ public class ItemSlotViewBase : MonoBehaviour, IStoreItemView, IPointerClickHand
             ResetSlot();
             return;
         }
+
         UpdateSlotColor(modelData.IsGained);
-        //_itemName.text = modelData.ItemName;
-        //_itemPrice.text = modelData.PurchasePrice.ToString();
-        //_itemCount.text = modelData.ItemCount.ToString();
         _itemImage.sprite = modelData.ImgSprite;
     }
 
     public virtual void ResetSlot()
     {
         UpdateSlotColor(false);
-        //_itemName.text = "";
-        //_itemPrice.text = "";
-        //_itemCount.text = "0";
     }
-    //public void UpdateItemCount(int count)
-    //{
-    //    _itemCount.text = count.ToString();
-    //}
 
     public void UpdateSlotColor(bool isGained)
     {
@@ -92,9 +77,8 @@ public class ItemSlotViewBase : MonoBehaviour, IStoreItemView, IPointerClickHand
 
     // 버튼 팝업 띄우고
     // 해당 뷰의 모델을 전달하는 메서드 
-    public void OnPointerClick(PointerEventData eventData)
+    public virtual void OnPointerClick(PointerEventData eventData)
     {
-        // 구매보다 카테고리 변경을 더 자주하니까 구매창 킬 때 카테고리에 따라 다른 구매창 열도록 설정
         viewModel.SetPopupModel();
         StoreManager.Instance.TradeItemSlot = this.viewModel;
         if (StoreManager.Instance.BuyAndSellPanel != null)

@@ -26,12 +26,6 @@ public class StoreUIFactory : MonoBehaviour
     }
 
     // 상점 변경시 아이템 목록 레이아웃, 슬롯 변경해주는 메서드
-    // ==== 여기서부터는 위에거 먼저 하고  ====
-    // 거래 팝업에 사용되는 Strategy와 그게 참조하는 대상을 변경해줘야 한다고?? 
-
-        // 레이아웃 변경해줄 때 StoreListViewModel의 ItemContents, ItemScrollView의 ScrollRect의 Content 변경해주기
-        // 얘를 어떻게 바꿔줄까
-
     public void GetLayout(GridLayoutGroup targetGridLayout, StoreCat storeCat)
     {
         LayoutValue gridLayout = Products.Find((x) => x.cat == storeCat).gridLayout;

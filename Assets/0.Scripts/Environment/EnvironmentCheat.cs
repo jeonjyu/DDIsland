@@ -12,7 +12,7 @@ public class EnvironmentCheat : MonoBehaviour
     [SerializeField] private InputActionReference _changeTime;
     [SerializeField] private InputActionReference _toggleParticle;
 
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
+
     private void OnEnable()
     {
         // 액션맵 활성화
@@ -91,5 +91,4 @@ private void OnToggleCheat(InputAction.CallbackContext context)
 
         Debug.Log($"<color=yellow>[치트] 날씨 효과: {(currentStatus ? "재생" : "중지")}</color>");
     }
-#endif
 }
