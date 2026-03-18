@@ -88,6 +88,10 @@ public class ItemManager : Singleton<ItemManager>
             playerItemDatas.Add(storeCat, new StoreItemDatabase());
             //Debug.LogWarning($"[ItemManager] AddToPlayerItem | {item.ItemName}({item.ID})에 해당하는 플레이어 아이템 딕셔너리가 없습니다");
         }
+        if (storeCat == StoreCat.costume) QuestManager.Instance.AddSimpleProgress(QuestConditionKey.BuyCostumeCount, 1); 
+        if (storeCat == StoreCat.interior) QuestManager.Instance.AddSimpleProgress(QuestConditionKey.BuylandStoreCount, 1);
+        if (storeCat == StoreCat.fishing) QuestManager.Instance.AddSimpleProgress(QuestConditionKey.BuyFishingItemCount, 1); 
+        if (storeCat == StoreCat.recipe) QuestManager.Instance.AddSimpleProgress(QuestConditionKey.BuyFoodCount, 1);
 
         playerItemDatas[storeCat].AddToDatabase(item);
 

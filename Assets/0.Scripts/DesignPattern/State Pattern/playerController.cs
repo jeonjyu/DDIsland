@@ -1,8 +1,9 @@
 
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
-using System.Collections.Generic;
+using UnityEngine.XR;
 
 //public struct PlayerContext
 //{
@@ -603,8 +604,6 @@ public class PlayerController : MonoBehaviour
     public void AnimEvent_GiveFishOnce()  //낚시 성공 애니에 넣을 함수
     {
         FishManager.Instance.PickRandomSeasonFish();
-
-        QuestManager.Instance.AddSimpleProgress(QuestConditionKey.FishingCount, 1);
 
         if (FishStorageManager.Instance.FishFullCheck())  //낚시 한마리 낚을떄마다 검사
         {
