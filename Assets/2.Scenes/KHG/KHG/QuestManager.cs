@@ -351,7 +351,7 @@ public class QuestManager : Singleton<QuestManager>
         }
         else if (rewardItemId == 2) // 예시: LP조각 ID
         {
-
+            DataManager.Instance.RecordDatabase.LpPieceCount += rewardCount;
         }
         else
         {
