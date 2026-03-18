@@ -76,7 +76,7 @@ public class ItemSlotViewModelBase : MonoBehaviour, INotifyPropertyChanged
         }
     }
 
-    public void SetModel(IStoreItem model)
+    public virtual void SetModel(IStoreItem model)
     {
         Model = model;
         ItemId = model.ID;

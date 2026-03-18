@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &5317953901293144188
+--- !u!1 &7345433202142898490
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,22 +8,22 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 4895376404905164529}
-  - component: {fileID: 7496785910796329605}
+  - component: {fileID: 201364639357475181}
+  - component: {fileID: 8316643856394837864}
   m_Layer: 0
-  m_Name: StoreManager
+  m_Name: LakeItemManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &4895376404905164529
+--- !u!4 &201364639357475181
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5317953901293144188}
+  m_GameObject: {fileID: 7345433202142898490}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -32,22 +32,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7496785910796329605
+--- !u!114 &8316643856394837864
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5317953901293144188}
+  m_GameObject: {fileID: 7345433202142898490}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 77a2bbfabd9c5504586e4231393af4d1, type: 3}
+  m_Script: {fileID: 11500000, guid: a66a4500ce15b4a488249c757bb9ddab, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::StoreManager
-  storeListPanel: {fileID: 0}
-  buyAndSellPanel: {fileID: 0}
-  filterDropdown: {fileID: 0}
-  sortDropdown: {fileID: 0}
-  currentCat: 0
-  storeListVM: {fileID: 0}
-  storeUIFactory: {fileID: 0}
+  m_EditorClassIdentifier: Assembly-CSharp::LakeItemManager
+  lakeDecoManager: {fileID: 0}
+  themeApplyPopup: {fileID: 0}
+  floorID: 0
+  ornamentID: 0
+  contest: {fileID: 0}
+  LakeSlot: []

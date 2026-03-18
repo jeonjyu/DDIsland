@@ -23,12 +23,9 @@ public class ItemSlotViewBase : MonoBehaviour, IStoreItemView, IPointerClickHand
     public Image SlotBackground => _slotBackground;
     public Image ItemImage => _itemImage;
 
-    void Awake()
+    protected virtual void Awake()
     {
         viewModel = GetComponent<ItemSlotViewModelBase>();
-    }
-    void Start()
-    {
         Init();
     }
 
