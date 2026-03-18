@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using UnityEngine;
 
 
@@ -10,7 +10,7 @@ public class CharacterDataSO : TableBase<int>
 
     // 캐릭터 이름
     [SerializeField] private string characterName;
-    public string CharacterName_String => LocalizationManager.Instance.GetString(name);
+    public string CharacterName_String => LocalizationManager.Instance.GetString(characterName);
 
     // 기본 배고픔 수치
     [field: SerializeField] public float BaseHunger { get; private set; }
