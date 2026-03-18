@@ -31,6 +31,8 @@ public class AquariumMgr : MonoBehaviour
     [Header("물고기 관련 설정")]
     [SerializeField] private BackGroundFish _fishPrefab;
     [SerializeField] private RectTransform _spawnArea;
+    [SerializeField] private RectTransform _waterWindows;
+    [SerializeField] private RectMask2D _spawnMask2D;
     [SerializeField] private float _spawnPadding = 200f;
     private IMovement _boidsFish;
     private IMovement _normalFish;
@@ -82,6 +84,8 @@ public class AquariumMgr : MonoBehaviour
         {
             AquariumBounds();
         }
+
+        SyncMaskToWindow();
     }
 
     IEnumerator LateStart()
@@ -188,7 +192,7 @@ public class AquariumMgr : MonoBehaviour
         _flockMemberCount[flockID] = count;
 
         // 화면 내에서 랜덤 Y 위치
-        float flockY = Random.Range(-_spawnArea.rect.height / 2 + 100f, _spawnArea.rect.height / 2 - 100f); 
+        float flockY = GetRandomSpawnY();
 
         for (int i = 0; i < count; i++)
         {
@@ -223,7 +227,7 @@ public class AquariumMgr : MonoBehaviour
         bool isRight = (Random.value > 0.5f);
 
         float spawnX = isRight ? -ScreenLimit : ScreenLimit;
-        float spawnY = Random.Range(-_spawnArea.rect.height / 2 + 100f, _spawnArea.rect.height / 2 - 100f);
+        float spawnY = GetRandomSpawnY();
 
         SpawnFish(new Vector2(spawnX, spawnY), selectedData, fishID: fishID, isRight: isRight, movement: _normalFish);
 
@@ -284,6 +288,49 @@ public class AquariumMgr : MonoBehaviour
                 }
             }
         }
+    }
+    #endregion
+
+    #region 호수 크기 사이즈
+    private float GetRandomSpawnY()
+    {
+        if (_waterWindows == null) return 0f;
+
+        Vector3[] windowCorners = new Vector3[4];
+        _waterWindows.GetWorldCorners(windowCorners);
+
+        float minWorldY = windowCorners[0].y;
+        float maxWorldY = windowCorners[1].y;
+
+        Vector3 minLocal = _spawnArea.InverseTransformPoint(new Vector3(0, minWorldY, 0));
+        Vector3 maxLocal = _spawnArea.InverseTransformPoint(new Vector3(0, maxWorldY, 0));
+
+        if (minLocal.y + 50f >= maxLocal.y - 50f)
+        {
+            return (minLocal.y + maxLocal.y) / 2f;
+        }
+
+        return Random.Range(minLocal.y + 50f, maxLocal.y - 50f);
+    }
+
+    private void SyncMaskToWindow()
+    {
+        if (_waterWindows == null || _spawnMask2D == null) return;
+
+        Vector3[] windowCorners = new Vector3[4];
+        _waterWindows.GetWorldCorners(windowCorners);
+
+        Vector3 minWindowLocal = _spawnArea.InverseTransformPoint(windowCorners[0]);
+        Vector3 maxWindowLocal = _spawnArea.InverseTransformPoint(windowCorners[2]);
+
+        Rect spawnRect = _spawnArea.rect;
+
+        float paddingLeft = Mathf.Max(0, minWindowLocal.x - spawnRect.xMin);
+        float paddingBottom = Mathf.Max(0, minWindowLocal.y - spawnRect.yMin);
+        float paddingRight = Mathf.Max(0, spawnRect.xMax - maxWindowLocal.x);
+        float paddingTop = Mathf.Max(0, spawnRect.yMax - maxWindowLocal.y);
+
+        _spawnMask2D.padding = new Vector4(paddingLeft, paddingBottom, paddingRight, paddingTop);
     }
     #endregion
 

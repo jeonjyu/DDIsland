@@ -81,15 +81,15 @@ public class FishBoids : IMovement
                 (cohesionForce.normalized * 1.3f) +   // 뭉치도록
                 (attendantsDir * 1.5f) +              // 오른쪽 또는 왼쪽으로 이동
                 (wanderForce*0.3f);                // 경계에서 멀어지도록
-
+            desiredVelocity += boundForce * 1.5f;
         }
         // 만약 주변에 아무도 없을수 도 있으니까...
         else
         {
-            desiredVelocity = (fish.MoveDir + (boundForce));
+            desiredVelocity = fish.MoveDir + boundForce;
         }
 
-        return (desiredVelocity+boundForce).normalized * fish._speed;
+        return desiredVelocity.normalized * fish._speed;
 
     }
 }
