@@ -45,7 +45,7 @@ public class UI_IslandWindowDragBar : MonoBehaviour, IBeginDragHandler, IDragHan
 
             if (obj != gameObject)
             {
-                dragBar.SetAlpha(0f);
+                dragBar.SetAlpha(0.6f);
             }
         }
     }
@@ -58,6 +58,6 @@ public class UI_IslandWindowDragBar : MonoBehaviour, IBeginDragHandler, IDragHan
     public void OnPointerExit(PointerEventData eventData)
     {
         if (!isDragging)
-            dragBar.SetAlpha(0f);
+            dragBar.SetAlpha(0.6f);
     }
 }

@@ -8,6 +8,10 @@ public class JournalRecordDataSO : TableBase<int>
     // 음반 도감 ID
     [field: SerializeField] public int JournalRecordID { get; private set; }
 
+    // 음반 이름
+    [SerializeField] private string recordName;
+    public string RecordName_String => LocalizationManager.Instance.GetString(recordName);
+
     // 음반 ID
     [field: SerializeField] public int JournalID { get; private set; }
 
