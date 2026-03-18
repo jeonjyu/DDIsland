@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -12,6 +13,8 @@ public class RecordData : MonoBehaviour
 
     public RecordDataSO CurrentRecord;
 
+    public event Action<int> OnLPPieceChanged;
+
     #region 프로퍼티
     // 보유 음반 조각
     public int LpPieceCount
@@ -22,6 +25,7 @@ public class RecordData : MonoBehaviour
             if (value < 0) return;
 
             recordServerData.LpPieceCount = value;
+            OnLPPieceChanged?.Invoke(value);
         }
     }
 
