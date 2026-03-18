@@ -50,6 +50,9 @@ public class JournalManager : MonoBehaviour
     [SerializeField] private Image[] categoryOutlines;     // 각 버튼의 Outline Image
     [Header("카테고리 책갈피")]
     [SerializeField] private Transform boxBackground;
+    [Header("음반 해금 연동")]
+    [SerializeField] private UI_Record uiRecord;
+
     // 탭 색상
     private readonly Color selectedTabBg = new Color(0.99f, 0.97f, 0.91f, 1f);   // 크림색
     private readonly Color unselectedTabBg = new Color(0.78f, 0.62f, 0.41f, 1f); // 갈색
@@ -87,8 +90,15 @@ public class JournalManager : MonoBehaviour
             FishManager.Instance.OnFishGet += OnFishGet;
         if (CookingManager.Instance != null) // 요리 이벤트 구독
             CookingManager.Instance.OnFoodCooked += OnFoodCooked;
+        if (uiRecord == null)
+            uiRecord = FindObjectOfType<UI_Record>();
+        if (uiRecord != null && uiRecord.recordUnlock != null) // 음반 이벤트 구독 
+            uiRecord.recordUnlock.OnRecordUnlock += OnRecordUnlocked;
     }
-
+    private void OnRecordUnlocked(RecordDataSO record)
+    {
+        OnItemUnlocked(JournalCategory.Album, record.RecordID);
+    }
     private void OnFishGet(int fishId, float length)
     {
         UpdateFishRecord(fishId, length);
@@ -428,6 +438,8 @@ public class JournalManager : MonoBehaviour
             ItemManager.Instance.OnPlayerItemAdded -= OnStoreItemAdded;
         if (FishManager.Instance != null)
             FishManager.Instance.OnFishGet -= OnFishGet;
+        if (uiRecord != null && uiRecord.recordUnlock != null)
+            uiRecord.recordUnlock.OnRecordUnlock -= OnRecordUnlocked;
         if (CookingManager.Instance != null)
             CookingManager.Instance.OnFoodCooked -= OnFoodCooked;
     }

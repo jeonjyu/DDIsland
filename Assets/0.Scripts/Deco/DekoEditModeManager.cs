@@ -67,6 +67,7 @@ public class DecoEditModeManager : MonoBehaviour
     Vector2 placedObjOriginPos; // 배치템 원래 위치 
     Vector2 floorOriginPos; // 바닥재 원래 위치 
     Placeable3D selectedIslandTarget; // 3d 오브젝트 선택
+    Vector2 islandDecoBtnOriginPos; // 두트윈 복귀  
     int UnlockCount = 0;
     float UnlockFirstTime;
     bool isUnlocked = false;     
@@ -85,7 +86,8 @@ public class DecoEditModeManager : MonoBehaviour
             lakeOriginPos = lakeBackground.anchoredPosition;
         if (floorPlane != null) 
             floorOriginPos = floorPlane.anchoredPosition;
-
+        if (btnIslandDecoMode != null) // 버튼 
+            islandDecoBtnOriginPos = btnIslandDecoMode.GetComponent<RectTransform>().anchoredPosition;
 
 
         if (aquariumMgr == null) // 인스펙터 할당된게 없으면 매니저 찾아서 물고기 숨기는용
