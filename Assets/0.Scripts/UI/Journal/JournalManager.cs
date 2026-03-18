@@ -22,8 +22,8 @@ public class JournalManager : MonoBehaviour
     [SerializeField] private Button journalTabButton;   // 도감 탭
     [SerializeField] private Image questTabBackground;    // 퀘스트 탭 활성화 표시
     [SerializeField] private Image journalTabBackground;  // 도감 탭 활성화 표시
-    [SerializeField] private TextMeshProUGUI questTabText;     // 메인탭 텍스트 
-    [SerializeField] private TextMeshProUGUI journalTabText;  
+    [SerializeField] private TextMeshProUGUI[] questTabTexts;     // 메인탭 텍스트 
+    [SerializeField] private TextMeshProUGUI[] journalTabTexts;  // todo: 나중에 버튼 1개로 통합되면 배열 삭제 
     [Header("도감 영역")]
     [SerializeField] private GameObject journalArea;
     
@@ -202,10 +202,14 @@ public class JournalManager : MonoBehaviour
         if (journalTabBackground != null)
             journalTabBackground.color = (tab == MainTab.Journal) ? selectedTabBg : unselectedTabBg;
         // 탭 텍스트 로컬라이징
-        if (questTabText != null)
-            questTabText.text = JournalLocalize.Tab(MainTab.Quest);
-        if (journalTabText != null)
-            journalTabText.text = JournalLocalize.Tab(MainTab.Journal);
+        //if (questTabText != null)
+        //    questTabText.text = JournalLocalize.Tab(MainTab.Quest);
+        //if (journalTabText != null)
+        //    journalTabText.text = JournalLocalize.Tab(MainTab.Journal);
+        foreach (var t in questTabTexts)
+            if (t != null) t.text = JournalLocalize.Tab(MainTab.Quest);
+        foreach (var t in journalTabTexts)
+            if (t != null) t.text = JournalLocalize.Tab(MainTab.Journal);
         // 도감 영역 통째로 끄기
         if (journalArea != null)
             journalArea.SetActive(tab == MainTab.Journal);
