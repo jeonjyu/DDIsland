@@ -1,9 +1,9 @@
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.XR;
 
 //public struct PlayerContext
 //{
@@ -33,7 +33,7 @@ public class PlayerController : MonoBehaviour
     private MeshRenderer _meshRenderer;
 
     private bool _ishungery = false;
-    private bool _canCook = false;  
+    private bool _canCook = false;
     private bool _isCooking = false;
     private bool _isFishing = false;
     private bool _isAcornFalling = false;
@@ -66,7 +66,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private SkinnedMeshRenderer _targetSMR;
     private SkinnedMeshRenderer _slimSource;
     private SkinnedMeshRenderer _normalSource;
-    private SkinnedMeshRenderer _chubbySource; 
+    private SkinnedMeshRenderer _chubbySource;
     private SkinnedMeshRenderer _roundSource;
 
     [SerializeField] GameObject _slimPrefab;
@@ -78,8 +78,13 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private GameObject _fork;
     [SerializeField] private GameObject _pan;
 
+    [SerializeField] private GameObject[] hats;
+    [SerializeField] private GameObject[] bodys;
+    private Dictionary<int, GameObject> _hatById;
+    private Dictionary<int, GameObject> _bodyById;
+
     private float _hungerTickTimer;
-    private float _baseMoveSpeed;  
+    private float _baseMoveSpeed;
     private bool _slowApplied;
 
     [SerializeField] private GameObject _acornPrefab;
@@ -116,10 +121,13 @@ public class PlayerController : MonoBehaviour
         _normalSource = _normalPrefab.GetComponentInChildren<SkinnedMeshRenderer>();
         _chubbySource = _chubbyPrefab.GetComponentInChildren<SkinnedMeshRenderer>();
         _roundSource = _roundPrefab.GetComponentInChildren<SkinnedMeshRenderer>();
-         PlayerDataOld = new PlayerData();
+        PlayerDataOld = new PlayerData();
+        _hatById = new Dictionary<int, GameObject>();
+        _bodyById = new Dictionary<int, GameObject>();
     }
     private void Start()
     {
+        Debug.Log($"[PlayerController] Start 호출됨, PlayerDataSO null = {PlayerDataSO == null}");
         if (PlayerDataSO == null) return;
         ApplyPlayerStats(PlayerDataSO);
 
@@ -128,7 +136,7 @@ public class PlayerController : MonoBehaviour
         {
             if (DataManager.Instance.Hub.IsLoaded)
             {
-                PlayerDataOld.SyncCharacterDataLoad(); 
+                PlayerDataOld.SyncCharacterDataLoad();
             }
             else
             {
@@ -141,6 +149,7 @@ public class PlayerController : MonoBehaviour
         _fork.gameObject.SetActive(false);
         _pan.gameObject.SetActive(false);
 
+        BuildCostumeMap();
         RefreshCanCook();
     }
     private void Update()
@@ -172,6 +181,8 @@ public class PlayerController : MonoBehaviour
 
         if (DataManager.Instance != null && DataManager.Instance.Hub != null)
             DataManager.Instance.Hub.OnRequestSave += PlayerDataOld.SyncCharacterDataSave;
+        if (PlayerManager.Instance != null)
+            PlayerManager.Instance.OnEquipChanged += ChangeCostume;
     }
 
     private void OnDisable()
@@ -189,6 +200,8 @@ public class PlayerController : MonoBehaviour
                 DataManager.Instance.Hub.OnRequestSave -= PlayerDataOld.SyncCharacterDataSave;
             }
         }
+        if (PlayerManager.Instance != null)
+            PlayerManager.Instance.OnEquipChanged -= ChangeCostume;
     }
 
     public void ApplyPlayerStats(CharacterDataSO SO)
@@ -208,7 +221,103 @@ public class PlayerController : MonoBehaviour
         PlayerDataOld.Initialize(SO);
     }
 
-   public void StartAcornSupply(Vector3 center)  //도토리 떨어지는 함수
+    public void ChangeCostume(Enum type, int objectId)  //코스튬 타입에 따른 코스튬쓰기
+    {
+        string typeName = type.ToString();
+
+        if (typeName == "Head")
+        {
+            SetHat(objectId);
+        }
+        else if (typeName == "Body")
+        {
+            SetBody(objectId);
+        }
+        else
+        {
+            Debug.LogWarning($"지원하지 않는 코스튬 타입: {typeName}");
+        }
+    }
+    private void BuildCostumeMap()  //모자,옷을 ID로 빠르게 찾을 수 있게 딕셔너리
+    {
+        _hatById.Clear();
+        _bodyById.Clear();
+
+        var data = DataManager.Instance.DecorationDatabase.CostumeData.datas;
+        if (data == null) return;
+
+        int hatIndex = 0;
+        int bodyIndex = 0;
+
+        for (int i = 0; i < data.Count; i++)
+        {
+            if (data[i] == null) continue;
+
+            if (data[i].costumeType == CostumeType.Head)
+            {
+                if (hatIndex >= hats.Length) continue;
+                if (hats[hatIndex] == null)
+                {
+                    hatIndex++;
+                    continue;
+                }
+
+                _hatById[data[i].CostumeID] = hats[hatIndex];
+                hats[hatIndex].SetActive(false);
+                hatIndex++;
+            }
+            else if (data[i].costumeType == CostumeType.Body)
+            {
+                if (bodyIndex >= bodys.Length) continue;
+                if (bodys[bodyIndex] == null)
+                {
+                    bodyIndex++;
+                    continue;
+                }
+
+                _bodyById[data[i].CostumeID] = bodys[bodyIndex];
+                bodys[bodyIndex].SetActive(false);
+                bodyIndex++;
+            }
+        }
+
+        Debug.Log($"Hat:{_hatById.Count}, Body:{_bodyById.Count}");
+    }
+    public void SetHat(int id)
+    {
+        foreach (var pair in _hatById)
+        {
+            pair.Value.SetActive(false);
+        }
+
+        if (id == 0) return;
+
+        if (_hatById.TryGetValue(id, out var hatObj))
+        {
+            hatObj.SetActive(true);
+            Debug.Log($"모자 장착 성공: {id}");
+        }
+        else Debug.LogWarning($"모자 ID 없음: {id}");
+    }
+    public void SetBody(int id)
+    {
+        foreach (var pair in _bodyById)
+        {
+            pair.Value.SetActive(false);
+        }
+
+        if (id == 0) return;
+
+        if (_bodyById.TryGetValue(id, out var bodyObj))
+        {
+            bodyObj.SetActive(true);
+            Debug.Log($"의상 장착 성공: {id}");
+        }
+        else Debug.LogWarning($"의상 ID 없음: {id}");
+    }
+
+
+    public void StartAcornSupply(Vector3 center)  //도토리 떨어지는 함수
     {
         _isAcornFalling = true;
 
@@ -224,7 +333,7 @@ public class PlayerController : MonoBehaviour
 
         for (int i = 0; i < 3; i++)
         {
-            Vector3 randomPos = center + new Vector3(Random.Range(-4f, 4f), 0, Random.Range(-4f, 4f));
+            Vector3 randomPos = center + new Vector3(UnityEngine.Random.Range(-4f, 4f), 0, UnityEngine.Random.Range(-4f, 4f));
 
             if (NavMesh.SamplePosition(randomPos, out NavMeshHit hit, 2f, NavMesh.AllAreas))
             {
@@ -592,7 +701,7 @@ public class PlayerController : MonoBehaviour
             // 한 사이클 시작
             _cycleRunning = true;
 
-            float waitTime = Random.Range(5f, 8f);
+            float waitTime = UnityEngine.Random.Range(5f, 8f);
             yield return new WaitForSeconds(waitTime);
 
             Animator.SetTrigger("FishingHit");
