@@ -59,7 +59,7 @@ public class JournalPopup : MonoBehaviour
                 AppendInfo(sb, data, "등급");
                 AppendInfo(sb, data, "서식지");
                 AppendInfo(sb, data, "계절");
-             //   AppendInfo(sb, data, "최고 기록"); // TODO: 나중에 작업 
+                AppendInfo(sb, data, "최고 기록");
                 break;
 
             case JournalCategory.Costume:

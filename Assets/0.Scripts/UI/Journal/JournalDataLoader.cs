@@ -101,8 +101,19 @@ public class JournalDataLoader : MonoBehaviour
                 item.SpecialInfo["서식지"] = fishSO.fishType.ToString();
                 ArriveSeason allSeasons = ArriveSeason.Spring | ArriveSeason.Summer | ArriveSeason.Autumn | ArriveSeason.Winter;
                 item.SpecialInfo["계절"] = (fishSO.arriveseasonType == allSeasons) ? "모든 계절" : fishSO.arriveseasonType.ToString();
-                // TODO: 최고 기록은 CollectionData에서 가져와야 함
-                // item.SpecialInfo["최고 기록"] = "0cm"; 
+
+                // Collection_Data에서 낚시한 물고기 최고 기록 가져오기
+                var records = DataManager.Instance.Box.Collection._fishRecords;
+                float maxLen = 0f;
+                foreach (var rec in records)
+                {
+                    if (rec.FishId == journal.FishID)
+                    {
+                        maxLen = rec.MaxLength;
+                        break;
+                    }
+                }
+                item.SpecialInfo["최고 기록"] = maxLen > 0 ? maxLen.ToString("F1") + "cm" : "기록 없음";
             }
             else
             {
