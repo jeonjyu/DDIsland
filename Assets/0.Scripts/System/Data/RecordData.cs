@@ -57,9 +57,4 @@ public class RecordData : MonoBehaviour
         }
     }
     #endregion
-
-    private void Awake()
-    {
-        LpPieceCount = 6;
-    }
 }
