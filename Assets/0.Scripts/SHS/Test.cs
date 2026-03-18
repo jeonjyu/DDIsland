@@ -36,5 +36,13 @@ public class Test : MonoBehaviour
             buildingMgr.ClearAll();
         }
     }
+    public void OnClick_SaveData()
+    {
+        DataManager.Instance.Hub.UploadAllData();
+    }
+    public void OnClick_LoadData()
+    {
+        DataManager.Instance.Hub.LoadAllData();
+    }
 
 }

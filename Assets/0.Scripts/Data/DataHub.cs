@@ -26,14 +26,14 @@ public class DataHub : MonoBehaviour
     private void Start()
     {
         StartCoroutine(InitLoadingSequence());
-        StartCoroutine(AutoDataBoxSyncRoutine());
+        //StartCoroutine(AutoDataBoxSyncRoutine());
     }
-    private void OnApplicationQuit()
-    {
-        UploadAllData();
-        IsQuite = true;
-        Debug.Log("게임 종료. 서버에 데이터 업로드");
-    }
+    //private void OnApplicationQuit()
+    //{
+    //    UploadAllData();
+    //    IsQuite = true;
+    //    Debug.Log("게임 종료. 서버에 데이터 업로드");
+    //}
     private IEnumerator InitLoadingSequence()
     {
         yield return null;
