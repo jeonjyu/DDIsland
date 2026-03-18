@@ -123,6 +123,7 @@ public class PlacementMgr : MonoBehaviour
     }
     private void OnRotate(InputAction.CallbackContext ctx)
     {
+        Debug.Log($"입력 감지됨: {ctx}");
         OnClickRotate();
     }
     private void OnCancelInput(InputAction.CallbackContext ctx)
@@ -244,9 +245,17 @@ public class PlacementMgr : MonoBehaviour
     }
     public void OnClickRotate() // 회전 버튼에 연결
     {
-        if (_selectedTarget == null) return;
+       
+        if (_buildingManager.ActivePlaceable != null)
+        {
+            _buildingManager.ActivePlaceable.ObjectRotate();
+            return;
+        }
 
-        _selectedTarget.ObjectRotate();
+        if (_selectedTarget != null)
+        {
+            _selectedTarget.ObjectRotate();
+        }
     }
     public void OnClickDelete() // 삭제 버튼에 연결
     {
