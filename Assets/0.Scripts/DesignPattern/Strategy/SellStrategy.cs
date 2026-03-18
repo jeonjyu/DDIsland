@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class SellStrategy : MonoBehaviour, ITradeStrategy
 {
+    // 판매
     public bool Trade(int tradeCount, int tradePrice)
     {
         GameManager.Instance.SetGold(tradePrice);

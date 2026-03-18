@@ -34,13 +34,13 @@ public abstract class TradeUnitViewBase : MonoBehaviour
 
     protected virtual void SetEventListener()
     {
-        Debug.Log("이벤트 등록해주기 " + GetTradeStrategy());
+        //Debug.Log("이벤트 등록해주기 " + GetTradeStrategy());
         tradeBtn.onClick.AddListener(() => viewModel.ExcuteTrade(GetTradeStrategy()));
     }
 
     protected virtual void UnsetEventListener()
     {
-        Debug.Log("이벤트 삭제해주기 " + GetTradeStrategy());
+        //Debug.Log("이벤트 삭제해주기 " + GetTradeStrategy());
         tradeBtn.onClick.RemoveAllListeners();
     }
 
