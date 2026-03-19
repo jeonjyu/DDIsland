@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.UIElements;
 
 public class StoreListViewModel : MonoBehaviour, INotifyPropertyChanged
 {
@@ -16,6 +17,8 @@ public class StoreListViewModel : MonoBehaviour, INotifyPropertyChanged
     //[SerializeField] FilterDropdown filterDropdown;
     //[SerializeField] SortDropdown sortDropdown;
     StoreListView view;
+
+    public ScrollRect srcollRect;
 
     public GridLayoutGroup listGirdLayout;
 
@@ -57,12 +60,14 @@ public class StoreListViewModel : MonoBehaviour, INotifyPropertyChanged
     private void Awake()
     {
         view = GetComponent<StoreListView>();
+        
     }
 
     public void OnEnable()
     {
         StoreManager.Instance.currentCat = StoreCat.interior;
         UpdateCurrentCat(0);
+        srcollRect.verticalNormalizedPosition = 1f;
     }
 
     public void UpdateCurrentCat(int catIdx)
@@ -71,9 +76,9 @@ public class StoreListViewModel : MonoBehaviour, INotifyPropertyChanged
 
         //Debug.Log("[ItemListViewModel] UpdateCurrentCat");
 
-        //Debug.Log((int)CurrentCat);
+        Debug.Log((int)CurrentCat);
 
-        if(view.Stores.Count > 0)
+        if (view.Stores.Count > 0)
             view.SetSelectedCatBtnColor(view.Stores[(int)CurrentCat], false);
 
         // 현재 카테고리 변경
@@ -98,9 +103,6 @@ public class StoreListViewModel : MonoBehaviour, INotifyPropertyChanged
     // 로드
     public void LoadSlotList()
     {
-        //Debug.Log("[ItemListViewModel] LoadSlotList");
-        //Debug.Log("슬롯 리스트: " + string.Join(", ", ItemManager.Instance.displayItems.Select(x => x.ItemName + "(" + x.IsGained + "):" + x.PurchasePrice)));
-
         if (storeItemViewModels.Count > 0)
             ResetSlotList();
 
@@ -111,11 +113,8 @@ public class StoreListViewModel : MonoBehaviour, INotifyPropertyChanged
             itemViewmodel.transform.SetParent(itemContents.transform);
             itemViewmodel.SetModel(item);
             storeItemViewModels.Add(itemViewmodel);
-            //Debug.Log("[ItemListViewModel] UpdateSlotList | 슬롯 " + ItemManager.Instance.displayItems.IndexOf(item) + " " + item.ItemName);
+            //Debug.Log("[ItemListViewModel] UpdateSlotList | 슬롯 " + ItemManager.Instance.displayDatas.IndexOf(item) + " " + item.ItemName);
         }
-        //Debug.Log("슬롯 리스트: " + string.Join(", ", ItemManager.Instance.displayItems.Select(x => x.ItemName + "(" + x.IsGained + "):" + x.PurchasePrice)));
-
-        //Debug.Log("[ItemListViewModel] UpdateSlotList | 슬롯 로딩 완료");
     }
 
     // itemList 변경되면 그에 맞춰 초기화
