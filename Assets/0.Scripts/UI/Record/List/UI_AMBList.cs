@@ -10,9 +10,9 @@ public class UI_AMBList : UI_RecordList<UI_AMBSlot>
     {
         AudioSource source = SoundManager.Instance.BgsSource;
 
-        if(currentSlot != null)
+        if(CurrentSlot != null)
         {
-            if(currentSlot == slot)
+            if(CurrentSlot == slot)
             {
                 if(source.isPlaying)
                 {
@@ -27,11 +27,11 @@ public class UI_AMBList : UI_RecordList<UI_AMBSlot>
                 return;
             }
 
-            currentSlot.SetPlayModeImg(false);
+            CurrentSlot.SetPlayModeImg(false);
         }
 
         SoundManager.Instance.PlayBGS(slot.Record.RecordSoundPath_AudioClip);
         slot.SetPlayModeImg(true);
-        currentSlot = slot;
+        CurrentSlot = slot;
     }
 }

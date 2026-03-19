@@ -8,7 +8,7 @@ public class UI_AMBSlot : UI_RecordSlot
     [Header("환경음 타입 텍스트")]
     [SerializeField] private UI_AmbSourceText ambSourceText;
 
-    [Header("재생 상태 이미지 오브젝트")]
+    [Header("재생모드 관련 Image / Sprite")]
     [SerializeField] private Image playModeImg;
 
     [SerializeField] private Sprite playSprite;
