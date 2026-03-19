@@ -36,7 +36,8 @@ public class UI_BGMSlot : UI_RecordSlot
 
         playTimeText.text = record.RecordSoundPath_AudioClip.GetClipLength();
 
-        IsLocked = !record.IsDefaultRecord;
+        // IsLocked = !record.IsDefaultRecord;
+        CheckUserData();
 
         InitTextData();
     }
@@ -51,6 +52,17 @@ public class UI_BGMSlot : UI_RecordSlot
     public override void CheckUserData()
     {
         // todo: 파이어베이스 음반 데이터 저장 기능 추가 후 작성
+
+        if(Record.IsDefaultRecord)
+        {
+            IsLocked = true;
+            return;
+        }
+
+        if (DataManager.Instance.RecordDatabase.UnlockRecords.Contains(Record.RecordID))
+            IsLocked = true;
+        else
+            IsLocked = false;
     }
 
     public override void OnClick_Slot()
