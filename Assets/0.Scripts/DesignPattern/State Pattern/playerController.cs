@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -78,10 +79,12 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private GameObject _fork;
     [SerializeField] private GameObject _pan;
 
-    [SerializeField] private GameObject[] hats;
-    [SerializeField] private GameObject[] bodys;
+    [SerializeField] private GameObject[] _hats;
+    [SerializeField] private GameObject[] _bodys;
+    [SerializeField] private GameObject[] _fishingRods;
     private Dictionary<int, GameObject> _hatById;
     private Dictionary<int, GameObject> _bodyById;
+    private Dictionary<int, GameObject> _fishingRodsById;
 
     private float _hungerTickTimer;
     private float _baseMoveSpeed;
@@ -111,7 +114,7 @@ public class PlayerController : MonoBehaviour
     public Transform TablePoint => _tablePoint;
     public Transform SellPoint => _SellPoint;
     public int FishingCount => _fishingCount;
-
+    public float CurrentFishingWaitMax => PlayerDataOld.FishingSpeed;
     private void Awake()
     {
         _animator = GetComponent<Animator>();
@@ -124,6 +127,7 @@ public class PlayerController : MonoBehaviour
         PlayerDataOld = new PlayerData();
         _hatById = new Dictionary<int, GameObject>();
         _bodyById = new Dictionary<int, GameObject>();
+        _fishingRodsById = new Dictionary<int, GameObject>();
     }
     private void Start()
     {
@@ -255,28 +259,28 @@ public class PlayerController : MonoBehaviour
 
             if (data[i].costumeType == CostumeType.Head)
             {
-                if (hatIndex >= hats.Length) continue;
-                if (hats[hatIndex] == null)
+                if (hatIndex >= _hats.Length) continue;
+                if (_hats[hatIndex] == null)
                 {
                     hatIndex++;
                     continue;
                 }
 
-                _hatById[data[i].CostumeID] = hats[hatIndex];
-                hats[hatIndex].SetActive(false);
+                _hatById[data[i].CostumeID] = _hats[hatIndex];
+                _hats[hatIndex].SetActive(false);
                 hatIndex++;
             }
             else if (data[i].costumeType == CostumeType.Body)
             {
-                if (bodyIndex >= bodys.Length) continue;
-                if (bodys[bodyIndex] == null)
+                if (bodyIndex >= _bodys.Length) continue;
+                if (_bodys[bodyIndex] == null)
                 {
                     bodyIndex++;
                     continue;
                 }
 
-                _bodyById[data[i].CostumeID] = bodys[bodyIndex];
-                bodys[bodyIndex].SetActive(false);
+                _bodyById[data[i].CostumeID] = _bodys[bodyIndex];
+                _bodys[bodyIndex].SetActive(false);
                 bodyIndex++;
             }
         }
@@ -701,7 +705,8 @@ public class PlayerController : MonoBehaviour
             // 한 사이클 시작
             _cycleRunning = true;
 
-            float waitTime = UnityEngine.Random.Range(5f, 8f);
+            float waitTime = UnityEngine.Random.Range(5f, PlayerDataOld.FishingSpeed);
+
             yield return new WaitForSeconds(waitTime);
 
             Animator.SetTrigger("FishingHit");
@@ -710,6 +715,7 @@ public class PlayerController : MonoBehaviour
             yield return new WaitUntil(() => _cycleRunning == false);
         }
     }
+
     public void AnimEvent_GiveFishOnce()  //낚시 성공 애니에 넣을 함수
     {
         FishManager.Instance.PickRandomSeasonFish();
