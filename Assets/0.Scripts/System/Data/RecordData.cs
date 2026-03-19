@@ -100,6 +100,8 @@ public class RecordData : MonoBehaviour
         recordServerData.LpPieceCount = data._lpPieceCount;
 
         recordServerData.UnlockRecords = new HashSet<int>(data._unlockRecords);
+
+
     }
 
     private void Awake()
