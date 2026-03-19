@@ -25,7 +25,7 @@ public class EquipButton : MonoBehaviour
     {
         PlayerManager.Instance.OnEquipChanged += EquipStatHander;
         _equipButton.onClick.AddListener(ChangeEquipStatus);
-        ChangeBtnUI(false);
+        ChangeBtnUI(StoreManager.Instance.IsTradeItemGained);
     }
 
     private void OnDisable()
