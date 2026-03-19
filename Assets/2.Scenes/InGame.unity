@@ -3923,6 +3923,51 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 1462234125432955268, guid: 21f11af45fc63ac4fa212646d7b12ad6, type: 3}
   m_PrefabInstance: {fileID: 1037125861}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1067024551
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1067024552}
+  - component: {fileID: 1067024553}
+  m_Layer: 0
+  m_Name: PlayerCheating
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1067024552
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1067024551}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1800068103}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1067024553
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1067024551}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e5de1796c49ece4b8e3ba6af6c8e862, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerStatCheat
+  _player: {fileID: 673764088}
 --- !u!1 &1102774302
 GameObject:
   m_ObjectHideFlags: 0
@@ -7502,12 +7547,20 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 1889996173259242745, guid: 339406eb6a27c9348aeb8e75ea1ba258, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1067024552}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 339406eb6a27c9348aeb8e75ea1ba258, type: 3}
 --- !u!137 &1800068102 stripped
 SkinnedMeshRenderer:
   m_CorrespondingSourceObject: {fileID: 7993454317414060863, guid: 339406eb6a27c9348aeb8e75ea1ba258, type: 3}
+  m_PrefabInstance: {fileID: 1800068101}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &1800068103 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1889996173259242745, guid: 339406eb6a27c9348aeb8e75ea1ba258, type: 3}
   m_PrefabInstance: {fileID: 1800068101}
   m_PrefabAsset: {fileID: 0}
 --- !u!224 &1800415363 stripped
