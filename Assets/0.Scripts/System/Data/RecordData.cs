@@ -90,18 +90,15 @@ public class RecordData : MonoBehaviour
 
         data._lpPieceCount = recordServerData.LpPieceCount;
         data._unlockRecords = recordServerData.UnlockRecords.ToList();
-
     }
 
     private void SyncRecordLoadData()
     {
         var data = DataManager.Instance.Box.Record;
 
-        recordServerData.LpPieceCount = data._lpPieceCount;
+        LpPieceCount = data._lpPieceCount;
 
-        recordServerData.UnlockRecords = new HashSet<int>(data._unlockRecords);
-
-
+        UnlockRecords = new HashSet<int>(data._unlockRecords);
     }
 
     private void Awake()

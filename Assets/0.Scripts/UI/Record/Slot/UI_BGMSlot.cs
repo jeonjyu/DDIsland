@@ -55,14 +55,14 @@ public class UI_BGMSlot : UI_RecordSlot
 
         if(Record.IsDefaultRecord)
         {
-            IsLocked = true;
+            IsLocked = false;
             return;
         }
 
         if (DataManager.Instance.RecordDatabase.UnlockRecords.Contains(Record.RecordID))
-            IsLocked = true;
-        else
             IsLocked = false;
+        else
+            IsLocked = true;
     }
 
     public override void OnClick_Slot()
