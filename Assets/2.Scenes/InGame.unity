@@ -309,42 +309,18 @@ PrefabInstance:
       propertyPath: playerController
       value: 
       objectReference: {fileID: 673764088}
-    - target: {fileID: 566704304700681516, guid: 509a5bf89c6a10548834460ddd65b5e6, type: 3}
-      propertyPath: 'statIcons.Array.data[0]'
-      value: 
-      objectReference: {fileID: 21300000, guid: 89024c4c051a9e84c9416c1cb8e96c78, type: 3}
-    - target: {fileID: 566704304700681516, guid: 509a5bf89c6a10548834460ddd65b5e6, type: 3}
-      propertyPath: 'statIcons.Array.data[1]'
-      value: 
-      objectReference: {fileID: 21300000, guid: 6a0f72e39be13514a94596026e123a0c, type: 3}
-    - target: {fileID: 566704304700681516, guid: 509a5bf89c6a10548834460ddd65b5e6, type: 3}
-      propertyPath: 'statIcons.Array.data[2]'
-      value: 
-      objectReference: {fileID: 21300000, guid: 338721ff03664c545a692bc03c356dbb, type: 3}
-    - target: {fileID: 566704304700681516, guid: 509a5bf89c6a10548834460ddd65b5e6, type: 3}
-      propertyPath: 'statIcons.Array.data[3]'
-      value: 
-      objectReference: {fileID: 21300000, guid: 6b5c79d5b670b6d4c8509871bb3fed44, type: 3}
-    - target: {fileID: 566704304700681516, guid: 509a5bf89c6a10548834460ddd65b5e6, type: 3}
-      propertyPath: 'statIcons.Array.data[4]'
-      value: 
-      objectReference: {fileID: 21300000, guid: dd4516c186752394bb6bae4a11271123, type: 3}
-    - target: {fileID: 2534515286080275133, guid: 509a5bf89c6a10548834460ddd65b5e6, type: 3}
-      propertyPath: popupWindow
-      value: 
-      objectReference: {fileID: 1349604943}
+    - target: {fileID: 1866579157960650692, guid: 509a5bf89c6a10548834460ddd65b5e6, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 260
+      objectReference: {fileID: 0}
+    - target: {fileID: 1866579157960650692, guid: 509a5bf89c6a10548834460ddd65b5e6, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 40
+      objectReference: {fileID: 0}
     - target: {fileID: 2534515286080275133, guid: 509a5bf89c6a10548834460ddd65b5e6, type: 3}
       propertyPath: playerCharacter
       value: 
       objectReference: {fileID: 673764087}
-    - target: {fileID: 3229119972643871352, guid: 509a5bf89c6a10548834460ddd65b5e6, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 1349604943}
-    - target: {fileID: 3229119972643871352, guid: 509a5bf89c6a10548834460ddd65b5e6, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: Hide
-      objectReference: {fileID: 0}
     - target: {fileID: 4792219325536708606, guid: 509a5bf89c6a10548834460ddd65b5e6, type: 3}
       propertyPath: m_Name
       value: UpgradePanelV3
@@ -436,10 +412,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 4792219325536708606, guid: 509a5bf89c6a10548834460ddd65b5e6, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1349604943}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 509a5bf89c6a10548834460ddd65b5e6, type: 3}
 --- !u!1001 &167407670
 PrefabInstance:
@@ -1471,20 +1444,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 3710835326475312814, guid: 33558f82140fe754da776889db544589, type: 3}
   m_PrefabInstance: {fileID: 1068485604845990839}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &336007135
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
-  m_Name: Cheat/ChangeSeason
-  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
-  m_Asset: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
-  m_ActionId: ef236315-af95-4a51-b423-74acc616b8ed
 --- !u!1 &336034350 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2682378463491145306, guid: e6cc0efe13b35704b8d830c2a5abb970, type: 3}
@@ -2067,7 +2026,7 @@ Camera:
   far clip plane: 1000
   field of view: 60.000004
   orthographic: 1
-  orthographic size: 35
+  orthographic size: 16
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -2369,20 +2328,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5e855220d68dc04e989af3b5241e589, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
---- !u!114 &696851347
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
-  m_Name: Cheat/ChangeParticle
-  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
-  m_Asset: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
-  m_ActionId: af237ec3-b953-46dd-86cd-07f45b3b27af
 --- !u!1001 &705281531
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3167,7 +3112,7 @@ GameObject:
   m_Component:
   - component: {fileID: 922184497}
   m_Layer: 0
-  m_Name: KitchenPoint
+  m_Name: RestPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3337,6 +3282,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1776933965098516270, guid: 846220ee5306cf247baba951fc994cf3, type: 3}
+      propertyPath: m_Color.a
+      value: 0.6
+      objectReference: {fileID: 0}
     - target: {fileID: 1816787634115528906, guid: 846220ee5306cf247baba951fc994cf3, type: 3}
       propertyPath: waterWindow
       value: 
@@ -3386,10 +3335,6 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 4860247339351288481}
     - target: {fileID: 3648802843393968867, guid: 846220ee5306cf247baba951fc994cf3, type: 3}
-      propertyPath: questTabText
-      value: 
-      objectReference: {fileID: 776547605}
-    - target: {fileID: 3648802843393968867, guid: 846220ee5306cf247baba951fc994cf3, type: 3}
       propertyPath: slotTemplate
       value: 
       objectReference: {fileID: 258585263}
@@ -3401,10 +3346,6 @@ PrefabInstance:
       propertyPath: filterDropdown
       value: 
       objectReference: {fileID: 14445582}
-    - target: {fileID: 3648802843393968867, guid: 846220ee5306cf247baba951fc994cf3, type: 3}
-      propertyPath: journalTabText
-      value: 
-      objectReference: {fileID: 647430023}
     - target: {fileID: 3648802843393968867, guid: 846220ee5306cf247baba951fc994cf3, type: 3}
       propertyPath: questTabButton
       value: 
@@ -3421,14 +3362,6 @@ PrefabInstance:
       propertyPath: journalTabBackground
       value: 
       objectReference: {fileID: 1027972341}
-    - target: {fileID: 3648802843393968867, guid: 846220ee5306cf247baba951fc994cf3, type: 3}
-      propertyPath: questTabTexts.Array.size
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 3648802843393968867, guid: 846220ee5306cf247baba951fc994cf3, type: 3}
-      propertyPath: journalTabTexts.Array.size
-      value: 2
-      objectReference: {fileID: 0}
     - target: {fileID: 3648802843393968867, guid: 846220ee5306cf247baba951fc994cf3, type: 3}
       propertyPath: 'categoryTexts.Array.data[0]'
       value: 
@@ -3528,10 +3461,6 @@ PrefabInstance:
     - target: {fileID: 3800150960678985288, guid: 846220ee5306cf247baba951fc994cf3, type: 3}
       propertyPath: m_Name
       value: IslandWindow
-      objectReference: {fileID: 0}
-    - target: {fileID: 5155519963193412186, guid: 846220ee5306cf247baba951fc994cf3, type: 3}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5394488108017164791, guid: 846220ee5306cf247baba951fc994cf3, type: 3}
       propertyPath: m_AnchorMax.y
@@ -3994,6 +3923,51 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 1462234125432955268, guid: 21f11af45fc63ac4fa212646d7b12ad6, type: 3}
   m_PrefabInstance: {fileID: 1037125861}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1067024551
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1067024552}
+  - component: {fileID: 1067024553}
+  m_Layer: 0
+  m_Name: PlayerCheating
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1067024552
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1067024551}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1800068103}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1067024553
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1067024551}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e5de1796c49ece4b8e3ba6af6c8e862, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerStatCheat
+  _player: {fileID: 673764088}
 --- !u!1 &1102774302
 GameObject:
   m_ObjectHideFlags: 0
@@ -5720,23 +5694,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b13029e823873940b98892c9d643ce5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI_Record
---- !u!1 &1349604938 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4792219325536708606, guid: 509a5bf89c6a10548834460ddd65b5e6, type: 3}
-  m_PrefabInstance: {fileID: 142244537}
-  m_PrefabAsset: {fileID: 0}
 --- !u!224 &1349604939 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 8466223904741966300, guid: 509a5bf89c6a10548834460ddd65b5e6, type: 3}
   m_PrefabInstance: {fileID: 142244537}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1349604943
+--- !u!114 &1349604943 stripped
 MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 5793130873371955674, guid: 509a5bf89c6a10548834460ddd65b5e6, type: 3}
+  m_PrefabInstance: {fileID: 142244537}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1349604938}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2ccf5259813f06f428e948ae7238cf6b, type: 3}
@@ -6026,7 +5994,7 @@ MonoBehaviour:
     CustomLookAtTarget: 0
   Lens:
     FieldOfView: 60.000004
-    OrthographicSize: 35
+    OrthographicSize: 16
     NearClipPlane: 0.3
     FarClipPlane: 1000
     Dutch: 0
@@ -6058,8 +6026,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CameraController
   mainCam: {fileID: 538781005}
   cinemachineCam: {fileID: 1470008535}
-  minSize: 10
-  maxSize: 35
+  minSize: 16
+  maxSize: 40
 --- !u!1001 &1505497176
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6137,7 +6105,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1511822266}
   m_Layer: 0
-  m_Name: RestPoint
+  m_Name: KitchenPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6152,7 +6120,7 @@ Transform:
   m_GameObject: {fileID: 1511822265}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4, y: 0, z: -3.2}
+  m_LocalPosition: {x: 0.44, y: 0, z: -3.03}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -6677,20 +6645,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1611779342
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
-  m_Name: Cheat/ToggleCheat
-  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
-  m_Asset: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
-  m_ActionId: 80312ea0-fb06-4cbf-89e1-19a4772696a7
 --- !u!114 &1617052611 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1066005021809647904, guid: 7614c8fe500ddcf47941efe4f1e73174, type: 3}
@@ -7566,7 +7520,7 @@ PrefabInstance:
     - target: {fileID: 6038522852140780350, guid: 339406eb6a27c9348aeb8e75ea1ba258, type: 3}
       propertyPath: _kitchenPoint
       value: 
-      objectReference: {fileID: 922184497}
+      objectReference: {fileID: 1511822266}
     - target: {fileID: 6038522852140780350, guid: 339406eb6a27c9348aeb8e75ea1ba258, type: 3}
       propertyPath: _normalSource
       value: 
@@ -7574,7 +7528,7 @@ PrefabInstance:
     - target: {fileID: 6038522852140780350, guid: 339406eb6a27c9348aeb8e75ea1ba258, type: 3}
       propertyPath: _restAreaPoint
       value: 
-      objectReference: {fileID: 1511822266}
+      objectReference: {fileID: 922184497}
     - target: {fileID: 6280484870891386956, guid: 339406eb6a27c9348aeb8e75ea1ba258, type: 3}
       propertyPath: m_Convex
       value: 1
@@ -7593,12 +7547,20 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 1889996173259242745, guid: 339406eb6a27c9348aeb8e75ea1ba258, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1067024552}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 339406eb6a27c9348aeb8e75ea1ba258, type: 3}
 --- !u!137 &1800068102 stripped
 SkinnedMeshRenderer:
   m_CorrespondingSourceObject: {fileID: 7993454317414060863, guid: 339406eb6a27c9348aeb8e75ea1ba258, type: 3}
+  m_PrefabInstance: {fileID: 1800068101}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &1800068103 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1889996173259242745, guid: 339406eb6a27c9348aeb8e75ea1ba258, type: 3}
   m_PrefabInstance: {fileID: 1800068101}
   m_PrefabAsset: {fileID: 0}
 --- !u!224 &1800415363 stripped
@@ -8009,20 +7971,6 @@ MonoBehaviour:
   _sizeX: 2
   _sizeY: 2
   _cachedIndex: {x: 7, y: 5}
---- !u!114 &1936912263
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
-  m_Name: Cheat/ChangeTime
-  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
-  m_Asset: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
-  m_ActionId: 62546d76-d1a7-4348-a57a-0c2ed2dde261
 --- !u!1 &1945439923
 GameObject:
   m_ObjectHideFlags: 0
@@ -8735,7 +8683,7 @@ Transform:
   m_GameObject: {fileID: 2015116027}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.37, y: 0, z: -6.76}
+  m_LocalPosition: {x: -7.005, y: 0, z: -3.676}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -8862,11 +8810,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46480ec6f0764df4b91453e64f6c2507, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnvironmentCheat
-  _presenter: {fileID: 390024293}
-  _toggleCheat: {fileID: 1611779342}
-  _changeSeason: {fileID: 336007135}
-  _changeTime: {fileID: 1936912263}
-  _toggleParticle: {fileID: 696851347}
 --- !u!114 &2114154812 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5093136457413671686, guid: e6cc0efe13b35704b8d830c2a5abb970, type: 3}
@@ -11678,10 +11621,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 8391859129719183928}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1920, y: 200}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2836299023218060908
 MonoBehaviour:
@@ -13574,6 +13517,10 @@ PrefabInstance:
     - target: {fileID: 7590385599925288274, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
       propertyPath: m_Color.r
       value: 0.7169812
+      objectReference: {fileID: 0}
+    - target: {fileID: 7737091104895834909, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
+      propertyPath: m_Interactable
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7812538066037324316, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
       propertyPath: m_AnchorMax.x

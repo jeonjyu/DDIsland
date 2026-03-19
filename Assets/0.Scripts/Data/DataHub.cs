@@ -26,14 +26,14 @@ public class DataHub : MonoBehaviour
     private void Start()
     {
         StartCoroutine(InitLoadingSequence());
-        //StartCoroutine(AutoDataBoxSyncRoutine());
+        StartCoroutine(AutoDataBoxSyncRoutine());
     }
-    //private void OnApplicationQuit()
-    //{
-    //    UploadAllData();
-    //    IsQuite = true;
-    //    Debug.Log("게임 종료. 서버에 데이터 업로드");
-    //}
+    private void OnApplicationQuit()
+    {
+        UploadAllData();
+        IsQuite = true;
+        Debug.Log("게임 종료. 서버에 데이터 업로드");
+    }
     private IEnumerator InitLoadingSequence()
     {
         yield return null;
@@ -61,8 +61,6 @@ public class DataHub : MonoBehaviour
         PlayerPrefs.Save();
 
     }
-    
-
 
     [ContextMenu("DB")]
     //얘를 인스펙터에서 누르시면 실제로 DB에 값이 전송됩니다

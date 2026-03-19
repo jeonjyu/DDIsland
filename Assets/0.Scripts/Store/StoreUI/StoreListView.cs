@@ -31,6 +31,14 @@ public class StoreListView : MonoBehaviour
         SetStoreCat();
     }
 
+    private void OnDisable()
+    {
+        foreach(Button button in stores)
+        {
+            SetSelectedCatBtnColor(button, false);
+        }
+    }
+
     // 스토어 버튼 설정
     void SetStoreCat()
     {

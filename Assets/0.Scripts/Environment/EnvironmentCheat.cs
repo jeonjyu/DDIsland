@@ -1,4 +1,4 @@
-using System.Globalization;
+#if TESTMODE
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -39,7 +39,7 @@ public class EnvironmentCheat : MonoBehaviour
         _changeTime.action.performed -= OnChangeTime;
         _toggleParticle.action.performed -= OnToggleWeather;
     }
-private void OnToggleCheat(InputAction.CallbackContext context)
+    private void OnToggleCheat(InputAction.CallbackContext context)
     {
         var model = _presenter.Model;
         model.IsCheatMode = !model.IsCheatMode;
@@ -91,3 +91,4 @@ private void OnToggleCheat(InputAction.CallbackContext context)
         Debug.Log($"<color=yellow>[치트] 날씨 효과: {(currentStatus ? "재생" : "중지")}</color>");
     }
 }
+#endif

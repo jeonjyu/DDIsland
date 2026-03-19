@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class RecordData : MonoBehaviour
@@ -12,8 +13,27 @@ public class RecordData : MonoBehaviour
     private RecordLocalData recordLocalData = new RecordLocalData();
 
     public RecordDataSO CurrentRecord;
-
+    public List<int> DefaultRecords { get; private set; } = new List<int>();    // todo: 임시 기본 재생 목록
     public event Action<int> OnLPPieceChanged;
+
+    private void OnEnable()
+    {
+        if (DataManager.Instance != null && DataManager.Instance.Hub != null)
+            DataManager.Instance.Hub.OnRequestSave += SyncRecordSaveData;
+    }
+    private void OnDisable()
+    {
+        if (DataManager.Instance != null && DataManager.Instance.Hub != null)
+            DataManager.Instance.Hub.OnRequestSave -= SyncRecordSaveData;
+    }
+
+    private void Start()
+    {
+        if (DataManager.Instance != null && DataManager.Instance.Hub != null)
+        {
+            DataManager.Instance.Hub.OnDataLoaded += SyncRecordLoadData;
+        }
+    }
 
     #region 프로퍼티
     // 보유 음반 조각
@@ -46,7 +66,10 @@ public class RecordData : MonoBehaviour
     // 마지막으로 재생했던 현재 재생 목록
     public List<int> CurrentPlayList
     {
-        get { return recordLocalData.CurrentRecordData.CurrentPlayList; }
+        get
+        {
+            return recordLocalData.CurrentRecordData.CurrentPlayList;
+        }
         set { recordLocalData.CurrentRecordData.CurrentPlayList = value; }
     }
 
@@ -61,4 +84,30 @@ public class RecordData : MonoBehaviour
         }
     }
     #endregion
+    private void SyncRecordSaveData()
+    {
+        var data = DataManager.Instance.Box.Record;
+
+        data._lpPieceCount = recordServerData.LpPieceCount;
+        data._unlockRecords = recordServerData.UnlockRecords.ToList();
+    }
+
+    private void SyncRecordLoadData()
+    {
+        var data = DataManager.Instance.Box.Record;
+
+        LpPieceCount = data._lpPieceCount;
+
+        UnlockRecords = new HashSet<int>(data._unlockRecords);
+    }
+
+    private void Awake()
+    {
+        foreach (RecordDataSO record in RecordInfoData.datas)
+        {
+            if (record.recordType == RecordType.Background && record.IsDefaultRecord)
+                DefaultRecords.Add(record.RecordID);
+        }
+
+    }
 }

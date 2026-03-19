@@ -36,7 +36,8 @@ public class UI_BGMSlot : UI_RecordSlot
 
         playTimeText.text = record.RecordSoundPath_AudioClip.GetClipLength();
 
-        IsLocked = !record.IsDefaultRecord;
+        // IsLocked = !record.IsDefaultRecord;
+        CheckUserData();
 
         InitTextData();
     }
@@ -51,6 +52,17 @@ public class UI_BGMSlot : UI_RecordSlot
     public override void CheckUserData()
     {
         // todo: 파이어베이스 음반 데이터 저장 기능 추가 후 작성
+
+        if(Record.IsDefaultRecord)
+        {
+            IsLocked = false;
+            return;
+        }
+
+        if (DataManager.Instance.RecordDatabase.UnlockRecords.Contains(Record.RecordID))
+            IsLocked = false;
+        else
+            IsLocked = true;
     }
 
     public override void OnClick_Slot()
@@ -63,19 +75,7 @@ public class UI_BGMSlot : UI_RecordSlot
         }
         else
         {
-            Playrecord();
-        }
-    }
-
-    public void Playrecord()
-    {
-        SoundManager.Instance.PlayBGM(Record.RecordSoundPath_AudioClip);
-        bgmList.ShowRecordInfo(Record);
-        DataManager.Instance.RecordDatabase.CurrentRecord = Record;
-
-        if (!DataManager.Instance.RecordDatabase.CurrentPlayList.Contains(Record.RecordID))
-        {
-            DataManager.Instance.RecordDatabase.CurrentPlayList.Add(Record.RecordID);
+            bgmList.PlayBGM(this);
         }
     }
 

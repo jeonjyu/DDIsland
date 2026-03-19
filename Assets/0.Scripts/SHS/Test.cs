@@ -10,6 +10,7 @@ public class Test : MonoBehaviour
     [SerializeField] private GameObject obj4;
     [SerializeField] private GameObject obj5;
 
+#if TESTMODE
     private void Update()
     {
         if (Keyboard.current.f3Key.wasPressedThisFrame)
@@ -55,9 +56,11 @@ public class Test : MonoBehaviour
             DataManager.Instance.RecordDatabase.LpPieceCount = 0;
         }
     }
+#endif
 
     public void Onclick_ApplicationQuit()
     {
+        DataManager.Instance.Hub.UploadAllData();
         Application.Quit();
     }
 
