@@ -15,6 +15,8 @@ public class RecordData : MonoBehaviour
 
     public event Action<int> OnLPPieceChanged;
 
+    public List<int> DefaultRecords { get; private set; } = new List<int>();    // todo: 임시 기본 재생 목록
+
     #region 프로퍼티
     // 보유 음반 조각
     public int LpPieceCount
@@ -46,7 +48,10 @@ public class RecordData : MonoBehaviour
     // 마지막으로 재생했던 현재 재생 목록
     public List<int> CurrentPlayList
     {
-        get { return recordLocalData.CurrentRecordData.CurrentPlayList; }
+        get
+        {
+            return recordLocalData.CurrentRecordData.CurrentPlayList;
+        }
         set { recordLocalData.CurrentRecordData.CurrentPlayList = value; }
     }
 
@@ -61,4 +66,13 @@ public class RecordData : MonoBehaviour
         }
     }
     #endregion
+
+    private void Awake()
+    {
+        foreach (RecordDataSO record in RecordInfoData.datas)
+        {
+            if (record.recordType == RecordType.Background && record.IsDefaultRecord)
+                DefaultRecords.Add(record.RecordID);
+        }
+    }
 }
