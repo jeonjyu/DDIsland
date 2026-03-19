@@ -205,22 +205,7 @@ public class FishManager : Singleton<FishManager>
             Debug.LogWarning("[FishManager] PickWeighted 실패");
             return;
         }
-
-        int fishId = pickedDrop.RewardItem;  //뽑힌 드랍의 RewardItem을 fishId로 사용
-
-        var fishSO = GetFishSO(fishId);  //뽑힌 드랍의 RewardItem을 fishId로 사용
-        if (fishSO == null)
-        {
-            Debug.LogWarning($"[FishManager] FishDataSO 못찾음 fishId={fishId}");
-            return;
-        }
-        QuestManager.Instance.AddSimpleProgress(QuestConditionKey.FishingCount, 1);
-
-        if (fishId == 10001 || fishId == 10005)
-        {
-            QuestManager.Instance.AddDetailsProgress(QuestConditionKey.FishCatchById,fishId.ToString(),1);
-        }
-        CreateInstance(fishSO);  //길이,가격 계산 후 저장
+        GiveFishingReward(pickedDrop.RewardItem);
     }
 
     public void CreateInstance(FishDataSO fish)  
@@ -344,23 +329,15 @@ public class FishManager : Singleton<FishManager>
         {
             return candidates[UnityEngine.Random.Range(0, candidates.Count)];
         }
+        float r = UnityEngine.Random.Range(0f, total);
+        float acc = 0f;
 
-        // 2026.03.19: 재화 획득 확률이 반영되지 않아 명시적으로 추가해줌
-        // 추후 리팩토링 해야함
-
-        // total + 20은 Fish 테이블에 없는 음반 조각 확률 수치를 직접 추가한 것
-        float r = UnityEngine.Random.Range(0, total + 20);
-        float acc = 0;
-
-        // 물고기가 잡혔다면 반복문 안에서 반환될 것
         for (int i = 0; i < candidates.Count; i++)
         {
             acc += GetWeight(candidates[i], ctx);
-            if (r < acc) return candidates[i];
+            if (r < acc)
+                return candidates[i];
         }
-
-        // 물고기 가중치 안에 아무것도 안나옴 → 음반 조각 1개 추가
-        DataManager.Instance.RecordDatabase.LpPieceCount++;
         return null;
     }
     public float GetWeight(FishingDropDataSO drop, FishingContext ctx)
@@ -372,6 +349,42 @@ public class FishManager : Singleton<FishManager>
             weight += drop.UpProbability;
         }
         return weight;
+    }
+    public void GiveFishingReward(int rewardItemId)
+    {
+        if (rewardItemId == 201)  //LP보상
+        {
+            GiveCurrencyReward(rewardItemId);
+            return;
+        }
+        var fishSO = GetFishSO(rewardItemId);  //물고기
+        if (fishSO == null) 
+        {
+            Debug.LogWarning($"[FishManager] FishDataSO 못찾음 rewardItemId={rewardItemId}");
+            return;
+        }
+        QuestManager.Instance.AddSimpleProgress(QuestConditionKey.FishingCount, 1);
+
+        if (rewardItemId == 10001 || rewardItemId == 10005)
+        {
+            QuestManager.Instance.AddDetailsProgress(QuestConditionKey.FishCatchById,rewardItemId.ToString(),1);
+        }
+
+        CreateInstance(fishSO);
+    }
+    private void GiveCurrencyReward(int rewardItemId)
+    {
+        switch (rewardItemId)
+        {
+            case 201:
+                DataManager.Instance.RecordDatabase.LpPieceCount++;
+                Debug.Log("[FishManager] LP 조각 1개 획득");
+                break;
+
+            default:
+                Debug.LogWarning($"[FishManager] LP말고 다른 재화 보상나옴 ID={rewardItemId}");
+                break;
+        }
     }
     public void OpenPiraruku(DayilyCycle dayilyCycle)
     {
