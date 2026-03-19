@@ -28,9 +28,6 @@ public class JournalFilterDropdown : MonoBehaviour
     private readonly Color selectedColor = Color.white;               
     private readonly Color unselectedColor = new Color32(0xC4, 0xBC, 0x9D, 0xFF);  // 미선택: 갈색
 
-    // 필터 라벨 텍스트
-    private readonly string[] filterNames = { "전체", "등록", "미등록" };
-
     // 현재 선택된 필터
     private CollectionFilter currentFilter = CollectionFilter.All;
 
@@ -53,10 +50,11 @@ public class JournalFilterDropdown : MonoBehaviour
 
         if (dropdownPanel != null)
             dropdownPanel.SetActive(false);
-        // 버튼 텍스트 세팅 
-        if (textAll != null) textAll.text = filterNames[0];
-        if (textOwned != null) textOwned.text = filterNames[1];
-        if (textNotOwned != null) textNotOwned.text = filterNames[2];
+        // 드롭다운 버튼 텍스트 
+        if (textAll != null) textAll.text = JournalLocalize.Filter(CollectionFilter.All);         
+        if (textOwned != null) textOwned.text = JournalLocalize.Filter(CollectionFilter.Owned);    
+        if (textNotOwned != null) textNotOwned.text = JournalLocalize.Filter(CollectionFilter.NotOwned); 
+
         ApplySelection(CollectionFilter.All);
     }
 
@@ -97,7 +95,8 @@ public class JournalFilterDropdown : MonoBehaviour
 
         // 라벨 텍스트 갱신
         if (labelText != null)
-            labelText.text = filterNames[(int)filter];
+            labelText.text = JournalLocalize.Filter(filter);
+        //labelText.text = filterNames[(int)filter];
     }
 
     // 외부에서 필터 초기화할 때 호출 (카테고리 전환 시)
