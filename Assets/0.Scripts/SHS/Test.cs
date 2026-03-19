@@ -12,52 +12,53 @@ public class Test : MonoBehaviour
 
     private void Update()
     {
-        if (Keyboard.current.f3Key.wasPressedThisFrame)
-        {
-            obj1.SetActive(true);
-            obj2.SetActive(true);
-            obj3.SetActive(true);
-            obj4.SetActive(true);
-            obj5.SetActive(true);
+        //if (Keyboard.current.f3Key.wasPressedThisFrame)
+        //{
+        //    obj1.SetActive(true);
+        //    obj2.SetActive(true);
+        //    obj3.SetActive(true);
+        //    obj4.SetActive(true);
+        //    obj5.SetActive(true);
 
-        }
+        //}
 
-        if (Keyboard.current.f4Key.wasPressedThisFrame)
-        {
-            obj1.SetActive(false);
-            obj2.SetActive(false);
-            obj3.SetActive(false);
-            obj4.SetActive(false);
-            obj5.SetActive(false);
-        }
+        //if (Keyboard.current.f4Key.wasPressedThisFrame)
+        //{
+        //    obj1.SetActive(false);
+        //    obj2.SetActive(false);
+        //    obj3.SetActive(false);
+        //    obj4.SetActive(false);
+        //    obj5.SetActive(false);
+        //}
 
-        // F5키 누를 시 골드 증가
-        if (Keyboard.current.f5Key.wasPressedThisFrame)
-        {
-            GameManager.Instance.SetGold(5000);
-        }
+        //// F5키 누를 시 골드 증가
+        //if (Keyboard.current.f5Key.wasPressedThisFrame)
+        //{
+        //    GameManager.Instance.SetGold(5000);
+        //}
 
-        // F6키 누를 시 음반 조각 증가
-        if (Keyboard.current.f6Key.wasPressedThisFrame)
-        {
-            DataManager.Instance.RecordDatabase.LpPieceCount += 1;
-        }
+        //// F6키 누를 시 음반 조각 증가
+        //if (Keyboard.current.f6Key.wasPressedThisFrame)
+        //{
+        //    DataManager.Instance.RecordDatabase.LpPieceCount += 1;
+        //}
 
-        // F7키 누를 시 골드 초기화
-        if (Keyboard.current.f7Key.wasPressedThisFrame)
-        {
-            GameManager.Instance.SetGold(-GameManager.Instance.PlayerGold);
-        }
+        //// F7키 누를 시 골드 초기화
+        //if (Keyboard.current.f7Key.wasPressedThisFrame)
+        //{
+        //    GameManager.Instance.SetGold(-GameManager.Instance.PlayerGold);
+        //}
 
-        // F8키 누를 시 음반 조각 초기화
-        if (Keyboard.current.f8Key.wasPressedThisFrame)
-        {
-            DataManager.Instance.RecordDatabase.LpPieceCount = 0;
-        }
+        //// F8키 누를 시 음반 조각 초기화
+        //if (Keyboard.current.f8Key.wasPressedThisFrame)
+        //{
+        //    DataManager.Instance.RecordDatabase.LpPieceCount = 0;
+        //}
     }
 
     public void Onclick_ApplicationQuit()
     {
+        DataManager.Instance.Hub.UploadAllData();
         Application.Quit();
     }
 

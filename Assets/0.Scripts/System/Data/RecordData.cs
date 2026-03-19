@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class RecordData : MonoBehaviour
@@ -15,6 +16,24 @@ public class RecordData : MonoBehaviour
 
     public event Action<int> OnLPPieceChanged;
 
+    private void OnEnable()
+    {
+        if (DataManager.Instance != null && DataManager.Instance.Hub != null)
+            DataManager.Instance.Hub.OnRequestSave += SyncRecordSaveData;
+    }
+    private void OnDisable()
+    {
+        if (DataManager.Instance != null && DataManager.Instance.Hub != null)
+            DataManager.Instance.Hub.OnRequestSave -= SyncRecordSaveData;
+    }
+
+    private void Start()
+    {
+        if (DataManager.Instance != null && DataManager.Instance.Hub != null)
+        {
+            DataManager.Instance.Hub.OnDataLoaded += SyncRecordLoadData;
+        }
+    }
     #region 프로퍼티
     // 보유 음반 조각
     public int LpPieceCount
@@ -61,4 +80,22 @@ public class RecordData : MonoBehaviour
         }
     }
     #endregion
+
+    private void SyncRecordSaveData()
+    {
+        var data = DataManager.Instance.Box.Record;
+
+        data._lpPieceCount = recordServerData.LpPieceCount;
+        data._unlockRecords = recordServerData.UnlockRecords.ToList();
+
+    }
+
+    private void SyncRecordLoadData()
+    {
+        var data = DataManager.Instance.Box.Record;
+
+        recordServerData.LpPieceCount = data._lpPieceCount;
+
+        recordServerData.UnlockRecords = new HashSet<int>(data._unlockRecords);
+    }
 }
