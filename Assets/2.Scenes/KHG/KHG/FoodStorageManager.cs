@@ -137,7 +137,6 @@ public class FoodStorageManager : Singleton<FoodStorageManager>
     private void ApplyFoodCapacityByLevel()  //레벨에 맞게 창고용량 적용
     {
         int newCap = _storageCapacity; //현재 용량 기준으로 새 용량 계산
-      
 
         if (_storagelevel <= 1) newCap = 5;
         else if (_storagelevel == 2) newCap = 10;

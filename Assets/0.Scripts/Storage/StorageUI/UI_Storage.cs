@@ -143,6 +143,7 @@ public class UI_Storage : MonoBehaviour
                 _fishSlots[ui].SetEmpty();
             }
         }
+        RefreshSelectedDetail();
     }
 
     public int CompareByCurrentSort(int a, int b)    // 현재 SortMode에 따른 비교 함수, a,b는 realIndex임!
@@ -215,6 +216,17 @@ public class UI_Storage : MonoBehaviour
         var def = DataManager.Instance.FishingDatabase.FishData[slot.Value.FishId];
         if (def == null) return;
 
+        RefreshDetailFish(def, slot);
+    }
+
+    public void RefreshDetailFish(FishDataSO def, FishStackSlot? slot)  //슬롯 내용물없으면 디테일패널을 비우고 있으면 넣기
+    {
+        if (!slot.HasValue || def == null)
+        {
+            ClearDetailFish();
+            return;
+        }
+
         var sp = def.FishImgPath_Sprite;
 
         if (_detailIcon != null)
@@ -224,24 +236,60 @@ public class UI_Storage : MonoBehaviour
             _detailIcon.sprite = sp;
         }
 
-        string name = def.FishName_String;
-        _nameText.text = name;
-
-        var grade = def.gradeType;
-        _gradeText.text = grade.ToString();
-
-       // int bestPrice = slot.Value.MaxPrice;
-       // _bestPriceText.text = bestPrice.ToString();
-       string desc = def.FishDesc_String;
-       _DescText.text = desc;
+        _nameText.text = def.FishName_String;
+        _gradeText.text = def.gradeType.ToString();
+        _DescText.text = def.FishDesc_String;
     }
+    private void RefreshSelectedDetail()
+    {
+        if (_selectedRealIndex < 0)
+        {
+            ClearDetailFish();
+            return;
+        }
 
+        var slot = FishStorageManager.Instance.GetSlot(_selectedRealIndex);
+        if (!slot.HasValue)
+        {
+            _selectedRealIndex = -1;
+            ClearDetailFish();
+            return;
+        }
+
+        var def = DataManager.Instance.FishingDatabase.FishData[slot.Value.FishId];
+        if (def == null)
+        {
+            _selectedRealIndex = -1;
+            ClearDetailFish();
+            return;
+        }
+
+        RefreshDetailFish(def, slot);
+    }
+    private void ClearDetailFish()
+    {
+        if (_detailIcon != null)
+        {
+            _detailIcon.sprite = null;
+            _detailIcon.enabled = false;
+        }
+
+        if (_nameText != null)
+            _nameText.text = string.Empty;
+
+        if (_gradeText != null)
+            _gradeText.text = string.Empty;
+
+        if (_DescText != null)
+            _DescText.text = string.Empty;
+    }
     public void OnRemoveClicked()
     {
         if (_selectedRealIndex < 0) return;
 
         FishStorageManager.Instance.TryRemoveAt(_selectedRealIndex);
         _selectedRealIndex = -1;
+        ClearDetailFish();
     }
     public void UpgradeStorage()
     {
