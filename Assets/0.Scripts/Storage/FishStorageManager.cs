@@ -197,6 +197,7 @@ public class FishStorageManager : Singleton<FishStorageManager>
             {
                 totalGold += FishSlots[i].Value.TotalPrice;
                 FishSlots[i] = null;
+
                 OnSlotChanged?.Invoke(i);
             }
         }

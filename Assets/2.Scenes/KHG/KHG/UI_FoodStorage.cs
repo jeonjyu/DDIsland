@@ -125,6 +125,7 @@ public class UI_FoodStorage : MonoBehaviour
                 _foodSlots[ui].SetEmpty();
             }
         }
+        RefreshSelectedDetail();
     }
 
     public int CompareByCurrentSort(int a, int b)  
@@ -187,6 +188,16 @@ public class UI_FoodStorage : MonoBehaviour
         var def = DataManager.Instance.FoodDatabase.FoodInfoData[slot.Value.FoodId];
         if (def == null) return;
 
+        RefreshDetailFood(def, slot);
+    }
+    public void RefreshDetailFood(FoodDataSO def, FoodStackSlot? slot)
+    {
+        if (!slot.HasValue || def == null)
+        {
+            ClearDetailFood();
+            return;
+        }
+
         var sp = def.FoodImgPath_Sprite;
 
         if (_detailIcon != null)
@@ -196,15 +207,53 @@ public class UI_FoodStorage : MonoBehaviour
             _detailIcon.sprite = sp;
         }
 
-        string name = def.FoodName_String;
-        _nameText.text = name;
-
-        var grade = def.foodrateType;
-        _gradeText.text = grade.ToString();
-        string desc = def.FoodDesc_String;
-        _DescText.text = desc;
+        _nameText.text = def.FoodName_String;
+        _gradeText.text = def.foodrateType.ToString();
+        _DescText.text = def.FoodDesc_String;
     }
+    private void RefreshSelectedDetail()
+    {
+        if (_selectedRealIndex < 0)
+        {
+            ClearDetailFood();
+            return;
+        }
 
+        var slot = FoodStorageManager.Instance.GetFoodSlot(_selectedRealIndex);
+        if (!slot.HasValue)
+        {
+            _selectedRealIndex = -1;
+            ClearDetailFood();
+            return;
+        }
+
+        var def = DataManager.Instance.FoodDatabase.FoodInfoData[slot.Value.FoodId];
+        if (def == null)
+        {
+            _selectedRealIndex = -1;
+            ClearDetailFood();
+            return;
+        }
+
+        RefreshDetailFood(def, slot);
+    }
+    private void ClearDetailFood()
+    {
+        if (_detailIcon != null)
+        {
+            _detailIcon.sprite = null;
+            _detailIcon.enabled = false;
+        }
+
+        if (_nameText != null)
+            _nameText.text = string.Empty;
+
+        if (_gradeText != null)
+            _gradeText.text = string.Empty;
+
+        if (_DescText != null)
+            _DescText.text = string.Empty;
+    }
     public void OnRemoveClicked()
     {
         if (_selectedRealIndex < 0) return;
