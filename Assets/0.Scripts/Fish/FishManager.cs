@@ -33,7 +33,7 @@ public class FishManager : Singleton<FishManager>
     List<FishDataSO> _allFish;
     // 추가한 부분입니다
     Dictionary<(ArriveSeason, FishType), List<FishDataSO>> _fishData;
-    public event System.Action<int> OnFishGet; // 도감 연동용 이벤트
+    public event System.Action<int, float> OnFishGet; // 도감 연동용 이벤트 (id와 길이) 
     private EnvironmentModel _environment;
 
     private ArriveSeason _currentSeason;
@@ -214,7 +214,12 @@ public class FishManager : Singleton<FishManager>
             Debug.LogWarning($"[FishManager] FishDataSO 못찾음 fishId={fishId}");
             return;
         }
+        QuestManager.Instance.AddSimpleProgress(QuestConditionKey.FishingCount, 1);
 
+        if (fishId == 10001 || fishId == 10005)
+        {
+            QuestManager.Instance.AddDetailsProgress(QuestConditionKey.FishCatchById,fishId.ToString(),1);
+        }
         CreateInstance(fishSO);  //길이,가격 계산 후 저장
     }
 
@@ -226,7 +231,7 @@ public class FishManager : Singleton<FishManager>
         Debug.Log($"Name: {fish.FishName_String}, price: {price}, Length: {length}");
 
         FishToStorage(fish, length, price);
-        OnFishGet?.Invoke(fish.ID); // 낚았다 
+        OnFishGet?.Invoke(fish.ID, length); // 낚았다 
     }
 
     public void FishToStorage(FishDataSO randomFish, float length, int price)
@@ -340,16 +345,23 @@ public class FishManager : Singleton<FishManager>
             return candidates[UnityEngine.Random.Range(0, candidates.Count)];
         }
 
-        float r = UnityEngine.Random.Range(0, total);
+        // 2026.03.19: 재화 획득 확률이 반영되지 않아 명시적으로 추가해줌
+        // 추후 리팩토링 해야함
+
+        // total + 20은 Fish 테이블에 없는 음반 조각 확률 수치를 직접 추가한 것
+        float r = UnityEngine.Random.Range(0, total + 20);
         float acc = 0;
 
+        // 물고기가 잡혔다면 반복문 안에서 반환될 것
         for (int i = 0; i < candidates.Count; i++)
         {
             acc += GetWeight(candidates[i], ctx);
             if (r < acc) return candidates[i];
         }
 
-        return candidates[candidates.Count - 1];
+        // 물고기 가중치 안에 아무것도 안나옴 → 음반 조각 1개 추가
+        DataManager.Instance.RecordDatabase.LpPieceCount++;
+        return null;
     }
     public float GetWeight(FishingDropDataSO drop, FishingContext ctx)
     {
@@ -357,7 +369,7 @@ public class FishManager : Singleton<FishManager>
 
         if (drop.RewardItem == (int)SpecialType.Oarfish && ctx.IsCherryblossom)
         {
-            weight *= 1.5f;
+            weight += drop.UpProbability;
         }
         return weight;
     }

@@ -2,7 +2,8 @@ using UnityEngine;
 
 public class PurchaseStrategy : MonoBehaviour, ITradeStrategy
 {
-    //public virtual bool Trade(int tradeCount, IStoreItem item)
+
+    // 구매
     public virtual bool Trade(int tradeCount, int tradePrice)
     {
         if(GameManager.Instance.PlayerGold < tradePrice)

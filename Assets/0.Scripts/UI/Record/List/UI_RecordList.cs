@@ -13,6 +13,7 @@ public class UI_RecordList<T> : MonoBehaviour where T : UI_RecordSlot
     [SerializeField] private RecordType recordType;
 
     public List<T> recordSlotList = new List<T>();
+    public T CurrentSlot { get; protected set; }
 
     private void Start()
     {

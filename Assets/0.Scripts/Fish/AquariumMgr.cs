@@ -10,6 +10,7 @@ public struct ThemeResource
     public FishType type;       // 테마 종류 (Lake, Sea, River 등)
     public Sprite background;   // 배경 이미지
     public string buttonText;   // 버튼에 표시될 텍스트
+    public RuntimeAnimatorController themeAnimator; // 테마에 따른 애니메이터
 }
 
 /// <summary>
@@ -31,6 +32,8 @@ public class AquariumMgr : MonoBehaviour
     [Header("물고기 관련 설정")]
     [SerializeField] private BackGroundFish _fishPrefab;
     [SerializeField] private RectTransform _spawnArea;
+    [SerializeField] private RectTransform _waterWindows;
+    [SerializeField] private RectMask2D _spawnMask2D;
     [SerializeField] private float _spawnPadding = 200f;
     private IMovement _boidsFish;
     private IMovement _normalFish;
@@ -46,6 +49,17 @@ public class AquariumMgr : MonoBehaviour
     [SerializeField] private float _spawnInterval;
     [SerializeField] private int _maxTotalGroups = 10; // 최대 10그룹
     private int _currentActiveGroups = 0;
+
+    [Header("환경 연출")]
+    [SerializeField] private Button _themeToggleButton;
+    [SerializeField] private LakeImage _lakeImage;
+    [SerializeField] private float fadeDuration = 1.0f;
+    [SerializeField] private float bgFadeDuration = 0.5f;
+
+    private CanvasGroup _spawnAreaCanvasGroup;
+    private CanvasGroup _waterWindowCanvasGroup;
+    private Coroutine _spawnCoroutine;
+    private bool _isChangingTheme = false;
 
     private Vector2 _lastScreenSize;
     public float ScreenLimit { get; private set; }
@@ -68,6 +82,14 @@ public class AquariumMgr : MonoBehaviour
 
         _boidsFish = new FishBoids();
         _normalFish = new FishPattern();
+
+        _spawnAreaCanvasGroup = _spawnArea.GetComponent<CanvasGroup>();
+        if (_spawnAreaCanvasGroup == null)
+            _spawnAreaCanvasGroup = _spawnArea.gameObject.AddComponent<CanvasGroup>();
+
+        _waterWindowCanvasGroup = _backgroundImage.GetComponent<CanvasGroup>();
+        if (_waterWindowCanvasGroup == null)
+            _waterWindowCanvasGroup = _backgroundImage.gameObject.AddComponent<CanvasGroup>();
     }
     private void Start()
     {
@@ -81,14 +103,16 @@ public class AquariumMgr : MonoBehaviour
         if (_lastScreenSize.x != Screen.width || _lastScreenSize.y != Screen.height)
         {
             AquariumBounds();
+             SyncMaskToWindow();
         }
+
     }
 
     IEnumerator LateStart()
     {
         yield return null;
 
-        StartCoroutine(RepeatSpawnFish());
+        _spawnCoroutine = StartCoroutine(RepeatSpawnFish());
     }
     public void AquariumBounds()
     {
@@ -121,30 +145,83 @@ public class AquariumMgr : MonoBehaviour
 
     public void ToggleTheme()
     {
+        if (_isChangingTheme) return;
+
         _currentThemeIndex = (_currentThemeIndex + 1) % _themes.Length;
 
         FishType nextType = _themes[_currentThemeIndex].type;
 
-        ChangeTheme(nextType);
+        StartCoroutine(ChangeTheme(nextType));
     }
 
-    private void ChangeTheme(FishType newType)
+    private IEnumerator ChangeTheme(FishType newType)
     {
-        StopCoroutine(RepeatSpawnFish());
+        float fishTime = 0;
+        float backGroundTime = 0;
 
-        // Todo: 현재 테마 변경 시 물고기들 사라지는 연출 필요
+        _isChangingTheme = true;
+        if (_themeToggleButton != null) _themeToggleButton.interactable = false;
+
+        if (_spawnCoroutine != null) StopCoroutine(_spawnCoroutine);
+
+        while (fishTime < fadeDuration)
+        {
+            fishTime += Time.deltaTime;
+            _spawnAreaCanvasGroup.alpha = Mathf.Lerp(1f, 0f, fishTime / fadeDuration);
+            yield return null;
+        }
+        _spawnAreaCanvasGroup.alpha = 0f;
+
+        while (backGroundTime < bgFadeDuration)
+        {
+            backGroundTime += Time.deltaTime;
+            _waterWindowCanvasGroup.alpha = Mathf.Lerp(1f, 0.7f, backGroundTime / bgFadeDuration);
+            yield return null;
+        }
+
+        List<BackGroundFish> tempList = new (_activeFish);
+
+        foreach (var fish in tempList)
+        {
+            fish.gameObject.SetActive(false); 
+            ReturnFish(fish);                 
+        }
+        _activeFish.Clear();
+        _currentActiveGroups = 0;
 
         if (_themeDict.TryGetValue(newType, out ThemeResource res))
         {
             if (_backgroundImage != null) _backgroundImage.sprite = res.background;
             if (_themeButtonText != null) _themeButtonText.text = res.buttonText;
 
+            if (_lakeImage != null && res.themeAnimator != null)
+            {
+                _lakeImage.ChangeAnimator(res.themeAnimator);
+            }
+
             _currentType = newType; 
             Debug.Log($"테마 변경 완료: {res.type}");
         }
 
-        StartCoroutine(RepeatSpawnFish());
+        backGroundTime = 0;
+        while (backGroundTime < bgFadeDuration)
+        {
+            backGroundTime += Time.deltaTime;
+            _waterWindowCanvasGroup.alpha = Mathf.Lerp(0.5f, 1f, backGroundTime / bgFadeDuration);
+            yield return null;
+        }
+        _waterWindowCanvasGroup.alpha = 1f;
+
+        yield return new WaitForSeconds(1f);
+
+        _spawnAreaCanvasGroup.alpha = 1f;
+
+        _spawnCoroutine = StartCoroutine(RepeatSpawnFish());
+
+        _isChangingTheme = false;
+        if (_themeToggleButton != null) _themeToggleButton.interactable = true;
     }
+    
     #endregion
 
     #region 물고기 소환 관련
@@ -188,7 +265,7 @@ public class AquariumMgr : MonoBehaviour
         _flockMemberCount[flockID] = count;
 
         // 화면 내에서 랜덤 Y 위치
-        float flockY = Random.Range(-_spawnArea.rect.height / 2 + 100f, _spawnArea.rect.height / 2 - 100f); 
+        float flockY = GetRandomSpawnY();
 
         for (int i = 0; i < count; i++)
         {
@@ -223,7 +300,7 @@ public class AquariumMgr : MonoBehaviour
         bool isRight = (Random.value > 0.5f);
 
         float spawnX = isRight ? -ScreenLimit : ScreenLimit;
-        float spawnY = Random.Range(-_spawnArea.rect.height / 2 + 100f, _spawnArea.rect.height / 2 - 100f);
+        float spawnY = GetRandomSpawnY();
 
         SpawnFish(new Vector2(spawnX, spawnY), selectedData, fishID: fishID, isRight: isRight, movement: _normalFish);
 
@@ -287,12 +364,55 @@ public class AquariumMgr : MonoBehaviour
     }
     #endregion
 
+    #region 호수 크기 사이즈
+    private float GetRandomSpawnY()
+    {
+        if (_waterWindows == null) return 0f;
+
+        Vector3[] windowCorners = new Vector3[4];
+        _waterWindows.GetWorldCorners(windowCorners);
+
+        float minWorldY = windowCorners[0].y;
+        float maxWorldY = windowCorners[1].y;
+
+        Vector3 minLocal = _spawnArea.InverseTransformPoint(new Vector3(0, minWorldY, 0));
+        Vector3 maxLocal = _spawnArea.InverseTransformPoint(new Vector3(0, maxWorldY, 0));
+
+        if (minLocal.y + 50f >= maxLocal.y - 50f)
+        {
+            return (minLocal.y + maxLocal.y) / 2f;
+        }
+
+        return Random.Range(minLocal.y + 50f, maxLocal.y - 50f);
+    }
+
+    private void SyncMaskToWindow()
+    {
+        if (_waterWindows == null || _spawnMask2D == null) return;
+
+        Vector3[] windowCorners = new Vector3[4];
+        _waterWindows.GetWorldCorners(windowCorners);
+
+        Vector3 minWindowLocal = _spawnArea.InverseTransformPoint(windowCorners[0]);
+        Vector3 maxWindowLocal = _spawnArea.InverseTransformPoint(windowCorners[2]);
+
+        Rect spawnRect = _spawnArea.rect;
+
+        float paddingLeft = Mathf.Max(0, minWindowLocal.x - spawnRect.xMin);
+        float paddingBottom = Mathf.Max(0, minWindowLocal.y - spawnRect.yMin);
+        float paddingRight = Mathf.Max(0, spawnRect.xMax - maxWindowLocal.x);
+        float paddingTop = Mathf.Max(0, spawnRect.yMax - maxWindowLocal.y);
+
+        _spawnMask2D.padding = new Vector4(paddingLeft, paddingBottom, paddingRight, paddingTop);
+    }
+    #endregion
+
 
     // 물고기 숨기기 
     public void HideFish() 
     {
 
-         StopAllCoroutines();
+        if (_spawnCoroutine != null) StopCoroutine(_spawnCoroutine);
         // 투명도 0 보이지 않게 
         var cg = _spawnArea.GetComponent<CanvasGroup>();
         if (cg == null) cg = _spawnArea.gameObject.AddComponent<CanvasGroup>();

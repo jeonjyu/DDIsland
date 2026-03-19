@@ -1,16 +1,22 @@
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UI_AMBSlot : UI_RecordSlot
 {
     [Header("환경음 타입 텍스트")]
     [SerializeField] private UI_AmbSourceText ambSourceText;
 
-    [Header("재생 상태 이미지 오브젝트")]
-    [SerializeField] private GameObject playObj;
-    [SerializeField] private GameObject pauseObj;
+    [Header("재생모드 관련 Image / Sprite")]
+    [SerializeField] private Image playModeImg;
+
+    [SerializeField] private Sprite playSprite;
+    [SerializeField] private Sprite pauseSprite;
 
     private UI_AMBList ambList;
+
+    public void SetPlayModeImg(bool isPlay) => playModeImg.sprite = isPlay ? pauseSprite : playSprite;
 
     public override void InitData<T>(RecordDataSO record, UI_RecordList<T> recordList)
     {
@@ -29,22 +35,6 @@ public class UI_AMBSlot : UI_RecordSlot
 
     public override void OnClick_Slot()
     {
-        if (Record == null) return;
-
-        if (SoundManager.Instance.BgsSource.clip != Record.RecordSoundPath_AudioClip)
-        {
-            SoundManager.Instance.PlayBGS(Record.RecordSoundPath_AudioClip);
-        }
-        else if (SoundManager.Instance.BgsSource.isPlaying)
-        {
-            SoundManager.Instance.BgsSource.Pause();
-        }
-        else
-        {
-            SoundManager.Instance.BgsSource.Play();
-        }
-
-        playObj.SetActive(SoundManager.Instance.BgsSource.clip != Record.RecordSoundPath_AudioClip || !SoundManager.Instance.BgsSource.isPlaying);
-        pauseObj.SetActive(SoundManager.Instance.BgsSource.clip == Record.RecordSoundPath_AudioClip && SoundManager.Instance.BgsSource.isPlaying);
+        ambList.PlayAMB(this);
     }
 }

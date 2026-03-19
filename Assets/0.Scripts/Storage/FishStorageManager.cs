@@ -22,11 +22,11 @@ public class FishStorageManager : Singleton<FishStorageManager>
 {
     FishStackSlot?[] FishSlots;
 
-    int _storageCapacity = 10;  //인벤크기
+    int _storageCapacity = 7;  //인벤크기
     int _storagelevel = 1;
     long _acquireCounter = 0;
     public const int MaxLevel = 5;
-    public const int MaxCapacity = 50;
+    public const int MaxCapacity = 27;
 
     public event Action<int> OnSlotChanged; // 특정 슬롯이 바뀌었음을 알림(UI는 보통 RefreshAll)
     public int Capacity => FishSlots?.Length ?? 0;
@@ -216,11 +216,11 @@ public class FishStorageManager : Singleton<FishStorageManager>
     {
         int newCap = _storageCapacity; //현재 용량 기준으로 새 용량 계산
 
-        if (_storagelevel <= 1) newCap = 10;
-        else if (_storagelevel == 2) newCap = 20;
-        else if (_storagelevel == 3) newCap = 30;
-        else if (_storagelevel == 4) newCap = 40;
-        else newCap = 50;
+        if (_storagelevel <= 1) newCap = 7;
+        else if (_storagelevel == 2) newCap = 12;
+        else if (_storagelevel == 3) newCap = 17;
+        else if (_storagelevel == 4) newCap = 22;
+        else newCap = 27;
         if (_storageCapacity == newCap) return; 
 
         if (FishSlots == null) FishSlots = new FishStackSlot?[newCap];   //실제 슬롯 배열 크기 변경(기존 데이터 유지)

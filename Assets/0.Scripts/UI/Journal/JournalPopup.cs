@@ -59,7 +59,7 @@ public class JournalPopup : MonoBehaviour
                 AppendInfo(sb, data, "등급");
                 AppendInfo(sb, data, "서식지");
                 AppendInfo(sb, data, "계절");
-             //   AppendInfo(sb, data, "최고 기록"); // TODO: 나중에 작업 
+                AppendInfo(sb, data, "최고 기록");
                 break;
 
             case JournalCategory.Costume:
@@ -77,10 +77,9 @@ public class JournalPopup : MonoBehaviour
                 break;
 
             case JournalCategory.Album:
-                // TODO: JournalRecordDataSO 들어오면 아래 주석 해제
-                // AppendInfo(sb, data, "테마");
-                // AppendInfo(sb, data, "아티스트");
-                // AppendInfo(sb, data, "재생 길이");
+                AppendInfo(sb, data, "테마");
+                AppendInfo(sb, data, "아티스트");
+                AppendInfo(sb, data, "재생 길이");
                 break;
         }
 
@@ -88,12 +87,12 @@ public class JournalPopup : MonoBehaviour
     }
 
 
-    // "항목명 : 값" 한 줄 추가
+    // "항목명 : 값" 한 줄씩 출력
     private void AppendInfo(System.Text.StringBuilder sb, JournalDataLoader.JournalItemData data, string key)
     {
         if (data.SpecialInfo.TryGetValue(key, out string value))
         {
-            sb.AppendLine($"{key} : {value}");
+            sb.AppendLine($"{JournalLocalize.InfoKey(key)} : {value}"); 
         }
     }
 

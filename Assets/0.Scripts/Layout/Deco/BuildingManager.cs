@@ -380,14 +380,12 @@ public class BuildingManager : MonoBehaviour
         }
 
         _gridSystem.ClearGrid();
-
-        //SyncDataClear();
-
-        //ClearSession(); // _deletedBuildings 까지 비우지는 않고 직접 정리
         _movedSnapshots.Clear();
         _activePlaceable = null;
 
         OnClearAll?.Invoke(destroyedIds);  // 초기화 알림
+
+        ConfirmAll();
     }
     #endregion
     public void SwapFixBuilding(FixedBuilding oldBuilding, int newItemId)

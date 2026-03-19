@@ -16,6 +16,15 @@ public class UI_PlayRecordInfo : MonoBehaviour
     [Header("재생바 슬라이더")]
     [SerializeField] private UI_CurrentPlaySlider currentPlaySlider;
 
+    [Header("재생모드 관련 Image / Sprite")]
+    [SerializeField] private Image playModeImg;
+
+    [SerializeField] private Sprite playSprite;
+    [SerializeField] private Sprite pauseSprite;
+
+    [Header("BGM 재생 리스트 클래스")]
+    [SerializeField] private UI_BGMList bgmList;
+
     private RecordDataSO record;
 
     private Coroutine playRecordCoroutine;
@@ -101,6 +110,19 @@ public class UI_PlayRecordInfo : MonoBehaviour
             0f,
             record.RecordSoundPath_AudioClip.length - 0.1f);
     }
+
+    #region 재생 모드 컨트롤 관련
+    public void OnClick_PlayButton(int type) => bgmList.Click_PlayButton(type);
+    public void OnClick_Resume()
+    {
+        if (SoundManager.Instance.BgmSource.isPlaying)
+            SoundManager.Instance.BgmSource.Pause();
+        else
+            SoundManager.Instance.BgmSource.Play();
+
+        playModeImg.sprite = SoundManager.Instance.BgmSource.isPlaying ? pauseSprite : playSprite;
+    }
+    #endregion
 
     private void OnEnable()
     {

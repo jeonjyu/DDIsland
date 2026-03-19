@@ -1,5 +1,3 @@
-using Unity.Cinemachine;
-using Unity.VisualScripting;
 using UnityEngine;
 public enum SubState
 {
@@ -48,8 +46,18 @@ public class FishPattern : IMovement
             float posX = fish.FishTransform.anchoredPosition.x;
             float entry = fish.Manager.ScreenLimit * INSIDE_THE_SCREEN;
 
-            // 화면 안으로 충분히 들어왔다면 패턴 시작
-            if (Mathf.Abs(posX) < entry)
+            bool isInside = false;
+
+            if (fish._isGoingRight && posX > -entry)
+            {
+                isInside = true;
+            }
+            else if (!fish._isGoingRight && posX < entry)
+            {
+                isInside = true;
+            }
+
+            if (isInside)
             {
                 SelectNewPattern(data);
             }

@@ -33,6 +33,8 @@ public class UserAllData
 
     //재화
     public Currency_Data Currency = new();
+
+    public Record_Data Record = new();
 }
 
 [Serializable]
@@ -66,7 +68,8 @@ public class Collection_Data
     public List<int> _unlockedCostumeIds = new(); // 해금된 코스튬 ID
     public List<int> _unlockedInteriorIds = new();// 해금된 인테리어 ID
     public List<int> _unlockedFoodIds = new();    // 해금된 음식 ID
-    //public List<int> _unlockedAlbumIds = new (); // 해금된 음반 ID 
+    public List<int> _unlockedAlbumIds = new ();  // 해금된 음반 ID 
+    public List<FishRecordData> _fishRecords = new(); // 어종 최고 기록
 }
 
 // 얘는 아직 어떻게 활용해야할지 모르겠음. 필요 없으면 그냥 갖다 버릴 것
@@ -109,7 +112,14 @@ public class Foodstorage_Data
 [Serializable]
 public class Record_Data
 {
+    public int _lpPieceCount;
+    public List<int> _unlockRecords = new();
+    public int _currentRecordId = -1;
+    public List<int> _currentPlayList = new();
+    public float _playbackPoint;
 
+    // 가장 많이 들은 음반 통계용 데이터
+    public List<RecordPlayCount> _playCounts = new();
 }
 
 #region 변수 저장 클래스
@@ -149,5 +159,18 @@ public class StatData
 {
     public float Value; // 현재 수치
     public int Level;   // 강화 단계
+}
+[Serializable]
+public class FishRecordData
+{
+    public int FishId;
+    public float MaxLength; // 최고 기록 (cm)
+}
+
+[Serializable]
+public class RecordPlayCount
+{
+    public int RecordId;
+    public int PlayCount;
 }
 #endregion

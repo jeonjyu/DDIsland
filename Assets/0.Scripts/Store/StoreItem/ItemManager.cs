@@ -23,10 +23,13 @@ public class ItemManager : Singleton<ItemManager>
 
 
     [Header("파서로 받아온 상점 데이터 베이스")]
-    IslandStoreDatabaseSO InteriorDatabase;
-    CostumeStoreDatabaseSO CostumeDatabase;
-    FishingStoreDatabaseSO FishingDatabase;
-    FoodDatabaseSO FoodDatabase;
+    [SerializeField] IslandStoreDatabaseSO InteriorDatabase;
+    [SerializeField] LakeStoreDatabaseSO LakeDatabase;
+    [SerializeField] CostumeStoreDatabaseSO CostumeDatabase;
+    [SerializeField] FishingStoreDatabaseSO FishingDatabase;
+    [SerializeField] FoodDatabaseSO FoodDatabase;
+
+    
    
     // 아이템 변동 이벤트 
     public event System.Action<IStoreItem, StoreCat> OnPlayerItemAdded;
@@ -67,11 +70,13 @@ public class ItemManager : Singleton<ItemManager>
     public void CreateDatabase()
     {
         InteriorDatabase = DataManager.Instance.StoreDatabase.IslandStoreData;
+        LakeDatabase = DataManager.Instance.StoreDatabase.LakeStoreData;
         CostumeDatabase = DataManager.Instance.StoreDatabase.CostumeStoreData;
         FishingDatabase = DataManager.Instance.StoreDatabase.FishingStoreData;
         FoodDatabase = DataManager.Instance.FoodDatabase.FoodInfoData;
 
         storeDatas.Add(StoreCat.interior, new StoreItemDatabase(InteriorDatabase));
+        storeDatas.Add(StoreCat.lake, new StoreItemDatabase(LakeDatabase));
         storeDatas.Add(StoreCat.costume, new StoreItemDatabase(CostumeDatabase));
         storeDatas.Add(StoreCat.fishing, new StoreItemDatabase(FishingDatabase));
         storeDatas.Add(StoreCat.recipe, new StoreItemDatabase(FoodDatabase));
@@ -86,26 +91,39 @@ public class ItemManager : Singleton<ItemManager>
         if (!playerItemDatas.ContainsKey(storeCat))
         {
             playerItemDatas.Add(storeCat, new StoreItemDatabase());
-            //Debug.LogWarning($"[ItemManager] AddToPlayerItem | {item.ItemName}({item.ID})에 해당하는 플레이어 아이템 딕셔너리가 없습니다");
+            Debug.LogWarning($"[ItemManager] AddToPlayerItem | {item.ItemName}({item.ID})에 해당하는 플레이어 아이템 딕셔너리가 없습니다");
         }
+        if (storeCat == StoreCat.costume) QuestManager.Instance.AddSimpleProgress(QuestConditionKey.BuyCostumeCount, 1); 
+        if (storeCat == StoreCat.interior) QuestManager.Instance.AddSimpleProgress(QuestConditionKey.BuylandStoreCount, 1);
+        if (storeCat == StoreCat.fishing) QuestManager.Instance.AddSimpleProgress(QuestConditionKey.BuyFishingItemCount, 1); 
+        if (storeCat == StoreCat.recipe) QuestManager.Instance.AddSimpleProgress(QuestConditionKey.BuyFoodCount, 1);
 
         playerItemDatas[storeCat].AddToDatabase(item);
+
+        // 플레이어가 보유한 아이템 딕셔너리에 추가되었는지 확인
+        Debug.Log(playerItemDatas[storeCat].Items.Count);
 
         OnPlayerItemAdded?.Invoke(item, storeCat);
     }
 
+    // 플레이어 소유 아이템 딕셔너리에서 제거
     public void RemoveFromPlayerItem(IStoreItem item, StoreCat storeCat)
     {
         // 카테고리에 해당하는 딕셔너리 검색
         if (!playerItemDatas.ContainsKey(storeCat))
         {
-            //Debug.LogWarning($"[ItemManager] RemoveFromPlayerItem | {item.ItemName}({item.ID})에 해당하는 플레이어 아이템 딕셔너리가 없음");
+            Debug.LogWarning($"[ItemManager] RemoveFromPlayerItem | {item.ItemName}({item.ID})에 해당하는 플레이어 아이템 딕셔너리가 없음");
             return;
         }
         else
         {
             // 아이템이 딕셔너리에 존재하는지 검색
             playerItemDatas[storeCat].RemoveFromDatabase(item);
+            OnPlayerItemRemoved?.Invoke(item, storeCat);
+
+            // 플레이어가 보유한 아이템 딕셔너리에서 제거되었는지 확인
+            //Debug.Log(playerItemDatas[storeCat].Items.Count); 
+
             OnPlayerItemRemoved?.Invoke(item, storeCat);
         }
     }

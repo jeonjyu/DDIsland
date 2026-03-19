@@ -118,4 +118,33 @@ public class FirebaseMgr : MonoBehaviour
 
         return null; // 데이터가 없으면 null 반환
     }
+
+    /// </summary>
+    public void FirebaseDataDelete(string path = "")
+    {
+        if (!_isInitialized || _database == null)
+        {
+            Debug.LogWarning("Firebase가 초기화되지 않았습니다.");
+            return;
+        }
+
+        DatabaseReference dbRef = Database.GetReference("Users").Child(DeviceID);
+
+        if (!string.IsNullOrEmpty(path))
+        {
+            dbRef = dbRef.Child(path);
+        }
+
+        dbRef.RemoveValueAsync().ContinueWithOnMainThread(task =>
+        {
+            if (task.IsFaulted || task.IsCanceled)
+            {
+                Debug.LogError($"<color=red>삭제 실패:</color> {task.Exception?.ToString()}");
+            }
+            else
+            {
+                Debug.Log($"<color=red>파이어베이스 데이터 삭제 완료! 경로: Users/{DeviceID}/{path}</color>");
+            }
+        });
+    }
 }

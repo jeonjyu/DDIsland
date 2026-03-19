@@ -10,6 +10,7 @@ public class UpgradeManagerV2 : MonoBehaviour
     public PlayerController playerController;
     [Header("상점 UI")]
     public TextMeshProUGUI goldText;
+    public TextMeshProUGUI titleText;
 
     [Header("둥둥스탯 체형 이미지")]
     public Sprite[] bodySprites; // 예: [0]날씬, [1]보통, [2]뚱뚱
@@ -223,6 +224,8 @@ public class UpgradeManagerV2 : MonoBehaviour
         playerData.SetHunger(playerData.Hunger + currentLevelData.Value);
 
         playerData.HungerLevel = currentLevel + 1;
+        playerData.HungerLevel = currentLevel + 1;
+        QuestManager.Instance.SetSimpleProgress(QuestConditionKey.HungerLevel,playerData.HungerLevel);
         UpdatePage();
     }
 
@@ -243,6 +246,7 @@ public class UpgradeManagerV2 : MonoBehaviour
         playerData.SetStamina(playerData.Stamina + currentLevelData.Value);
 
         playerData.StaminaLevel = currentLevel + 1;
+        QuestManager.Instance.SetSimpleProgress(QuestConditionKey.HungerLevel, playerData.StaminaLevel);
         UpdatePage();
     }
 
@@ -261,6 +265,7 @@ public class UpgradeManagerV2 : MonoBehaviour
         playerData.SetMoveSpeed(nextLevelData.Value);
 
         playerData.MoveSpeedLevel = currentLevel + 1;
+        QuestManager.Instance.SetSimpleProgress(QuestConditionKey.HungerLevel, playerData.MoveSpeedLevel);
         UpdatePage();
     }
 
@@ -279,6 +284,7 @@ public class UpgradeManagerV2 : MonoBehaviour
         playerData.SetFishingSpeed(nextLevelData.Value);
 
         playerData.FishingSpeedLevel = currentLevel + 1;
+        QuestManager.Instance.SetSimpleProgress(QuestConditionKey.HungerLevel, playerData.FishingSpeedLevel);
         UpdatePage();
     }
 
@@ -299,6 +305,7 @@ public class UpgradeManagerV2 : MonoBehaviour
         playerData.SetRestSpeed(nextLevelData.Value);
 
         playerData.RestSpeedLevel = currentLevel + 1;
+        QuestManager.Instance.SetSimpleProgress(QuestConditionKey.HungerLevel, playerData.RestSpeedLevel);
         UpdatePage();
     }
 
@@ -311,9 +318,13 @@ public class UpgradeManagerV2 : MonoBehaviour
         StatType currentStat = statPages[currentPageIndex];
         int currentLevel = GetCurrentLevel(currentStat);
         int maxLevel = GetMaxLevel(currentStat);
+        
+        // 타이틀 제목 로컬라이징
+        if (titleText != null)
+            titleText.text = LocalizationManager.Instance.GetString("UpgradeStatDes");
 
         // 스탯 이름
-        statNameText.text = UpgradeStringData.GetDisplayName(currentStat);
+        statNameText.text = GetStatNameSO(currentStat);
 
         // 돈
         goldText.text = GameManager.Instance.PlayerGold.ToString();
@@ -344,6 +355,17 @@ public class UpgradeManagerV2 : MonoBehaviour
         UpdateDots();
     }
 
+    // SO에서 스탯 이름 가져오기 (한/영)
+    string GetStatNameSO(StatType type)
+    {
+        var db = DataManager.Instance.CharacterDatabase.CharacterUpgradeData;
+        foreach (var so in db.datas)
+        {
+            if (so.statType == type)
+                return so.StatName_String;
+        }
+        return type.ToString(); // 못 찾으면 enum 이름 반환
+    }
     // 현재스탯 → 변동스탯
     void UpdateStatChangeText(StatType type, int level)
     {

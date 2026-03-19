@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class UI_RecordUnlock : MonoBehaviour
@@ -9,6 +10,10 @@ public class UI_RecordUnlock : MonoBehaviour
     [SerializeField] private GameObject successPopup;
     [SerializeField] private GameObject failurePopup;
 
+    [Header("BGM 재생 리스트 클래스")]
+    [SerializeField] private UI_BGMList bgmList;
+
+    public event Action<RecordDataSO> OnRecordUnlock;
     private UI_BGMSlot currentSlot;
 
     // 해금 팝업창 띄우기
@@ -36,12 +41,16 @@ public class UI_RecordUnlock : MonoBehaviour
             currentSlot.UnlockRecord();
             gameObject.SetActive(false);
             successPopup.SetActive(true);
+            OnRecordUnlock?.Invoke(currentSlot.Record);
 
-            currentSlot.Playrecord();
+            DataManager.Instance.RecordDatabase.LpPieceCount -= requireLpPieceCount;
+            DataManager.Instance.RecordDatabase.UnlockRecords.Add(currentSlot.Record.RecordID);
+            bgmList.PlayBGM(currentSlot);
         }
         else
         {
             // 음반 교환 실패시
+            gameObject.SetActive(false);
             failurePopup.SetActive(true);
         }
     }

@@ -22,7 +22,8 @@ public class JournalManager : MonoBehaviour
     [SerializeField] private Button journalTabButton;   // 도감 탭
     [SerializeField] private Image questTabBackground;    // 퀘스트 탭 활성화 표시
     [SerializeField] private Image journalTabBackground;  // 도감 탭 활성화 표시
-  
+    [SerializeField] private TextMeshProUGUI[] questTabTexts;     // 메인탭 텍스트 
+    [SerializeField] private TextMeshProUGUI[] journalTabTexts;  // todo: 나중에 버튼 1개로 통합되면 배열 삭제 
     [Header("도감 영역")]
     [SerializeField] private GameObject journalArea;
     
@@ -40,7 +41,7 @@ public class JournalManager : MonoBehaviour
     [SerializeField] private ScrollRect scrollRect;     // 스크롤뷰
 
     [Header("필터/정렬 드롭다운")]
-    [SerializeField] private TMP_Dropdown filterDropdown; // 전체/등록/미등록
+    [SerializeField] private JournalFilterDropdown filterDropdown; // 전체/등록/미등록
 
     [Header("카테고리 라벨 설정")]
     [SerializeField] private string[] journalCategoryNames = { "어종", "코스튬", "인테리어", "음반", "음식" };
@@ -50,6 +51,9 @@ public class JournalManager : MonoBehaviour
     [SerializeField] private Image[] categoryOutlines;     // 각 버튼의 Outline Image
     [Header("카테고리 책갈피")]
     [SerializeField] private Transform boxBackground;
+    [Header("음반 해금 연동")]
+    [SerializeField] private UI_Record uiRecord;
+
     // 탭 색상
     private readonly Color selectedTabBg = new Color(0.99f, 0.97f, 0.91f, 1f);   // 크림색
     private readonly Color unselectedTabBg = new Color(0.78f, 0.62f, 0.41f, 1f); // 갈색
@@ -80,13 +84,6 @@ public class JournalManager : MonoBehaviour
     {   
         // UI 라벨 세팅
         UpdateCategoryLabels();
-
-
-        // TODO: 음반 카테고리 비활성화, 앨범 데이터 들어오면 아래 줄 삭제
-        if (categoryButtons.Length > (int)JournalCategory.Album)
-            categoryButtons[(int)JournalCategory.Album].interactable = false;
-
-
        
         if (ItemManager.Instance != null) // 상점 구매 이벤트 구독
             ItemManager.Instance.OnPlayerItemAdded += OnStoreItemAdded;
@@ -94,12 +91,35 @@ public class JournalManager : MonoBehaviour
             FishManager.Instance.OnFishGet += OnFishGet;
         if (CookingManager.Instance != null) // 요리 이벤트 구독
             CookingManager.Instance.OnFoodCooked += OnFoodCooked;
+        if (uiRecord == null)
+            uiRecord = FindObjectOfType<UI_Record>();
+        if (uiRecord != null && uiRecord.recordUnlock != null) // 음반 이벤트 구독 
+            uiRecord.recordUnlock.OnRecordUnlock += OnRecordUnlocked;
     }
-
-    private void OnFishGet(int fishId)
+    private void OnRecordUnlocked(RecordDataSO record)
     {
+        OnItemUnlocked(JournalCategory.Album, record.RecordID);
+    }
+    private void OnFishGet(int fishId, float length)
+    {
+        UpdateFishRecord(fishId, length);
         OnItemUnlocked(JournalCategory.Fish, fishId);
     }
+    private void UpdateFishRecord(int fishId, float length)
+    {
+        var records = DataManager.Instance.Box.Collection._fishRecords;
+        for (int i = 0; i < records.Count; i++)
+        {
+            if (records[i].FishId == fishId)
+            {
+                if (length > records[i].MaxLength)
+                    records[i].MaxLength = length;
+                return;
+            }
+        }
+        records.Add(new FishRecordData { FishId = fishId, MaxLength = length });
+    }
+
     private void OnFoodCooked(int foodId)
     {
         OnItemUnlocked(JournalCategory.Food, foodId);
@@ -142,11 +162,7 @@ public class JournalManager : MonoBehaviour
     private void SetupDropdown()
     {
         if (filterDropdown == null) return;
-
-        filterDropdown.ClearOptions();
-        filterDropdown.AddOptions(new List<string> { "전체", "등록", "미등록" });
-        filterDropdown.value = 0;
-        filterDropdown.onValueChanged.AddListener(OnFilterChanged);
+        filterDropdown.OnFilterChanged += OnFilterChanged;
     }
 
 
@@ -185,7 +201,15 @@ public class JournalManager : MonoBehaviour
             questTabBackground.color = (tab == MainTab.Quest) ? selectedTabBg : unselectedTabBg;
         if (journalTabBackground != null)
             journalTabBackground.color = (tab == MainTab.Journal) ? selectedTabBg : unselectedTabBg;
-
+        // 탭 텍스트 로컬라이징
+        //if (questTabText != null)
+        //    questTabText.text = JournalLocalize.Tab(MainTab.Quest);
+        //if (journalTabText != null)
+        //    journalTabText.text = JournalLocalize.Tab(MainTab.Journal);
+        foreach (var t in questTabTexts)
+            if (t != null) t.text = JournalLocalize.Tab(MainTab.Quest);
+        foreach (var t in journalTabTexts)
+            if (t != null) t.text = JournalLocalize.Tab(MainTab.Journal);
         // 도감 영역 통째로 끄기
         if (journalArea != null)
             journalArea.SetActive(tab == MainTab.Journal);
@@ -241,20 +265,17 @@ public class JournalManager : MonoBehaviour
         // 필터 초기화
         currentFilter = CollectionFilter.All;
         if (filterDropdown != null)
-            filterDropdown.SetValueWithoutNotify(0);
+            filterDropdown.ResetFilter();
 
         // 슬롯 갱신
         RefreshSlots();
 
-        // 스크롤 위치 맨 위로
-        if (scrollRect != null)
-            scrollRect.verticalNormalizedPosition = 1f;
     }
 
     // 필터 변경 
-    private void OnFilterChanged(int index)
+    private void OnFilterChanged(CollectionFilter filter)
     {
-        currentFilter = (CollectionFilter)index;
+        currentFilter = filter;
         RefreshSlots();
     }
 
@@ -306,24 +327,26 @@ public class JournalManager : MonoBehaviour
         // 슬롯에 데이터 세팅
         ClearSlots();
         CreateSlots(filteredItems);
+
+        // 스크롤 위치 맨 위로
+        if (scrollRect != null)
+        {
+            Canvas.ForceUpdateCanvases();
+            scrollRect.verticalNormalizedPosition = 1f;
+        }
     }
 
- 
+
     // 카테고리 라벨 업데이트
     private void UpdateCategoryLabels()
     {
         if (currentMainTab == MainTab.Journal)
         {
             for (int i = 0; i < categoryTexts.Length; i++)
-            {
-                if (categoryTexts[i] != null && i < journalCategoryNames.Length)
-                    categoryTexts[i].text = journalCategoryNames[i];
+            { 
+                if (categoryTexts[i] != null)
+                    categoryTexts[i].text = JournalLocalize.Category((JournalCategory)i); 
             }
-
-            // 음반 카테고리 비활성화
-            // TODO: JournalRecordDataSO 들어오면 아래 줄 삭제
-            if (categoryButtons.Length > (int)JournalCategory.Album)
-                categoryButtons[(int)JournalCategory.Album].interactable = false;
         }
         else
         {
@@ -359,6 +382,8 @@ public class JournalManager : MonoBehaviour
                 {
                     collection._unlockedFishIds.Add(itemId);
                     newUnlocked = true;
+                    collection._unlockedFishIds.Add(itemId);
+                    QuestManager.Instance.SetSimpleProgress(QuestConditionKey.FishGuideRegisteredCount,collection._unlockedFishIds.Count);
                 }
                 break;
             case JournalCategory.Costume:
@@ -366,12 +391,23 @@ public class JournalManager : MonoBehaviour
                 {
                     collection._unlockedCostumeIds.Add(itemId);
                     newUnlocked = true;
+                    collection._unlockedCostumeIds.Add(itemId);
+                    QuestManager.Instance.SetSimpleProgress(QuestConditionKey.CostumeGuideRegisteredCount,collection._unlockedCostumeIds.Count);
                 }
                 break;
             case JournalCategory.Interior:
                 if (!collection._unlockedInteriorIds.Contains(itemId))
                 {
                     collection._unlockedInteriorIds.Add(itemId);
+                    newUnlocked = true;
+                    collection._unlockedInteriorIds.Add(itemId);
+                    QuestManager.Instance.SetSimpleProgress(QuestConditionKey.InteriorGuideRegisteredCount,collection._unlockedInteriorIds.Count);
+                }
+                break;
+            case JournalCategory.Album:
+                if (!collection._unlockedAlbumIds.Contains(itemId))
+                {
+                    collection._unlockedAlbumIds.Add(itemId);
                     newUnlocked = true;
                 }
                 break;
@@ -380,6 +416,7 @@ public class JournalManager : MonoBehaviour
                 {
                     collection._unlockedFoodIds.Add(itemId);
                     newUnlocked = true;
+                    collection._unlockedFoodIds.Add(itemId);QuestManager.Instance.SetSimpleProgress(QuestConditionKey.FoodGuideRegisteredCount,collection._unlockedFoodIds.Count);
                 }
                 break;
         }
@@ -411,10 +448,14 @@ public class JournalManager : MonoBehaviour
                 slot.OnSlotClicked -= OnSlotClicked;
         }
         // 이벤트 구독 해제
+        if (filterDropdown != null)
+            filterDropdown.OnFilterChanged -= OnFilterChanged;
         if (ItemManager.Instance != null)
             ItemManager.Instance.OnPlayerItemAdded -= OnStoreItemAdded;
         if (FishManager.Instance != null)
             FishManager.Instance.OnFishGet -= OnFishGet;
+        if (uiRecord != null && uiRecord.recordUnlock != null)
+            uiRecord.recordUnlock.OnRecordUnlock -= OnRecordUnlocked;
         if (CookingManager.Instance != null)
             CookingManager.Instance.OnFoodCooked -= OnFoodCooked;
     }

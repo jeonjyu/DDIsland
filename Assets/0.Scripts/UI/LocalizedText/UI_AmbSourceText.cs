@@ -8,6 +8,15 @@ public class UI_AmbSourceText : UI_BaseLocalizedText
 
     public void SetSlot(UI_AMBSlot slot) => ambSlot = slot;
 
+    protected override void Awake()
+    {
+        base.Awake();
+    }
+
+    protected override void Start()
+    {
+        base.Start();
+    }
     protected override void SetText()
     {
         if (ambSlot == null || ambSlot.Record == null) return;

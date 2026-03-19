@@ -10,6 +10,8 @@ public class EnvironmentPresenter : MonoBehaviour
     //여기서 미리 지정해줍니다
     private DateTime now = DateTime.UtcNow.AddHours(9);
 
+    public EnvironmentModel Model => _model;
+    
     private void Awake()
     {
         _model = new EnvironmentModel();
