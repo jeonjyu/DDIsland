@@ -336,11 +336,11 @@ public class QuestManager : Singleton<QuestManager>
     {
         if (rewardItemId <= 0 || rewardCount <= 0) return;
 
-        if (rewardItemId == 1) // 예시: 골드 ID
+        if (rewardItemId == 202) // 예시: 골드 ID
         {
             GameManager.Instance.SetGold(rewardCount);
         }
-        else if (rewardItemId == 2) // 예시: LP조각 ID
+        else if (rewardItemId == 201) // 예시: LP조각 ID
         {
             DataManager.Instance.RecordDatabase.LpPieceCount += rewardCount;
         }
