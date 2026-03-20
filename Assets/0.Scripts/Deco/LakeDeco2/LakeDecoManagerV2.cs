@@ -8,7 +8,9 @@ public class LakeDecoManagerV2 : MonoBehaviour
 {
     [Header("호수 배경 장식물 Image")]
     [SerializeField] private Image deco1Image;   
-    [SerializeField] private Image deco2Image;   
+    [SerializeField] private Image deco2Image;
+    [Header("SO")]
+    [SerializeField] private InteriorDatabaseSO interiorDatabase;
 
     // ID를 스프라이트로 매핑 (테스트 데이터에서 로드)
     private Dictionary<int, Sprite> spriteMap = new Dictionary<int, Sprite>();
@@ -26,11 +28,10 @@ public class LakeDecoManagerV2 : MonoBehaviour
         InitTestButtons();
     }
 
-    // 테스트 데이터로 스프라이트 매핑 초기화
-    // 나중에 실제 데이터 연결하면 이 함수만 교체
+    // 스프라이트 매핑 초기화
     private void InitFromTestData()
     {
-        spriteMap = LakeDecoDataV2.GetSpriteMap();
+        spriteMap = LakeDecoDataV2.GetSpriteMap(interiorDatabase);
     }
 
     // 핵심 메서드: 상점에서 이걸 호출하면 됨
@@ -53,6 +54,7 @@ public class LakeDecoManagerV2 : MonoBehaviour
         OnImageChanged?.Invoke(slotIndex, itemId);
         return true;
     }
+
     // 상점에서 쉽게 불러오는 메서드 
     public void ResetSlot0() { ResetSlot(0); }
     public void ResetSlot1() { ResetSlot(1); }
@@ -116,7 +118,7 @@ public class LakeDecoManagerV2 : MonoBehaviour
     private void InitTestButtons()
     {
         // 슬롯 0 버튼
-        List<int> slot0Ids = LakeDecoDataV2.GetSlot0Ids();
+        List<int> slot0Ids = LakeDecoDataV2.GetSlot0Ids(interiorDatabase);
         for (int i = 0; i < slot0TestButtons.Length && i < slot0Ids.Count; i++)
         {
             if (slot0TestButtons[i] == null) continue;
@@ -125,7 +127,7 @@ public class LakeDecoManagerV2 : MonoBehaviour
         }
 
         // 슬롯 1 버튼
-        List<int> slot1Ids = LakeDecoDataV2.GetSlot1Ids();
+        List<int> slot1Ids = LakeDecoDataV2.GetSlot1Ids(interiorDatabase);
         for (int i = 0; i < slot1TestButtons.Length && i < slot1Ids.Count; i++)
         {
             if (slot1TestButtons[i] == null) continue;
