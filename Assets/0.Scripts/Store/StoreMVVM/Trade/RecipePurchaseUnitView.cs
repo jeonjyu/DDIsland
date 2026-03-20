@@ -1,11 +1,11 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 // 구매만 가능한 팝업 뷰
 
 public class RecipePurchaseUnitView : TradeUnitViewBase
 {
     PurchaseStrategy strategy;
-
+    SingleItemUnitViewModel tradeViewModel;
 
     protected override void Awake()
     {
@@ -22,7 +22,9 @@ public class RecipePurchaseUnitView : TradeUnitViewBase
     {
         base.SetButton();
 
-        if(viewModel.ItemCount == 1 && viewModel.IsGained == true)
+        Debug.Log("RecipePurchaseUnitView | SetButton " + viewModel.Model);
+
+        if(GameManager.Instance.PlayerGold > viewModel.Model.PurchasePrice && viewModel.IsGained == false)
         {
             //SetAllButtonAvailablity(false);
             //Debug.Log(this + " 레시피 구매 유닛 | 구매 가능");
@@ -44,8 +46,6 @@ public class RecipePurchaseUnitView : TradeUnitViewBase
             //SetAllButtonAvailablity(true);
             //Debug.Log(this + " 레시피 구매 유닛 | 구매 불가");
         }
-
-
 
     }
 

@@ -18,10 +18,6 @@ public class TradeViewBase : MonoBehaviour
         viewModel = GetComponent<TradeViewModelBase>();
     }
 
-    public void Start()
-    {
-    }
-
     protected virtual void OnEnable()
     {
         if (viewModel == null || viewModel.Model == null) return;
