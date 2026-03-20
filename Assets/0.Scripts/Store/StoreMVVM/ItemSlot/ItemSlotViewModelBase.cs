@@ -78,6 +78,7 @@ public class ItemSlotViewModelBase : MonoBehaviour, INotifyPropertyChanged
 
     public virtual void SetModel(IStoreItem model)
     {
+        //Debug.Log(gameObject.name + " ItemSlotViewModelBase : SetModel " + model.ItemName);
         Model = model;
         ItemId = model.ID;
     }
@@ -91,6 +92,7 @@ public class ItemSlotViewModelBase : MonoBehaviour, INotifyPropertyChanged
 
     public void SetPopupModel()
     {
+        //Debug.Log("ItemSlotViewModelBase | SetPopupModel" + Model);
         StoreManager.Instance.TradeModel = Model;
     }
 
