@@ -76,7 +76,7 @@ public class StoreListViewModel : MonoBehaviour, INotifyPropertyChanged
 
         //Debug.Log("[ItemListViewModel] UpdateCurrentCat");
 
-        Debug.Log((int)CurrentCat);
+        //Debug.Log((int)CurrentCat);
 
         if (view.Stores.Count > 0)
             view.SetSelectedCatBtnColor(view.Stores[(int)CurrentCat], false);
@@ -87,7 +87,7 @@ public class StoreListViewModel : MonoBehaviour, INotifyPropertyChanged
         if (StoreManager.Instance != null)
             StoreManager.Instance.ChangeLayout();
         else
-            Debug.Log("StoreManager가 없음");
+            Debug.LogError("StoreManager가 없음");
 
         // 카탈로그 변경
         ItemManager.Instance.SetCurrentCategory(CurrentCat);

@@ -22,7 +22,7 @@ public class LakeSlotView : ItemSlotViewBase
     public override void Init()
     {
         base.Init();
-        Debug.Log("LakeSlotView : Init");
+        //Debug.Log("LakeSlotView : Init");
 
         modelData = viewModel.Model;
 
@@ -36,7 +36,7 @@ public class LakeSlotView : ItemSlotViewBase
         _itemImage.sprite = modelData.ImgSprite;
         SetBtn();
 
-        Debug.Log("LakeSlotView : UI 갱신 완료 - " + modelData.ItemName);
+        //Debug.Log("LakeSlotView : UI 갱신 완료 - " + modelData.ItemName);
     }
 
 
