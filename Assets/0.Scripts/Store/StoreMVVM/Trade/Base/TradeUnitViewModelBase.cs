@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using Unity.VisualScripting;
 using UnityEngine;
 
 //[RequireComponent(typeof(TradeViewBase))]
@@ -83,8 +84,7 @@ public class TradeUnitViewModelBase : MonoBehaviour, INotifyPropertyChanged
         sellStrategy = GetComponent<SellStrategy>();
         tradeVM = GetComponent<TradeViewModelBase>();
 
-        TradeConfirmPanel = StoreManager.Instance.BuyAndSellPanel;
-        //GoldWarningPanel = gameObject.GetComponent<TradePopupBase>().gameObject; ;
+        //TradeConfirmPanel = gameObject.GetComponent<TradePopupBase>().gameObject;
 
         // StoreManager의 TradeModel,TradeItemCount이 변경되면 갱신되도록 알림 받도록
         StoreManager.Instance.PropertyChanged += UpdateTradeModel;
@@ -115,6 +115,7 @@ public class TradeUnitViewModelBase : MonoBehaviour, INotifyPropertyChanged
             case nameof(StoreManager.Instance.TradeItemCount):
                 //Debug.Log("UpdateTradeModel |" + nameof(StoreManager.Instance.TradeItemCount));
                 _tradeCount = 1;
+                InitUnit();
                 OnPropertyChanged(nameof(StoreManager.Instance.TradeItemCount));
                 break;
         }
@@ -144,7 +145,10 @@ public class TradeUnitViewModelBase : MonoBehaviour, INotifyPropertyChanged
     public void ExcuteTrade(ITradeStrategy tradeStrategy)
     {
         if (tradeStrategy.Trade(TradeCount, TotalPrice))
+        {
+            StoreManager.Instance.BuyAndSellPanel.SetActive(true);
             TradeConfirmPanel.SetActive(true);
+        }
     }
 
     // 아이템 갯수 변경

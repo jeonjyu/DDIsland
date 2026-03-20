@@ -90,8 +90,6 @@ public class StoreManager : Singleton<StoreManager>, INotifyPropertyChanged
     protected override void Awake() 
     {
         base.Awake();
-        // 초기 카테고리 설정
-        //currentCat = (StoreCat)0;
     }
 
     /// <summary>
@@ -140,21 +138,45 @@ public class StoreManager : Singleton<StoreManager>, INotifyPropertyChanged
     // 거래 팝업 활성화에 따라 드롭다운 선택 가능 여부 변경
     public void ChangeDropdownAvailability(bool isAvailable)
     {
+        // 첫실행시 필터 드롭다운이 없어 return시킴
+        if (filterDropdown.filterDrop == null)
+            return;
+        
         filterDropdown.filterDrop.interactable = isAvailable;
         sortDropdown.sortDrop.interactable = isAvailable;
     }
 
     public void ChangeLayout()
     {
-        //Debug.Log("레이아웃 변경");
         storeUIFactory.GetLayout(storeListVM.listGirdLayout, currentCat);
         buyAndSellPanel = storeUIFactory.GetPopupPanel(currentCat);
         ItemManager.Instance.itemSlot = storeUIFactory.GetItemSlot(currentCat);
+        ChangeDropdownByCategory();
     }
 
     // TradeUnitViewModelBase에서 구독
     protected virtual void OnTradeModelChanged([CallerMemberName] string propertyName = null)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+
+    public void ChangeDropdownByCategory()
+    {
+        Debug.Log("카테고리에 따라 드롭다운 사용 가능 여부 변경됨 : " + currentCat);
+        // 카테고리에 따라 드롭다운 사용 가능 여부 변경
+        switch (currentCat)
+        {
+            case StoreCat.interior:
+            case StoreCat.costume:
+            case StoreCat.fishing:
+                ChangeDropdownAvailability(true);
+                break;
+            case StoreCat.recipe:
+                sortDropdown.sortDrop.interactable = true;
+                break;
+            case StoreCat.lake:
+                ChangeDropdownAvailability(false);
+                break;
+        }
     }
 }

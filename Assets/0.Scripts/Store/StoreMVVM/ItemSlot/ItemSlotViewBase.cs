@@ -44,7 +44,7 @@ public class ItemSlotViewBase : MonoBehaviour, IStoreItemView, IPointerClickHand
     // 뷰 초기화 및 업데이트 메서드
     public virtual void Init()
     {
-        //Debug.Log("[ItemSlotView] Init");
+        //Debug.Log("[ItemSlotViewBase] Init");
         modelData = viewModel.Model;
         int itemID = viewModel.ItemId;
 
@@ -76,6 +76,7 @@ public class ItemSlotViewBase : MonoBehaviour, IStoreItemView, IPointerClickHand
     // 해당 뷰의 모델을 전달하는 메서드 
     public virtual void OnPointerClick(PointerEventData eventData)
     {
+        //Debug.Log("슬롯 클릭됨");
         viewModel.SetPopupModel();
         StoreManager.Instance.TradeItemSlot = this.viewModel;
         if (StoreManager.Instance.BuyAndSellPanel != null)

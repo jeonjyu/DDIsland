@@ -7,8 +7,9 @@ public class EquipTradeViewModel : TradeViewModelBase
 {
     public bool IsEquipped => PlayerManager.Instance.CompareID(Model);
 
-    protected void OnEnable()
+    protected override void OnEnable()
     {
+        base.OnEnable();
         StoreManager.Instance.PropertyChanged += OnGainedChanged;
         PlayerManager.Instance.OnEquipChanged += OnEquipStateChanged;
     }

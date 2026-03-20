@@ -24,12 +24,12 @@ public class LakeSlotViewModel : ItemSlotViewModelBase
     public override void SetModel(IStoreItem model)
     {
         base.SetModel(model);
-        Debug.Log(gameObject.name + " LakeSlotViewModel : SetModel " + model);
+        //Debug.Log(gameObject.name + " LakeSlotViewModel : SetModel " + model);
 
         if (view == null) view = GetComponent<LakeSlotView>();
         if(view != null) view.Init();
 
-        Debug.Log(gameObject.name + " LakeSlotViewModel : SetModel " + model);
+        //Debug.Log(gameObject.name + " LakeSlotViewModel : SetModel " + model);
     }
 
     // 호수 아이템 적용
