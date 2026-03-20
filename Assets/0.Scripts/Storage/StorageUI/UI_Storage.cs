@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 
@@ -73,7 +74,6 @@ public class UI_Storage : MonoBehaviour
 
     private void OnEnable()
     {
-        OpenFishStorage();
         if (FishStorageManager.Instance != null)
         {
             FishStorageManager.Instance.OnSlotChanged += UpdateSlot; // Storage 데이터가 바뀔 때마다 UI를 갱신하기 위해 이벤트 구독
@@ -423,14 +423,16 @@ public class UI_Storage : MonoBehaviour
     }
     public void OpenFishStorage() 
     {
+        Debug.Log("물고기창고 버튼눌림" + EventSystem.current.currentSelectedGameObject?.name);
         _fishStorageUI.SetActive(true);
         _foodStorageUI.SetActive(false);
-
+        
         _ofFishFishButton.interactable = false;
         _ofFishFoodButton.interactable = true;
     }
     public void OpenFoodStorage()
     {
+        Debug.Log("음식창고 버튼눌림" + EventSystem.current.currentSelectedGameObject?.name);
         _fishStorageUI.SetActive(false);
         _foodStorageUI.SetActive(true);
 
