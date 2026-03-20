@@ -14,7 +14,8 @@ public class DecoEditModeManager : MonoBehaviour
     public GameObject objectActionPanel; // 회수, 이동, 취소
     public AquariumMgr aquariumMgr; // 물고기 안보이게 
     public RectTransform lakeBackground; // 호수 이미지 
-    public RectTransform floorPlane; // 바닥재
+    public GameObject decoMaskArea; // v2 바닥재+장식물 배경
+    public RectTransform floorPlane; // 바닥재 두트윈용?
    
     [Header("3D배치템 상호작용 버튼")] 
     public Button btnObjRecall;   // 회수
@@ -437,6 +438,8 @@ public class DecoEditModeManager : MonoBehaviour
 
             if (lakeBackground != null) // 호수 숨기기
                 lakeBackground.GetComponent<CanvasGroup>().alpha = 0f;
+            if (decoMaskArea != null)  // 호수 배경 숨기기              
+                decoMaskArea.SetActive(false);
 
             // TODO: 섬 전용 로직, 섬 3d그리드 켜기 
             // 3D 그리드 편집모드 진입
@@ -551,6 +554,8 @@ public class DecoEditModeManager : MonoBehaviour
                 gridPanel.gameObject.SetActive(true);
             if (lakeBackground != null) // 호수 다시 보이기
                 lakeBackground.GetComponent<CanvasGroup>().alpha = 1f;
+            if (decoMaskArea != null) // 호수 배경 보이기            
+                decoMaskArea.SetActive(true);
 
             // TODO: 섬 보이는거 비활성화 
             if (PlacementMgr.Instance != null)
