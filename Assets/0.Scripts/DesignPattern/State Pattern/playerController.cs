@@ -237,21 +237,25 @@ public class PlayerController : MonoBehaviour
         {
             SetBody(objectId);
         }
-        else
+        else if (typeName == "Tool")
         {
-            Debug.LogWarning($"지원하지 않는 코스튬 타입: {typeName}");
+            SetTool(objectId);
         }
     }
     private void BuildCostumeMap()  //모자,옷을 ID로 빠르게 찾을 수 있게 딕셔너리
     {
         _hatById.Clear();
         _bodyById.Clear();
+        _fishingRodsById.Clear();
 
         var data = DataManager.Instance.DecorationDatabase.CostumeData.datas;
+        var fishingItemData = DataManager.Instance.FishingDatabase.FishingItemData.datas;
         if (data == null) return;
+        if (fishingItemData == null) return;
 
         int hatIndex = 0;
         int bodyIndex = 0;
+        int toolIndex = 0;
 
         for (int i = 0; i < data.Count; i++)
         {
@@ -282,6 +286,19 @@ public class PlayerController : MonoBehaviour
                 _bodyById[data[i].CostumeID] = _bodys[bodyIndex];
                 _bodys[bodyIndex].SetActive(false);
                 bodyIndex++;
+            }
+            else if (fishingItemData[i].fishingitemType == FishingItemType.Pole)
+            {
+                if (toolIndex >= _fishingRods.Length) continue;
+                if (_bodys[toolIndex] == null)
+                {
+                    toolIndex++;
+                    continue;
+                }
+
+                _fishingRodsById[data[i].CostumeID] = _fishingRods[toolIndex];
+                _fishingRods[toolIndex].SetActive(false);
+                toolIndex++;
             }
         }
 
@@ -319,7 +336,22 @@ public class PlayerController : MonoBehaviour
         }
         else Debug.LogWarning($"의상 ID 없음: {id}");
     }
+    public void SetTool(int id)
+    {
+        foreach (var pair in _fishingRodsById)
+        {
+            pair.Value.SetActive(false);
+        }
 
+        if (id == 0) return;
+
+        if (_fishingRodsById.TryGetValue(id, out var toolObj))
+        {
+            toolObj.SetActive(true);
+            Debug.Log($"의상 장착 성공: {id}");
+        }
+        else Debug.LogWarning($"의상 ID 없음: {id}");
+    }
 
     public void StartAcornSupply(Vector3 center)  //도토리 떨어지는 함수
     {
