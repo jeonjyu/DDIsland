@@ -15,14 +15,18 @@ using UnityEngine;
 public class TradeViewModelBase : MonoBehaviour, INotifyPropertyChanged
 {
     public TradeViewBase view;
+    int totalPrice;
+    public bool isGained;
+    [SerializeField] CanvasGroup canvasGroup;
+
+    public event PropertyChangedEventHandler PropertyChanged;
+
+    public StoreCat storeCat => StoreManager.Instance.currentCat;
+
 
     public IStoreItem Model
     {
         get => StoreManager.Instance.TradeModel;
-        //set 
-        //{  
-        //    StoreManager.Instance.TradeModel = value;
-        //}
     }
 
     public int Gold
@@ -34,8 +38,6 @@ public class TradeViewModelBase : MonoBehaviour, INotifyPropertyChanged
             OnPropertyChanged(nameof(GameManager.Instance.PlayerGold));
         }
     }
-
-    int totalPrice;
 
     public int TotalPrice
     {
@@ -50,7 +52,6 @@ public class TradeViewModelBase : MonoBehaviour, INotifyPropertyChanged
         }
     }
 
-    public bool isGained;
     public bool IsGained
     {
         get => StoreManager.Instance.IsTradeItemGained;
@@ -59,25 +60,35 @@ public class TradeViewModelBase : MonoBehaviour, INotifyPropertyChanged
             if (isGained != value)
             {
                 isGained = value;
-                Debug.Log(this.name + " 아이템 보유 여부 변경 " + isGained);
+                //Debug.Log(this.name + " 아이템 보유 여부 변경 " + isGained);
                 OnPropertyChanged(nameof(IsGained));
             }
         }
     }
 
-    public StoreCat storeCat => StoreManager.Instance.currentCat;
+    //protected virtual void Awake()
+    //{
+    //    canvasGroup = transform.GetComponent<CanvasGroup>();
+    //}
 
-    public event PropertyChangedEventHandler PropertyChanged;
-
-    void Start()
+    protected virtual void OnEnable()
     {
-        view = GetComponent<TradeViewBase>();
+        Debug.Log("OnEable 캔버스 그룹 설정");
+        canvasGroup.blocksRaycasts = false;
+        canvasGroup.interactable = false;
     }
 
     protected virtual void OnDisable()
     {
+        Debug.Log("OnDisable 캔버스 그룹 설정");
         PropertyChanged = null;
-        StoreManager.Instance.ChangeDropdownAvailability(true);
+        StoreManager.Instance.ChangeDropdownByCategory();
+        canvasGroup.blocksRaycasts = true;
+        canvasGroup.interactable = true;
+    }
+    void Start()
+    {
+        view = GetComponent<TradeViewBase>();
     }
 
   
