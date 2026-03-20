@@ -2,7 +2,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -237,10 +236,10 @@ public class PlayerController : MonoBehaviour
         {
             SetBody(objectId);
         }
-        else if (typeName == "Tool")
-        {
-            SetTool(objectId);
-        }
+      //  else if (typeName == "Tool")
+      //  {
+      //      SetTool(objectId);
+      //  }
     }
     private void BuildCostumeMap()  //모자,옷을 ID로 빠르게 찾을 수 있게 딕셔너리
     {
@@ -287,19 +286,19 @@ public class PlayerController : MonoBehaviour
                 _bodys[bodyIndex].SetActive(false);
                 bodyIndex++;
             }
-            else if (fishingItemData[i].fishingitemType == FishingItemType.Pole)
-            {
-                if (toolIndex >= _fishingRods.Length) continue;
-                if (_bodys[toolIndex] == null)
-                {
-                    toolIndex++;
-                    continue;
-                }
-
-                _fishingRodsById[data[i].CostumeID] = _fishingRods[toolIndex];
-                _fishingRods[toolIndex].SetActive(false);
-                toolIndex++;
-            }
+           // else if (fishingItemData[i].fishingitemType == FishingItemType.Pole)
+           // {
+           //     if (toolIndex >= _fishingRods.Length) continue;
+           //     if (_bodys[toolIndex] == null)
+           //     {
+           //         toolIndex++;
+           //         continue;
+           //     }
+           //
+           //     _fishingRodsById[data[i].CostumeID] = _fishingRods[toolIndex];
+           //     _fishingRods[toolIndex].SetActive(false);
+           //     toolIndex++;
+           // }
         }
 
         Debug.Log($"Hat:{_hatById.Count}, Body:{_bodyById.Count}");
@@ -336,22 +335,22 @@ public class PlayerController : MonoBehaviour
         }
         else Debug.LogWarning($"의상 ID 없음: {id}");
     }
-    public void SetTool(int id)
-    {
-        foreach (var pair in _fishingRodsById)
-        {
-            pair.Value.SetActive(false);
-        }
-
-        if (id == 0) return;
-
-        if (_fishingRodsById.TryGetValue(id, out var toolObj))
-        {
-            toolObj.SetActive(true);
-            Debug.Log($"의상 장착 성공: {id}");
-        }
-        else Debug.LogWarning($"의상 ID 없음: {id}");
-    }
+   // public void SetTool(int id)
+   // {
+   //     foreach (var pair in _fishingRodsById)
+   //     {
+   //         pair.Value.SetActive(false);
+   //     }
+   //
+   //     if (id == 0) return;
+   //
+   //     if (_fishingRodsById.TryGetValue(id, out var toolObj))
+   //     {
+   //         toolObj.SetActive(true);
+   //         Debug.Log($"의상 장착 성공: {id}");
+   //     }
+   //     else Debug.LogWarning($"의상 ID 없음: {id}");
+   // }
 
     public void StartAcornSupply(Vector3 center)  //도토리 떨어지는 함수
     {
