@@ -12,10 +12,8 @@ public struct FishInstance
 public struct FishStackSlot
 {
     public int FishId;
-    public int Count;
     public long LastAcquiredOrder;
-    public int MaxPrice;
-    public int TotalPrice;
+    public int Price;
 }
 
 public class FishStorageManager : Singleton<FishStorageManager>
@@ -69,26 +67,6 @@ public class FishStorageManager : Singleton<FishStorageManager>
         if (FishSlots == null || FishSlots.Length == 0)
             return false;
 
-        // 1 같은 FishId 있으면 스택 증가
-        for (int i = 0; i < FishSlots.Length; i++) 
-        {
-            if (FishSlots[i].HasValue && FishSlots[i].Value.
-                FishId == fish.FishId)
-            {
-                var slot = FishSlots[i].Value;
-
-                slot.Count += 1;
-                //slot.lastLength = fish.length;
-                slot.MaxPrice = Mathf.Max(slot.MaxPrice, fish.Price);
-                slot.TotalPrice += fish.Price;
-                slot.LastAcquiredOrder = ++_acquireCounter;
-
-                FishSlots[i] = slot;
-                OnSlotChanged?.Invoke(i);
-                return true;
-            }
-        }
-        // 2 빈 슬롯에 새로 추가
         for (int i = 0; i < FishSlots.Length; i++)
         {
             if (!FishSlots[i].HasValue)
@@ -96,9 +74,7 @@ public class FishStorageManager : Singleton<FishStorageManager>
                 FishSlots[i] = new FishStackSlot
                 {
                     FishId = fish.FishId,
-                    Count = 1,
-                    MaxPrice = fish.Price,
-                    TotalPrice = fish.Price,
+                    Price = fish.Price,
                     LastAcquiredOrder = ++_acquireCounter,
                 };
 
@@ -118,20 +94,7 @@ public class FishStorageManager : Singleton<FishStorageManager>
 
         var slot = FishSlots[slotIndex].Value;
 
-        int removedPrice = Mathf.RoundToInt((float)slot.TotalPrice / slot.Count);
-        slot.Count--;
-        slot.TotalPrice -= removedPrice;
-
-        if (slot.TotalPrice < 0) slot.TotalPrice = 0;
-
-        if (slot.Count <= 0)
-        {
-            FishSlots[slotIndex] = null;
-        }
-        else
-        {
-            FishSlots[slotIndex] = slot;
-        }
+        FishSlots[slotIndex] = null;
 
         OnSlotChanged?.Invoke(slotIndex);
         return true;
@@ -146,15 +109,7 @@ public class FishStorageManager : Singleton<FishStorageManager>
             if (FishSlots[i].Value.FishId != fishId) continue;
 
             var slot = FishSlots[i].Value;
-
-            int removedPrice = Mathf.RoundToInt((float)slot.TotalPrice / slot.Count);
-            slot.Count--;
-            slot.TotalPrice -= removedPrice;
-
-            if (slot.TotalPrice < 0) slot.TotalPrice = 0;
-
-            if (slot.Count <= 0) FishSlots[i] = null;
-            else FishSlots[i] = slot;
+             FishSlots[i] = null;
 
             OnSlotChanged?.Invoke(i);
             return true;
@@ -195,7 +150,7 @@ public class FishStorageManager : Singleton<FishStorageManager>
         {
             if (FishSlots[i].HasValue)
             {
-                totalGold += FishSlots[i].Value.TotalPrice;
+                totalGold += FishSlots[i].Value.Price;
                 FishSlots[i] = null;
 
                 OnSlotChanged?.Invoke(i);
@@ -263,9 +218,7 @@ public class FishStorageManager : Singleton<FishStorageManager>
             FishSlots[i] = new FishStackSlot
             {
                 FishId = fishId,
-                Count = 1,
-                MaxPrice = price,
-                TotalPrice = price,
+                Price = price,
                 LastAcquiredOrder = ++_acquireCounter
             };
 
@@ -301,10 +254,8 @@ public class FishStorageManager : Singleton<FishStorageManager>
                 {
                     Index = i,
                     FishId = slot.FishId,
-                    Count = slot.Count,
                     LastAcquiredOrder = slot.LastAcquiredOrder,
-                    MaxPrice = slot.MaxPrice,
-                    TotalPrice = slot.TotalPrice
+                    MaxPrice = slot.Price,
                 });
             }
         }
@@ -333,10 +284,8 @@ public class FishStorageManager : Singleton<FishStorageManager>
                 FishSlots[savedSlot.Index] = new FishStackSlot
                 {
                     FishId = savedSlot.FishId,
-                    Count = savedSlot.Count,
                     LastAcquiredOrder = savedSlot.LastAcquiredOrder,
-                    MaxPrice = savedSlot.MaxPrice,
-                    TotalPrice = savedSlot.TotalPrice
+                    Price = savedSlot.MaxPrice,
                 };
             }
         }

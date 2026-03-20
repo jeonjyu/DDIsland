@@ -9,8 +9,6 @@ public class UI_StorageSlot : MonoBehaviour
 
     [SerializeField] Image _icon;
     [SerializeField] GameObject _emptyOverlay;
-    [SerializeField] TextMeshProUGUI _countText;
-    [SerializeField] GameObject _textBackground;
 
     // 슬롯 내부 표시용 텍스트
     [SerializeField] private TextMeshProUGUI _itemNameText;
@@ -36,7 +34,6 @@ public class UI_StorageSlot : MonoBehaviour
             // if (itemPriceText != null) itemPriceText.gameObject.SetActive(false);
 
             if (_emptyOverlay != null) _emptyOverlay.SetActive(true);
-            if (_countText != null) _countText.gameObject.SetActive(false);
             return;
         }
 
@@ -44,14 +41,6 @@ public class UI_StorageSlot : MonoBehaviour
         if (_emptyOverlay != null) _emptyOverlay.SetActive(false);
 
         int id = data.Value.FishId;
-        int count = data.Value.Count;
-
-        // 수량표시
-        if (_countText != null)
-        {
-            _countText.gameObject.SetActive(true);
-            _countText.text = $"x{count}";
-        }
 
         var def = DataManager.Instance.FishingDatabase.FishData[id];
 
@@ -69,8 +58,6 @@ public class UI_StorageSlot : MonoBehaviour
                 if (_itemGradeText != null) _itemGradeText.gameObject.SetActive(true);
                 // if (itemPriceText != null) itemPriceText.gameObject.SetActive(true);
             }
-
-            if (_countText != null) _countText.gameObject.SetActive(false);
             return;
         }
         Sprite sp = null;
@@ -98,9 +85,6 @@ public class UI_StorageSlot : MonoBehaviour
             _icon.enabled = false;
         }
 
-        if (_countText != null)
-            _countText.gameObject.SetActive(false);
-
         if (_itemNameText != null)
             _itemNameText.gameObject.SetActive(false);
 
@@ -109,9 +93,6 @@ public class UI_StorageSlot : MonoBehaviour
 
         if (_itemPriceText != null)
             _itemPriceText.gameObject.SetActive(false);
-
-        if (_textBackground != null) 
-            _textBackground.gameObject.SetActive(false);
     }
 
 
