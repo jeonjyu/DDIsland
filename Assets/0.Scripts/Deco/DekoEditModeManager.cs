@@ -50,7 +50,11 @@ public class DecoEditModeManager : MonoBehaviour
     public Button btnExitSave;        // 저장하고 나가기
     public Button btnExitNoSave;      // 저장하지 않고 나가기
     public Button btnExitCancel;      // 취소 
-
+    [Header("확인 팝업")]                        
+    public GameObject confirmPopupPanel;        
+    public Button btnConfirmYes;      // 확인          
+    public Button btnConfirmClose;    // 취소           
+    public DecoLocalizeTempText decoTempText; // 스크립트 연결   
     [Header("플레이어(투명화)")]
     public GameObject playerObject;
     // 내부 변수
@@ -70,7 +74,8 @@ public class DecoEditModeManager : MonoBehaviour
     Vector2 islandDecoBtnOriginPos; // 두트윈 복귀  
     int UnlockCount = 0;
     float UnlockFirstTime;
-    bool isUnlocked = false;     
+    bool isUnlocked = false;
+    System.Action pendingConfirmAction;
     #endregion
 
     // 버튼들 초기화   
@@ -102,14 +107,15 @@ public class DecoEditModeManager : MonoBehaviour
         if (btnIslandDecoMode != null)
             btnIslandDecoMode.onClick.AddListener(OnIslandDecoClicked);
 
+        // 상단 버튼
         if (btnSave != null)
-            btnSave.onClick.AddListener(OnSave);
+            btnSave.onClick.AddListener(OnSaveClicked);       
+        if (btnRecallAll != null)
+            btnRecallAll.onClick.AddListener(OnRecallAllClicked);
+        if (btnReset != null)
+            btnReset.onClick.AddListener(OnResetClicked);        
         if (btnExit != null)
             btnExit.onClick.AddListener(OnExit);
-        if (btnRecallAll != null)
-            btnRecallAll.onClick.AddListener(OnRecallAll);
-        if (btnReset != null)
-            btnReset.onClick.AddListener(OnReset);
 
         // 드롭다운 편집모드 진입버튼 
         if (btnDecoMode != null)
@@ -164,7 +170,14 @@ public class DecoEditModeManager : MonoBehaviour
             btnExitCancel.onClick.AddListener(OnExitPopupCancel);
         if (exitPopupPanel != null)
             exitPopupPanel.SetActive(false);
-   
+
+        // 확인 팝업 버튼 (공용)
+        if (btnConfirmYes != null)                             
+            btnConfirmYes.onClick.AddListener(OnConfirmYes);
+        if (btnConfirmClose != null)
+            btnConfirmClose.onClick.AddListener(OnConfirmClose);
+        if (confirmPopupPanel != null)                         
+            confirmPopupPanel.SetActive(false);                
     }
 
    
@@ -608,6 +621,38 @@ public class DecoEditModeManager : MonoBehaviour
     }
 
     #region 상단 버튼 기능
+    void OnSaveClicked() { ShowConfirmPopup(0, () => OnSave()); }          
+    void OnRecallAllClicked() { ShowConfirmPopup(1, () => OnRecallAll()); }
+    void OnResetClicked() { ShowConfirmPopup(2, () => OnReset()); }
+    //    {
+    //  //  if (!isChanged) return;
+    //    ShowConfirmPopup(2, () => OnReset());
+    //}
+
+    void ShowConfirmPopup(int type, System.Action onYes) 
+    {
+        pendingConfirmAction = onYes;
+        if (decoTempText != null) decoTempText.SetConfirmMsg(type);
+        if (confirmPopupPanel != null)
+        { confirmPopupPanel.SetActive(true); LockTopButtons(false); }
+        else
+            onYes?.Invoke();
+    }
+
+    void OnConfirmYes() 
+    {
+        pendingConfirmAction?.Invoke();
+        pendingConfirmAction = null;
+        if (confirmPopupPanel != null) confirmPopupPanel.SetActive(false);
+        LockTopButtons(true);
+    }
+
+    void OnConfirmClose() 
+    {
+        pendingConfirmAction = null;
+        if (confirmPopupPanel != null) confirmPopupPanel.SetActive(false);
+        LockTopButtons(true);
+    }
     void OnSave() // 저장
     {
         // TODO: 파베에 저장
@@ -633,7 +678,7 @@ public class DecoEditModeManager : MonoBehaviour
     }
     void OnReset() // 초기화, 저장한 상태로 불러오기
     {
-        if (!isChanged) return; // 변경사항 없으면 무시 
+        if (!isChanged) return; // 변경사항 없으면 무시 // TODO: 리턴이 없으면 초기화버튼 2번 누르면 전체회수 버그 발생하는지 확인필요  
 
         // TODO:  (파베 연결 후에 나중에 구현)
         if (currentMode == DecoMode.Lake) // 호수 모드
