@@ -50,9 +50,15 @@ public class DecoEditModeManager : MonoBehaviour
     public Button btnExitSave;        // 저장하고 나가기
     public Button btnExitNoSave;      // 저장하지 않고 나가기
     public Button btnExitCancel;      // 취소 
-
+    [Header("확인 팝업")]                        
+    public GameObject confirmPopupPanel;        
+    public Button btnConfirmYes;      // 확인          
+    public Button btnConfirmClose;    // 취소           
+    public DecoLocalizeTempText decoTempText; // 스크립트 연결   
     [Header("플레이어(투명화)")]
     public GameObject playerObject;
+    [Header("편집모드 들어가면 안보일 날씨 파티클들 부모")]
+    public Transform weatherParticleParent;
     // 내부 변수
     bool isEditMode = false;
     DecoMode currentMode = DecoMode.Lake;   // 현재 편집 모드
@@ -70,7 +76,9 @@ public class DecoEditModeManager : MonoBehaviour
     Vector2 islandDecoBtnOriginPos; // 두트윈 복귀  
     int UnlockCount = 0;
     float UnlockFirstTime;
-    bool isUnlocked = false;     
+    bool isUnlocked = false;
+    System.Action pendingConfirmAction; // 상단 확인 팝업창용
+    private ParticleSystem cachedParticle; // 파티클 상태 복원용, 편집모드 진입 시 재생 중이던 파티클 캐싱
     #endregion
 
     // 버튼들 초기화   
@@ -102,14 +110,15 @@ public class DecoEditModeManager : MonoBehaviour
         if (btnIslandDecoMode != null)
             btnIslandDecoMode.onClick.AddListener(OnIslandDecoClicked);
 
+        // 상단 버튼
         if (btnSave != null)
-            btnSave.onClick.AddListener(OnSave);
+            btnSave.onClick.AddListener(OnSaveClicked);       
+        if (btnRecallAll != null)
+            btnRecallAll.onClick.AddListener(OnRecallAllClicked);
+        if (btnReset != null)
+            btnReset.onClick.AddListener(OnResetClicked);        
         if (btnExit != null)
             btnExit.onClick.AddListener(OnExit);
-        if (btnRecallAll != null)
-            btnRecallAll.onClick.AddListener(OnRecallAll);
-        if (btnReset != null)
-            btnReset.onClick.AddListener(OnReset);
 
         // 드롭다운 편집모드 진입버튼 
         if (btnDecoMode != null)
@@ -164,7 +173,14 @@ public class DecoEditModeManager : MonoBehaviour
             btnExitCancel.onClick.AddListener(OnExitPopupCancel);
         if (exitPopupPanel != null)
             exitPopupPanel.SetActive(false);
-   
+
+        // 확인 팝업 버튼 (공용)
+        if (btnConfirmYes != null)                             
+            btnConfirmYes.onClick.AddListener(OnConfirmYes);
+        if (btnConfirmClose != null)
+            btnConfirmClose.onClick.AddListener(OnConfirmClose);
+        if (confirmPopupPanel != null)                         
+            confirmPopupPanel.SetActive(false);                
     }
 
    
@@ -431,13 +447,15 @@ public class DecoEditModeManager : MonoBehaviour
                     PlacementMgr.Instance.ToggleEditMode();
             }
             if (aquariumMgr != null) aquariumMgr.HideFish(); // 물고기 숨기기
-            if (playerObject != null) // 곰 숨기기
+            if (playerObject != null)
             {
                 foreach (var renderer in playerObject.GetComponentsInChildren<Renderer>())
-                    renderer.enabled = false;
+                    renderer.enabled = false;  // 곰 숨기기
+                foreach (var col in playerObject.GetComponentsInChildren<Collider>(true)) 
+                    col.enabled = false; // 콜라이더 끄기
             }
         }
-
+        HideWeatherParticle();
         // 이하 공용 
         //  인벤 패널 아래에서 위로 슥 올라오기 
         if (bottomPanel != null)
@@ -547,13 +565,15 @@ public class DecoEditModeManager : MonoBehaviour
             {
                 foreach (var renderer in playerObject.GetComponentsInChildren<Renderer>())
                     renderer.enabled = true;
+                foreach (var col in playerObject.GetComponentsInChildren<Collider>(true))
+                    col.enabled = true;
             }
             if (UnlockCount == 0 || Time.unscaledTime - UnlockFirstTime > 10f)
             { UnlockCount = 0; UnlockFirstTime = Time.unscaledTime; }
             if (++UnlockCount >= 10 && btnLakeDecoMode != null)
                 isUnlocked = true;
         }
-
+        RestoreWeatherParticle(); // 날씨 파티클 복원
         // 인벤 
         if (bottomPanel != null)
         {
@@ -608,6 +628,38 @@ public class DecoEditModeManager : MonoBehaviour
     }
 
     #region 상단 버튼 기능
+    void OnSaveClicked() { ShowConfirmPopup(0, () => OnSave()); }          
+    void OnRecallAllClicked() { ShowConfirmPopup(1, () => OnRecallAll()); }
+    void OnResetClicked() { ShowConfirmPopup(2, () => OnReset()); }
+    //    {
+    //  //  if (!isChanged) return;
+    //    ShowConfirmPopup(2, () => OnReset());
+    //}
+
+    void ShowConfirmPopup(int type, System.Action onYes) 
+    {
+        pendingConfirmAction = onYes;
+        if (decoTempText != null) decoTempText.SetConfirmMsg(type);
+        if (confirmPopupPanel != null)
+        { confirmPopupPanel.SetActive(true); LockTopButtons(false); }
+        else
+            onYes?.Invoke();
+    }
+
+    void OnConfirmYes() 
+    {
+        pendingConfirmAction?.Invoke();
+        pendingConfirmAction = null;
+        if (confirmPopupPanel != null) confirmPopupPanel.SetActive(false);
+        LockTopButtons(true);
+    }
+
+    void OnConfirmClose() 
+    {
+        pendingConfirmAction = null;
+        if (confirmPopupPanel != null) confirmPopupPanel.SetActive(false);
+        LockTopButtons(true);
+    }
     void OnSave() // 저장
     {
         // TODO: 파베에 저장
@@ -633,7 +685,7 @@ public class DecoEditModeManager : MonoBehaviour
     }
     void OnReset() // 초기화, 저장한 상태로 불러오기
     {
-        if (!isChanged) return; // 변경사항 없으면 무시 
+        if (!isChanged) return; // 변경사항 없으면 무시 // TODO: 리턴이 없으면 초기화버튼 2번 누르면 전체회수 버그 발생하는지 확인필요  
 
         // TODO:  (파베 연결 후에 나중에 구현)
         if (currentMode == DecoMode.Lake) // 호수 모드
@@ -799,4 +851,37 @@ public class DecoEditModeManager : MonoBehaviour
     {
         return currentMode;
     }
+
+    #region 날씨 파티클 숨기기/복원 메서드
+    // 편집모드 진입 시: 현재 재생 중인 파티클을 캐싱하고 정지+비활성화
+    void HideWeatherParticle()
+    {
+        if (weatherParticleParent == null) return;  
+        
+        var particles = weatherParticleParent.GetComponentsInChildren<ParticleSystem>(true);
+        cachedParticle = null;
+
+        foreach (var ps in particles)
+        {
+            if (ps.isPlaying)
+            {
+                cachedParticle = ps; // 나갈 때 복원하기 위해 기억
+                ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+                ps.gameObject.SetActive(false);
+                break; // 계절은 하나만 끄게 
+            }
+        }
+    }
+
+    /// 편집모드 퇴장 시: 캐싱해둔 파티클 복원
+    void RestoreWeatherParticle()
+    {
+        if (cachedParticle != null)
+        {
+            cachedParticle.gameObject.SetActive(true);
+            cachedParticle.Play();
+            cachedParticle = null;
+        }
+    }
+    #endregion
 }
