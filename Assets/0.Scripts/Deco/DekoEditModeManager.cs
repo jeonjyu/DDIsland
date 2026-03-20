@@ -57,6 +57,8 @@ public class DecoEditModeManager : MonoBehaviour
     public DecoLocalizeTempText decoTempText; // 스크립트 연결   
     [Header("플레이어(투명화)")]
     public GameObject playerObject;
+    [Header("편집모드 들어가면 안보일 날씨 파티클들 부모")]
+    public Transform weatherParticleParent;
     // 내부 변수
     bool isEditMode = false;
     DecoMode currentMode = DecoMode.Lake;   // 현재 편집 모드
@@ -75,7 +77,8 @@ public class DecoEditModeManager : MonoBehaviour
     int UnlockCount = 0;
     float UnlockFirstTime;
     bool isUnlocked = false;
-    System.Action pendingConfirmAction;
+    System.Action pendingConfirmAction; // 상단 확인 팝업창용
+    private ParticleSystem cachedParticle; // 파티클 상태 복원용, 편집모드 진입 시 재생 중이던 파티클 캐싱
     #endregion
 
     // 버튼들 초기화   
@@ -444,13 +447,15 @@ public class DecoEditModeManager : MonoBehaviour
                     PlacementMgr.Instance.ToggleEditMode();
             }
             if (aquariumMgr != null) aquariumMgr.HideFish(); // 물고기 숨기기
-            if (playerObject != null) // 곰 숨기기
+            if (playerObject != null)
             {
                 foreach (var renderer in playerObject.GetComponentsInChildren<Renderer>())
-                    renderer.enabled = false;
+                    renderer.enabled = false;  // 곰 숨기기
+                foreach (var col in playerObject.GetComponentsInChildren<Collider>(true)) 
+                    col.enabled = false; // 콜라이더 끄기
             }
         }
-
+        HideWeatherParticle();
         // 이하 공용 
         //  인벤 패널 아래에서 위로 슥 올라오기 
         if (bottomPanel != null)
@@ -560,13 +565,15 @@ public class DecoEditModeManager : MonoBehaviour
             {
                 foreach (var renderer in playerObject.GetComponentsInChildren<Renderer>())
                     renderer.enabled = true;
+                foreach (var col in playerObject.GetComponentsInChildren<Collider>(true))
+                    col.enabled = true;
             }
             if (UnlockCount == 0 || Time.unscaledTime - UnlockFirstTime > 10f)
             { UnlockCount = 0; UnlockFirstTime = Time.unscaledTime; }
             if (++UnlockCount >= 10 && btnLakeDecoMode != null)
                 isUnlocked = true;
         }
-
+        RestoreWeatherParticle(); // 날씨 파티클 복원
         // 인벤 
         if (bottomPanel != null)
         {
@@ -844,4 +851,37 @@ public class DecoEditModeManager : MonoBehaviour
     {
         return currentMode;
     }
+
+    #region 날씨 파티클 숨기기/복원 메서드
+    // 편집모드 진입 시: 현재 재생 중인 파티클을 캐싱하고 정지+비활성화
+    void HideWeatherParticle()
+    {
+        if (weatherParticleParent == null) return;  
+        
+        var particles = weatherParticleParent.GetComponentsInChildren<ParticleSystem>(true);
+        cachedParticle = null;
+
+        foreach (var ps in particles)
+        {
+            if (ps.isPlaying)
+            {
+                cachedParticle = ps; // 나갈 때 복원하기 위해 기억
+                ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+                ps.gameObject.SetActive(false);
+                break; // 계절은 하나만 끄게 
+            }
+        }
+    }
+
+    /// 편집모드 퇴장 시: 캐싱해둔 파티클 복원
+    void RestoreWeatherParticle()
+    {
+        if (cachedParticle != null)
+        {
+            cachedParticle.gameObject.SetActive(true);
+            cachedParticle.Play();
+            cachedParticle = null;
+        }
+    }
+    #endregion
 }
