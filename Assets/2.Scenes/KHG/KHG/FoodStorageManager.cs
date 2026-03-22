@@ -1,4 +1,4 @@
-using NUnit.Framework;
+
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,7 +10,6 @@ public struct FoodInstance
 public struct FoodStackSlot
 {
     public int FoodId;
-    public int Count;
     public long LastAcquiredOrder;
 }
 
@@ -66,27 +65,11 @@ public class FoodStorageManager : Singleton<FoodStorageManager>
 
         for (int i = 0; i < foodSlots.Length; i++)
         {
-            if (foodSlots[i].HasValue && foodSlots[i].Value.FoodId == food.FoodId)
-            {
-                var slot = foodSlots[i].Value;
-
-                slot.Count += 1;
-                slot.LastAcquiredOrder = ++_acquireCounter;
-
-                foodSlots[i] = slot;
-                OnSlotChanged?.Invoke(i);
-                return true;
-            }
-        }
-
-        for (int i = 0; i < foodSlots.Length; i++)
-        {
             if (!foodSlots[i].HasValue)
             {
                 foodSlots[i] = new FoodStackSlot
                 {
                     FoodId = food.FoodId,
-                    Count = 1,
                     LastAcquiredOrder = ++_acquireCounter,
                 };
 
@@ -178,17 +161,7 @@ public class FoodStorageManager : Singleton<FoodStorageManager>
         if (slotIndex < 0 || slotIndex >= foodSlots.Length) return false;
         if (!foodSlots[slotIndex].HasValue) return false;
 
-        var slot = foodSlots[slotIndex].Value;
-        slot.Count--;
-
-        if (slot.Count <= 0)
-        {
-            foodSlots[slotIndex] = null;
-        }
-        else
-        {
-            foodSlots[slotIndex] = slot;
-        }
+        foodSlots[slotIndex] = null;
 
         OnSlotChanged?.Invoke(slotIndex);
         return true;
@@ -202,11 +175,7 @@ public class FoodStorageManager : Singleton<FoodStorageManager>
             if (!foodSlots[i].HasValue) continue;
             if (foodSlots[i].Value.FoodId != foodhId) continue;
 
-            var slot = foodSlots[i].Value;
-            slot.Count--;
-
-            if (slot.Count <= 0) foodSlots[i] = null;
-            else foodSlots[i] = slot;
+            foodSlots[i] = null;
 
             OnSlotChanged?.Invoke(i);
             return true;
@@ -219,8 +188,6 @@ public class FoodStorageManager : Singleton<FoodStorageManager>
         for (int i = 0; i < foodSlots.Length; i++)
         {
             if (!foodSlots[i].HasValue) return true;
-
-            if (foodSlots[i].Value.FoodId == foodId) return true;
         }
         return false;
     }
@@ -240,7 +207,6 @@ public class FoodStorageManager : Singleton<FoodStorageManager>
                 {
                     Index = i,
                     FoodId = foodSlots[i].Value.FoodId,
-                    Count = foodSlots[i].Value.Count,
                     LastAcquiredOrder = foodSlots[i].Value.LastAcquiredOrder
                 });
             }
@@ -265,7 +231,6 @@ public class FoodStorageManager : Singleton<FoodStorageManager>
                 foodSlots[saved.Index] = new FoodStackSlot
                 {
                     FoodId = saved.FoodId,
-                    Count = saved.Count,
                     LastAcquiredOrder = saved.LastAcquiredOrder
                 };
                 OnSlotChanged?.Invoke(saved.Index);
