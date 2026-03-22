@@ -132,7 +132,7 @@ public class FishStorageManager : Singleton<FishStorageManager>
         }
         return true;
     }
-    public bool FishFullCheck()  //보관함 5칸이하로 비어있는지 체크
+    public bool ShouldSellFish()  //보관함 5칸이하로 비어있는지 체크
     {
        int emptyCount = 0;
         for (int i = 0; i < FishSlots.Length; i++)
@@ -140,7 +140,7 @@ public class FishStorageManager : Singleton<FishStorageManager>
             if (!FishSlots[i].HasValue) emptyCount++;
         }
 
-        return emptyCount <= 5;
+        return emptyCount < 5;
     }
 
     public void SellAllFish()  //물고기 판매

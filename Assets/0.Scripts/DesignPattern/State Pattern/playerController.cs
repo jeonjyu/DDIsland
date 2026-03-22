@@ -750,13 +750,6 @@ public class PlayerController : MonoBehaviour
     public void AnimEvent_GiveFishOnce()  //낚시 성공 애니에 넣을 함수
     {
         FishManager.Instance.PickRandomSeasonFish();
-
-        if (FishStorageManager.Instance.FishFullCheck())  //낚시 한마리 낚을떄마다 검사
-        {
-            ExitFishingState();
-            Animator.SetBool("isFish", false);
-            SetState(new IdleState(this));
-        }
     }
     public void AnimEvent_FishingCycleEnd() //낚시 성공 애니에 넣을 함수
     {
@@ -930,7 +923,7 @@ public class PlayerController : MonoBehaviour
             _currentPoint = Point.Kitchen;
             return new MoveState(this, _currentPoint);
         }
-        if (FishStorageManager.Instance.FishFullCheck())
+        if (FishStorageManager.Instance.ShouldSellFish())
         {
             _currentPoint = Point.Sell;
             return new MoveState(this, _currentPoint);
