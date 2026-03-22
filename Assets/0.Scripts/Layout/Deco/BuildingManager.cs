@@ -359,7 +359,6 @@ public class BuildingManager : MonoBehaviour
                 if (id >= 0) destroyedIds.Add(id);
 
                 RemoveBuildingFromGrid(b);
-                // Destroy(b.gameObject);
                 b.gameObject.SetActive(false); // 파괴 대신 비활성화
                 _deletedBuildings.Add(b);      // 복원할 수 있게 보관
             }

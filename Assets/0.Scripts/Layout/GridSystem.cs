@@ -198,7 +198,22 @@ public class GridSystem : MonoBehaviour
         {
             for (int y = 0; y < _height; y++)
             {
-                Color color = _grid[x, y] != null ? Color.red : Color.clear; //하나하나 전부 색을 바꿔주는 방식, 추후 개선 할 수 있으면 개선 필요
+                Color color = Color.clear;
+                //하나하나 전부 색을 바꿔주는 방식, 추후 개선 할 수 있으면 개선 필요
+                if (_grid[x, y] != null)
+                {
+                    if (_grid[x, y].ItemState == ItemState.Placed)
+                    { 
+                        if (_grid[x, y] is Placeable3D p3d && !p3d.IsEditable)
+                        {
+                            color = Color.red;
+                        }
+                        else
+                        {
+                            color = Color.gray;
+                        }
+                    }
+                }
                 _gridDataTexture.SetPixel(_width - 1 - x, (_height - 1) - y, color); // 1인 경우 빨간색, 0인 경우 투명색으로 설정
                 //추가로 Plane에 맞춰 x,y값을 반대로 적용시켜 하이라이트가 대칭점에 나오는 문제를 수정
             }
