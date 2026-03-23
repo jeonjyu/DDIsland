@@ -119,11 +119,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &385899313 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6372426931763178431, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
-  m_PrefabInstance: {fileID: 4261510180227368517}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1153234831
 GameObject:
   m_ObjectHideFlags: 0
@@ -156,7 +151,7 @@ MonoBehaviour:
   initSize: 20
   maxSize: 50
   initCount: 6
-  data: {fileID: 4007453396370722924, guid: 8429fda8938318448b57bb4bd1fb013a, type: 3}
+  datas: []
 --- !u!4 &1153234833
 Transform:
   m_ObjectHideFlags: 0
@@ -338,11 +333,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77a2bbfabd9c5504586e4231393af4d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StoreManager
-  storeListPanel: {fileID: 1574743981}
-  buyAndSellPanel: {fileID: 385899313}
+  storeListPanel: {fileID: 0}
+  buyAndSellPanel: {fileID: 0}
+  filterDropdown: {fileID: 0}
+  sortDropdown: {fileID: 0}
   currentCat: 0
-  tradeModel: {fileID: 0}
-  currentTradeItem: {fileID: 0}
+  storeListVM: {fileID: 0}
+  storeUIFactory: {fileID: 0}
 --- !u!4 &1543916710
 Transform:
   m_ObjectHideFlags: 0
@@ -358,11 +355,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1574743981 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2549918016851617483, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
-  m_PrefabInstance: {fileID: 4261510180227368517}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1589856229
 GameObject:
   m_ObjectHideFlags: 0
@@ -392,23 +384,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45255a5967786da48a628d73f6877a42, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemManager
-  currentCategory: []
-  displayItems: []
   itemSlotPool: {fileID: 1153234832}
-  interiorItem:
-  - {fileID: 11400000, guid: a180df7ade62d384e882d3cb94f7e1a3, type: 2}
-  - {fileID: 11400000, guid: 1b2bf8b9ad0359d4c8adda60586309a4, type: 2}
-  - {fileID: 11400000, guid: 92ac7324a52a14849b985087efdd673d, type: 2}
-  - {fileID: 11400000, guid: 3b454f9100bd2164386f86a467e4b6fe, type: 2}
-  - {fileID: 11400000, guid: a466b6550a507ba4bb9b6481e33ed8c5, type: 2}
-  - {fileID: 11400000, guid: 5f87e2b0bef2b964ca99b47698862964, type: 2}
-  costumeItem:
-  - {fileID: 11400000, guid: 96c143937101f5f47815a1853d056447, type: 2}
-  - {fileID: 11400000, guid: 413d61ca53f869447b92fd16ce434903, type: 2}
-  - {fileID: 11400000, guid: e524b7603503f224da9a13492e33026b, type: 2}
-  - {fileID: 11400000, guid: d92069551734ddf42a9b6308eb2a0ace, type: 2}
-  - {fileID: 11400000, guid: f1ac98831b57b4a4699b013b0ff3f650, type: 2}
-  - {fileID: 11400000, guid: 0c5775331a4fc0443a644e2ceb54b935, type: 2}
+  itemSlot: {fileID: 0}
+  InteriorDatabase: {fileID: 0}
+  LakeDatabase: {fileID: 0}
+  CostumeDatabase: {fileID: 0}
+  FishingDatabase: {fileID: 0}
+  FoodDatabase: {fileID: 0}
 --- !u!4 &1589856231
 Transform:
   m_ObjectHideFlags: 0
@@ -585,6 +567,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   <InputManager>k__BackingField: {fileID: 0}
   <StageController>k__BackingField: {fileID: 0}
+  <IslandWindow>k__BackingField: {fileID: 0}
+  <WaterWindow>k__BackingField: {fileID: 0}
   playerGold: 10000000
 --- !u!4 &1917259254
 Transform:
@@ -890,8 +874,20 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -50
       objectReference: {fileID: 0}
+    - target: {fileID: 6358017813731887572, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6696688334281387657, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
       propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6942137329542837130, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6942137329542837130, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
+      propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7909102044059617996, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
@@ -944,11 +940,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8063592495171394554, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 1280
+      value: 1080
       objectReference: {fileID: 0}
     - target: {fileID: 8063592495171394554, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 720
+      value: 610
       objectReference: {fileID: 0}
     - target: {fileID: 8063592495171394554, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
       propertyPath: m_LocalPosition.x
