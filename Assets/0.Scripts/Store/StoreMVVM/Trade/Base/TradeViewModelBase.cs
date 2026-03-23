@@ -73,14 +73,12 @@ public class TradeViewModelBase : MonoBehaviour, INotifyPropertyChanged
 
     protected virtual void OnEnable()
     {
-        Debug.Log("OnEable 캔버스 그룹 설정");
         canvasGroup.blocksRaycasts = false;
         canvasGroup.interactable = false;
     }
 
     protected virtual void OnDisable()
     {
-        Debug.Log("OnDisable 캔버스 그룹 설정");
         PropertyChanged = null;
         StoreManager.Instance.ChangeDropdownByCategory();
         canvasGroup.blocksRaycasts = true;

@@ -1,10 +1,9 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class StoreItemDatabase : IStoreItemDatabase 
 {
-    List<IStoreItem> _itemDatas = new List<IStoreItem>();
+    protected List<IStoreItem> _itemDatas = new List<IStoreItem>();
     public List<IStoreItem> Items { get => _itemDatas; set => _itemDatas = value; }
 
     public IStoreItem this[int id] => Items[id];
