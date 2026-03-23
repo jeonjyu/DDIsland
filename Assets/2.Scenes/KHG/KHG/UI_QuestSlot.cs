@@ -47,7 +47,7 @@ public class UI_QuestSlot : MonoBehaviour
         string title = quest.QuestName_String;
         if (string.IsNullOrEmpty(title)) _questNameText.text = "";
         else _questNameText.text = title.Replace("{0}", quest.Requirement.ToString());
-       
+
         Debug.Log($"QuestName key/result: {quest.QuestName_String}");
         var reward1 = QuestManager.Instance.GetewardId(quest.RewardItemId1);
         var reward2 = QuestManager.Instance.GetewardId(quest.RewardItemId2);
@@ -85,12 +85,18 @@ public class UI_QuestSlot : MonoBehaviour
         }
 
         _rewardButton.gameObject.SetActive(true);
-        _rewardButton.interactable = (state == QuestStateType.Claimable);
+        _rewardButton.interactable = (state == QuestStateType.Claimable && !_questPanel.IsRewardPopupOpen);
         _rewardButtonText.text = state == QuestStateType.Claimable ? "받기" : "진행중";
 
         _questSlider.value = current;
         _progressText.text = $"{current}/{requirement}";
     }
+
+    public void RewardButtonOff()
+    {
+        _rewardButton.interactable = false;
+    }
+
     public void OnClickReward()
     {
         bool success = QuestManager.Instance.GiveQuestReward(_questId);

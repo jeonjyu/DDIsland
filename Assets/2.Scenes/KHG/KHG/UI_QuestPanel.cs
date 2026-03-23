@@ -19,16 +19,25 @@ public class UI_QuestPanel : MonoBehaviour
     [SerializeField] private TMP_Text _rewardtext2; 
     [SerializeField] private Transform rewardParent;
 
-    [SerializeField] private GameObject _StoreTabButton;
-    [SerializeField] private GameObject _FishingTabButton;
-    [SerializeField] private GameObject _GuideTabButton;
-    [SerializeField] private GameObject _GrowthTabButton;
-    [SerializeField] private GameObject _CompletedTabButton;
+    [SerializeField] private GameObject _StoreTabButtonClick;
+    [SerializeField] private GameObject _FishingTabButtonClick;
+    [SerializeField] private GameObject _GuideTabButtonClick;
+    [SerializeField] private GameObject _GrowthTabButtonClick;
+    [SerializeField] private GameObject _CompletedTabButtonClick;
+
+    [SerializeField] private Button _StoreTabButton;
+    [SerializeField] private Button _FishingTabButton;
+    [SerializeField] private Button _GuideTabButton;
+    [SerializeField] private Button _GrowthTabButton;
+    [SerializeField] private Button _CompletedTabButton;
 
     [SerializeField] private GameObject _GuidePanel;
 
     private List<UI_QuestSlot> _slots = new List<UI_QuestSlot>();
     private QuestType _currentCategory;
+
+    private bool _isRewardPopupOpen;
+    public bool IsRewardPopupOpen => _isRewardPopupOpen;
 
     private void OnEnable()
     {
@@ -101,54 +110,54 @@ public class UI_QuestPanel : MonoBehaviour
     public void OnClickStoreTab()
     {
         RefreshCategory(QuestType.Store);
-        _StoreTabButton.SetActive(true);
-        _FishingTabButton.SetActive(false);
-        _GuideTabButton.SetActive(false);
-        _GrowthTabButton.SetActive(false);
-        _CompletedTabButton.SetActive(false);
+        _StoreTabButtonClick.SetActive(true);
+        _FishingTabButtonClick.SetActive(false);
+        _GuideTabButtonClick.SetActive(false);
+        _GrowthTabButtonClick.SetActive(false);
+        _CompletedTabButtonClick.SetActive(false);
 
     }
 
     public void OnClickFishingTab()
     {
         RefreshCategory(QuestType.Fishing);
-        _StoreTabButton.SetActive(false);
-        _FishingTabButton.SetActive(true);
-        _GuideTabButton.SetActive(false);
-        _GrowthTabButton.SetActive(false);
-        _CompletedTabButton.SetActive(false);
+        _StoreTabButtonClick.SetActive(false);
+        _FishingTabButtonClick.SetActive(true);
+        _GuideTabButtonClick.SetActive(false);
+        _GrowthTabButtonClick.SetActive(false);
+        _CompletedTabButtonClick.SetActive(false);
 
     }
 
     public void OnClickGuideTab()
     {
         RefreshCategory(QuestType.Guide);
-        _StoreTabButton.SetActive(false);
-        _FishingTabButton.SetActive(false);
-        _GuideTabButton.SetActive(true);
-        _GrowthTabButton.SetActive(false);
-        _CompletedTabButton.SetActive(false);
+        _StoreTabButtonClick.SetActive(false);
+        _FishingTabButtonClick.SetActive(false);
+        _GuideTabButtonClick.SetActive(true);
+        _GrowthTabButtonClick.SetActive(false);
+        _CompletedTabButtonClick.SetActive(false);
 
     }
 
     public void OnClickGrowthTab()
     {
         RefreshCategory(QuestType.Growth);
-        _StoreTabButton.SetActive(false);
-        _FishingTabButton.SetActive(false);
-        _GuideTabButton.SetActive(false);
-        _GrowthTabButton.SetActive(true);
-        _CompletedTabButton.SetActive(false);
+        _StoreTabButtonClick.SetActive(false);
+        _FishingTabButtonClick.SetActive(false);
+        _GuideTabButtonClick.SetActive(false);
+        _GrowthTabButtonClick.SetActive(true);
+        _CompletedTabButtonClick.SetActive(false);
 
     }
     public void OnClickCompletedTab()  
     {
         RefreshCompleted();
-        _StoreTabButton.SetActive(false);
-        _FishingTabButton.SetActive(false);
-        _GuideTabButton.SetActive(false);
-        _GrowthTabButton.SetActive(false);
-        _CompletedTabButton.SetActive(true);
+        _StoreTabButtonClick.SetActive(false);
+        _FishingTabButtonClick.SetActive(false);
+        _GuideTabButtonClick.SetActive(false);
+        _GrowthTabButtonClick.SetActive(false);
+        _CompletedTabButtonClick.SetActive(true);
 
     }
     public void OpenQuest()  //@@
@@ -163,6 +172,7 @@ public class UI_QuestPanel : MonoBehaviour
     }
     public void OpenRewardPanel(int id)
     {
+        _isRewardPopupOpen = true;
         Debug.Log($"OpenRewardPanel 호출됨, id={id}");
         QuestDataSO completedQuest = QuestManager.Instance.GetByQuestId(id);
         if (completedQuest == null) return;
@@ -170,6 +180,23 @@ public class UI_QuestPanel : MonoBehaviour
         var reward1 = QuestManager.Instance.GetewardId(completedQuest.RewardItemId1);
         var reward2 = QuestManager.Instance.GetewardId(completedQuest.RewardItemId2);
         _rewardUIPanel.SetActive(true);
+
+        foreach (var slot in _slots)
+        {
+            slot.RewardButtonOff();
+        }
+
+        _StoreTabButtonClick.SetActive(false);
+        _FishingTabButtonClick.SetActive(false);
+        _GuideTabButtonClick.SetActive(false);
+        _GrowthTabButtonClick.SetActive(false);
+        _CompletedTabButtonClick.SetActive(false);
+        _StoreTabButton.interactable = false;
+        _FishingTabButton.interactable = false;
+        _GuideTabButton.interactable = false;
+        _GrowthTabButton.interactable = false;
+        _CompletedTabButton.interactable = false;
+
         if (reward1 != null)
         {
             _reward1Slot.SetActive(true);
@@ -194,14 +221,40 @@ public class UI_QuestPanel : MonoBehaviour
     }
     public void CloseRewardPanel()
     {
+        _isRewardPopupOpen = false;
         Debug.Log("CloseRewardPanel 호출됨");
         _rewardUIPanel.SetActive(false);
+        RefreshCategory(_currentCategory);
+        _StoreTabButton.interactable = true;
+        _FishingTabButton.interactable = true;
+        _GuideTabButton.interactable = true;
+        _GrowthTabButton.interactable = true;
+        _CompletedTabButton.interactable = true;
+        switch (_currentCategory)
+        {
+            case QuestType.Store:
+                _StoreTabButtonClick.SetActive(true);
+                break;
+            case QuestType.Fishing:
+                _FishingTabButtonClick.SetActive(true);
+                break;
+            case QuestType.Guide:
+                _GuideTabButtonClick.SetActive(true);
+                break;
+            case QuestType.Growth:
+                _GrowthTabButtonClick.SetActive(true);
+                break;
+        }
     }
     public void OnExitdClick()
     {
         if (_rewardUIPanel.activeSelf)
         {
             CloseRewardPanel();
+            foreach (var slot in _slots)
+            {
+                slot.Refresh();
+            }
         }
         else
         {
