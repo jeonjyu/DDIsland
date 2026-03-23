@@ -14,13 +14,13 @@ public class UI_Record : MonoBehaviour
 
     private void OnEnable()
     {
-        if (SoundManager.Instance != null)
+        if (SoundManager.Instance != null && bgmList != null)
             SoundManager.Instance.OnBGMPlayDone += bgmList.PlayNextRecord;
     }
 
     private void OnDisable()
     {
-        if (SoundManager.Instance != null)
+        if (SoundManager.Instance != null && bgmList != null)
             SoundManager.Instance.OnBGMPlayDone -= bgmList.PlayNextRecord;
     }
 }
