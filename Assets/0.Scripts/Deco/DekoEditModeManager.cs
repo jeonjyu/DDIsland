@@ -130,6 +130,8 @@ public class DecoEditModeManager : MonoBehaviour
         {
             dropdownBlocker.SetActive(false);
             dropdownBlocker.GetComponent<Button>().onClick.AddListener(HideDropdown);
+         //   dropdownBlocker.GetComponent<Button>().onClick.AddListener(OnBlockerClicked);
+            dropdownBlocker.GetComponent<Button>().onClick.AddListener(OnFixFilterBlockerClick);
         }
         if (btnLakeDecoMode != null)
             btnLakeDecoMode.gameObject.SetActive(false);
@@ -152,7 +154,19 @@ public class DecoEditModeManager : MonoBehaviour
         {
             PlacementMgr.Instance.OnBuildingPick += ShowIslandActionPanel;
             PlacementMgr.Instance.OnBuildingDrop += HideIslandActionPanel;
+            // 고정물 클릭 이벤트 구독 
+            PlacementMgr.Instance.OnFixedBuildingPick += OnFixBuildingClicked;
+
+            // 그리드에 배치된 Fix 아이템 클릭 이벤트 구독 
+            // 집/침대/보관함 등 Placeable3D로 배치된 Fix 아이템용
+            PlacementMgr.Instance.OnGridFixBuildingPick += OnGridFixBuildingClicked;
+
+            // PlacementMgr.Instance.OnEmptyClick += OnEmptySpaceClicked;  // PlacementMgr의 오브젝트 클릭무시 메서드, 자유물과 UI는 따로 처리해야해서 논의 필요 
         }
+        //  Fix 슬롯 선택 이벤트 구독
+        if (itemListManager != null)
+            itemListManager.OnFixSlotPick += OnFixSlotSelected;
+ 
 
         // 3d 오브젝트 액션 버튼   
         if (btnObjRecall != null)
@@ -184,12 +198,31 @@ public class DecoEditModeManager : MonoBehaviour
             confirmPopupPanel.SetActive(false);                
     }
 
-   
+    void OnEmptySpaceClicked()
+    {
+        if (itemListManager != null && itemListManager.IsFixFilterMode)
+            itemListManager.ExitFilterMode();
+    }
+
+
     #region  섬 전용 
     // 섬 전용 오브젝트 액션패널
     void ShowIslandActionPanel(Placeable3D target)
     {
         if (currentMode != DecoMode.Island) return;
+        // Fix 필터 모드 중이면 액션패널 안 띄움
+        if (itemListManager != null && itemListManager.IsFixFilterMode)
+            return;
+        //  Fix 필터 모드 중이면 해제하고 메인 인벤 복귀
+        // 
+        //if (itemListManager != null && itemListManager.IsFixFilterMode)
+        //{
+        //    itemListManager.ExitFilterMode();
+        //    if (dropdownBlocker != null)
+        //        dropdownBlocker.SetActive(false);
+        //}
+    
+
         selectedIslandTarget = target;
 
         if (objectActionPanel != null)
@@ -208,6 +241,9 @@ public class DecoEditModeManager : MonoBehaviour
         selectedIslandTarget = null;
         if (objectActionPanel != null)
             objectActionPanel.SetActive(false);
+     
+        if (itemListManager != null && itemListManager.IsFixFilterMode)
+            itemListManager.ExitFilterMode(); 
     }
 
     // 섬전용 전체회수 
@@ -324,6 +360,76 @@ public class DecoEditModeManager : MonoBehaviour
             itemListManager.SetupInventory();                  
     }
 
+    //고정물(FixedBuilding) 클릭 시 인벤 필터 모드 진입 
+    void OnFixBuildingClicked(FixedBuilding target)
+    {
+        if (currentMode != DecoMode.Island) return;
+        if (target == null) return;
+
+        // 액션패널 닫기 (회수/이동 버튼 안 보이게)
+        HideIslandActionPanel();
+
+        // 해당 고정물의 FixGroup으로 인벤 필터링
+        FixGroup group = target.LocationID;
+
+        if (group == FixGroup.None) return; // None이면 교체 불가
+
+        if (itemListManager != null)
+            itemListManager.SetupFilteredInventory(group, target);
+        if (dropdownBlocker != null)
+            dropdownBlocker.SetActive(true);
+    }
+
+    // 그리드에 배치된 Fix 고정물 배치템(Placeable3D) 클릭 시
+    void OnGridFixBuildingClicked(Placeable3D target)
+    {
+        if (currentMode != DecoMode.Island) return;
+        if (target == null) return;
+
+
+        var fixBuilding = target.GetComponent<FixedBuilding>(); // FixedBuilding 찾기
+        if (fixBuilding == null)
+            fixBuilding = target.GetComponentInChildren<FixedBuilding>();
+        if (fixBuilding == null) return;
+
+        FixGroup group = fixBuilding.LocationID;
+        if (group == FixGroup.None) return;
+
+        HideIslandActionPanel();
+
+        if (itemListManager != null)
+            itemListManager.SetupFilteredInventory(group, fixBuilding);
+    }
+  
+    // Fix 슬롯에서 아이템 선택 시 프리팹 교체 실행
+    void OnFixSlotSelected(int newItemId, FixedBuilding target)
+    {
+        if (target == null || buildingMgr == null) return;
+
+        int oldItemId = target.CurrentItemID;
+
+        DecoInventoryManager.Instance.UseItem(newItemId); // 인벤에서 수량 차감
+
+        if (oldItemId > 0) // 이전 아이템 인벤으로 복구
+            DecoInventoryManager.Instance.RestoreItem(oldItemId);
+
+        buildingMgr.SwapFixBuilding(target, newItemId); // 프리팹 교체
+
+        // 필터 모드 해제 시 일반 인벤으로 복귀
+        if (itemListManager != null)
+            itemListManager.ExitFilterMode();
+       
+        // 블로커 비활성화 
+        if (dropdownBlocker != null)
+            dropdownBlocker.SetActive(false);
+        
+        // 편집 메뉴 닫기
+        if (PlacementMgr.Instance != null)
+            PlacementMgr.Instance.CloseEditMenu();
+
+        isChanged = true;
+    }
+  
     #endregion
 
     void OnIslandDecoClicked() // 섬 
@@ -498,11 +604,18 @@ public class DecoEditModeManager : MonoBehaviour
             btnDecoMode.gameObject.SetActive(false);
     }
 
-    //  편집 모드 나가기
+    // 편집 모드 나가기
     public void ExitEditMode()
     {
         isEditMode = false;
+        // Fix 필터 모드 해제
+        if (itemListManager != null && itemListManager.IsFixFilterMode)
+            itemListManager.ExitFilterMode();
 
+        // 블로커 비활성화 
+        if (dropdownBlocker != null)
+            dropdownBlocker.SetActive(false);
+     
         // 백그라운드 
         if (dimBackground != null)
         {
@@ -719,6 +832,10 @@ public class DecoEditModeManager : MonoBehaviour
     } 
     void OnRecallAll()  // 전체회수 : 배치된 거 전부 인벤으로 회수 
     {
+        // Fix 필터 모드 해제 
+        if (itemListManager != null && itemListManager.IsFixFilterMode)
+            itemListManager.ExitFilterMode();
+
         if (currentMode == DecoMode.Lake) // 호수모드 
         {
             // 배치된 모든 오브젝트를 인벤에 복구
@@ -828,8 +945,11 @@ public class DecoEditModeManager : MonoBehaviour
     void OnDestroy() // 이벤트 해제 
     {
         if (itemListManager != null)
+        {
             itemListManager.OnSlotPick -= OnIslandPick;
-
+            // Fix 슬롯 이벤트 해제 
+            itemListManager.OnFixSlotPick -= OnFixSlotSelected;
+        }
         if (buildingMgr != null)
         {
             buildingMgr.OnPlaceSuccess -= OnIslandPlaceSuccess;
@@ -843,6 +963,11 @@ public class DecoEditModeManager : MonoBehaviour
         {
             PlacementMgr.Instance.OnBuildingPick -= ShowIslandActionPanel;
             PlacementMgr.Instance.OnBuildingDrop -= HideIslandActionPanel;
+            // 고정물 이벤트 해제
+            PlacementMgr.Instance.OnFixedBuildingPick -= OnFixBuildingClicked;
+            // 그리드 Fix 이벤트 해제 
+            PlacementMgr.Instance.OnGridFixBuildingPick -= OnGridFixBuildingClicked;
+            // PlacementMgr.Instance.OnEmptyClick -= OnEmptySpaceClicked;
         }
     }
  
@@ -855,6 +980,27 @@ public class DecoEditModeManager : MonoBehaviour
     public DecoMode GetCurrentMode()
     {
         return currentMode;
+    }
+    // 블로커 공용 클릭 핸들러
+    //void OnBlockerClicked()
+    //{
+    //    HideDropdown();
+
+    //    // Fix 필터 모드면 해제
+    //    if (itemListManager != null && itemListManager.IsFixFilterMode)
+    //        itemListManager.ExitFilterMode();
+
+    //    if (dropdownBlocker != null)
+    //        dropdownBlocker.SetActive(false);
+    //}
+    void OnFixFilterBlockerClick()
+    {
+        if (itemListManager != null && itemListManager.IsFixFilterMode)
+        {
+            itemListManager.ExitFilterMode();
+            if (dropdownBlocker != null)
+                dropdownBlocker.SetActive(false);
+        }
     }
 
     #region 날씨 파티클 숨기기/복원 메서드
