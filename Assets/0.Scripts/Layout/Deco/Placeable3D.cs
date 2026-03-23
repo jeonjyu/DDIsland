@@ -63,7 +63,6 @@ public class Placeable3D : Placeable
         }
     }
 
-    // 이곳에 data라는 인테리어SO를 추가시켜야함
     public void Initialize(GridSystem grid, BuildingManager build, InteriorDataSO data)
     {
         _build = build;
@@ -107,11 +106,6 @@ public class Placeable3D : Placeable
     {
         if (IsEditable == false) return;
 
-        if (ItemState == ItemState.Placed)
-        {
-            _targetGrid.RemoveItem(_lastPlacedIndex.x, _lastPlacedIndex.y, _lastPlacedSize.x, _lastPlacedSize.y);
-        }
-
         Vector2Int currentPivotCell = _cachedIndex + GetRotatedPivot();
 
         int next = (_isRotated + 1) % 4;
@@ -121,39 +115,43 @@ public class Placeable3D : Placeable
         Vector2Int newSize = GetRotatedSize();
         Vector2Int newIndex = currentPivotCell - GetRotatedPivot();
 
-        bool canRotate = _targetGrid.IsCellEmpty(newIndex.x, newIndex.y, newSize.x, newSize.y, this);
-        if (!canRotate)
+        if (ItemState == ItemState.Placed)
         {
-            _isRotated = originalRotated;
+            _targetGrid.RemoveItem(_lastPlacedIndex.x, _lastPlacedIndex.y, _lastPlacedSize.x, _lastPlacedSize.y);
 
-            // 원래 있던 자리에 다시 나를 채워넣음
-            if (ItemState == ItemState.Placed)
+
+            bool canRotate = _targetGrid.IsCellEmpty(newIndex.x, newIndex.y, newSize.x, newSize.y, this);
+            if (!canRotate)
             {
+                _isRotated = originalRotated; // 각도 원상복구
                 _targetGrid.PlaceItem(_lastPlacedIndex.x, _lastPlacedIndex.y, _lastPlacedSize.x, _lastPlacedSize.y, this);
+                Debug.Log("공간이 부족하여 제자리 회전이 불가능합니다.");
+                return;
             }
-            Debug.Log("공간 부족! 건물을 들어올립니다.");
-            _build.PickUpBuilding(this);
-            return;
+            else
+            {
+                _currentYRotation = _isRotated * _rotationStep;
+                _cachedIndex = newIndex;
+                _lastPlacedIndex = _cachedIndex;
+                _lastPlacedSize = newSize;
+
+                Vector3 snapPos = _targetGrid.GetWorldPosition(_cachedIndex.x, _cachedIndex.y, newSize.x, newSize.y);
+                transform.SetPositionAndRotation(snapPos, Quaternion.Euler(0, _currentYRotation, 0));
+
+                _targetGrid.PlaceItem(_cachedIndex.x, _cachedIndex.y, newSize.x, newSize.y, this);
+            }
         }
-
-        _currentYRotation = _isRotated * _rotationStep;
-        _cachedIndex = newIndex;
-
-        if (ItemState == ItemState.Placed)
+        else if (ItemState == ItemState.Preview)
         {
-            _lastPlacedIndex = _cachedIndex;
-            _lastPlacedSize = newSize;
-        }
+            _currentYRotation = _isRotated * _rotationStep;
+            _cachedIndex = newIndex;
 
+            Vector3 snapPos = _targetGrid.GetWorldPosition(_cachedIndex.x, _cachedIndex.y, newSize.x, newSize.y);
+            transform.SetPositionAndRotation(snapPos, Quaternion.Euler(0, _currentYRotation, 0));
 
-        Vector3 snapPos = _targetGrid.GetWorldPosition(_cachedIndex.x, _cachedIndex.y, newSize.x, newSize.y);
-        transform.SetPositionAndRotation(snapPos, Quaternion.Euler(0, _currentYRotation, 0));
-
-        if (ItemState == ItemState.Placed)
-        {
-            _targetGrid.PlaceItem(_cachedIndex.x, _cachedIndex.y, newSize.x, newSize.y, this);
         }
         VisualFeedback();
+
     }
     // 마우스 위치를 그리드 좌표로 변환
     public override Vector2Int ConvertedIndex()
@@ -313,7 +311,7 @@ public class Placeable3D : Placeable
     public void SetBakeData(Vector2Int index, Vector2Int size)
     {
         _cachedIndex = index;
-        _lastPlacedIndex = index; 
+        _lastPlacedIndex = index;
         _lastPlacedSize = size;
         _sizeX = size.x;
         _sizeY = size.y;

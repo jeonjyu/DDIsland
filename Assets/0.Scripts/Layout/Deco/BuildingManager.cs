@@ -29,6 +29,7 @@ public class BuildingManager : MonoBehaviour
     private List<Placeable3D> _activeBuildings = new();
     private List<Placeable3D> _allBuildings = new();
     private List<FixedBuilding> _locationBuildings = new();
+    private Dictionary<FixGroup, int> _fixedBuildingSnapshots = new();
 
     #region 배치 결과 이벤트
     public event Action<GameObject> OnPlaceSuccess; // 배치 성공
@@ -246,6 +247,7 @@ public class BuildingManager : MonoBehaviour
     {
         _movedSnapshots.Clear();
         _deletedBuildings.Clear();
+        _fixedBuildingSnapshots.Clear();
         _activePlaceable = null;
     }
 
@@ -310,6 +312,20 @@ public class BuildingManager : MonoBehaviour
                 Destroy(_activePlaceable.gameObject);
             }
         }
+
+        foreach (var snap in _fixedBuildingSnapshots)
+        {
+            FixGroup locId = snap.Key;        
+            int originalItemId = snap.Value;  
+
+            FixedBuilding currentBldg = _locationBuildings.Find(x => x.LocationID == locId);
+
+            if (currentBldg != null && currentBldg.CurrentItemID != originalItemId)
+            {
+                SwapFixBuilding(currentBldg, originalItemId);
+            }
+        }
+
 
         ClearSession();
 
@@ -390,6 +406,11 @@ public class BuildingManager : MonoBehaviour
     public void SwapFixBuilding(FixedBuilding oldBuilding, int newItemId)
     {
         if (oldBuilding == null) return;
+
+        if (!_fixedBuildingSnapshots.ContainsKey(oldBuilding.LocationID))
+        {
+            _fixedBuildingSnapshots.Add(oldBuilding.LocationID, oldBuilding.CurrentItemID);
+        }
 
         var newData = DataManager.Instance.DecorationDatabase.InteriorData[newItemId];
         if (newData == null) return;
