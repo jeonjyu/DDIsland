@@ -53,8 +53,8 @@ public class DecoInventoryManager : Singleton<DecoInventoryManager>
         if (playerItem == null) return;
 
         playerItem.ItemCount--;
-        if (playerItem.ItemCount <= 0)
-            playerItem.IsGained = false;
+        //if (playerItem.ItemCount <= 0)
+        //    playerItem.IsGained = false;
 
         var slot = FindSlot(itemId);
         if (slot != null)
@@ -67,8 +67,7 @@ public class DecoInventoryManager : Singleton<DecoInventoryManager>
         var playerItem = FindPlayerItem(itemId);
         if (playerItem == null)
         {
-            var originalItem = ItemManager.Instance.storeDatas[StoreCat.interior].Items.FirstOrDefault(x => x.ID == itemId);
-
+            var originalItem = ItemManager.Instance.storeDatas[StoreCat.interior].Items.FirstOrDefault(x => x.ObjectId == itemId); // ObjectId로 찾기
             if (originalItem != null)
             {
                 originalItem.ItemCount = 1;
