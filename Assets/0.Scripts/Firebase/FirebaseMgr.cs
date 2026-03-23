@@ -17,8 +17,19 @@ public class FirebaseMgr : MonoBehaviour
     private FirebaseDatabase _database;
     static public FirebaseDatabase Database => Instance?._database;
 
-    public string DeviceID => SystemInfo.deviceUniqueIdentifier;
+    public string DeviceID
+    {
 
+        get
+        {
+            if (_user != null)
+                return _user.UserId;
+            else
+                return SystemInfo.deviceUniqueIdentifier;
+        }
+    }
+
+    public bool IsInitailized => _isInitialized;
 
     private void Awake()
     {
@@ -35,8 +46,29 @@ public class FirebaseMgr : MonoBehaviour
             if (task.Result == DependencyStatus.Available)
             {
                 _database = FirebaseDatabase.DefaultInstance;
-                _isInitialized = true;
-                Debug.Log("<color=green>Firebase 초기화 성공</color>");
+
+                FirebaseAuth auth = FirebaseAuth.DefaultInstance;
+                if (auth.CurrentUser != null)
+                {
+                    _user = auth.CurrentUser;
+                    _isInitialized = true; 
+                    Debug.Log($"<color=green>기존 유저 세션 발견! UID: {DeviceID}</color>");
+                }
+                else
+                {
+                   
+                    auth.SignInAnonymouslyAsync().ContinueWithOnMainThread(authTask =>
+                    {
+                        if (authTask.IsCanceled || authTask.IsFaulted)
+                        {
+                            Debug.LogError($"로그인 실패: {authTask.Exception}");
+                            return;
+                        }
+                        _user = authTask.Result.User;
+                        _isInitialized = true; 
+                        Debug.Log($"<color=green>새 익명 로그인 성공! UID: {DeviceID}</color>");
+                    });
+                }
             }
             else
             {
@@ -45,16 +77,16 @@ public class FirebaseMgr : MonoBehaviour
         });
     }
 
-    public void FirebaseDataTransfer(string json, string path)
+    public Task FirebaseDataTransfer(string json, string path)
     {
         if (!_isInitialized || _database == null)
         {
-            return;
+            return Task.CompletedTask;
         }
 
         if (Database == null)
         {
-            return;
+            return Task.CompletedTask;
         }
 
         DatabaseReference dbRef = Database.GetReference("Users").Child(DeviceID);
@@ -64,7 +96,7 @@ public class FirebaseMgr : MonoBehaviour
             dbRef = dbRef.Child(path);
         }
 
-        dbRef.SetRawJsonValueAsync(json).ContinueWithOnMainThread(task =>
+        return dbRef.SetRawJsonValueAsync(json).ContinueWithOnMainThread(task =>
         {
             if (task.IsFaulted || task.IsCanceled)
             {
@@ -75,7 +107,6 @@ public class FirebaseMgr : MonoBehaviour
                 Debug.Log("<color=green>파이어베이스에 저장 완료!</color>");
             }
         });
-        
     }
     
     public async Task<string> FirebaseDataGet(string path = "")

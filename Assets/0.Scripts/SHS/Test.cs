@@ -58,9 +58,10 @@ public class Test : MonoBehaviour
     }
 #endif
 
-    public void Onclick_ApplicationQuit()
+    public async void Onclick_ApplicationQuit()
     {
-        DataManager.Instance.Hub.UploadAllData();
+        await DataManager.Instance.Hub.UploadAllData();
+
         Application.Quit();
     }
 
@@ -76,7 +77,7 @@ public class Test : MonoBehaviour
     }
     public void OnClick_SaveData()
     {
-        DataManager.Instance.Hub.UploadAllData();
+        _ = DataManager.Instance.Hub.UploadAllData();
     }
     public void OnClick_LoadData()
     {

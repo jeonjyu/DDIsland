@@ -47,6 +47,7 @@ public class EnvironmentPresenter : MonoBehaviour
         _model.OnDailyChanged -= _view.ChangeDayilyBackGround;
         _model.OnDailyChanged -= _view.ChangeDailySprite;
         _model.OnWeatherChanged -= _view.PlaySeasonParticle;
+        
 
         if (DataManager.Instance != null &&DataManager.Instance.Hub != null)
         {
