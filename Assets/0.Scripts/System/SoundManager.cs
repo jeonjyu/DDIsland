@@ -10,7 +10,7 @@ public enum Soundtype
     None,
     BGM,        // 배경음
     SFX,        // 효과음
-    BGS,        // 환경음
+    AMB,        // 환경음
     Preview,    // 미리듣기
 }
 
@@ -21,7 +21,7 @@ public class SoundManager : Singleton<SoundManager>
 
     [Header("브금을 재생할 오디오 소스")]
     [field: SerializeField] public AudioSource BgmSource { get; private set; }
-    [field: SerializeField] public AudioSource BgsSource { get; private set; }
+    [field: SerializeField] public AudioSource AmbSource { get; private set; }
     [field: SerializeField] public AudioSource previewSource { get; private set; }
 
     [Header("효과음을 재생할 오디오 소스 프리팹")]
@@ -32,11 +32,17 @@ public class SoundManager : Singleton<SoundManager>
 
     private List<AudioSource> sfxList = new List<AudioSource>();    // 현재 재생중인 효과음 오디오 소스를 가지고 있을 리스트
     private Coroutine sfxPlayCoroutine;                             // 현재 재생중인 효과음 오디오 소스들을 체크하는 코루틴 변수
-    [SerializeField] private float clearSourceTime = 0.5f;
+
+    [SerializeField] private float clearSourceTime = 0.5f;          // 효과음 풀 정리 타이밍
     private WaitForSeconds clearSourceWs;
 
-    private Coroutine BGMPlayDoneCoroutine;         // 배경음 재생이 끝났는지 체크하는 코루틴 변수
+    private Coroutine bgmPlayDoneCoroutine;         // 배경음 재생이 끝났는지 체크하는 코루틴 변수
     public event Action OnBGMPlayDone;              // 배경음 재생이 끝나면 실행할 이벤트
+
+    private Coroutine previewPlayDoneCoroutine;     // 미리듣기 재생이 끝났는지 체크하는 코루틴 변수
+    public event Action OnPreviewPlayDone;          // 미리듣기 재생이 끝나면 실행할 이벤트
+
+    private Coroutine PlayCoroutine;                // 곡을 재생할 때 실행할 코루틴 변수, 볼륨 페이드 아웃 등을 위해 사용
 
     protected override void Awake()
     {
@@ -48,7 +54,7 @@ public class SoundManager : Singleton<SoundManager>
     {
         SetSoundVolume(Soundtype.BGM, PlayerPrefsDataManager.BgmVolume, PlayerPrefsDataManager.BgmVolumeMute);
         SetSoundVolume(Soundtype.SFX, PlayerPrefsDataManager.SFXVolume, PlayerPrefsDataManager.SFXVolumeMute);
-        SetSoundVolume(Soundtype.BGS, PlayerPrefsDataManager.BGSVolume, PlayerPrefsDataManager.BGSVolumeMute);
+        SetSoundVolume(Soundtype.AMB, PlayerPrefsDataManager.BGSVolume, PlayerPrefsDataManager.BGSVolumeMute);
     }
 
     #region Init
@@ -62,13 +68,19 @@ public class SoundManager : Singleton<SoundManager>
     #region 오디오 클립을 받아와 재생
     public void PlayBGM(AudioClip clip)
     {
-        PlaySound(Soundtype.BGM, BgmSource, clip);
-        CheckBGMPlayDone();
+        if (PlayCoroutine != null)
+        {
+            StopCoroutine(PlayCoroutine);
+            PlayCoroutine = null;
+        }
+
+        PlayCoroutine = StartCoroutine(Co_PlayBGM(clip));
+        CheckAudioPlayDone(bgmPlayDoneCoroutine, BgmSource, BgmSource.clip.length);
     }
 
-    public void PlayBGS(AudioClip clip)
+    public void PlayAMB(AudioClip clip)
     {
-        PlaySound(Soundtype.BGS, BgsSource, clip);
+        PlaySound(Soundtype.AMB, AmbSource, clip);
     }
 
     /// <summary>
@@ -84,9 +96,15 @@ public class SoundManager : Singleton<SoundManager>
         PlaySound(Soundtype.SFX, source, clip);
     }
 
-    public void PlayPreview(AudioClip clip)
+    /// <summary>
+    /// 미리듣기 재생
+    /// </summary>
+    /// <param name="clip"> 재생할 클립 </param>
+    /// <param name="maxTime"> 미리듣기 시간(초) </param>
+    public void PlayPreview(AudioClip clip, float maxTime)
     {
         PlaySound(Soundtype.Preview, previewSource, clip);
+        CheckAudioPlayDone(previewPlayDoneCoroutine, previewSource, maxTime);
     }
     #endregion
 
@@ -128,7 +146,7 @@ public class SoundManager : Singleton<SoundManager>
                 PlayerPrefsDataManager.SFXVolumeMute = isMute;
                 SetVolume("SFX", volume, isMute);
                 break;
-            case Soundtype.BGS:
+            case Soundtype.AMB:
                 PlayerPrefsDataManager.BGSVolume = volume;
                 PlayerPrefsDataManager.BGSVolumeMute = isMute;
                 SetVolume("BGS", volume, isMute);
@@ -182,22 +200,68 @@ public class SoundManager : Singleton<SoundManager>
         sfxPlayCoroutine = null;
     }
 
-    private void CheckBGMPlayDone()
+    // 오디오 소스 재생 완료 체크 메서드
+    private void CheckAudioPlayDone(Coroutine coroutine, AudioSource source, float length)
     {
-        if(BGMPlayDoneCoroutine != null)
+        if(coroutine != null)
         {
-            StopCoroutine(BGMPlayDoneCoroutine);
-            BGMPlayDoneCoroutine = null;
+            StopCoroutine(coroutine);
+            coroutine = null;
         }
 
-        BGMPlayDoneCoroutine = StartCoroutine(Co_CheckBGMPlayDone());
+        coroutine = StartCoroutine(Co_CheckAudioPlayDone(coroutine, source, length));
     }
 
-    private IEnumerator Co_CheckBGMPlayDone()
+    /// <summary>
+    /// 오디오 소스가 재생 완료되었는지 체크하는 메서드
+    /// </summary>
+    /// <param name="coroutine"> 코루틴 변수 </param>
+    /// <param name="source"> 오디오 소스 </param>
+    /// <param name="length"> 최대 재생 시간 </param>
+    /// <returns></returns>
+    private IEnumerator Co_CheckAudioPlayDone(Coroutine coroutine, AudioSource source, float length)
     {
-        yield return new WaitUntil(() => BgmSource.time >= BgmSource.clip.length && !BgmSource.isPlaying);
+        yield return new WaitUntil(() => source.time >= source.clip.length && !source.isPlaying);
 
         OnBGMPlayDone?.Invoke();
+    }
+
+    private IEnumerator Co_PlayBGM(AudioClip clip)
+    {
+        float bgmVol = PlayerPrefsDataManager.BgmVolume;
+
+        // 이미 배경음악이 재생중일 때 볼륨을 서서히 줄임
+        if (BgmSource.isPlaying)
+        {
+            float timer = 0f;
+            float endTime = 0.75f;
+
+            while (timer <= endTime)
+            {
+                float vol = Mathf.Lerp(bgmVol, 0f, timer / endTime);
+                SetVolume("BGM", vol, PlayerPrefsDataManager.BgmVolumeMute);
+
+                timer += Time.deltaTime;
+                yield return null;
+            }
+        }
+
+        // 배경음 재생
+        SetVolume("BGM", bgmVol, PlayerPrefsDataManager.BgmVolumeMute);
+        PlaySound(Soundtype.BGM, BgmSource, clip);
+    }
+
+    private IEnumerator Co_PlayPreview()
+    {
+        float timer = 0f;
+        float endTime = 0.75f;
+
+        while(timer <= endTime)
+        {
+
+
+            yield return null;
+        }
     }
 
     private void OnEnable()
@@ -215,10 +279,16 @@ public class SoundManager : Singleton<SoundManager>
             sfxPlayCoroutine = null;
         }
 
-        if(BGMPlayDoneCoroutine != null)
+        if(bgmPlayDoneCoroutine != null)
         {
-            StopCoroutine(BGMPlayDoneCoroutine);
-            BGMPlayDoneCoroutine = null;
+            StopCoroutine(bgmPlayDoneCoroutine);
+            bgmPlayDoneCoroutine = null;
+        }
+
+        if(PlayCoroutine != null)
+        {
+            StopCoroutine(PlayCoroutine);
+            PlayCoroutine = null;
         }
     }
 }

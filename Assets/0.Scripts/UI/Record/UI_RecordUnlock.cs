@@ -10,6 +10,9 @@ public class UI_RecordUnlock : MonoBehaviour
     [SerializeField] private GameObject successPopup;
     [SerializeField] private GameObject failurePopup;
 
+    [Header("미리 듣기 팝업창")]
+    [SerializeField] private UI_RecordPreview previewPopup;
+
     [Header("BGM 재생 리스트 클래스")]
     [SerializeField] private UI_BGMList bgmList;
 
@@ -29,7 +32,8 @@ public class UI_RecordUnlock : MonoBehaviour
     // 미리 듣기 버튼 클릭
     public void OnClick_PreListening()
     {
-        // todo: 미리 듣기 실행
+        previewPopup.gameObject.SetActive(true);
+        previewPopup.PreviewInit(currentSlot.Record);
     }
 
     // 교환 버튼 클릭
