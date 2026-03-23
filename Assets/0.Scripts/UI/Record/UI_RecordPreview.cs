@@ -59,7 +59,8 @@ public class UI_RecordPreview : MonoBehaviour
     // 미리 듣기 재생이 끝났을 때 실행할 콜백 함수
     private void PreviewEnd()
     {
-        playModeImg.sprite = pauseSprite;
+        playModeImg.sprite = playSprite;
+        SoundManager.Instance.previewSource.Pause();
     }
 
     public void OnClick_Resume()
@@ -70,6 +71,7 @@ public class UI_RecordPreview : MonoBehaviour
         if (source.time >= maxPreviewTime && !source.isPlaying)
         {
             SoundManager.Instance.PlayPreview(record.RecordSoundPath_AudioClip, maxPreviewTime);
+            CheckPlayTime();
         }
         else
         {
@@ -105,15 +107,14 @@ public class UI_RecordPreview : MonoBehaviour
         while (true)
         {
             float currentTime = SoundManager.Instance.previewSource.time;
-            float totalTime = record.RecordSoundPath_AudioClip.length;
 
             if (!isDragging)
             {
-                previewSlider.PlaySlider.value = Mathf.Clamp(currentTime / totalTime, 0f, 1f);
+                previewSlider.PlaySlider.value = Mathf.Clamp(currentTime / maxPreviewTime, 0f, 1f);
                 currentTimeText.text = SoundManager.Instance.previewSource.GetSourceLength();
             }
 
-            if (currentTime / totalTime >= 1)
+            if (currentTime / maxPreviewTime >= 1)
                 yield break;
 
             yield return playRecordWs;
@@ -130,9 +131,9 @@ public class UI_RecordPreview : MonoBehaviour
         isDragging = false;
 
         SoundManager.Instance.previewSource.time = Mathf.Clamp(
-            previewSlider.PlaySlider.value * record.RecordSoundPath_AudioClip.length,
+            previewSlider.PlaySlider.value * maxPreviewTime,
             0f,
-            record.RecordSoundPath_AudioClip.length - 0.1f);
+            maxPreviewTime - 0.1f);
     }
 
     private void OnEnable()
@@ -141,7 +142,10 @@ public class UI_RecordPreview : MonoBehaviour
             CheckPlayTime();
 
         if (SoundManager.Instance != null)
+        {
             SoundManager.Instance.OnPreviewPlayDone += PreviewEnd;
+            SoundManager.Instance.FadeOutBGMVolume();
+        }
     }
 
     private void OnDisable()
@@ -153,7 +157,11 @@ public class UI_RecordPreview : MonoBehaviour
         }
 
         if (SoundManager.Instance != null)
+        {
             SoundManager.Instance.OnPreviewPlayDone -= PreviewEnd;
+            SoundManager.Instance.FadeInBGMVolume();
+            PreviewEnd();
+        }
     }
 
     private void OnDestroy()

@@ -11,4 +11,16 @@ public class UI_Record : MonoBehaviour
     {
         bgmList.PlayBGM(DataManager.Instance.RecordDatabase.RecordInfoData[DataManager.Instance.RecordDatabase.DefaultRecords[0]]);
     }
+
+    private void OnEnable()
+    {
+        if (SoundManager.Instance != null)
+            SoundManager.Instance.OnBGMPlayDone += bgmList.PlayNextRecord;
+    }
+
+    private void OnDisable()
+    {
+        if (SoundManager.Instance != null)
+            SoundManager.Instance.OnBGMPlayDone -= bgmList.PlayNextRecord;
+    }
 }

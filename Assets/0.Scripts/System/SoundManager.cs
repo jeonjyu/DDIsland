@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
@@ -68,14 +69,9 @@ public class SoundManager : Singleton<SoundManager>
     #region 오디오 클립을 받아와 재생
     public void PlayBGM(AudioClip clip)
     {
-        if (PlayCoroutine != null)
-        {
-            StopCoroutine(PlayCoroutine);
-            PlayCoroutine = null;
-        }
+        SafeStartCoroutine(PlayCoroutine, Co_PlayBGM(clip));
 
-        PlayCoroutine = StartCoroutine(Co_PlayBGM(clip));
-        CheckAudioPlayDone(bgmPlayDoneCoroutine, BgmSource, BgmSource.clip.length);
+        CheckAudioPlayDone(bgmPlayDoneCoroutine, BgmSource, BgmSource.clip.length, OnBGMPlayDone);
     }
 
     public void PlayAMB(AudioClip clip)
@@ -104,13 +100,17 @@ public class SoundManager : Singleton<SoundManager>
     public void PlayPreview(AudioClip clip, float maxTime)
     {
         PlaySound(Soundtype.Preview, previewSource, clip);
-        CheckAudioPlayDone(previewPlayDoneCoroutine, previewSource, maxTime);
+        CheckAudioPlayDone(previewPlayDoneCoroutine, previewSource, maxTime, OnPreviewPlayDone);
     }
     #endregion
 
     private void PlaySound(Soundtype type, AudioSource source, AudioClip clip)
     {
-        if (source == null || clip == null) return;
+        if (source == null || clip == null) 
+            return;
+
+        if (source.clip == clip && source.time > 0f)
+            source.Stop();
 
         source.clip = clip;
         source.Play();
@@ -140,6 +140,10 @@ public class SoundManager : Singleton<SoundManager>
                 PlayerPrefsDataManager.BgmVolume = volume;
                 PlayerPrefsDataManager.BgmVolumeMute = isMute;
                 SetVolume("BGM", volume, isMute);
+
+                // 미리듣기는 배경음과 볼륨이 같음
+                PlayerPrefsDataManager.PreviewVolume = volume;
+                SetVolume("Preview", volume, false);
                 break;
             case Soundtype.SFX:
                 PlayerPrefsDataManager.SFXVolume = volume;
@@ -149,11 +153,7 @@ public class SoundManager : Singleton<SoundManager>
             case Soundtype.AMB:
                 PlayerPrefsDataManager.BGSVolume = volume;
                 PlayerPrefsDataManager.BGSVolumeMute = isMute;
-                SetVolume("BGS", volume, isMute);
-                break;
-            case Soundtype.Preview:
-                PlayerPrefsDataManager.PreviewVolume = volume;
-                SetVolume("Preview", volume, false);
+                SetVolume("AMB", volume, isMute);
                 break;
         }
     }
@@ -200,16 +200,11 @@ public class SoundManager : Singleton<SoundManager>
         sfxPlayCoroutine = null;
     }
 
+    #region 오디오 소스 재생 체크
     // 오디오 소스 재생 완료 체크 메서드
-    private void CheckAudioPlayDone(Coroutine coroutine, AudioSource source, float length)
+    private void CheckAudioPlayDone(Coroutine coroutine, AudioSource source, float length, Action action)
     {
-        if(coroutine != null)
-        {
-            StopCoroutine(coroutine);
-            coroutine = null;
-        }
-
-        coroutine = StartCoroutine(Co_CheckAudioPlayDone(coroutine, source, length));
+        SafeStartCoroutine(coroutine, Co_CheckAudioPlayDone(source, length, action));
     }
 
     /// <summary>
@@ -219,49 +214,90 @@ public class SoundManager : Singleton<SoundManager>
     /// <param name="source"> 오디오 소스 </param>
     /// <param name="length"> 최대 재생 시간 </param>
     /// <returns></returns>
-    private IEnumerator Co_CheckAudioPlayDone(Coroutine coroutine, AudioSource source, float length)
+    private IEnumerator Co_CheckAudioPlayDone(AudioSource source, float length, Action action)
     {
-        yield return new WaitUntil(() => source.time >= source.clip.length && !source.isPlaying);
+        yield return new WaitUntil(() => source.time >= length);
 
-        OnBGMPlayDone?.Invoke();
+        action?.Invoke();
     }
+    #endregion
 
+    #region 재생 페이드 효과
+    /// <summary>
+    /// 배경음 재생 메서드
+    /// 이전에 재생 중이던 배경음이 있을 시 페이드 아웃으로 서서히 볼륨을 줄인 뒤 새 배경음 재생
+    /// </summary>
+    /// <param name="clip"> 새로 재생할 배경음 </param>
+    /// <returns></returns>
     private IEnumerator Co_PlayBGM(AudioClip clip)
     {
-        float bgmVol = PlayerPrefsDataManager.BgmVolume;
+        float vol = PlayerPrefsDataManager.BgmVolume;
 
         // 이미 배경음악이 재생중일 때 볼륨을 서서히 줄임
         if (BgmSource.isPlaying)
         {
-            float timer = 0f;
-            float endTime = 0.75f;
-
-            while (timer <= endTime)
-            {
-                float vol = Mathf.Lerp(bgmVol, 0f, timer / endTime);
-                SetVolume("BGM", vol, PlayerPrefsDataManager.BgmVolumeMute);
-
-                timer += Time.deltaTime;
-                yield return null;
-            }
+            yield return StartCoroutine(Co_FadeVolume("BGM", PlayerPrefsDataManager.BgmVolume, 0f, 0.75f));
         }
 
         // 배경음 재생
-        SetVolume("BGM", bgmVol, PlayerPrefsDataManager.BgmVolumeMute);
+        SetVolume("BGM", vol, PlayerPrefsDataManager.BgmVolumeMute);
         PlaySound(Soundtype.BGM, BgmSource, clip);
     }
 
-    private IEnumerator Co_PlayPreview()
+    public void FadeOutBGMVolume() => SafeStartCoroutine(PlayCoroutine, Co_FadeOutBGMVolume());
+    public void FadeInBGMVolume() => SafeStartCoroutine(PlayCoroutine, Co_FadeInBGMVolume());
+
+    private IEnumerator Co_FadeOutBGMVolume()
+    {
+        Coroutine bgmVol = StartCoroutine(Co_FadeVolume("BGM", PlayerPrefsDataManager.BgmVolume, 0f, 0.75f));
+        Coroutine preVol = StartCoroutine(Co_FadeVolume("Preview", 0f, PlayerPrefsDataManager.BgmVolume, 0.75f));
+
+        yield return bgmVol;
+        yield return preVol;
+
+        BgmSource.Pause();
+    }
+
+    private IEnumerator Co_FadeInBGMVolume()
+    {
+        BgmSource.Play();
+
+        yield return StartCoroutine(Co_FadeVolume("BGM", 0f, PlayerPrefsDataManager.BgmVolume, 0.75f));
+    }
+
+    /// <summary>
+    ///  볼륨 페이드 효과를 주는 코루틴
+    /// </summary>
+    /// <param name="audioType"> 효과를 줄 볼륨 타입 (BGM, AMB, SFX, Preview) </param>
+    /// <param name="startVol"> 시작 볼륨 </param>
+    /// <param name="endVol"> 최종적으로 변하고자 하는 볼륨 </param>
+    /// <returns></returns>
+
+    private IEnumerator Co_FadeVolume(string audioType, float startVol, float endVol, float duration)
     {
         float timer = 0f;
-        float endTime = 0.75f;
 
-        while(timer <= endTime)
+        while (timer < duration)
         {
+            float vol = Mathf.Lerp(startVol, endVol, timer / duration);
+            vol = Mathf.Clamp(vol, 0f, 1f);
+            SetVolume(audioType, vol, PlayerPrefsDataManager.BgmVolumeMute);
 
-
+            timer += Time.deltaTime;
             yield return null;
         }
+    }
+    #endregion
+
+    private void SafeStartCoroutine(Coroutine coroutine, IEnumerator coroutineMethod)
+    {
+        if (coroutine != null)
+        {
+            StopCoroutine(coroutine);
+            coroutine = null;
+        }
+
+        coroutine = StartCoroutine(coroutineMethod);
     }
 
     private void OnEnable()

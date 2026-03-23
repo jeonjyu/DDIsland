@@ -68,7 +68,10 @@ public class RecordData : MonoBehaviour
     {
         get
         {
-            return recordLocalData.CurrentRecordData.CurrentPlayList;
+            if (recordLocalData.CurrentRecordData.CurrentPlayList.Count == 0)
+                return DefaultRecords;
+            else
+                return recordLocalData.CurrentRecordData.CurrentPlayList;
         }
         set { recordLocalData.CurrentRecordData.CurrentPlayList = value; }
     }
@@ -108,6 +111,5 @@ public class RecordData : MonoBehaviour
             if (record.recordType == RecordType.Background && record.IsDefaultRecord)
                 DefaultRecords.Add(record.RecordID);
         }
-
     }
 }
