@@ -214,10 +214,8 @@ public class PlacementMgr : MonoBehaviour
             else if (fixTarget != null)
             {
                 CloseEditMenu(); 
-
                 OnFixedBuildingPick?.Invoke(fixTarget);
             }
-            
             else
             {
                 // 빈 땅을 클릭하면 메뉴 닫기

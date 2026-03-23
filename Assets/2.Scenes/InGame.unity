@@ -2852,9 +2852,17 @@ PrefabInstance:
       value: ENV_Island_Basic_001
       objectReference: {fileID: 0}
     - target: {fileID: 3406496169802797451, guid: a3fa7b014f54f4f7db9fc889f50e4343, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: -2646813308085353508, guid: 154dff9da7a22bc4e86387748c1aa221, type: 3}
+    - target: {fileID: 3406496169802797451, guid: a3fa7b014f54f4f7db9fc889f50e4343, type: 3}
+      propertyPath: 'm_Materials.Array.data[1]'
+      value: 
+      objectReference: {fileID: -2646813308085353508, guid: 154dff9da7a22bc4e86387748c1aa221, type: 3}
+    - target: {fileID: 3406496169802797451, guid: a3fa7b014f54f4f7db9fc889f50e4343, type: 3}
       propertyPath: 'm_Materials.Array.data[2]'
       value: 
-      objectReference: {fileID: 2100000, guid: e9fa185ae8f2b43979f6aa1c385cd8c5, type: 2}
+      objectReference: {fileID: -1326408267676792120, guid: 154dff9da7a22bc4e86387748c1aa221, type: 3}
     - target: {fileID: 6475162225755100554, guid: a3fa7b014f54f4f7db9fc889f50e4343, type: 3}
       propertyPath: m_Mesh
       value: 
@@ -3111,7 +3119,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -34.309937, y: 1.2821045}
+  m_AnchoredPosition: {x: -34.309814, y: 1.2821045}
   m_SizeDelta: {x: -1.4001465, y: -7.220703}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &776050220
@@ -13264,19 +13272,31 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 100902, guid: 3879ec93984ff324b88ff81e3b3c4218, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 400902, guid: 3879ec93984ff324b88ff81e3b3c4218, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 400902, guid: 3879ec93984ff324b88ff81e3b3c4218, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 400902, guid: 3879ec93984ff324b88ff81e3b3c4218, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 400902, guid: 3879ec93984ff324b88ff81e3b3c4218, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 5.43
+      value: 33.3
       objectReference: {fileID: 0}
     - target: {fileID: 400902, guid: 3879ec93984ff324b88ff81e3b3c4218, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 11.73
+      value: 48.1
       objectReference: {fileID: 0}
     - target: {fileID: 400902, guid: 3879ec93984ff324b88ff81e3b3c4218, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1.3
+      value: -13.8
       objectReference: {fileID: 0}
     - target: {fileID: 400902, guid: 3879ec93984ff324b88ff81e3b3c4218, type: 3}
       propertyPath: m_LocalRotation.w
@@ -13311,51 +13331,87 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 19800902, guid: 3879ec93984ff324b88ff81e3b3c4218, type: 3}
+      propertyPath: lengthInSec
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 19800902, guid: 3879ec93984ff324b88ff81e3b3c4218, type: 3}
       propertyPath: autoRandomSeed
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 19800902, guid: 3879ec93984ff324b88ff81e3b3c4218, type: 3}
       propertyPath: ShapeModule.m_Scale.x
-      value: 10
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 19800902, guid: 3879ec93984ff324b88ff81e3b3c4218, type: 3}
       propertyPath: ShapeModule.m_Scale.y
-      value: 10
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 19800902, guid: 3879ec93984ff324b88ff81e3b3c4218, type: 3}
       propertyPath: ShapeModule.m_Scale.z
-      value: 10
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 19800902, guid: 3879ec93984ff324b88ff81e3b3c4218, type: 3}
       propertyPath: VelocityModule.enabled
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 19800902, guid: 3879ec93984ff324b88ff81e3b3c4218, type: 3}
+      propertyPath: CollisionModule.enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 19800902, guid: 3879ec93984ff324b88ff81e3b3c4218, type: 3}
+      propertyPath: CollisionModule.quality
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 19800902, guid: 3879ec93984ff324b88ff81e3b3c4218, type: 3}
       propertyPath: VelocityModule.x.scalar
-      value: 1.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 19800902, guid: 3879ec93984ff324b88ff81e3b3c4218, type: 3}
       propertyPath: VelocityModule.y.scalar
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 19800902, guid: 3879ec93984ff324b88ff81e3b3c4218, type: 3}
       propertyPath: VelocityModule.z.scalar
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 19800902, guid: 3879ec93984ff324b88ff81e3b3c4218, type: 3}
+      propertyPath: ShapeModule.m_Rotation.y
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 19800902, guid: 3879ec93984ff324b88ff81e3b3c4218, type: 3}
+      propertyPath: VelocityModule.radial.scalar
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 19800902, guid: 3879ec93984ff324b88ff81e3b3c4218, type: 3}
       propertyPath: VelocityModule.orbitalX.scalar
-      value: 0
+      value: 0.01
       objectReference: {fileID: 0}
     - target: {fileID: 19800902, guid: 3879ec93984ff324b88ff81e3b3c4218, type: 3}
       propertyPath: VelocityModule.orbitalY.scalar
-      value: 0
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 19800902, guid: 3879ec93984ff324b88ff81e3b3c4218, type: 3}
       propertyPath: VelocityModule.orbitalZ.scalar
-      value: 0
+      value: -0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 19800902, guid: 3879ec93984ff324b88ff81e3b3c4218, type: 3}
+      propertyPath: CollisionModule.m_Bounce.scalar
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 19800902, guid: 3879ec93984ff324b88ff81e3b3c4218, type: 3}
+      propertyPath: InitialModule.startLifetime.scalar
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 19800902, guid: 3879ec93984ff324b88ff81e3b3c4218, type: 3}
+      propertyPath: InitialModule.gravityModifier.scalar
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 19800902, guid: 3879ec93984ff324b88ff81e3b3c4218, type: 3}
       propertyPath: VelocityModule.orbitalOffsetZ.scalar
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 19800902, guid: 3879ec93984ff324b88ff81e3b3c4218, type: 3}
+      propertyPath: CollisionModule.m_EnergyLossOnCollision.scalar
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
