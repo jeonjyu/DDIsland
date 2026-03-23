@@ -82,6 +82,21 @@ public class ItemManager : Singleton<ItemManager>
         storeDatas.Add(StoreCat.recipe, new StoreItemDatabase(FoodDatabase));
 
         Debug.Log("[ItemManger] 데이터베이스 생성");
+        
+        foreach(var category in storeDatas)
+        {
+            CreatePlayerItemDatabase(category.Key, storeDatas[category.Key]);
+        }
+
+        Debug.Log("[ItemManger] 사용자 소유 데이터베이스 생성");
+    }
+
+    public void CreatePlayerItemDatabase(StoreCat cat, StoreItemDatabase storeItem)
+    {
+        PlayerItemDatabase playerItems = new PlayerItemDatabase();
+        playerItems.SaveGainedItem(storeItem.Items);
+        playerItemDatas.Add(cat, playerItems);
+        Debug.Log(cat + "의 playerItemDatas 개수 : " + playerItemDatas[cat].Items.Count);
     }
 
     // 플레이어 소유 아이템 딕셔너리에 추가
@@ -99,6 +114,7 @@ public class ItemManager : Singleton<ItemManager>
         if (storeCat == StoreCat.recipe) QuestManager.Instance.AddSimpleProgress(QuestConditionKey.BuyFoodCount, 1);
 
         playerItemDatas[storeCat].AddToDatabase(item);
+        
 
         // 플레이어가 보유한 아이템 딕셔너리에 추가되었는지 확인
         Debug.Log(playerItemDatas[storeCat].Items.Count);
