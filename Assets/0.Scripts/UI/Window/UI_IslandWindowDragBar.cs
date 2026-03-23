@@ -1,8 +1,9 @@
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class UI_IslandWindowDragBar : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler
+public class UI_IslandWindowDragBar : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler
 {
     [Header("UI_IslandWindow.cs")]
     [SerializeField] private UI_IslandWindow ui_IslandWindow;
@@ -13,12 +14,30 @@ public class UI_IslandWindowDragBar : MonoBehaviour, IBeginDragHandler, IDragHan
     private Vector2 gapPos;
     private bool isDragging;
 
+    private RectTransform rect;
+    private Vector3 startScale;
+    private Vector3 expandScale;
+
+    private Sequence seq;
+
+    private void Awake()
+    {
+        rect = GetComponent<RectTransform>();
+        startScale = Vector3Int.RoundToInt(rect.sizeDelta);
+        expandScale = startScale * 1.5f;
+
+        seq = DOTween.Sequence();
+    }
+
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        isDragging = true;
+    }
+
     public void OnBeginDrag(PointerEventData eventData)
     {
         if (eventData.button == PointerEventData.InputButton.Left)
         {
-            isDragging = true;
-
             gapPos = new Vector2(
                 ui_IslandWindow.IslandWindowRect.position.x - eventData.position.x,
                 ui_IslandWindow.IslandWindowRect.position.y - eventData.position.y);
@@ -46,18 +65,51 @@ public class UI_IslandWindowDragBar : MonoBehaviour, IBeginDragHandler, IDragHan
             if (obj != gameObject)
             {
                 dragBar.SetAlpha(0.6f);
+                DoScale(0.3f, false);
             }
         }
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        dragBar.SetAlpha(1f);
+        if(!isDragging)
+        {
+            dragBar.SetAlpha(1f);
+            DoScale(0.3f, true);
+        }
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
         if (!isDragging)
+        {
             dragBar.SetAlpha(0.6f);
+            DoScale(0.3f, false);
+        }
+    }
+
+    /// <summary>
+    /// 이미지 크기 변경 트위닝 애니메이션 메서드
+    /// </summary>
+    /// <param name="duration"> 트위닝 애니메이션 시간 </param>
+    /// <param name="isExpand"> 확장인지 축소인지 여부 </param>
+    private void DoScale(float duration, bool isExpand)
+    {
+        rect.DOKill(false);
+
+        if(isExpand)
+        {
+            Debug.Log("확장");
+            seq.Append(rect.DOSizeDelta(expandScale * 1.05f, duration * 0.7f).SetEase(Ease.OutQuad))
+            .Append(rect.DOSizeDelta(expandScale, duration * 0.3f).SetEase(Ease.OutBack));
+        }
+        else
+        {
+            Debug.Log("축소");
+            seq.Append(rect.DOSizeDelta(startScale * 0.95f, duration * 0.3f).SetEase(Ease.OutQuad))
+            .Append(rect.DOSizeDelta(startScale, duration * 0.3f).SetEase(Ease.OutBack));
+        }
+
+        seq.SetUpdate(true);
     }
 }

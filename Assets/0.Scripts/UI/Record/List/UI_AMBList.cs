@@ -8,7 +8,7 @@ public class UI_AMBList : UI_RecordList<UI_AMBSlot>
     /// <param name="slot"> 클릭한 환경음 슬롯 </param>
     public void PlayAMB(UI_AMBSlot slot)
     {
-        AudioSource source = SoundManager.Instance.BgsSource;
+        AudioSource source = SoundManager.Instance.AmbSource;
 
         if(CurrentSlot != null)
         {
@@ -30,7 +30,7 @@ public class UI_AMBList : UI_RecordList<UI_AMBSlot>
             CurrentSlot.SetPlayModeImg(false);
         }
 
-        SoundManager.Instance.PlayBGS(slot.Record.RecordSoundPath_AudioClip);
+        SoundManager.Instance.PlayAMB(slot.Record.RecordSoundPath_AudioClip);
         slot.SetPlayModeImg(true);
         CurrentSlot = slot;
     }

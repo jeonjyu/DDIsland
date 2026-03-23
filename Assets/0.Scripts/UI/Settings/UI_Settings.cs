@@ -111,7 +111,7 @@ public class UI_Settings : MonoBehaviour
         if (isInitializing == true) return;
 
         OnValueChangedVolume(bgsSlider, bgsVolumeText);
-        SoundManager.Instance.SetSoundVolume(Soundtype.BGS, bgsSlider.value, bgsToggle.isOn);
+        SoundManager.Instance.SetSoundVolume(Soundtype.AMB, bgsSlider.value, bgsToggle.isOn);
     }
     #endregion
 }

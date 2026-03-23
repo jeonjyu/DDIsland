@@ -70,12 +70,9 @@ public class UI_BGMList : UI_RecordList<UI_BGMSlot>
     // 곡이 끝나면 자동으로 다음 곡 재생
     public void PlayNextRecord()
     {
-        List<int> playList;
+        List<int> playList = DataManager.Instance.RecordDatabase.CurrentPlayList;
 
-        if (DataManager.Instance.RecordDatabase.CurrentPlayList.Count == 0)
-            playList = DataManager.Instance.RecordDatabase.DefaultRecords;
-        else
-            playList = DataManager.Instance.RecordDatabase.CurrentPlayList;
+        Debug.Log("실행");
 
         if (playList.Count == 0 || !playList.Contains(DataManager.Instance.RecordDatabase.CurrentRecord.RecordID))
         {
@@ -110,15 +107,15 @@ public class UI_BGMList : UI_RecordList<UI_BGMSlot>
         }
     }
 
-    private void OnEnable()
-    {
-        if (SoundManager.Instance != null)
-            SoundManager.Instance.OnBGMPlayDone += PlayNextRecord;
-    }
+    //private void OnEnable()
+    //{
+    //    if (SoundManager.Instance != null)
+    //        SoundManager.Instance.OnBGMPlayDone += PlayNextRecord;
+    //}
 
-    private void OnDisable()
-    {
-        if (SoundManager.Instance != null)
-            SoundManager.Instance.OnBGMPlayDone -= PlayNextRecord;
-    }
+    //private void OnDisable()
+    //{
+    //    if (SoundManager.Instance != null)
+    //        SoundManager.Instance.OnBGMPlayDone -= PlayNextRecord;
+    //}
 }

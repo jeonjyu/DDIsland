@@ -9,12 +9,11 @@ public class UI_PlayRecordInfo : MonoBehaviour
     [SerializeField] private Image recordImage;             // 음반 이미지
     [SerializeField] private TMP_Text titleText;            // 음반 타이틀 텍스트
     [SerializeField] private TMP_Text artistText;           // 음반 아티스트 텍스트
-    [SerializeField] private Slider processBar;             // 재생바
     [SerializeField] private TMP_Text currentTimeText;      // 현재 재생 지점
     [SerializeField] private TMP_Text endTimeText;          // 총 재생 길이
 
     [Header("재생바 슬라이더")]
-    [SerializeField] private UI_CurrentPlaySlider currentPlaySlider;
+    [SerializeField] private UI_CurrentPlaySlider currentPlaySlider;    // 재생바
 
     [Header("재생모드 관련 Image / Sprite")]
     [SerializeField] private Image playModeImg;
@@ -52,7 +51,7 @@ public class UI_PlayRecordInfo : MonoBehaviour
         recordImage.sprite = record.RecordImgPath_Sprite;
         titleText.text = record.RecordName_String;
         artistText.text = record.RecordArtist_String;
-        processBar.value = 0f;
+        currentPlaySlider.PlaySlider.value = 0f;
         currentTimeText.text = SoundManager.Instance.BgmSource.GetSourceLength();
         endTimeText.text = record.RecordSoundPath_AudioClip.GetClipLength();
 
@@ -85,7 +84,7 @@ public class UI_PlayRecordInfo : MonoBehaviour
 
             if (!isDragging)
             {
-                processBar.value = Mathf.Clamp(currentTime / totalTime, 0f, 1f);
+                currentPlaySlider.PlaySlider.value = Mathf.Clamp(currentTime / totalTime, 0f, 1f);
                 currentTimeText.text = SoundManager.Instance.BgmSource.GetSourceLength();
             }
 
@@ -106,7 +105,7 @@ public class UI_PlayRecordInfo : MonoBehaviour
         isDragging = false;
 
         SoundManager.Instance.BgmSource.time = Mathf.Clamp(
-            processBar.value * record.RecordSoundPath_AudioClip.length,
+            currentPlaySlider.PlaySlider.value * record.RecordSoundPath_AudioClip.length,
             0f,
             record.RecordSoundPath_AudioClip.length - 0.1f);
     }
