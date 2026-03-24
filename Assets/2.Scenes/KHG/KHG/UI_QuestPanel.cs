@@ -31,7 +31,7 @@ public class UI_QuestPanel : MonoBehaviour
     [SerializeField] private Button _GrowthTabButton;
     [SerializeField] private Button _CompletedTabButton;
 
-    [SerializeField] private GameObject _GuidePanel;
+   // [SerializeField] private GameObject _GuidePanel;
 
     private List<UI_QuestSlot> _slots = new List<UI_QuestSlot>();
     private QuestType _currentCategory;
@@ -160,16 +160,16 @@ public class UI_QuestPanel : MonoBehaviour
         _CompletedTabButtonClick.SetActive(true);
 
     }
-    public void OpenQuest()  //@@
-    {
-        gameObject.SetActive(true);
-        _GuidePanel.SetActive(false);
-    }
-    public void OpenGuide()
-    {
-        gameObject.SetActive(false);
-        _GuidePanel.SetActive(true);
-    }
+    //public void OpenQuest()  //@@
+    //{
+    //    gameObject.SetActive(true);
+    //    _GuidePanel.SetActive(false);
+    //}
+    //public void OpenGuide()
+    //{
+    //    gameObject.SetActive(false);
+    //    _GuidePanel.SetActive(true);
+    //}
     public void OpenRewardPanel(int id)
     {
         _isRewardPopupOpen = true;
