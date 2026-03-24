@@ -14,19 +14,11 @@ public class LakeItemManager : Singleton<LakeItemManager>
 
     public void ChangedLakeSlot(IStoreItem item)
     {
-        switch (item.Filter.ToString())
-        {
-            case "Floor":
-                Debug.Log(item.ObjectId);
-                floorID = item.ObjectId;
-                lakeDecoManager?.ChangeImage(0, floorID);
-                break;
-
-            case "ornament":
-                Debug.Log(item.ObjectId);
-                ornamentID = item.ObjectId;
-                lakeDecoManager?.ChangeImage(1, ornamentID);
-                break;
-        }
+        Debug.Log(item.ID);
+        LakeStoreItem lakeStoreItem = (LakeStoreItem)item;
+        floorID = lakeStoreItem.LakeFloorID;
+        ornamentID = lakeStoreItem.LakeOrnamentID;
+        lakeDecoManager?.ChangeImage(0, floorID);    
+        lakeDecoManager?.ChangeImage(1, ornamentID);    
     }
 }
