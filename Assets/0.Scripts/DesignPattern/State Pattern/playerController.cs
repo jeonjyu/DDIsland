@@ -85,6 +85,9 @@ public class PlayerController : MonoBehaviour
     private Dictionary<int, GameObject> _bodyById;
     private Dictionary<int, GameObject> _fishingRodsById;
 
+    private EnvironmentModel _environment;
+    private DayilyCycle _currentSeason;
+
     private float _hungerTickTimer;
     private float _baseMoveSpeed;
     private bool _slowApplied;
@@ -187,6 +190,9 @@ public class PlayerController : MonoBehaviour
             DataManager.Instance.Hub.OnRequestSave += PlayerDataOld.SyncCharacterDataSave;
         if (PlayerManager.Instance != null)
             PlayerManager.Instance.OnEquipChanged += ChangeCostume;
+        if (_environment != null)
+            _environment.OnDailyChanged += HandleDailyChanged;
+        
     }
 
     private void OnDisable()
@@ -206,6 +212,8 @@ public class PlayerController : MonoBehaviour
         }
         if (PlayerManager.Instance != null)
             PlayerManager.Instance.OnEquipChanged -= ChangeCostume;
+        if (_environment != null)
+            _environment.OnDailyChanged -= HandleDailyChanged;
     }
 
     public void ApplyPlayerStats(CharacterDataSO SO)
@@ -560,7 +568,7 @@ public class PlayerController : MonoBehaviour
         }
         PendingFood = pickedFood;
         _isCooking = true;
-        PlayerDataOld.SetStamina(PlayerDataOld.Stamina - 10);
+        ConsumeStamina(10);
         _animator.SetBool("isCook", true);
          CookingManager.Instance.FoodIngredientsRemove(pickedFood);
     }
@@ -766,10 +774,8 @@ public class PlayerController : MonoBehaviour
     {
         _fishingCount--; 
         Debug.Log("fishingCount: " + _fishingCount);
-        //playerData.Hunger -= 4;
-        //playerData.Stamina -= 5;
         PlayerDataOld.SetHunger(PlayerDataOld.Hunger - 4);
-        PlayerDataOld.SetStamina(PlayerDataOld.Stamina - 5);
+        ConsumeStamina(5);
         _isFishing = false;
         if (_fishingCount <= 0 || PlayerDataOld.Hunger <= 0 || PlayerDataOld.Stamina <= 0)
         {
@@ -843,6 +849,8 @@ public class PlayerController : MonoBehaviour
         Agent.velocity = Vector3.zero;
         yield return new WaitForSeconds(2f);
         FishStorageManager.Instance.SellAllFish();
+        PlayerDataOld.SetHunger(PlayerDataOld.Hunger - 4);
+        ConsumeStamina(5);
         SetState(new IdleState(this));
     }
 
@@ -890,6 +898,26 @@ public class PlayerController : MonoBehaviour
 
         _agent.speed = finalSpeed;
     }
+    private void HandleDailyChanged(DayilyCycle newSeason)
+    {
+        _currentSeason = newSeason;
+    }
+    void ConsumeStamina(float baseCost)
+    {
+        float cost = baseCost;
+        if (IsDailyNight()) cost *= 1.5f;
+
+        PlayerDataOld.SetStamina(PlayerDataOld.Stamina - cost);
+    }
+    public bool IsDailyNight()
+    {
+        if (_currentSeason == DayilyCycle.Night)
+        {
+            return true;
+        }
+        return false;
+    }
+
     public void RequestReplan()  //idle에서 자율적으로 다음행동 결정
     {
         RefreshCanCook();
