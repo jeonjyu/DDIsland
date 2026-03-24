@@ -1003,7 +1003,7 @@ MonoBehaviour:
   successPopup: {fileID: 2186864498232828984}
   failurePopup: {fileID: 5629506572309243279}
   previewPopup: {fileID: 91128664186540403}
-  bgmList: {fileID: 5430669140167453546}
+  bgmList: {fileID: 8792934405854286137}
 --- !u!222 &6963889519399362933
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -7111,9 +7111,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7678675187570501242}
-  - component: {fileID: 6052427901826903961}
   m_Layer: 5
-  m_Name: '[Panel _Middle_AMB]'
+  m_Name: Panel _Middle_AMB
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7140,22 +7139,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 30}
   m_SizeDelta: {x: 0, y: -220}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &6052427901826903961
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4716127147019075809}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3984353e50e4cfa42b396ac815b94bc2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UI_AMBList
-  recordSlot: {fileID: 5713508050153274370, guid: da592f2b349c6994b82126d7502a3e38, type: 3}
-  slotContent: {fileID: 6916007507294506735}
-  recordType: 2
-  recordSlotList: []
 --- !u!1 &4727704388925718714
 GameObject:
   m_ObjectHideFlags: 0
@@ -8870,6 +8853,8 @@ GameObject:
   m_Component:
   - component: {fileID: 6657662923532631612}
   - component: {fileID: 5721461988434346109}
+  - component: {fileID: 8792934405854286137}
+  - component: {fileID: 5707861694985626229}
   m_Layer: 5
   m_Name: RecordUI
   m_TagString: Untagged
@@ -8909,9 +8894,43 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b13029e823873940b98892c9d643ce5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI_Record
-  bgmList: {fileID: 5430669140167453546}
-  ambList: {fileID: 6052427901826903961}
+  bgmList: {fileID: 8792934405854286137}
+  ambList: {fileID: 5707861694985626229}
   recordUnlock: {fileID: 5268621794246032067}
+--- !u!114 &8792934405854286137
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5673872486189400412}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4caa37188abe3e1478e031ddaac96931, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI_BGMList
+  recordSlot: {fileID: 8046812426373374293, guid: 8d0027501a2611d4ea9141b40447e45f, type: 3}
+  slotContent: {fileID: 6046949266061775849}
+  recordType: 1
+  recordSlotList: []
+  unlockPopup: {fileID: 5268621794246032067}
+  playRecordInfo: {fileID: 6805170409864556970}
+--- !u!114 &5707861694985626229
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5673872486189400412}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3984353e50e4cfa42b396ac815b94bc2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI_AMBList
+  recordSlot: {fileID: 5713508050153274370, guid: da592f2b349c6994b82126d7502a3e38, type: 3}
+  slotContent: {fileID: 6916007507294506735}
+  recordType: 2
+  recordSlotList: []
 --- !u!1 &5697495609752958621
 GameObject:
   m_ObjectHideFlags: 0
@@ -10688,9 +10707,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9163502351894401366}
-  - component: {fileID: 5430669140167453546}
   m_Layer: 5
-  m_Name: '[Panel _Middle_BGM]'
+  m_Name: Panel _Middle_BGM
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10717,24 +10735,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 30}
   m_SizeDelta: {x: 0, y: -220}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &5430669140167453546
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7841362470528691085}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4caa37188abe3e1478e031ddaac96931, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UI_BGMList
-  recordSlot: {fileID: 8046812426373374293, guid: 8d0027501a2611d4ea9141b40447e45f, type: 3}
-  slotContent: {fileID: 6046949266061775849}
-  recordType: 1
-  recordSlotList: []
-  unlockPopup: {fileID: 5268621794246032067}
-  playRecordInfo: {fileID: 6805170409864556970}
 --- !u!1 &7868119627003789948
 GameObject:
   m_ObjectHideFlags: 0
@@ -11790,7 +11790,7 @@ MonoBehaviour:
   playModeImg: {fileID: 8145653712826933484}
   playSprite: {fileID: 21300000, guid: dda636bfe28b642808c7b32b1b02f011, type: 3}
   pauseSprite: {fileID: 21300000, guid: 75349f8a184fab6448506bb38225a8c7, type: 3}
-  bgmList: {fileID: 5430669140167453546}
+  bgmList: {fileID: 8792934405854286137}
 --- !u!1 &8471763562626542002
 GameObject:
   m_ObjectHideFlags: 0

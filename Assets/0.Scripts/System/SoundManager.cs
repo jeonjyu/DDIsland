@@ -244,21 +244,26 @@ public class SoundManager : Singleton<SoundManager>
         PlaySound(Soundtype.BGM, BgmSource, clip);
     }
 
-    public void FadeOutBGMVolume() => SafeStartCoroutine(PlayCoroutine, Co_FadeOutBGMVolume());
-    public void FadeInBGMVolume() => SafeStartCoroutine(PlayCoroutine, Co_FadeInBGMVolume());
+    public void FadeOutBGMVolume(bool isPlay) => SafeStartCoroutine(PlayCoroutine, Co_FadeOutBGMVolume(isPlay));
+    public void FadeInBGMVolume(bool isPlay) => SafeStartCoroutine(PlayCoroutine, Co_FadeInBGMVolume(isPlay));
 
-    private IEnumerator Co_FadeOutBGMVolume()
+    private IEnumerator Co_FadeOutBGMVolume(bool isPlay)
     {
-        Coroutine bgmVol = StartCoroutine(Co_FadeVolume("BGM", PlayerPrefsDataManager.BgmVolume, 0f, 0.75f));
         Coroutine preVol = StartCoroutine(Co_FadeVolume("Preview", 0f, PlayerPrefsDataManager.BgmVolume, 0.75f));
 
-        yield return bgmVol;
+        if(isPlay)
+        {
+            Coroutine bgmVol = StartCoroutine(Co_FadeVolume("BGM", PlayerPrefsDataManager.BgmVolume, 0f, 0.75f));
+
+            yield return bgmVol;
+        }
+
         yield return preVol;
 
         BgmSource.Pause();
     }
 
-    private IEnumerator Co_FadeInBGMVolume()
+    private IEnumerator Co_FadeInBGMVolume(bool isPlay)
     {
         BgmSource.Play();
 

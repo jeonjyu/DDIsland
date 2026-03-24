@@ -37,5 +37,5 @@ public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
     }
 
     protected virtual void OnApplicationQuit() => isQuit = true;
-    protected void OnDestroy() => isQuit = true;
+    protected virtual void OnDestroy() => isQuit = true;
 }
