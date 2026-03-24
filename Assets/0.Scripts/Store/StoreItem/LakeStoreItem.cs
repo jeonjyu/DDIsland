@@ -9,9 +9,10 @@ public class LakeStoreItem : StoreItem<LakeStoreDataSO>
 
     public override int ID => _data.IDLakeStore;
 
-    public override int ObjectId => _data.InteriorId;
+    public int LakeFloorID => _data.InteriorId1;
+    public int LakeOrnamentID => _data.InteriorId2;
 
-    public int LakeInteriorItemGroup => _data.LakeInteriorItemGroup;
+    public int LakeInteriorItemGroup => _data.LakeThemeNumber;
 
     public override bool IsGained { get => _isGained; set => _isGained = value; }
 
@@ -24,7 +25,4 @@ public class LakeStoreItem : StoreItem<LakeStoreDataSO>
     public override string ItemDesc => DataManager.Instance.DecorationDatabase.InteriorData[ObjectId].InteriorDesc_String;
 
     public override Sprite ImgSprite => _data.InteriorImgPath_Sprite;
-
-    public override Enum Filter => _data.lakestore_itemType;
-
 }
