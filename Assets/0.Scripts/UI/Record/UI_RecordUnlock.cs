@@ -50,6 +50,8 @@ public class UI_RecordUnlock : MonoBehaviour
             DataManager.Instance.RecordDatabase.LpPieceCount -= requireLpPieceCount;
             DataManager.Instance.RecordDatabase.UnlockRecords.Add(currentSlot.Record.RecordID);
             bgmList.PlayBGM(currentSlot);
+
+            _ = DataManager.Instance.Hub.UploadAllData();
         }
         else
         {

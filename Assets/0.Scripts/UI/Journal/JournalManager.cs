@@ -187,6 +187,8 @@ public class JournalManager : MonoBehaviour
             {
                 if (length > records[i].MaxLength)
                     records[i].MaxLength = length;
+
+                DataManager.Instance.Hub.SaveAllData();
                 return;
             }
         }
