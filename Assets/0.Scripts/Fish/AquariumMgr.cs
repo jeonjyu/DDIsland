@@ -103,9 +103,9 @@ public class AquariumMgr : MonoBehaviour
         if (_lastScreenSize.x != Screen.width || _lastScreenSize.y != Screen.height)
         {
             AquariumBounds();
-             SyncMaskToWindow();
         }
 
+         SyncMaskToWindow();
     }
 
     IEnumerator LateStart()
