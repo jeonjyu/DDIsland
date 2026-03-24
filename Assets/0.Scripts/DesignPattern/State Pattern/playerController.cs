@@ -218,18 +218,6 @@ public class PlayerController : MonoBehaviour
 
     public void ApplyPlayerStats(CharacterDataSO SO)
     {
-        //일단은 남겨둠 혹시모르니까
-        //playerData = new PlayerContext();
-        //playerData.ID = SO.ID;
-        //playerData.Name = SO.Name_String;
-        //playerData.Hunger = SO.BaseHunger;
-        //playerData.Stamina = SO.BaseStamina;
-        //playerData.MoveSpeed = SO.BaseMoveSpeed;
-        //playerData.FishingSpeed = SO.BaseFishingSpeed;
-        //playerData.RestSpeed = SO.BaseRestSpeed;
-        //playerData.DoongDoongStat = SO.BaseDoongDoongStat;
-        //playerData.VisualGroupID = SO.VisualGroupID;
-        //playerData.UpgradGroupID = SO.UpgradGroupID;
         PlayerDataOld.Initialize(SO);
     }
 
@@ -245,10 +233,10 @@ public class PlayerController : MonoBehaviour
         {
             SetBody(objectId);
         }
-        //  else if (typeName == "Tool")
-        //  {
-        //      SetTool(objectId);
-        //  }
+         else if (typeName == "Pole")
+         {
+             SetTool(objectId);
+         }
 
         DataManager.Instance.Hub.SaveAllData();
     }
@@ -260,58 +248,65 @@ public class PlayerController : MonoBehaviour
 
         var data = DataManager.Instance.DecorationDatabase.CostumeData.datas;
         var fishingItemData = DataManager.Instance.FishingDatabase.FishingItemData.datas;
-        if (data == null) return;
-        if (fishingItemData == null) return;
 
-        int hatIndex = 0;
-        int bodyIndex = 0;
-        int toolIndex = 0;
-
-        for (int i = 0; i < data.Count; i++)
+        if (data != null)
         {
-            if (data[i] == null) continue;
+            int hatIndex = 0;
+            int bodyIndex = 0;
 
-            if (data[i].costumeType == CostumeType.Head)
+            for (int i = 0; i < data.Count; i++)
             {
-                if (hatIndex >= _hats.Length) continue;
-                if (_hats[hatIndex] == null)
+                if (data[i] == null) continue;
+
+                if (data[i].costumeType == CostumeType.Head)
                 {
+                    if (hatIndex >= _hats.Length) continue;
+                    if (_hats[hatIndex] == null)
+                    {
+                        hatIndex++;
+                        continue;
+                    }
+
+                    _hatById[data[i].CostumeID] = _hats[hatIndex];
+                    _hats[hatIndex].SetActive(false);
                     hatIndex++;
-                    continue;
                 }
-
-                _hatById[data[i].CostumeID] = _hats[hatIndex];
-                _hats[hatIndex].SetActive(false);
-                hatIndex++;
-            }
-            else if (data[i].costumeType == CostumeType.Body)
-            {
-                if (bodyIndex >= _bodys.Length) continue;
-                if (_bodys[bodyIndex] == null)
+                else if (data[i].costumeType == CostumeType.Body)
                 {
-                    bodyIndex++;
-                    continue;
-                }
+                    if (bodyIndex >= _bodys.Length) continue;
+                    if (_bodys[bodyIndex] == null)
+                    {
+                        bodyIndex++;
+                        continue;
+                    }
 
-                _bodyById[data[i].CostumeID] = _bodys[bodyIndex];
-                _bodys[bodyIndex].SetActive(false);
-                bodyIndex++;
+                    _bodyById[data[i].CostumeID] = _bodys[bodyIndex];
+                    _bodys[bodyIndex].SetActive(false);
+                    bodyIndex++;
+                }
             }
-           // else if (fishingItemData[i].fishingitemType == FishingItemType.Pole)
-           // {
-           //     if (toolIndex >= _fishingRods.Length) continue;
-           //     if (_bodys[toolIndex] == null)
-           //     {
-           //         toolIndex++;
-           //         continue;
-           //     }
-           //
-           //     _fishingRodsById[data[i].CostumeID] = _fishingRods[toolIndex];
-           //     _fishingRods[toolIndex].SetActive(false);
-           //     toolIndex++;
-           // }
         }
 
+        if (fishingItemData != null)
+        {
+            int toolIndex = 0;
+
+            for (int i = 0; i < fishingItemData.Count; i++)
+            {
+                if (fishingItemData[i] == null) continue;
+                if (fishingItemData[i].fishingitemType != FishingItemType.Pole) continue;
+                if (toolIndex >= _fishingRods.Length) continue;
+                if (_fishingRods[toolIndex] == null)
+                {
+                    toolIndex++;
+                    continue;
+                }
+
+                _fishingRodsById[fishingItemData[i].ID] = _fishingRods[toolIndex];
+                _fishingRods[toolIndex].SetActive(false);
+                toolIndex++;
+            }
+        }
         Debug.Log($"Hat:{_hatById.Count}, Body:{_bodyById.Count}");
     }
     public void SetHat(int id)
@@ -346,22 +341,22 @@ public class PlayerController : MonoBehaviour
         }
         else Debug.LogWarning($"의상 ID 없음: {id}");
     }
-   // public void SetTool(int id)
-   // {
-   //     foreach (var pair in _fishingRodsById)
-   //     {
-   //         pair.Value.SetActive(false);
-   //     }
-   //
-   //     if (id == 0) return;
-   //
-   //     if (_fishingRodsById.TryGetValue(id, out var toolObj))
-   //     {
-   //         toolObj.SetActive(true);
-   //         Debug.Log($"의상 장착 성공: {id}");
-   //     }
-   //     else Debug.LogWarning($"의상 ID 없음: {id}");
-   // }
+     public void SetTool(int id)
+     {
+         foreach (var pair in _fishingRodsById)
+         {
+             pair.Value.SetActive(false);
+         }
+    
+         if (id == 0) return;
+    
+         if (_fishingRodsById.TryGetValue(id, out var toolObj))
+         {
+             toolObj.SetActive(true);
+             Debug.Log($"의상 장착 성공: {id}");
+         }
+         else Debug.LogWarning($"의상 ID 없음: {id}");
+     }
 
     public void StartAcornSupply(Vector3 center)  //도토리 떨어지는 함수
     {
