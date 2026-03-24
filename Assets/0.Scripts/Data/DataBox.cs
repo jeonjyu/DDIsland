@@ -122,6 +122,13 @@ public class Record_Data
     public List<RecordPlayCount> _playCounts = new();
 }
 
+[Serializable]
+public class Mail_Data
+{
+    public List<string> ReadMailIDs = new ();
+    public List<string> ClaimedMailIDs = new ();
+}
+
 #region 변수 저장 클래스
 [Serializable]
 public class FixedObjectData
