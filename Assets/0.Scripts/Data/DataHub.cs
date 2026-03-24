@@ -42,12 +42,16 @@ public class DataHub : MonoBehaviour
     {
         if (IsLoaded == true)
         {
+            yield return new WaitUntil(() => IsLoaded);
 
             while (true)
             {
-                yield return new WaitUntil(() => FirebaseMgr.Instance != null && FirebaseMgr.Instance.IsInitailized);
+                yield return wait;
 
-                _ = UploadAllData();
+                if (FirebaseMgr.Instance != null && FirebaseMgr.Instance.IsInitailized)
+                {
+                    _ = UploadAllData();
+                }
             }
         }
     }

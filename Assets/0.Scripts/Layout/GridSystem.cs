@@ -210,7 +210,7 @@ public class GridSystem : MonoBehaviour
                         }
                         else
                         {
-                            color = Color.gray;
+                            color = Color.blue;
                         }
                     }
                 }
