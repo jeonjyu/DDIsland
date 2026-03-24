@@ -14,16 +14,22 @@ public class StoreListView : MonoBehaviour
     List<Button> stores = new List<Button>();
 
     StoreListViewModel viewModel;
-    Color selectedColor; 
-    Color normalColor; 
+    //Color selectedColor; 
+    //Color normalColor;
+
+    [Header("카테고리가 선택되지 않았을 때 색상")]
+    public Color normalColor;
+    [Header("카테고리가 선택되었을 때 색상")]
+    public Color selectedColor;
+
     public List<Button> Stores => stores;
 
     void Awake()
     {
         viewModel = GetComponent<StoreListViewModel>();
         viewModel.PropertyChanged += OnStoreListViewModelChanged;
-        normalColor = StoreButton.colors.normalColor;
-        selectedColor = StoreButton.colors.pressedColor;
+        //normalColor = StoreButton.colors.normalColor;
+        //selectedColor = StoreButton.colors.pressedColor;
 
         foreach (Button button in storeListPanel.transform.GetComponentsInChildren<Button>())
             stores.Add(button);

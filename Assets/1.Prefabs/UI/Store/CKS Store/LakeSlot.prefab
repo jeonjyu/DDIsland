@@ -65,7 +65,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: 95b81d377f53dba47b26c7a5a534473f, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -361,7 +361,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4689650616756352908, guid: 8429fda8938318448b57bb4bd1fb013a, type: 3}
       propertyPath: m_Name
-      value: LakeSlot Variant
+      value: LakeSlot
       objectReference: {fileID: 0}
     - target: {fileID: 5343786894359551612, guid: 8429fda8938318448b57bb4bd1fb013a, type: 3}
       propertyPath: m_Pivot.x
@@ -459,6 +459,10 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 9223221916273710410, guid: 8429fda8938318448b57bb4bd1fb013a, type: 3}
+      propertyPath: m_Maskable
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: -8699692401602353749, guid: 8429fda8938318448b57bb4bd1fb013a, type: 3}
     - {fileID: 3250631288939812862, guid: 8429fda8938318448b57bb4bd1fb013a, type: 3}
@@ -483,6 +487,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4689650616756352908, guid: 8429fda8938318448b57bb4bd1fb013a, type: 3}
       insertIndex: -1
       addedObject: {fileID: -7339193631303167743}
+    - targetCorrespondingSourceObject: {fileID: 4689650616756352908, guid: 8429fda8938318448b57bb4bd1fb013a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7449105340667003832}
   m_SourcePrefab: {fileID: 100100000, guid: 8429fda8938318448b57bb4bd1fb013a, type: 3}
 --- !u!114 &5395086694183339140 stripped
 MonoBehaviour:
@@ -512,6 +519,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e44a422a3dde7c84b9b6ea01ab3aab83, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LakeSlotView
+  gainedColor: {r: 0.99215686, g: 0.96862745, b: 0.90588236, a: 0}
+  ungainedColor: {r: 0.9254902, g: 0.8666667, b: 0.7529412, a: 0}
   _slotBackground: {fileID: 5395086694183339140}
   _itemImage: {fileID: 6095450586704189879}
   applyBtn: {fileID: 3966570512005451215}
@@ -528,6 +537,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a69da9da730651e4e8d31a9babb5dc5a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LakeSlotViewModel
+--- !u!114 &7449105340667003832
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8373521941790697026}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31a19414c41e5ae4aae2af33fee712f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Mask
+  m_ShowMaskGraphic: 1
 --- !u!224 &9153764613993254834 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5343786894359551612, guid: 8429fda8938318448b57bb4bd1fb013a, type: 3}

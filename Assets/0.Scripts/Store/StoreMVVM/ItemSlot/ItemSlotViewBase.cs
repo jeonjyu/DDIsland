@@ -11,13 +11,19 @@ public class ItemSlotViewBase : MonoBehaviour, IStoreItemView, IPointerClickHand
     protected IStoreItem modelData;
     protected Image slotImage;
 
+    [Header("아이템 보유시 색상 (FDF7E7)")]
+    [SerializeField] public Color gainedColor;
+    [Header("아이템 미보유시 색상 (ECDDC0)")]
+    [SerializeField] public Color ungainedColor; 
 
     [SerializeField] protected Image _slotBackground;
     [SerializeField] protected Image _itemImage;
 
+
     protected EventTrigger eventTrigger;
 
-// property
+
+    // property
     public ItemSlotViewModelBase ViewModel => viewModel;
     public IStoreItem ModelData => modelData;
     public Image SlotBackground => _slotBackground;
@@ -66,10 +72,8 @@ public class ItemSlotViewBase : MonoBehaviour, IStoreItemView, IPointerClickHand
 
     public void UpdateSlotColor(bool isGained)
     {
-        if (!isGained)
-            _slotBackground.color = Color.grey;
-        else
-            _slotBackground.color = Color.white;
+        _slotBackground.color = isGained ? gainedColor : ungainedColor;
+        Debug.Log("색변경 " + isGained);
     }
 
     // 버튼 팝업 띄우고
