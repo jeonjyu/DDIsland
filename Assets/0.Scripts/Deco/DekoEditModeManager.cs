@@ -14,9 +14,12 @@ public class DecoEditModeManager : MonoBehaviour
     public GameObject objectActionPanel; // 회수, 이동, 취소
     public AquariumMgr aquariumMgr; // 물고기 안보이게 
     public RectTransform lakeBackground; // 호수 이미지 
-    public GameObject decoMaskArea; // v2 바닥재+장식물 배경
     public RectTransform floorPlane; // 바닥재 두트윈용?
-   
+    
+    [Header("호수 배경 V2")]
+    public GameObject decoMaskArea; // v2 바닥재+장식물 배경
+    public UI_WaterWindow waterWindow;
+
     [Header("3D배치템 상호작용 버튼")] 
     public Button btnObjRecall;   // 회수
     public Button btnObjMove;     // 이동
@@ -90,7 +93,7 @@ public class DecoEditModeManager : MonoBehaviour
     //    { FixGroup.Bed, 20032 },
     //};
     #endregion
-
+  
     // 버튼들 초기화   
     void Start()
     {
@@ -1051,6 +1054,25 @@ public class DecoEditModeManager : MonoBehaviour
             cachedParticle.Play();
             cachedParticle = null;
         }
+    }
+    #endregion
+    #region 호수 높이 0이 되면 장식물 배경 비활성화
+    void OnEnable()
+    {
+        if (waterWindow != null)
+            waterWindow.OnWaterWindowHeightChanged += OnWaterHeightChanged;
+    }
+
+    void OnDisable()
+    {
+        if (waterWindow != null)
+            waterWindow.OnWaterWindowHeightChanged -= OnWaterHeightChanged;
+    }
+
+    void OnWaterHeightChanged(int height)
+    {
+        if (decoMaskArea != null)
+            decoMaskArea.SetActive(height > 0);
     }
     #endregion
 }
