@@ -41,6 +41,8 @@ public class ItemManager : Singleton<ItemManager>
     {
         base.Awake();
         CreateDatabase();
+        // Start에서 IsLoaded되지 않아 SyncInventoryDataSave가 실행되지 않아 여기서 호출
+        SyncInventoryDataSave(); 
     }
     private void Start()
     {
