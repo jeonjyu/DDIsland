@@ -72,8 +72,6 @@ public class UI_BGMList : UI_RecordList<UI_BGMSlot>
     {
         List<int> playList = DataManager.Instance.RecordDatabase.CurrentPlayList;
 
-        Debug.Log("실행");
-
         if (playList.Count == 0 || !playList.Contains(DataManager.Instance.RecordDatabase.CurrentRecord.RecordID))
         {
             return;
@@ -107,15 +105,15 @@ public class UI_BGMList : UI_RecordList<UI_BGMSlot>
         }
     }
 
-    //private void OnEnable()
-    //{
-    //    if (SoundManager.Instance != null)
-    //        SoundManager.Instance.OnBGMPlayDone += PlayNextRecord;
-    //}
+    private void OnEnable()
+    {
+        if (SoundManager.Instance != null)
+            SoundManager.Instance.OnBGMPlayDone += PlayNextRecord;
+    }
 
-    //private void OnDisable()
-    //{
-    //    if (SoundManager.Instance != null)
-    //        SoundManager.Instance.OnBGMPlayDone -= PlayNextRecord;
-    //}
+    private void OnDisable()
+    {
+        if (SoundManager.Instance != null)
+            SoundManager.Instance.OnBGMPlayDone -= PlayNextRecord;
+    }
 }

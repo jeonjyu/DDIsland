@@ -109,7 +109,6 @@ public class WindowController : Singleton<WindowController>
 
     private bool onObject;      // 현재 마우스가 오브젝트 위에 있는지 판단하는 변수
 
-#if !UNITY_EDITOR
     protected override void Awake()
     {
         base.Awake();
@@ -139,13 +138,14 @@ public class WindowController : Singleton<WindowController>
 
     private void Start()
     {
+#if !UNITY_EDITOR
         core.SetAlphaValue(1.0f);
 
         currentCamera.clearFlags = CameraClearFlags.SolidColor;
         currentCamera.backgroundColor = Color.clear;
 
         IsTransparent = isTransparent;
-        IsClickThrough = isClickThrough;
+        //IsClickThrough = isClickThrough;
         IsTopmost = isTopmost;
 
         // 작업표시줄 핸들 찾기
@@ -155,16 +155,17 @@ public class WindowController : Singleton<WindowController>
 
         // 훅 연결
         hook = core.SetWinEventHook(EVENT_OBJECT_LOCATIONCHANGE, EVENT_OBJECT_LOCATIONCHANGE, IntPtr.Zero, procDelegate, 0, 0, WINEVENT_OUTOFCONTEXT);
-
+#endif
+        IsClickThrough = isClickThrough;
     }
 
     private void Update()
     {
+#if !UNITY_EDITOR
         core.Update();
-
+#endif
         UpdateClickThrough();
     }
-#endif
 
     /// <summary>
     /// 마우스 위치 좌표에 오브젝트나 UGUI가 있는지 검사
@@ -342,8 +343,10 @@ public class WindowController : Singleton<WindowController>
         Application.Quit();
     }
 
-    private void OnDestroy()
+    protected override void OnDestroy()
     {
+        base.OnDestroy();
+
         if (taskbarCoroutine != null)
         {
             StopCoroutine(taskbarCoroutine);
@@ -361,8 +364,10 @@ public class WindowController : Singleton<WindowController>
             core.UnhookWinEvent(hook);
     }
 
-    private void OnApplicationQuit()
+    protected override void OnApplicationQuit()
     {
+        base.OnApplicationQuit();
+
         if (taskbarCoroutine != null)
         {
             StopCoroutine(taskbarCoroutine);

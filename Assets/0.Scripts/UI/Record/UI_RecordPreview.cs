@@ -28,6 +28,8 @@ public class UI_RecordPreview : MonoBehaviour
 
     private bool isDragging;
 
+    private bool isBgmPause;
+
     private void Awake()
     {
         endTimeText.text = string.Format("{0:00}:{1:00}", maxPreviewTime / 60, maxPreviewTime % 60);
@@ -144,7 +146,7 @@ public class UI_RecordPreview : MonoBehaviour
         if (SoundManager.Instance != null)
         {
             SoundManager.Instance.OnPreviewPlayDone += PreviewEnd;
-            SoundManager.Instance.FadeOutBGMVolume();
+            SoundManager.Instance.FadeOutBGMVolume(true);
         }
     }
 
@@ -159,7 +161,7 @@ public class UI_RecordPreview : MonoBehaviour
         if (SoundManager.Instance != null)
         {
             SoundManager.Instance.OnPreviewPlayDone -= PreviewEnd;
-            SoundManager.Instance.FadeInBGMVolume();
+            SoundManager.Instance.FadeInBGMVolume(true);
             PreviewEnd();
         }
     }
