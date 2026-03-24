@@ -1,15 +1,6 @@
 ﻿using System;
 using UnityEngine;
 
-// 타입
-[Serializable]
-public enum LakeStore_ItemType
-{
-    None = 0,
-    Floor = 1,          //바닥재
-    ornament = 2,       //장식물
-}
-
 
 [CreateAssetMenu(fileName = "LakeStoreDataSO", menuName = "Scriptable Objects/Data/LakeStoreDataSO")]
 public class LakeStoreDataSO : TableBase<int>

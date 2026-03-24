@@ -43,7 +43,7 @@ public class FishingStoreDataSO : TableBase<int>
     [field: SerializeField] public Sprite ItemImgPath_Sprite { get; private set; }
 
     // 오브젝트 리소스 경로
-    [field: SerializeField] public Sprite ObjectPath_Sprite { get; private set; }
+    [field: SerializeField] public GameObject ObjectPath_GameObject { get; private set; }
 
     // 부모 클래스의 ID 반환 추상 메서드
     public override int GetID() => ID;
