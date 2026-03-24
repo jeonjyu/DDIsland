@@ -10,21 +10,22 @@ public class FixedBuilding : MonoBehaviour
     public int CurrentItemID => _currentItemID;
     public FixGroup LocationID => _locationID;
 
-    // 시작 시 ID가 비어있으면 SO에서 찾아서 자동 할당 (인게임에 배치된 기본템용)
-    void Awake()
+    // 시작 시 ID가 비어있으면 DB에서 찾아서 자동 할당 (인게임에 배치된 기본템용)
+    void Start()
     {
         if (_currentItemID <= 0 && _locationID != FixGroup.None)
         {
-            // 같은 오브젝트의 InteriorDataSO에서 ID 가져오기
-            var placeable = GetComponent<Placeable3D>();
-            if (placeable != null)
+            var database = DataManager.Instance.DecorationDatabase.InteriorData;
+            foreach (var data in database.datas)
             {
-                int id = placeable.GetItemId();
-                if (id > 0) _currentItemID = id;
+                if (data.fixgroupType == _locationID && data.IsDefault)
+                {
+                    _currentItemID = data.InteriorID;
+                    break;
+                }
             }
         }
     }
-   
     // 초기화용 메서드
     public void Setup(FixGroup locationId, int itemId)
     {
