@@ -10,6 +10,7 @@ public enum FixGroup
     Box = 2,              //보관함
     LpPlayer = 3,         //LP플레이어
     Bed = 4,              //침대
+    Tree = 5,             //나무
 }
 
 // 상호작용 종류

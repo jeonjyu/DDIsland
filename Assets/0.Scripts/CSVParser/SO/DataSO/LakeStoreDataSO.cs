@@ -1,15 +1,6 @@
 ﻿using System;
 using UnityEngine;
 
-// 타입
-[Serializable]
-public enum LakeStore_ItemType
-{
-    None = 0,
-    Floor = 1,          //바닥재
-    ornament = 2,       //장식물
-}
-
 
 [CreateAssetMenu(fileName = "LakeStoreDataSO", menuName = "Scriptable Objects/Data/LakeStoreDataSO")]
 public class LakeStoreDataSO : TableBase<int>
@@ -17,17 +8,20 @@ public class LakeStoreDataSO : TableBase<int>
     // 호수인테리어상점id
     [field: SerializeField] public int IDLakeStore { get; private set; }
 
-    // 인테리어id
-    [field: SerializeField] public int InteriorId { get; private set; }
+    // 테마 번호
+    [field: SerializeField] public int LakeThemeNumber { get; private set; }
 
-    // 테마 그룹
-    [field: SerializeField] public int LakeInteriorItemGroup { get; private set; }
+    // 인테리어id1
+    [field: SerializeField] public int InteriorId1 { get; private set; }
+
+    // 인테리어id2
+    [field: SerializeField] public int InteriorId2 { get; private set; }
 
     // 테마 이름
     [field: SerializeField] public string LakeThemeName { get; private set; }
 
-    // 타입
-    [field: SerializeField] public LakeStore_ItemType lakestore_itemType { get; private set; }
+    // 테마 설명
+    [field: SerializeField] public string LakeThemeDesc { get; private set; }
 
     // 최대 보유 가능 갯수
     [field: SerializeField] public int MaxCount { get; private set; }
@@ -43,9 +37,6 @@ public class LakeStoreDataSO : TableBase<int>
 
     // UI 미니 이미지 리소스
     [field: SerializeField] public Sprite InteriorImgPath_Sprite { get; private set; }
-
-    // 테마 리소스
-    [field: SerializeField] public Sprite InteriorThemeImgPath_Sprite { get; private set; }
 
     // 부모 클래스의 ID 반환 추상 메서드
     public override int GetID() => IDLakeStore;
