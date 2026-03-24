@@ -149,6 +149,8 @@ public class TradeUnitViewModelBase : MonoBehaviour, INotifyPropertyChanged
             StoreManager.Instance.BuyAndSellPanel.SetActive(true);
             TradeConfirmPanel.SetActive(true);
         }
+
+        _ = DataManager.Instance.Hub.UploadAllData();
     }
 
     // 아이템 갯수 변경

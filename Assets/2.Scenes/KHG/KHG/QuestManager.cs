@@ -329,6 +329,8 @@ public class QuestManager : Singleton<QuestManager>
         // 완료 처리
         _completedQuests.Add(questId);
 
+        _ = DataManager.Instance.Hub.UploadAllData();
+
         return true;
     }
 

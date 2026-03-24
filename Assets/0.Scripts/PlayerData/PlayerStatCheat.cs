@@ -21,9 +21,9 @@ public class PlayerStatCheat : MonoBehaviour
         if (kb.iKey.wasPressedThisFrame) TestStamina(12f);  // 심해짐
 
         // 둥둥수치 (G, H, J, K)
-        if (kb.gKey.wasPressedThisFrame) TestDoongDoong(100);  // Slim (0~299)
-        if (kb.hKey.wasPressedThisFrame) TestDoongDoong(400);  // Normal (300~499)
-        if (kb.jKey.wasPressedThisFrame) TestDoongDoong(700);  // Chubby (500~999)
+        if (kb.gKey.wasPressedThisFrame) TestDoongDoong(0);  // Slim (0~299)
+        if (kb.hKey.wasPressedThisFrame) TestDoongDoong(300);  // Normal (300~499)
+        if (kb.jKey.wasPressedThisFrame) TestDoongDoong(500);  // Chubby (500~999)
         if (kb.kKey.wasPressedThisFrame) TestDoongDoong(1000); // Round (1000 이상)
 
         // 배고픔 (V, B, N, M)

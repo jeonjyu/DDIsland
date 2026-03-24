@@ -88,6 +88,7 @@ public class PlayerController : MonoBehaviour
     private float _hungerTickTimer;
     private float _baseMoveSpeed;
     private bool _slowApplied;
+    private SkinnedMeshRenderer _currentSkinSource; //현재 상태를 저장하기 위한 변수입니다 +추가됨
 
     [SerializeField] private GameObject _acornPrefab;
     private readonly List<GameObject> _acorns = new();
@@ -236,10 +237,12 @@ public class PlayerController : MonoBehaviour
         {
             SetBody(objectId);
         }
-      //  else if (typeName == "Tool")
-      //  {
-      //      SetTool(objectId);
-      //  }
+        //  else if (typeName == "Tool")
+        //  {
+        //      SetTool(objectId);
+        //  }
+
+        DataManager.Instance.Hub.SaveAllData();
     }
     private void BuildCostumeMap()  //모자,옷을 ID로 빠르게 찾을 수 있게 딕셔너리
     {
@@ -697,7 +700,15 @@ public class PlayerController : MonoBehaviour
         else if (PlayerDataOld.DoongDoongStat >= 500) src = _chubbySource;
         else if (PlayerDataOld.DoongDoongStat >= 300) src = _normalSource;
         else src = _slimSource;
-        ApplySkin(src);
+
+        // 추가된 부분
+        if (_currentSkinSource != src)
+        {
+            _currentSkinSource = src; // 현재 체형 갱신
+            ApplySkin(src);           // 실제 모델링 교체
+
+            DataManager.Instance.Hub.SaveAllData();
+        }
     }
     private void ApplySkin(SkinnedMeshRenderer src)
     {

@@ -205,6 +205,7 @@ public class UpgradeManagerV2 : MonoBehaviour
             case StatType.BaseFishingSpeed: BuyFishingSpeed(); break;
             case StatType.StaminaHeal: BuyRestSpeed(); break;
         }
+        _ = DataManager.Instance.Hub.UploadAllData();
     }
 
     void BuyHunger()
