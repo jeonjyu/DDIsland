@@ -82,13 +82,13 @@ public class DecoEditModeManager : MonoBehaviour
     private ParticleSystem cachedParticle; // 파티클 상태 복원용, 편집모드 진입 시 재생 중이던 파티클 캐싱
 
     // FixGroup별 기본 아이템 ID (교체 시 이전 템 복구용)
-    static readonly Dictionary<FixGroup, int> DefaultFixItems = new()
-    {
-        { FixGroup.House, 20001 },
-        { FixGroup.Box, 20005 },
-        { FixGroup.LpPlayer, 20012 },
-        { FixGroup.Bed, 20032 },
-    };
+    //static readonly Dictionary<FixGroup, int> DefaultFixItems = new()
+    //{
+    //    { FixGroup.House, 20001 },
+    //    { FixGroup.Box, 20005 },
+    //    { FixGroup.LpPlayer, 20012 },
+    //    { FixGroup.Bed, 20032 },
+    //};
     #endregion
 
     // 버튼들 초기화   
@@ -154,6 +154,7 @@ public class DecoEditModeManager : MonoBehaviour
             buildingMgr.OnConfirm += OnIslandConfirm;   // 저장      
             buildingMgr.OnRevert += OnIslandRevert;     // 전체회수
             buildingMgr.OnClearAll += OnIslandClearAll; // 초기화
+            buildingMgr.OnFixReverted += OnFixReverted; // 저장 안하고 나가면 배치템 회귀  
         }
 
         // 이벤트 구독 (섬 3d 오브젝트 선택/해제)
@@ -203,7 +204,9 @@ public class DecoEditModeManager : MonoBehaviour
         if (btnConfirmClose != null)
             btnConfirmClose.onClick.AddListener(OnConfirmClose);
         if (confirmPopupPanel != null)                         
-            confirmPopupPanel.SetActive(false);                
+            confirmPopupPanel.SetActive(false);
+
+       
     }
 
     // TODO : 블로커 풀스크린 패널 ui를 안쓰고 빈 공간클릭 메서드 이벤트 구독 구조로 변경할거면 
@@ -214,7 +217,15 @@ public class DecoEditModeManager : MonoBehaviour
     //}
 
 
-    #region  섬 전용 
+    #region 섬 전용 
+    // 핸들러
+    void OnFixReverted(int restoredId, int removedId)
+    {
+        // 원래 템은 인벤에서 차감 (되돌려 끼웠으니까)
+        DecoInventoryManager.Instance.UseItem(restoredId);
+        // 떼어낸 템은 인벤으로 복구
+        DecoInventoryManager.Instance.RestoreItem(removedId);
+    }
     // 섬 전용 오브젝트 액션패널
     void ShowIslandActionPanel(Placeable3D target)
     {
@@ -401,15 +412,7 @@ public class DecoEditModeManager : MonoBehaviour
             fixBuilding = target.GetComponentInChildren<FixedBuilding>();
         if (fixBuilding == null) return;
 
-        FixGroup group = fixBuilding.LocationID;
-        if (group == FixGroup.None) return;
-
-        HideIslandActionPanel();
-
-        if (itemListManager != null)
-            itemListManager.SetupFilteredInventory(group, fixBuilding);
-        if (dropdownBlocker != null)    
-            dropdownBlocker.SetActive(true); 
+        OnFixBuildingClicked(fixBuilding);
     }
   
     // Fix 슬롯에서 아이템 선택 시 프리팹 교체 실행
@@ -420,8 +423,8 @@ public class DecoEditModeManager : MonoBehaviour
         int oldItemId = target.CurrentItemID;
       
         // CurrentItemID가 0이면 기본 아이템 ID로 복구
-        if (oldItemId <= 0 && DefaultFixItems.ContainsKey(target.LocationID))
-            oldItemId = DefaultFixItems[target.LocationID];
+        //if (oldItemId <= 0 && DefaultFixItems.ContainsKey(target.LocationID))
+        //    oldItemId = DefaultFixItems[target.LocationID];
 
         DecoInventoryManager.Instance.UseItem(newItemId); // 인벤에서 수량 차감
 
@@ -971,7 +974,8 @@ public class DecoEditModeManager : MonoBehaviour
             buildingMgr.OnPlaceCancel -= OnIslandPlaceCancel;
             buildingMgr.OnConfirm -= OnIslandConfirm;          
             buildingMgr.OnRevert -= OnIslandRevert;            
-            buildingMgr.OnClearAll -= OnIslandClearAll;        
+            buildingMgr.OnClearAll -= OnIslandClearAll;
+            buildingMgr.OnFixReverted -= OnFixReverted;
         }
 
         if (PlacementMgr.Instance != null)
@@ -986,6 +990,8 @@ public class DecoEditModeManager : MonoBehaviour
             // TODO: 나중에 구조변경시 이벤트도 해제 
             // PlacementMgr.Instance.OnEmptyClick -= OnEmptySpaceClicked;
         }
+
+      
     }
  
     //  외부에서 상태 확인용

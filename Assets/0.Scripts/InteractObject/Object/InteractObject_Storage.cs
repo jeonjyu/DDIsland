@@ -21,6 +21,9 @@ public class InteractObject_Storage : InteractObject
 
     public override void OnInteract()
     {
+        if (PlacementMgr.Instance != null && PlacementMgr.Instance.CurrentState == PlacementState.Edit)
+            return;
+
         if (ui_Storage != null && !ui_Storage.gameObject.activeSelf)
             ui_Storage.OpenStorageUI();
     }
