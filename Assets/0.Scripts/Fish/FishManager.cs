@@ -371,6 +371,11 @@ public class FishManager : Singleton<FishManager>
         }
 
         CreateInstance(fishSO);
+
+        if ((int)fishSO.gradeType == 4)
+        {
+            DataManager.Instance.Hub.SaveAllData();
+        }
     }
     private void GiveCurrencyReward(int rewardItemId)
     {

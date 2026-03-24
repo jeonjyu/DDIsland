@@ -37,6 +37,7 @@ public class BuildingManager : MonoBehaviour
     public event Action OnConfirm;   // 저장 
     public event Action OnRevert;    // 전체회수 
     public event Action<List<int>> OnClearAll;  // 초기화 
+    public event Action<int, int> OnFixReverted;  // (되돌아간 아이템ID, 떼어낸 아이템ID)
     #endregion
     #region 프로퍼티
     public Placeable3D ActivePlaceable => _activePlaceable;
@@ -322,7 +323,9 @@ public class BuildingManager : MonoBehaviour
 
             if (currentBldg != null && currentBldg.CurrentItemID != originalItemId)
             {
+                int removedItemId = currentBldg.CurrentItemID; // 현재 끼워져있는 템
                 SwapFixBuilding(currentBldg, originalItemId);
+                OnFixReverted?.Invoke(originalItemId, removedItemId); // 인벤 동기화 알림
             }
         }
 

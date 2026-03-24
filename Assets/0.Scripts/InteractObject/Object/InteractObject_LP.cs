@@ -22,6 +22,8 @@ public class InteractObject_LP : InteractObject
 
     public override void OnInteract()
     {
+        if (PlacementMgr.Instance != null && PlacementMgr.Instance.CurrentState == PlacementState.Edit)
+            return;
         if (RecordUI == null || RecordUI.activeSelf) return;
 
         RecordUI.SetActive(true);
