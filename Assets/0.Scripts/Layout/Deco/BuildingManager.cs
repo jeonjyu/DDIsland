@@ -422,8 +422,9 @@ public class BuildingManager : MonoBehaviour
         Quaternion rot = oldBuilding.transform.rotation;
         FixGroup locId = oldBuilding.LocationID;
 
+        IInterchangeableInteract transferComponent = oldBuilding.GetComponent<IInterchangeableInteract>();
+
         _locationBuildings.Remove(oldBuilding);
-        Destroy(oldBuilding.gameObject);
 
         GameObject newGo = Instantiate(newData.InteriorPath_GameObject, pos, rot);
 
@@ -432,8 +433,11 @@ public class BuildingManager : MonoBehaviour
             newFix = newGo.AddComponent<FixedBuilding>();
         }
 
+        transferComponent?.TransferTo(newGo);
         newFix.Setup(locId, newItemId);
         _locationBuildings.Add(newFix);
+
+        Destroy(oldBuilding.gameObject);
 
         Debug.Log($"<color=green>{locId} 자리가 {newData.InteriorName_String}으로 교체</color>");
     }
