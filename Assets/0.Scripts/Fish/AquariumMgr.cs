@@ -103,9 +103,9 @@ public class AquariumMgr : MonoBehaviour
         if (_lastScreenSize.x != Screen.width || _lastScreenSize.y != Screen.height)
         {
             AquariumBounds();
-             SyncMaskToWindow();
         }
 
+         SyncMaskToWindow();
     }
 
     IEnumerator LateStart()
@@ -308,6 +308,8 @@ public class AquariumMgr : MonoBehaviour
     }
     public void SpawnFish(Vector2 spawnPosition, FishDataSO data, int fishID = -1, bool isRight = true, IMovement movement = null)
     {
+        if (_spawnArea == null || !_spawnArea.gameObject.activeInHierarchy) return;  
+
         if (_fishQueue.Count > 0)
         {
             BackGroundFish fish = _fishQueue.Dequeue();
@@ -411,7 +413,6 @@ public class AquariumMgr : MonoBehaviour
     // 물고기 숨기기 
     public void HideFish() 
     {
-
         if (_spawnCoroutine != null) StopCoroutine(_spawnCoroutine);
         // 투명도 0 보이지 않게 
         var cg = _spawnArea.GetComponent<CanvasGroup>();
@@ -425,5 +426,23 @@ public class AquariumMgr : MonoBehaviour
         var cg = _spawnArea.GetComponent<CanvasGroup>();
         if (cg != null) cg.alpha = 1f;
         StartCoroutine(RepeatSpawnFish());
+    }
+
+    // 물고기 일시정지
+    public void PauseFish()
+    {
+        StopAllCoroutines();
+        _spawnCoroutine = null;
+        if (_spawnArea != null)
+            _spawnArea.gameObject.SetActive(false);
+    }
+
+    // 물고기 농가 살리기 
+    public void ResumeFish()
+    {
+        if (_spawnArea != null)
+            _spawnArea.gameObject.SetActive(true);
+        if (_spawnCoroutine == null)
+            _spawnCoroutine = StartCoroutine(RepeatSpawnFish());
     }
 }
