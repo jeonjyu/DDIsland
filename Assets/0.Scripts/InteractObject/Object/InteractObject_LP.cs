@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class InteractObject_LP : InteractObject
+public class InteractObject_LP : InteractObject, IInterchangeableInteract
 {
     [Header("LP플레이어")]
     [SerializeField] private GameObject RecordUI;
@@ -27,5 +27,15 @@ public class InteractObject_LP : InteractObject
         if (RecordUI == null || RecordUI.activeSelf) return;
 
         RecordUI.SetActive(true);
+    }
+
+    public void TransferTo(GameObject newBuilding)
+    {
+        if (!newBuilding.TryGetComponent(out InteractObject_LP newLp))
+        {
+            newLp = newBuilding.AddComponent<InteractObject_LP>();
+        }
+
+        newLp.RecordUI = RecordUI;
     }
 }
