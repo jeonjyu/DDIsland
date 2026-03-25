@@ -52,7 +52,6 @@ public class FirebaseMgr : MonoBehaviour
                 {
                     _user = auth.CurrentUser;
                     _isInitialized = true; 
-                    Debug.Log($"<color=green>기존 유저 세션 발견! UID: {DeviceID}</color>");
                 }
                 else
                 {
@@ -61,18 +60,15 @@ public class FirebaseMgr : MonoBehaviour
                     {
                         if (authTask.IsCanceled || authTask.IsFaulted)
                         {
-                            Debug.LogError($"로그인 실패: {authTask.Exception}");
                             return;
                         }
                         _user = authTask.Result.User;
                         _isInitialized = true; 
-                        Debug.Log($"<color=green>새 익명 로그인 성공! UID: {DeviceID}</color>");
                     });
                 }
             }
             else
             {
-                Debug.LogError($"Firebase 초기화 실패: {task.Result}");
             }
         });
     }
@@ -100,11 +96,9 @@ public class FirebaseMgr : MonoBehaviour
         {
             if (task.IsFaulted || task.IsCanceled)
             {
-                Debug.LogError($"<color=red>저장 실패:</color> {task.Exception?.ToString()}");
             }
             else
             {
-                Debug.Log("<color=green>파이어베이스에 저장 완료!</color>");
             }
         });
     }
@@ -113,7 +107,6 @@ public class FirebaseMgr : MonoBehaviour
     {
         if (!_isInitialized || _database == null)
         {
-            Debug.LogWarning("Firebase가 아직 초기화되지 않았습니다.");
             return null;
         }
 
@@ -155,7 +148,6 @@ public class FirebaseMgr : MonoBehaviour
     {
         if (!_isInitialized || _database == null)
         {
-            Debug.LogWarning("Firebase가 초기화되지 않았습니다.");
             return;
         }
 
@@ -170,11 +162,9 @@ public class FirebaseMgr : MonoBehaviour
         {
             if (task.IsFaulted || task.IsCanceled)
             {
-                Debug.LogError($"<color=red>삭제 실패:</color> {task.Exception?.ToString()}");
             }
             else
             {
-                Debug.Log($"<color=red>파이어베이스 데이터 삭제 완료! 경로: Users/{DeviceID}/{path}</color>");
             }
         });
     }

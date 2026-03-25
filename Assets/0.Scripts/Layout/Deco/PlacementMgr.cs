@@ -115,8 +115,6 @@ public class PlacementMgr : MonoBehaviour
 
         _buildingManager.GridSystem.SetGridActive(isEditMode);
 
-        Debug.Log($"현재 모드: {CurrentState}");
-
         if (isEditMode)
         {
             _targetCameraPos = _cameraTarget.position;
@@ -157,7 +155,6 @@ public class PlacementMgr : MonoBehaviour
     #endregion
     private void OnRotate(InputAction.CallbackContext ctx)
     {
-        Debug.Log($"입력 감지됨: {ctx}");
         OnClickRotate();
     }
     private void OnCancelInput(InputAction.CallbackContext ctx)
@@ -303,7 +300,6 @@ public class PlacementMgr : MonoBehaviour
         CloseEditMenu();
         _buildingManager.ClearAll();
 
-        Debug.Log("전체 회수 버튼 클릭: 모든 건물을 삭제했습니다.");
     }
     public void OnClickConfirmSession()
     {
@@ -315,8 +311,6 @@ public class PlacementMgr : MonoBehaviour
         {
             DataManager.Instance.Hub.SaveAllData();
         }
-
-        Debug.Log("모든 변경 사항이 확정되어 저장되었습니다.");
     }
     public void OnClickCancelSession()
     {
@@ -325,8 +319,6 @@ public class PlacementMgr : MonoBehaviour
         _buildingManager.CancelCurrentAction();
 
         CloseEditMenu();
-
-        Debug.Log("모든 변경 사항이 취소되고 편집 전으로 되돌아갔습니다.");
     }
 
     public void OnClickConstructionButton(int itemId)
@@ -334,7 +326,6 @@ public class PlacementMgr : MonoBehaviour
         // 편집 모드일 때만 건설 시작 가능
         if (CurrentState != PlacementState.Edit)
         {
-            Debug.LogWarning("편집 모드에서만 건물을 배치할 수 있습니다.");
             return;
         }
 

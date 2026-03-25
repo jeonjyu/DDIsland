@@ -51,7 +51,6 @@ public class GridSystem : MonoBehaviour
     {
         if (_gridObject != null)
         {
-            Debug.Log($"그리드 시각화 오브젝트의 활성 상태를 {(isActive ? "활성화" : "비활성화")}합니다.");
             _gridObject.SetActive(isActive);
         }
     }

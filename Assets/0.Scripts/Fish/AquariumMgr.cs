@@ -200,7 +200,6 @@ public class AquariumMgr : MonoBehaviour
             }
 
             _currentType = newType; 
-            Debug.Log($"테마 변경 완료: {res.type}");
         }
 
         backGroundTime = 0;
@@ -244,19 +243,9 @@ public class AquariumMgr : MonoBehaviour
 
         if (flockCandidates == null || flockCandidates.Count == 0)
         {
-            Debug.LogError($"{_currentType}에 해당하는 군집 물고기 데이터가 없습니다");
             yield break;
         }
-
-        Debug.Log($" 후보 물고기 수: {flockCandidates.Count}");
-
-        foreach (var f in flockCandidates)
-        {
-            Debug.Log($" 후보 명단: {f.FishName_String}");
-        }
-
         FishDataSO selectedFishData = flockCandidates[Random.Range(0, flockCandidates.Count)];
-
 
         int flockID = Random.Range(0, 1000);
         bool isRight = (Random.value > 0.5f);
@@ -287,7 +276,6 @@ public class AquariumMgr : MonoBehaviour
 
         if (singleCandidates == null || singleCandidates.Count == 0)
         {
-            Debug.LogError($"{_currentType}에 해당하는 일반 물고기 데이터가 없습니다");
             yield break;
         }
 

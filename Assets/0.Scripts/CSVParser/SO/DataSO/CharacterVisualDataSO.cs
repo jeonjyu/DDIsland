@@ -20,6 +20,9 @@ public class CharacterVisualDataSO : TableBase<int>
     // 리소스 경로
     [field: SerializeField] public GameObject ResourcePath_GameObject { get; private set; }
 
+    // 컨셉 리소스 경로
+    [field: SerializeField] public Sprite CharacterVisualImgPath_Sprite { get; private set; }
+
     // 부모 클래스의 ID 반환 추상 메서드
     public override int GetID() => ID;
 }

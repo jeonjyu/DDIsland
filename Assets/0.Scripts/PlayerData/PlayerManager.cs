@@ -71,6 +71,7 @@ public class PlayerManager : Singleton<PlayerManager>
     {
         if(CompareID(item))
         {
+            
             Debug.Log($"장착 아이템({item.Filter}) " + playerEquip[item.Filter.ToString()] + "에서 0으로 변경");
             playerEquip[item.Filter.ToString()] = 0;
         }

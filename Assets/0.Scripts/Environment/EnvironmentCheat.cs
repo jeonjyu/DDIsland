@@ -43,7 +43,6 @@ public class EnvironmentCheat : MonoBehaviour
     {
         var model = _presenter.Model;
         model.IsCheatMode = !model.IsCheatMode;
-        Debug.Log($"<color=magenta>[치트 모드] {model.IsCheatMode}</color>");
     }
     private void OnChangeSeason(InputAction.CallbackContext context)
     {
@@ -61,7 +60,6 @@ public class EnvironmentCheat : MonoBehaviour
         };
 
         if (seasonIndex != -1) _presenter.Model.ForceSetSeason((Season)seasonIndex);
-        Debug.Log($"<color=blue>[치트 모드] 현재 계절: {(Season)seasonIndex}</color>");
     }
     private void OnChangeTime(InputAction.CallbackContext context)
     {
@@ -78,7 +76,6 @@ public class EnvironmentCheat : MonoBehaviour
         };
 
         if (timeIndex != -1) _presenter.Model.ForceSetDaily((DayilyCycle)timeIndex);
-        Debug.Log($"<color=green>[치트 모드] 현재 시간대: {(DayilyCycle)timeIndex}</color>");
     }
 
     private void OnToggleWeather(InputAction.CallbackContext context)
@@ -88,7 +85,6 @@ public class EnvironmentCheat : MonoBehaviour
         bool currentStatus = _presenter.Model.IsWeatherActive;
         _presenter.Model.ForceSetWeather(!currentStatus);
 
-        Debug.Log($"<color=yellow>[치트] 날씨 효과: {(currentStatus ? "재생" : "중지")}</color>");
     }
 }
 #endif
