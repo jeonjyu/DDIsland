@@ -24,8 +24,6 @@ public class ThemeApplyPopup : MonoBehaviour
 
     public void ApplyThisTheme()
     {
-        Debug.Log(_item.Filter);
-
         LakeItemManager.Instance.ChangedLakeSlot(_item);
         Debug.Log("ThemeApplyPopup 테마 적용 완료");
         

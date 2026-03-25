@@ -16,13 +16,13 @@ public class LakeStoreItem : StoreItem<LakeStoreDataSO>
 
     public override bool IsGained { get => _isGained; set => _isGained = value; }
 
-    public override bool IsDefault => DataManager.Instance.DecorationDatabase.InteriorData[ObjectId].IsDefault;
+    public override bool IsDefault => DataManager.Instance.DecorationDatabase.InteriorData[LakeFloorID].IsDefault;
 
     public override int PurchasePrice => _data.PurchasePrice;
 
-    public override string ItemName => DataManager.Instance.DecorationDatabase.InteriorData[ObjectId].InteriorName_String;
+    public override string ItemName => _data.LakeThemeName;
 
-    public override string ItemDesc => DataManager.Instance.DecorationDatabase.InteriorData[ObjectId].InteriorDesc_String;
+    public override string ItemDesc => _data.LakeThemeDesc;
 
     public override Sprite ImgSprite => _data.InteriorImgPath_Sprite;
 }

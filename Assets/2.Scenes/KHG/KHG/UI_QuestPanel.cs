@@ -31,7 +31,8 @@ public class UI_QuestPanel : MonoBehaviour
     [SerializeField] private Button _GrowthTabButton;
     [SerializeField] private Button _CompletedTabButton;
 
-   // [SerializeField] private GameObject _GuidePanel;
+    [SerializeField] private ScrollRect _questScrollRect;
+    // [SerializeField] private GameObject _GuidePanel;
 
     private List<UI_QuestSlot> _slots = new List<UI_QuestSlot>();
     private QuestType _currentCategory;
@@ -196,7 +197,8 @@ public class UI_QuestPanel : MonoBehaviour
         _GuideTabButton.interactable = false;
         _GrowthTabButton.interactable = false;
         _CompletedTabButton.interactable = false;
-
+        _questScrollRect.enabled = false;
+        _questScrollRect.StopMovement(); 
         if (reward1 != null)
         {
             _reward1Slot.SetActive(true);
@@ -230,6 +232,7 @@ public class UI_QuestPanel : MonoBehaviour
         _GuideTabButton.interactable = true;
         _GrowthTabButton.interactable = true;
         _CompletedTabButton.interactable = true;
+        _questScrollRect.enabled = true;
         switch (_currentCategory)
         {
             case QuestType.Store:

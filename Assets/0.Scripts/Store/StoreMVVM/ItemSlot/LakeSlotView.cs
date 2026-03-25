@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.EventSystems;
 
 // 획득한 아이템은 구매 팝업 여는 이벤트 빼고
 // 장착중인 아이템은 장착 팝업 여는 이벤트 빼고
@@ -17,6 +18,7 @@ public class LakeSlotView : ItemSlotViewBase
     protected override void Awake()
     {
         viewModel = GetComponent<LakeSlotViewModel>();
+        eventTrigger = GetComponent<EventTrigger>();
     }
 
     public override void Init()
