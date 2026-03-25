@@ -1,3 +1,4 @@
+using Firebase.Database;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -73,4 +74,52 @@ public class MailManager : Singleton<MailManager>
          _ = DataManager.Instance.Hub.UploadAllData();
     }
 
+    public void LoadGlobalMails()
+    {
+        DatabaseReference globalMailRef = FirebaseDatabase.DefaultInstance.GetReference("GlobalMails");
+
+        globalMailRef.GetValueAsync().ContinueWith(task => 
+        {
+            if (task.IsFaulted)
+            {
+                return;
+            }
+
+            DataSnapshot snapshot = task.Result;
+            _serverMails.Clear();
+
+            foreach (var child in snapshot.Children)
+            {
+                string json = child.GetRawJsonValue();
+                MailData mail = JsonUtility.FromJson<MailData>(json);
+
+                _serverMails.Add(mail);
+            }
+
+            ThreadDispatcher.Instance.Enqueue(() => 
+            {
+                OnMailUpdated?.Invoke();
+            });
+        });
+    }
+
+#if UNITY_EDITOR
+    public void AddTestMail()
+    {
+        MailData newMail = new()
+        {
+            _mailID = "test_mail_01",
+            _title = "테스트 우편 도착!",
+            _content = "이것은 슬롯에 데이터가 잘 들어가는지 확인하기 위한 테스트 우편입니다.",
+            _rewardItemID = 202, // 골드 ID (기존 코드 기준)
+            _rewardCount = 5000,
+            _isRead = false,
+            _isClaimed = false
+        };
+
+        _serverMails.Add(newMail);
+
+        OnMailUpdated?.Invoke();
+    }
+#endif
 }
