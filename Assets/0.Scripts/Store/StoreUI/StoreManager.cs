@@ -162,7 +162,7 @@ public class StoreManager : Singleton<StoreManager>, INotifyPropertyChanged
 
     public void ChangeDropdownByCategory()
     {
-        Debug.Log("카테고리에 따라 드롭다운 사용 가능 여부 변경됨 : " + currentCat);
+        //Debug.Log("카테고리에 따라 드롭다운 사용 가능 여부 변경됨 : " + currentCat);
         // 카테고리에 따라 드롭다운 사용 가능 여부 변경
         switch (currentCat)
         {

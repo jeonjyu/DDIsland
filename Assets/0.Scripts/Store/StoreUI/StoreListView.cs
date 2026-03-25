@@ -9,18 +9,14 @@ using UnityEngine.UI;
 public class StoreListView : MonoBehaviour
 {
     [SerializeField] GameObject storeListPanel;
-    [SerializeField] Button StoreButton;
+    //[SerializeField] Button StoreButton;
 
     List<Button> stores = new List<Button>();
 
     StoreListViewModel viewModel;
-    //Color selectedColor; 
-    //Color normalColor;
-
-    [Header("카테고리가 선택되지 않았을 때 색상")]
-    public Color normalColor;
-    [Header("카테고리가 선택되었을 때 색상")]
-    public Color selectedColor;
+    
+    Color normalColor = new Color(0.831f, 0.706f, 0.600f, 1f);
+    Color selectedColor = new Color(0.992f, 0.969f, 0.906f, 1f);
 
     public List<Button> Stores => stores;
 
@@ -28,8 +24,6 @@ public class StoreListView : MonoBehaviour
     {
         viewModel = GetComponent<StoreListViewModel>();
         viewModel.PropertyChanged += OnStoreListViewModelChanged;
-        //normalColor = StoreButton.colors.normalColor;
-        //selectedColor = StoreButton.colors.pressedColor;
 
         foreach (Button button in storeListPanel.transform.GetComponentsInChildren<Button>())
             stores.Add(button);
@@ -70,21 +64,19 @@ public class StoreListView : MonoBehaviour
 
         if (isSelected)
         {
-            //Debug.Log("선택된 색");
+            Debug.Log(button.name + "선택된 색");
             colorBlock.normalColor = selectedColor;
             colorBlock.selectedColor = selectedColor;
         }
         else
         {
-            //Debug.Log("기본 색");
+            Debug.Log(button.name + "기본 색");
             colorBlock.normalColor = normalColor;
             colorBlock.selectedColor = normalColor;
         }
 
 
         button.colors = colorBlock;
-
-        //Debug.Log(colorBlock.normalColor.GetHashCode());
     }
 
     private void OnStoreListViewModelChanged(object sender, PropertyChangedEventArgs e)
