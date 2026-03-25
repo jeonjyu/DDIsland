@@ -29,6 +29,9 @@ public class Placeable3D : Placeable
     [SerializeField] int _sizeX;
     [SerializeField] int _sizeY;
 
+    private bool _isInvalidRotation = false;
+    private int _lastRotated;
+
     #region 레이캐스트
     [SerializeField, ReadOnly] private Vector2Int _cachedIndex;
     //private bool _hasHit;
@@ -97,6 +100,20 @@ public class Placeable3D : Placeable
             }
             else
             {
+                if (_isInvalidRotation)
+                {
+                    _isRotated = _lastRotated;
+                    _currentYRotation = _isRotated * _rotationStep;
+                    _cachedIndex = _lastPlacedIndex;
+
+                    Vector3 snapPos = _targetGrid.GetWorldPosition(_lastPlacedIndex.x, _lastPlacedIndex.y, _lastPlacedSize.x, _lastPlacedSize.y);
+                    transform.SetPositionAndRotation(snapPos, Quaternion.Euler(0, _currentYRotation, 0));
+
+                    _isInvalidRotation = false;
+                    _targetGrid.PlaceItem(_lastPlacedIndex.x, _lastPlacedIndex.y, _lastPlacedSize.x, _lastPlacedSize.y, this);
+
+                    VisualFeedback();
+                }
                 _targetGrid.ClearGrid();
             }
         }
@@ -117,27 +134,28 @@ public class Placeable3D : Placeable
 
         if (ItemState == ItemState.Placed)
         {
-            _targetGrid.RemoveItem(_lastPlacedIndex.x, _lastPlacedIndex.y, _lastPlacedSize.x, _lastPlacedSize.y);
-
+            if (!_isInvalidRotation)
+            {
+                _targetGrid.RemoveItem(_lastPlacedIndex.x, _lastPlacedIndex.y, _lastPlacedSize.x, _lastPlacedSize.y);
+            }
 
             bool canRotate = _targetGrid.IsCellEmpty(newIndex.x, newIndex.y, newSize.x, newSize.y, this);
+
+            _currentYRotation = _isRotated * _rotationStep;
+            _cachedIndex = newIndex;
+            Vector3 snapPos = _targetGrid.GetWorldPosition(_cachedIndex.x, _cachedIndex.y, newSize.x, newSize.y);
+            transform.SetPositionAndRotation(snapPos, Quaternion.Euler(0, _currentYRotation, 0));
+
             if (!canRotate)
             {
-                _isRotated = originalRotated; // 각도 원상복구
-                _targetGrid.PlaceItem(_lastPlacedIndex.x, _lastPlacedIndex.y, _lastPlacedSize.x, _lastPlacedSize.y, this);
-                Debug.Log("공간이 부족하여 제자리 회전이 불가능합니다.");
-                return;
+                _isInvalidRotation = true;
             }
             else
             {
-                _currentYRotation = _isRotated * _rotationStep;
-                _cachedIndex = newIndex;
+                _isInvalidRotation = false;
+                _lastRotated = _isRotated;
                 _lastPlacedIndex = _cachedIndex;
                 _lastPlacedSize = newSize;
-
-                Vector3 snapPos = _targetGrid.GetWorldPosition(_cachedIndex.x, _cachedIndex.y, newSize.x, newSize.y);
-                transform.SetPositionAndRotation(snapPos, Quaternion.Euler(0, _currentYRotation, 0));
-
                 _targetGrid.PlaceItem(_cachedIndex.x, _cachedIndex.y, newSize.x, newSize.y, this);
             }
         }
@@ -244,8 +262,7 @@ public class Placeable3D : Placeable
         }
         else
         {
-            _selectedRenderer.material.color = _originalColor;
-            //_targetGrid.UpdateShaderHover(index, size, false);
+            _selectedRenderer.material.color = _isInvalidRotation ? _fail : _originalColor;
         }
         _targetGrid.UpdateShaderHover(index, size, placeAble);
 
