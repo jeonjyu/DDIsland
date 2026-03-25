@@ -34,7 +34,6 @@ public class UI_MailSlot : MonoBehaviour
             _rewardImage.gameObject.SetActive(true);
             _rewardCount.text = $"{_data._rewardCount}";
 
-            Debug.Log($"Image: {_rewardImage}, DataMgr: {DataManager.Instance}, DB: {DataManager.Instance?.CurrencyDatabase}, ItemID: {_data._rewardItemID}");
             _rewardImage.sprite = DataManager.Instance.CurrencyDatabase.CurrencyInfoData[_data._rewardItemID].CurrencyImgPath_Sprite;
         }
         //아니면 비활성화

@@ -176,7 +176,6 @@ public class BuildingManager : MonoBehaviour
         _activePlaceable.Initialize(_gridSystem, this, obj); //배치할 물건 초기화
         if (!go.TryGetComponent(out _activePlaceable))
         {
-            Debug.LogError($"{go.name}에 스크립트가 없습니다!");
             Destroy(go);
         }
 
@@ -439,7 +438,6 @@ public class BuildingManager : MonoBehaviour
 
         Destroy(oldBuilding.gameObject);
 
-        Debug.Log($"<color=green>{locId} 자리가 {newData.InteriorName_String}으로 교체</color>");
     }
 
     #region 파이어베이스 데이터 저장
@@ -501,8 +499,6 @@ public class BuildingManager : MonoBehaviour
         }
 
         DataManager.Instance.Hub._allUserData.Decoration._fixedBuildings = fixedSyncList;
-
-        Debug.Log("<color=green>모든 배치 정보가 서버와 동기화되었습니다!</color>");
     }
     public void SyncBuidlingDataLoad()
     {
@@ -526,7 +522,6 @@ public class BuildingManager : MonoBehaviour
             }
             catch
             {
-                Debug.LogError($"ID {data._id}를 찾을 수 없어 로드에 실패했습니다.");
                 continue;
             }
             if (interiorData == null) continue;

@@ -259,7 +259,6 @@ public class FishStorageManager : Singleton<FishStorageManager>
                 });
             }
         }
-        Debug.Log("<color=cyan>보관함 데이터가 저장되었습니다</color>");
     }
 
     private void SyncFishStorageLoadData()
@@ -291,7 +290,5 @@ public class FishStorageManager : Singleton<FishStorageManager>
         }
 
         for (int i = 0; i < FishSlots.Length; i++) OnSlotChanged?.Invoke(i);
-
-        Debug.Log("서버 데이터로부터 보관함이 복구되었습니다");
     }
 }

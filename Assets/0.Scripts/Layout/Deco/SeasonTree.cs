@@ -58,7 +58,6 @@ public class SeasonTree : MonoBehaviour
         if (_currentSeasonIndex == -1)
         {
             _currentSeasonIndex = newindex;
-            Debug.Log($"<color=cyan>[SeasonTree] 1. 초기화 실행: {newSeasonIndex} (시간: {Time.timeSinceLevelLoad})</color>");
             _seasonModels[_currentSeasonIndex].SetActive(true);
 
             _currentRenderers = _allRenderers[_currentSeasonIndex];
@@ -71,13 +70,11 @@ public class SeasonTree : MonoBehaviour
         if (_seasonModels[_currentSeasonIndex] == _seasonModels[newindex])
         {
             _currentSeasonIndex = newindex;
-            Debug.Log($"<color=white>[SeasonTree] 2. 모델 공유 중 (변경 안함): {newSeasonIndex}</color>");
             return;
         }
 
         if (Time.timeSinceLevelLoad < 0.5f)
         {
-            Debug.Log($"<color=yellow>[SeasonTree] 3. 데이터 로드 감지 (즉시 교체): {newSeasonIndex} (시간: {Time.timeSinceLevelLoad})</color>");
             _seasonModels[_currentSeasonIndex].SetActive(false);
             _currentSeasonIndex = newindex;
             _seasonModels[_currentSeasonIndex].SetActive(true);
@@ -87,7 +84,6 @@ public class SeasonTree : MonoBehaviour
             return;
         }
 
-        Debug.Log($"<color=lime>[SeasonTree] 4. 정상 페이드 시작: {_currentSeasonIndex} -> {newSeasonIndex}</color>");
         _previousRenderers = _currentRenderers;
 
         _seasonModels[newindex].SetActive(true);
