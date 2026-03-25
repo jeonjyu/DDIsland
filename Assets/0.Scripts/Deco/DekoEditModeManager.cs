@@ -825,7 +825,7 @@ public class DecoEditModeManager : MonoBehaviour
     }
     void OnReset() // 초기화, 저장한 상태로 불러오기
     {
-        if (!isChanged) return; // 변경사항 없으면 무시 // TODO: 리턴이 없으면 초기화버튼 2번 누르면 전체회수 버그 발생하는지 확인필요  
+     //   if (!isChanged) return; // 변경사항 없으면 무시 // TODO: 리턴이 없으면 초기화버튼 2번 누르면 전체회수 버그 발생하는지 확인필요  
 
         // TODO:  (파베 연결 후에 나중에 구현)
         if (currentMode == DecoMode.Lake) // 호수 모드
