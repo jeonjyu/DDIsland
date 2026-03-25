@@ -534,7 +534,7 @@ public class DecoEditModeManager : MonoBehaviour
                 gridPanel.DOAnchorPosY(gridOriginPos.y + gridMoveUp, animTime)
                     .SetEase(Ease.OutQuad);
             }
-            if (aquariumMgr != null) aquariumMgr.PauseFish(); // 물고기 숨기기
+            if (aquariumMgr != null) aquariumMgr.HideFish(); // 물고기 숨기기
 
             if (lakeBackground != null) // 뒤에 호수도 같이 두트윈으로 띄어올리기 
             {
@@ -577,7 +577,7 @@ public class DecoEditModeManager : MonoBehaviour
                 if (PlacementMgr.Instance.CurrentState == PlacementState.View)
                     PlacementMgr.Instance.ToggleEditMode();
             }
-            if (aquariumMgr != null) aquariumMgr.PauseFish(); // 물고기 숨기기
+            if (aquariumMgr != null) aquariumMgr.HideFish(); // 물고기 숨기기
             if (playerObject != null)
             {
                 foreach (var renderer in playerObject.GetComponentsInChildren<Renderer>())
@@ -661,7 +661,7 @@ public class DecoEditModeManager : MonoBehaviour
                 gridPanel.DOAnchorPosY(gridOriginPos.y, animTime)
                     .SetEase(Ease.OutQuad);
             }
-            if (aquariumMgr != null) aquariumMgr.ResumeFish(); // 물고기 다시 보이기
+            if (aquariumMgr != null) aquariumMgr.ShowFish(); // 물고기 다시 보이기
 
             if (lakeBackground != null) // 뒤에 호수 위치 복귀
             {
@@ -700,7 +700,7 @@ public class DecoEditModeManager : MonoBehaviour
                     PlacementMgr.Instance.ToggleEditMode();
             }
             holdItemId = -1; // 나갈때 배치 대기 아이템 초기화 
-            if (aquariumMgr != null) aquariumMgr.ResumeFish(); // 물고기 다시 보이기
+            if (aquariumMgr != null) aquariumMgr.ShowFish(); // 물고기 다시 보이기
             if (playerObject != null) // 곰 다시 보이기
             {
                 foreach (var renderer in playerObject.GetComponentsInChildren<Renderer>())
