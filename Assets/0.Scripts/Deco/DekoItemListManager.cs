@@ -335,11 +335,24 @@ public class DecoItemListManager : MonoBehaviour
         if (totalPages <= 1) return;
 
         // 페이지 수만큼 점 생성
-        for (int i = 0; i < totalPages; i++)
+        //for (int i = 0; i < totalPages; i++)
+        //{
+        //    // 현재 프리팹 = NowCount, 나머지 프리팹 = WaitCount
+        //    GameObject dot = Instantiate(
+        //        (i == currentPage) ? NowCount : WaitCount,
+        //        pageCountParent
+        //    );
+        //    pageCountDots.Add(dot);
+        //}
+
+        // currentPage % 3 순환
+        int dotCount = Mathf.Min(totalPages, 3); // 2페이지면 2개, 3페이지 이상이면 3개 고정
+        int activeDot = currentPage % dotCount; // 0, 1, 2 순환
+
+        for (int i = 0; i < dotCount; i++)
         {
-            // 현재 프리팹 = NowCount, 나머지 프리팹 = WaitCount
             GameObject dot = Instantiate(
-                (i == currentPage) ? NowCount : WaitCount,
+                (i == activeDot) ? NowCount : WaitCount,
                 pageCountParent
             );
             pageCountDots.Add(dot);
