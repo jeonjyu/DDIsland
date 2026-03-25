@@ -99,6 +99,10 @@ public class PlayerController : MonoBehaviour
 
     private Coroutine _recoverRoutine;
 
+    Dictionary<int, float> _fishRodSpeed;
+    private int _currentFishingRodsId;
+    private float _baseFishingSpeed;
+
     public Rigidbody2D Rigid => _rigid;
     public NavMeshAgent Agent => _agent;
     public Animator Animator => _animator;
@@ -117,7 +121,7 @@ public class PlayerController : MonoBehaviour
     public Transform TablePoint => _tablePoint;
     public Transform SellPoint => _SellPoint;
     public int FishingCount => _fishingCount;
-    public float CurrentFishingWaitMax => PlayerDataOld.FishingSpeed;
+   
     private void Awake()
     {
         _animator = GetComponent<Animator>();
@@ -131,6 +135,7 @@ public class PlayerController : MonoBehaviour
         _hatById = new Dictionary<int, GameObject>();
         _bodyById = new Dictionary<int, GameObject>();
         _fishingRodsById = new Dictionary<int, GameObject>();
+        _fishRodSpeed = new Dictionary<int, float>();
     }
     private void Start()
     {
@@ -152,6 +157,7 @@ public class PlayerController : MonoBehaviour
         }
 
         _baseMoveSpeed = PlayerDataOld.MoveSpeed;
+        _baseFishingSpeed = PlayerDataOld.FishingSpeed;
         _fishingRod.gameObject.SetActive(false);
         _fork.gameObject.SetActive(false);
         _pan.gameObject.SetActive(false);
@@ -303,6 +309,7 @@ public class PlayerController : MonoBehaviour
                 }
 
                 _fishingRodsById[fishingItemData[i].ID] = _fishingRods[toolIndex];
+                _fishRodSpeed[fishingItemData[i].ID] = fishingItemData[i].FishingSpeed;
                 _fishingRods[toolIndex].SetActive(false);
                 toolIndex++;
             }
@@ -347,13 +354,22 @@ public class PlayerController : MonoBehaviour
          {
              pair.Value.SetActive(false);
          }
-    
-         if (id == 0) return;
-    
-         if (_fishingRodsById.TryGetValue(id, out var toolObj))
+
+        if (id == 0)
+        {
+            _currentFishingRodsId = 0;
+            PlayerDataOld.SetFishingSpeed(_baseFishingSpeed);
+            if (_isFishingState) HandOnFishingRod();
+            return;
+        }
+
+        if (_fishingRodsById.TryGetValue(id, out var toolObj))
          {
-             toolObj.SetActive(true);
-             Debug.Log($"의상 장착 성공: {id}");
+             PlayerDataOld.SetFishingSpeed(_baseFishingSpeed - _fishRodSpeed[id]);
+            _currentFishingRodsId = id;
+            if (_isFishingState) HandOnFishingRod();
+
+            Debug.Log($"의상 장착 성공: {id}");
          }
          else Debug.LogWarning($"의상 ID 없음: {id}");
      }
@@ -750,8 +766,13 @@ public class PlayerController : MonoBehaviour
             // 한 사이클 시작
             _cycleRunning = true;
 
-            float waitTime = UnityEngine.Random.Range(5f, PlayerDataOld.FishingSpeed);
+            float rodSpeed = 0f;
+            _fishRodSpeed.TryGetValue(_currentFishingRodsId, out rodSpeed);
 
+            float minTime = Mathf.Max(1f, 5f - rodSpeed);
+            float maxTime = Mathf.Max(minTime, PlayerDataOld.FishingSpeed);
+            float waitTime = UnityEngine.Random.Range(minTime, maxTime);
+            Debug.Log($"낚시속도: {waitTime}");
             yield return new WaitForSeconds(waitTime);
 
             Animator.SetTrigger("FishingHit");
@@ -788,11 +809,28 @@ public class PlayerController : MonoBehaviour
     }
     public void HandOnFishingRod()
     {
-        _fishingRod.SetActive(true);
+        _fishingRod.SetActive(false);
+
+        // 장착 낚싯대가 있으면 그걸 보여줌
+        if (_currentFishingRodsId != 0 &&
+            _fishingRodsById.TryGetValue(_currentFishingRodsId, out var rodObj))
+        {
+            rodObj.SetActive(true);
+        }
+        else
+        {
+            // 장착 안 했으면 기본 낚싯대 사용
+            _fishingRod.SetActive(true);
+        }
     }
     public void HandOffFishingRod()
     {
         _fishingRod.SetActive(false);
+
+        foreach (var pair in _fishingRodsById)
+        {
+            pair.Value.SetActive(false);
+        }
     }
     public void HandOnFork()
     {
