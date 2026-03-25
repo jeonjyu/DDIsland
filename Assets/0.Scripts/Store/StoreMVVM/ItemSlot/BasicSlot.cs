@@ -31,6 +31,9 @@ public class BasicSlot : ItemSlotView
     {
         base.UpdateSlotUI(count);
         UpdateItemCount(count);
+        UpdateSlotColor(modelData.IsGained);
+
+        Debug.Log(this + " UI 갱신");
 
     }
 }

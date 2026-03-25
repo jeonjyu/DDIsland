@@ -11,10 +11,8 @@ public class ItemSlotViewBase : MonoBehaviour, IStoreItemView, IPointerClickHand
     protected IStoreItem modelData;
     protected Image slotImage;
 
-    [Header("아이템 보유시 색상 (FDF7E7)")]
-    [SerializeField] public Color gainedColor;
-    [Header("아이템 미보유시 색상 (ECDDC0)")]
-    [SerializeField] public Color ungainedColor; 
+    protected Color gainedColor = new Color(0.99f, 0.97f, 0.91f, 1f);
+    protected Color ungainedColor = new Color(0.93f, 0.87f, 0.75f, 1f);
 
     [SerializeField] protected Image _slotBackground;
     [SerializeField] protected Image _itemImage;
@@ -32,6 +30,7 @@ public class ItemSlotViewBase : MonoBehaviour, IStoreItemView, IPointerClickHand
     protected virtual void Awake()
     {
         viewModel = GetComponent<ItemSlotViewModelBase>();
+        eventTrigger = GetComponent<EventTrigger>();
         Init();
     }
 
@@ -73,7 +72,6 @@ public class ItemSlotViewBase : MonoBehaviour, IStoreItemView, IPointerClickHand
     public void UpdateSlotColor(bool isGained)
     {
         _slotBackground.color = isGained ? gainedColor : ungainedColor;
-        Debug.Log("색변경 " + isGained);
     }
 
     // 버튼 팝업 띄우고
@@ -94,25 +92,20 @@ public class ItemSlotViewBase : MonoBehaviour, IStoreItemView, IPointerClickHand
 
     private void OnViewModelPropChanged(object sender, PropertyChangedEventArgs e)
     {
-        if (string.IsNullOrEmpty(e.PropertyName))
-        {
-            //Debug.Log("[ItemSlotView] OnViewModelPropChanged | 모델 변경");
-            Init();
-            return;
-        }
-        //else
-        //    Debug.Log(this.name + " 변경됨 " + e.PropertyName + " " + sender);
-        
         switch (e.PropertyName)
         {
-            //case null:
-            //case "":
-            //    Init();
-            //    break;
+            case null:
+            case "":
+                Init();
+                break;
             case "IsGained":
-            case "ItemCount":
                 UpdateSlotUI(modelData.ItemCount);
                 UpdateSlotColor(modelData.IsGained);
+                StoreManager.Instance.sortDropdown.ApplySortPriority();
+                StoreManager.Instance.StoreListVM.LoadSlotList();
+                break;
+            case "ItemCount":
+                UpdateSlotUI(modelData.ItemCount);
                 StoreManager.Instance.sortDropdown.ApplySortPriority();
                 StoreManager.Instance.StoreListVM.LoadSlotList();
                 break;

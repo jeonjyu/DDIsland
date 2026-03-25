@@ -457,7 +457,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9223221916273710410, guid: 8429fda8938318448b57bb4bd1fb013a, type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9223221916273710410, guid: 8429fda8938318448b57bb4bd1fb013a, type: 3}
       propertyPath: m_Maskable
@@ -490,13 +490,16 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4689650616756352908, guid: 8429fda8938318448b57bb4bd1fb013a, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7449105340667003832}
+    - targetCorrespondingSourceObject: {fileID: 4689650616756352908, guid: 8429fda8938318448b57bb4bd1fb013a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6681195452779240584}
   m_SourcePrefab: {fileID: 100100000, guid: 8429fda8938318448b57bb4bd1fb013a, type: 3}
---- !u!114 &5395086694183339140 stripped
+--- !u!114 &7604368154671581944 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 9223221916273710410, guid: 8429fda8938318448b57bb4bd1fb013a, type: 3}
+  m_CorrespondingSourceObject: {fileID: 6676693344201317174, guid: 8429fda8938318448b57bb4bd1fb013a, type: 3}
   m_PrefabInstance: {fileID: 3828136326002872782}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8373521941790697026}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
@@ -519,9 +522,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e44a422a3dde7c84b9b6ea01ab3aab83, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LakeSlotView
-  gainedColor: {r: 0.99215686, g: 0.96862745, b: 0.90588236, a: 0}
-  ungainedColor: {r: 0.9254902, g: 0.8666667, b: 0.7529412, a: 0}
-  _slotBackground: {fileID: 5395086694183339140}
+  slotColor: {fileID: 11400000, guid: ad452d3ab488e91438f5e16535402cb5, type: 2}
+  _slotBackground: {fileID: 7604368154671581944}
   _itemImage: {fileID: 6095450586704189879}
   applyBtn: {fileID: 3966570512005451215}
   btnText: {fileID: 6062340748349167216}
@@ -550,6 +552,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Mask
   m_ShowMaskGraphic: 1
+--- !u!114 &6681195452779240584
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8373521941790697026}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56c802540f310c34888c38f2079ae8e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ThemeApplyButton
+  applyBtn: {fileID: 3966570512005451215}
+  btnText: {fileID: 6062340748349167216}
 --- !u!224 &9153764613993254834 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5343786894359551612, guid: 8429fda8938318448b57bb4bd1fb013a, type: 3}
