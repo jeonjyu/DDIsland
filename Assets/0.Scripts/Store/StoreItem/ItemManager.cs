@@ -9,7 +9,7 @@ public class ItemManager : Singleton<ItemManager>
     public Dictionary<StoreCat, StoreItemDatabase> storeDatas = new Dictionary<StoreCat, StoreItemDatabase>();
 
     // 플레이어가 소유한 아이템 딕셔너리 모음
-    public Dictionary<StoreCat, StoreItemDatabase> playerItemDatas = new Dictionary<StoreCat, StoreItemDatabase>();
+    public Dictionary<StoreCat, PlayerItemDatabase> playerItemDatas = new Dictionary<StoreCat, PlayerItemDatabase>();
 
     // 현재 카탈로그 
     public List<IStoreItem> currentDatabase = new List<IStoreItem>();
@@ -35,17 +35,10 @@ public class ItemManager : Singleton<ItemManager>
     public event System.Action<IStoreItem, StoreCat> OnPlayerItemAdded;
     public event System.Action<IStoreItem, StoreCat> OnPlayerItemRemoved;
 
-    // Start시 카탈로그 딕셔너리, 플레이어 소유 아이템 딕셔너리 넣어주기
-    // 카탈로그 딕셔너리에 넣어둔 아이템 항목들로 아이템 딕셔너리 만들기
-    protected override void Awake()
-    {
-        base.Awake();
-        CreateDatabase();
-        // Start에서 IsLoaded되지 않아 SyncInventoryDataSave가 실행되지 않아 여기서 호출
-        SyncInventoryDataSave(); 
-    }
     private void Start()
     {
+        CreateDatabase();
+
         if (DataManager.Instance != null && DataManager.Instance.Hub != null)
         {
             if (DataManager.Instance.Hub.IsLoaded)
@@ -83,14 +76,14 @@ public class ItemManager : Singleton<ItemManager>
         storeDatas.Add(StoreCat.fishing, new StoreItemDatabase(FishingDatabase));
         storeDatas.Add(StoreCat.recipe, new StoreItemDatabase(FoodDatabase));
 
-        Debug.Log("[ItemManger] 데이터베이스 생성");
-        
-        foreach(var category in storeDatas)
+        Debug.Log("[ItemManger] CreateDatabase | 데이터베이스 생성");
+
+        foreach (var category in storeDatas)
         {
             CreatePlayerItemDatabase(category.Key, storeDatas[category.Key]);
         }
 
-        Debug.Log("[ItemManger] 사용자 소유 데이터베이스 생성");
+        Debug.Log("[ItemManger] CreateDatabase | 사용자 소유 데이터베이스 생성");
     }
 
     public void CreatePlayerItemDatabase(StoreCat cat, StoreItemDatabase storeItem)
@@ -98,28 +91,30 @@ public class ItemManager : Singleton<ItemManager>
         PlayerItemDatabase playerItems = new PlayerItemDatabase();
         playerItems.SaveGainedItem(storeItem.Items);
         playerItemDatas.Add(cat, playerItems);
-        //Debug.Log(cat + "의 playerItemDatas 개수 : " + playerItemDatas[cat].Items.Count);
+
+        //Debug.Log("[ItemManager] CreatePlayerItemDatabase | " + cat + "의 playerItemDatas 개수 : " + playerItemDatas[cat].Items.Count);
     }
 
     // 플레이어 소유 아이템 딕셔너리에 추가
     public void AddToPlayerItem(IStoreItem item, StoreCat storeCat)
     {
         // 카테고리에 해당하는 딕셔너리 검색
-        if (!playerItemDatas.ContainsKey(storeCat))
+        if (!playerItemDatas.ContainsKey(storeCat)) // 처음에 만들어두는데 왜 없는지 모르겠고 새로 만들 경우 처음에 저장해뒀던 기본 제공 아이템들이 사라진다
         {
-            playerItemDatas.Add(storeCat, new StoreItemDatabase());
-            Debug.LogWarning($"[ItemManager] AddToPlayerItem | {item.ItemName}({item.ID})에 해당하는 플레이어 아이템 딕셔너리가 없습니다");
+            Debug.LogWarning($"[ItemManager] AddToPlayerItem | {item.ItemName}({item.ID})에 해당하는 플레이어 아이템 딕셔너리{storeCat}가 없습니다");
+            playerItemDatas.Add(storeCat, new PlayerItemDatabase());
         }
         if (storeCat == StoreCat.costume) QuestManager.Instance.AddSimpleProgress(QuestConditionKey.BuyCostumeCount, 1); 
         if (storeCat == StoreCat.interior) QuestManager.Instance.AddSimpleProgress(QuestConditionKey.BuylandStoreCount, 1);
         if (storeCat == StoreCat.fishing) QuestManager.Instance.AddSimpleProgress(QuestConditionKey.BuyFishingItemCount, 1); 
         if (storeCat == StoreCat.recipe) QuestManager.Instance.AddSimpleProgress(QuestConditionKey.BuyFoodCount, 1);
 
+
+        //Debug.LogWarning($"[ItemManager] AddToPlayerItem | {item.ItemName}({item.ID}) 추가");
         playerItemDatas[storeCat].AddToDatabase(item);
-        
 
         // 플레이어가 보유한 아이템 딕셔너리에 추가되었는지 확인
-        Debug.Log(playerItemDatas[storeCat].Items.Count);
+        //Debug.Log($"[ItemManager] AddToPlayerItem | 사용자가 보유한 {storeCat}아이템의 개수 : {playerItemDatas[storeCat].Items.Count}");
 
         OnPlayerItemAdded?.Invoke(item, storeCat);
     }
@@ -231,6 +226,7 @@ public class ItemManager : Singleton<ItemManager>
                 if (costumeDict.TryGetValue(id, out IStoreItem costume))
                 {
                     costume.IsGained = true;
+                    costume.ItemCount = 1;
                     AddToPlayerItem(costume, StoreCat.costume);
                 }
             }
@@ -243,9 +239,11 @@ public class ItemManager : Singleton<ItemManager>
                 if (fishingDict.TryGetValue(id, out IStoreItem fishingItem))
                 {
                     fishingItem.IsGained = true;
+                    fishingItem.ItemCount = 1;
                     AddToPlayerItem(fishingItem, StoreCat.fishing);
                 }
             }
         }
+
     }
 }
