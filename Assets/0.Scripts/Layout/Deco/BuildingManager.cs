@@ -421,7 +421,7 @@ public class BuildingManager : MonoBehaviour
         Quaternion rot = oldBuilding.transform.rotation;
         FixGroup locId = oldBuilding.LocationID;
 
-        IInterchangeableInteract transferComponent = oldBuilding.GetComponent<IInterchangeableInteract>();
+        IInterchangeableInteract transferComponent = oldBuilding.GetComponentInChildren<IInterchangeableInteract>();
 
         _locationBuildings.Remove(oldBuilding);
 

@@ -31,11 +31,26 @@ public class InteractObject_LP : InteractObject, IInterchangeableInteract
 
     public void TransferTo(GameObject newBuilding)
     {
-        if (!newBuilding.TryGetComponent(out InteractObject_LP newLp))
+        // 콜라이더가 있는 오브젝트에 상호작용 컴포넌트 붙이기
+        Collider col = newBuilding.GetComponentInChildren<Collider>();
+        GameObject target = col != null ? col.gameObject : newBuilding;
+
+        if (!target.TryGetComponent(out InteractObject_LP newLp))
         {
-            newLp = newBuilding.AddComponent<InteractObject_LP>();
+            newLp = target.AddComponent<InteractObject_LP>();
         }
 
         newLp.RecordUI = RecordUI;
+
+        // 기존 Outline 설정 복사
+        Outline oldOutline = GetComponent<Outline>();
+        Outline newOutline = target.GetComponent<Outline>();
+        if (oldOutline != null && newOutline != null)
+        {
+            newOutline.OutlineMode = oldOutline.OutlineMode;
+            newOutline.OutlineColor = oldOutline.OutlineColor;
+            newOutline.OutlineWidth = oldOutline.OutlineWidth;
+            newOutline.enabled = false;
+        }
     }
 }

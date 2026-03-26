@@ -417,7 +417,7 @@ public class DecoItemListManager : MonoBehaviour
         if (highlighted)
             bg.color = new Color(0.3f, 0.8f, 0.4f, 0.9f); // 초록 하이라이트
         else
-            bg.color = new Color(0.18f, 0.18f, 0.22f, 0.92f); // 원래 색상
+            bg.color = new Color(0.992f, 0.969f, 0.906f, 0.878f); // 원래 색상으로 
     }
 
     //  invenData 인덱스로 슬롯(slotObjects) 위치 찾기
