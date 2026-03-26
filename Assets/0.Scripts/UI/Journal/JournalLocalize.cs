@@ -23,7 +23,6 @@ public static class JournalLocalize
             // 장착 파츠
             CostumeType.Head => IsKr ? "머리 장식" : "Headwear",
             CostumeType.Body => IsKr ? "한벌옷" : "Outfit",
-            CostumeType.Tool => IsKr ? "도구 스킨" : "Tool Skin",
             // 배치 공간
             LocationType.Island => IsKr ? "섬" : "Island",
             LocationType.Lake => IsKr ? "호수" : "Lake",

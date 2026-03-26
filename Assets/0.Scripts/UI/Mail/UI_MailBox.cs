@@ -14,7 +14,9 @@ public class UI_MailBox : MonoBehaviour
 
     private void OnEnable()
     {
+#if UNITY_EDITOR
         MailManager.Instance.AddTestMail();
+#endif
         RefreshMailList();
     }
     private void Awake()

@@ -98,7 +98,7 @@ public class ItemManager : Singleton<ItemManager>
         PlayerItemDatabase playerItems = new PlayerItemDatabase();
         playerItems.SaveGainedItem(storeItem.Items);
         playerItemDatas.Add(cat, playerItems);
-        Debug.Log(cat + "의 playerItemDatas 개수 : " + playerItemDatas[cat].Items.Count);
+        //Debug.Log(cat + "의 playerItemDatas 개수 : " + playerItemDatas[cat].Items.Count);
     }
 
     // 플레이어 소유 아이템 딕셔너리에 추가

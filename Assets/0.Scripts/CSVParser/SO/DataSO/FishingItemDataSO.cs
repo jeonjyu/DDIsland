@@ -29,7 +29,7 @@ public class FishingItemDataSO : TableBase<int>
     // 타입
     [field: SerializeField] public FishingItemType fishingitemType { get; private set; }
 
-    // 낚시 속도 상승량
+    // 낚시 시간 감소량
     [field: SerializeField] public float FishingSpeed { get; private set; }
 
     // 물고기 풀

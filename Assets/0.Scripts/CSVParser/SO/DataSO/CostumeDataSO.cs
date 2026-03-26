@@ -6,9 +6,8 @@ using UnityEngine;
 public enum CostumeType
 {
     None = 0,
-    Head = 1,         //머리 장식
-    Body = 2,         //한벌옷
-    Tool = 3,         //도구 스킨
+    Head = 1,        //머리 장식
+    Body = 2,        //한벌옷
 }
 
 
