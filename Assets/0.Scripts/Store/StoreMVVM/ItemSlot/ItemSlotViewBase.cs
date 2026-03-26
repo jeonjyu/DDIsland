@@ -11,8 +11,8 @@ public class ItemSlotViewBase : MonoBehaviour, IStoreItemView, IPointerClickHand
     protected IStoreItem modelData;
     protected Image slotImage;
 
-    protected Color gainedColor = new Color(0.99f, 0.97f, 0.91f, 1f);
-    protected Color ungainedColor = new Color(0.93f, 0.87f, 0.75f, 1f);
+    protected Color gainedColor = new Color(0.93f, 0.87f, 0.75f, 1f);
+    protected Color ungainedColor = new Color(0.99f, 0.97f, 0.91f, 1f);
 
     [SerializeField] protected Image _slotBackground;
     [SerializeField] protected Image _itemImage;
