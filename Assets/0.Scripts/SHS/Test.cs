@@ -4,7 +4,6 @@ using UnityEngine.UI;
 
 public class Test : MonoBehaviour
 {
-    [SerializeField] private GameObject obj1;
     [SerializeField] private GameObject obj2;
     [SerializeField] private GameObject obj3;
     [SerializeField] private GameObject obj4;
@@ -15,7 +14,6 @@ public class Test : MonoBehaviour
     {
         if (Keyboard.current.f3Key.wasPressedThisFrame)
         {
-            obj1.SetActive(true);
             obj2.SetActive(true);
             obj3.SetActive(true);
             obj4.SetActive(true);
@@ -25,7 +23,6 @@ public class Test : MonoBehaviour
 
         if (Keyboard.current.f4Key.wasPressedThisFrame)
         {
-            obj1.SetActive(false);
             obj2.SetActive(false);
             obj3.SetActive(false);
             obj4.SetActive(false);

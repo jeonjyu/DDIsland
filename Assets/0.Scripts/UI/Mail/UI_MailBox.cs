@@ -12,13 +12,6 @@ public class UI_MailBox : MonoBehaviour
     [SerializeField] private UI_MailPopup _mailPopup;
     [SerializeField] private Button _exitButton;
 
-    private void OnEnable()
-    {
-#if UNITY_EDITOR
-        MailManager.Instance.AddTestMail();
-#endif
-        RefreshMailList();
-    }
     private void Awake()
     {
         if (_exitButton != null)
@@ -27,6 +20,16 @@ public class UI_MailBox : MonoBehaviour
         }
     }
 
+    private void OnEnable()
+    {
+        MailManager.Instance.OnMailUpdated += RefreshMailList;
+
+        RefreshMailList();
+    }
+    private void OnDisable()
+    {
+        MailManager.Instance.OnMailUpdated -= RefreshMailList;
+    }
     public void RefreshMailList()
     {
         foreach (Transform child in _contentTransform)
