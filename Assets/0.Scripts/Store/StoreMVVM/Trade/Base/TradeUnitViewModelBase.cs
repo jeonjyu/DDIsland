@@ -148,8 +148,6 @@ public class TradeUnitViewModelBase : MonoBehaviour, INotifyPropertyChanged
         {
             StoreManager.Instance.BuyAndSellPanel.gameObject.SetActive(true);
             TradeConfirmPanel.SetActive(true);
-            StoreManager.Instance.BuyAndSellPanel.CanvasGroup.interactable = false;
-            StoreManager.Instance.BuyAndSellPanel.CanvasGroup.blocksRaycasts = false;
         }
 
         _ = DataManager.Instance.Hub.UploadAllData();
