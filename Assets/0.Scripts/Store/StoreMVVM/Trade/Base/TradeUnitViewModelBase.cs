@@ -200,7 +200,10 @@ public class TradeUnitViewModelBase : MonoBehaviour, INotifyPropertyChanged
     public virtual void SetTotalPrice()
     {
         if (TradeCount <= 0)
+        {
             view.SetTotalPriceText(0);
+            Debug.Log("SetTotalPrice 거래 가격이 0" );
+        }
         else
         {
             //view.SetTotalPriceText(TradeCount * view.GetTradeStrategy().GetPrice(Model));

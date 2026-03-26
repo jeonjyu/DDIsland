@@ -16,7 +16,6 @@ public class TradePopupBase : MonoBehaviour
         canvasGroup = StoreManager.Instance.BuyAndSellPanel.CanvasGroup;
         if(StoreManager.Instance.BuyAndSellPanel)
         {
-            Debug.Log(StoreManager.Instance.BuyAndSellPanel.MyCanvasGroup.gameObject.name);
             StoreManager.Instance.BuyAndSellPanel.MyCanvasGroup.interactable = false;
             StoreManager.Instance.BuyAndSellPanel.MyCanvasGroup.blocksRaycasts = false;
         }

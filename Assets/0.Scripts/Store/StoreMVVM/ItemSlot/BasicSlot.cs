@@ -33,7 +33,7 @@ public class BasicSlot : ItemSlotView
         UpdateItemCount(count);
         UpdateSlotColor(modelData.IsGained);
 
-        Debug.Log(this + " UI 갱신");
+        //Debug.Log(this + " UI 갱신");
 
     }
 }
