@@ -54,9 +54,9 @@ public class JournalSlot : MonoBehaviour
         gameObject.SetActive(true);
 
         // 스프라이트 로드
-        if (itemImage != null && data.ItemSprite != null)
+        if (itemImage != null && data.SlotSprite != null)
         {
-            itemImage.sprite = data.ItemSprite;
+            itemImage.sprite = data.SlotSprite;
         }
 
         if (data.IsUnlocked)

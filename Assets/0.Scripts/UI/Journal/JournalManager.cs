@@ -58,9 +58,9 @@ public class JournalManager : MonoBehaviour
     private readonly Color selectedTabBg = new Color(0.99f, 0.97f, 0.91f, 1f);   // 크림색
     private readonly Color unselectedTabBg = new Color(0.78f, 0.62f, 0.41f, 1f); // 갈색
 
-    // 선택/미선택 색상 (프리팹에서 뽑은 값)
+    // 선택/미선택 색상 
     private readonly Color selectedBg = new Color(0.99f, 0.97f, 0.91f, 1f);      // 크림색
-    private readonly Color unselectedBg = new Color(0.78f, 0.62f, 0.41f, 1f);    // 갈색
+    private readonly Color unselectedBg = new Color(0.83f, 0.71f, 0.60f, 1f); // 베이지색
     private readonly Color selectedOutline = new Color(0.88f, 0.80f, 0.66f, 1f);  // 밝은 테두리
     private readonly Color unselectedOutline = new Color(0.56f, 0.44f, 0.29f, 1f);// 어두운 테두리
 
