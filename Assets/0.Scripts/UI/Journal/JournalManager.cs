@@ -166,7 +166,6 @@ public class JournalManager : MonoBehaviour
             }
         }
 
-        DataManager.Instance.Hub.SaveAllData();
     }
 
     private void OnRecordUnlocked(RecordDataSO record)

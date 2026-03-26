@@ -63,7 +63,16 @@ public class JournalFilterDropdown : MonoBehaviour
     private void ToggleDropdown()
     {
         if (dropdownPanel == null) return;
-        dropdownPanel.SetActive(!dropdownPanel.activeSelf);
+        bool open = !dropdownPanel.activeSelf;
+        dropdownPanel.SetActive(open);
+
+        // 드롭다운 열릴 때 한/영 텍스트 갱신
+        if (open)
+        {
+            if (textAll != null) textAll.text = JournalLocalize.Filter(CollectionFilter.All);
+            if (textOwned != null) textOwned.text = JournalLocalize.Filter(CollectionFilter.Owned);
+            if (textNotOwned != null) textNotOwned.text = JournalLocalize.Filter(CollectionFilter.NotOwned);
+        }
     }
 
     // 드롭다운 패널 닫기
@@ -105,6 +114,11 @@ public class JournalFilterDropdown : MonoBehaviour
         currentFilter = CollectionFilter.All;
         ApplySelection(CollectionFilter.All);
         HideDropdown();
+        
+        // 리셋 시 버튼 텍스트 갱신
+        if (textAll != null) textAll.text = JournalLocalize.Filter(CollectionFilter.All);
+        if (textOwned != null) textOwned.text = JournalLocalize.Filter(CollectionFilter.Owned);
+        if (textNotOwned != null) textNotOwned.text = JournalLocalize.Filter(CollectionFilter.NotOwned);
     }
 
     public CollectionFilter GetCurrentFilter()

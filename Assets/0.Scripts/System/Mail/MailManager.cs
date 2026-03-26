@@ -9,8 +9,10 @@ public class MailManager : Singleton<MailManager>
 
     private HashSet<string> _readMailIDs = new();
     private HashSet<string> _claimedMailIDs = new();
+    private HashSet<string> _deletedMailIDs = new();
 
     public event Action OnMailUpdated; // 새로고침용 이벤트
+
     #region 우편 데이터
     public List<MailData> GetAllMails()
     {
@@ -26,11 +28,37 @@ public class MailManager : Singleton<MailManager>
     {
         return _claimedMailIDs.Contains(mailID);
     }
+    public bool IsMailDeleted(string mailID)
+    {
+        return _deletedMailIDs.Contains(mailID);
+    }
     #endregion
 
     private void Start()
     {
+        if (DataManager.Instance.Hub.IsLoaded)
+        {
+            InitMailData();
+        }
+        else
+        {
+            DataManager.Instance.Hub.OnDataLoaded += InitMailData;
+        }
+
+        DataManager.Instance.Hub.OnRequestSave += SyncMailDataSave;
         LoadGlobalMails();
+    }
+
+    private void InitMailData()
+    {
+        var mailData = DataManager.Instance.Hub._allUserData.Mail;
+        if (mailData == null) return;
+
+        _readMailIDs = new HashSet<string>(mailData._readMailIDs ?? new List<string>());
+        _claimedMailIDs = new HashSet<string>(mailData._claimedMailIDs ?? new List<string>());
+        _deletedMailIDs = new HashSet<string>(mailData._deletedMailIDs ?? new List<string>());
+
+        OnMailUpdated?.Invoke();
     }
 
     public void MarkAsRead(string mailID)
@@ -74,23 +102,73 @@ public class MailManager : Singleton<MailManager>
          _ = DataManager.Instance.Hub.UploadAllData();
     }
 
+    public void ClaimAllRewards()
+    {
+        bool hasClaimed = false;
+
+        foreach (var mail in _serverMails)
+        {
+            // 우편함에 내용물이 존재하고, 받지 않았으며, 지워지지 않은 물품 들 중
+            if (mail._rewardItemID != 0 && !_claimedMailIDs.Contains(mail._mailID) && !_deletedMailIDs.Contains(mail._mailID))
+            {
+                var currentData = DataManager.Instance.CurrencyDatabase.CurrencyInfoData[mail._rewardItemID];
+                //재화만 획득 처리
+                if (currentData)
+                {
+                    if (currentData.ID == 202) GameManager.Instance.SetGold(mail._rewardCount);
+                    else if (currentData.ID == 201) DataManager.Instance.RecordDatabase.LpPieceCount += mail._rewardCount;
+                }
+
+                _claimedMailIDs.Add(mail._mailID);
+                _readMailIDs.Add(mail._mailID);
+                hasClaimed = true;
+            }
+        }
+
+        if (hasClaimed)
+        {
+            OnMailUpdated?.Invoke();
+            _ = DataManager.Instance.Hub.UploadAllData();
+        }
+    }
+
+    public void DeleteAllReadMails()
+    {
+        bool hasDeleted = false;
+
+        foreach (var mail in _serverMails)
+        {
+            // 이미 삭제된 건 무시
+            if (_deletedMailIDs.Contains(mail._mailID)) continue;
+
+            //만약 아이템이 없거나 단순 공지용이 읽은 상태일 경우
+            if ((mail._rewardItemID == 0 && _readMailIDs.Contains(mail._mailID)) ||
+                _claimedMailIDs.Contains(mail._mailID))
+            {
+                _deletedMailIDs.Add(mail._mailID);
+                hasDeleted = true;
+            }
+        }
+
+        if (hasDeleted)
+        {
+            OnMailUpdated?.Invoke();
+            DataManager.Instance.Hub.SaveAllData();
+        }
+    }
+
     public void LoadGlobalMails()
     {
-        Debug.Log("파이어베이스에 우편 데이터 요청 시작");
-
         DatabaseReference globalMailRef = FirebaseDatabase.DefaultInstance.GetReference("GlobalMails");
 
         globalMailRef.GetValueAsync().ContinueWith(task => 
         {
             if (task.IsFaulted)
             {
-                Debug.LogError($"우편 데이터 로드 실패: {task.Exception}");
                 return;
             }
 
             DataSnapshot snapshot = task.Result;
-
-            Debug.Log($"가져온 우편 개수: {snapshot.ChildrenCount}");
 
             _serverMails.Clear();
 
@@ -107,6 +185,13 @@ public class MailManager : Singleton<MailManager>
                 OnMailUpdated?.Invoke();
             });
         });
+    }
+
+    private void SyncMailDataSave()
+    {
+        DataManager.Instance.Hub._allUserData.Mail._readMailIDs = new List<string>(_readMailIDs);
+        DataManager.Instance.Hub._allUserData.Mail._claimedMailIDs = new List<string>(_claimedMailIDs);
+        DataManager.Instance.Hub._allUserData.Mail._deletedMailIDs = new List<string>(_deletedMailIDs);
     }
 
 #if UNITY_EDITOR

@@ -146,7 +146,7 @@ public class EnvironmentModel
         {
             _calculation = (int[])_seasonDuration.Clone()
         };
-        string arrayString = string.Join(", ", box._calculation);
+        string  arrayString = string.Join(", ", box._calculation);
 
         return box;
     }

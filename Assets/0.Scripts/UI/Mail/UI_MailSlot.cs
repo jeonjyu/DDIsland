@@ -26,7 +26,7 @@ public class UI_MailSlot : MonoBehaviour
         // 끌고온 우편 데이터를 각각 슬롯에 집어 넣기
         _titleText.text = _data._title;
         _contentText.text = _data._content;
-        _expireDateText.text = _data._expireDate;
+        _expireDateText.text = $"만료일: {_data._expireDate}";
 
         //만약 아이템이 있으면 아이템을 보여주는 아이콘을 활성화하고
         if (_data._rewardItemID > 0)
@@ -53,6 +53,25 @@ public class UI_MailSlot : MonoBehaviour
         {
             _popup.OpenPopup(_data);
         }
+    }
+
+    private void RefreshSlot()
+    {
+        if (_data != null)
+        {
+            MailSlot(_data, _popup);
+        }
+    }
+
+    private void OnEnable()
+    {
+        MailManager.Instance.OnMailUpdated += RefreshSlot;
+    }
+
+    private void OnDisable()
+    {
+        if (MailManager.Instance != null)
+            MailManager.Instance.OnMailUpdated -= RefreshSlot;
     }
 
 }

@@ -361,7 +361,7 @@ public class DecoEditModeManager : MonoBehaviour
             itemListManager.SaveSnapshot();
     }
 
-    // 섬 전체회수 
+    // 섬 초기화 
     void OnIslandRevert()
     {
         if (currentMode != DecoMode.Island) return;
@@ -369,12 +369,16 @@ public class DecoEditModeManager : MonoBehaviour
             itemListManager.LoadSnapshot();
     }
 
-    // 섬 초기화 
+    // 섬 전체회수
     void OnIslandClearAll(List<int> destroyedIds)
     {
         if (currentMode != DecoMode.Island) return;
         //if (itemListManager != null)
         //    itemListManager.ReturnAllItems();
+
+        // 회수된 게 없으면 
+        if (destroyedIds == null || destroyedIds.Count == 0)
+            return;
 
         foreach (int itemId in destroyedIds)
         {
@@ -383,9 +387,12 @@ public class DecoEditModeManager : MonoBehaviour
 
         if (itemListManager != null)
             itemListManager.SetupInventory();
+
+        // isChanged = true; // TODO: 나중에 전체회수에 저장 로직을 빼면, 배치>저장>전체회수>초기화
+        isChanged = false;
     }
 
-    //고정물(FixedBuilding) 클릭 시 인벤 필터 모드 진입 
+    // 고정물(FixedBuilding) 클릭 시 인벤 필터 모드 진입 
     void OnFixBuildingClicked(FixedBuilding target)
     {
         if (currentMode != DecoMode.Island) return;
@@ -868,7 +875,7 @@ public class DecoEditModeManager : MonoBehaviour
                     itemListManager.RestoreItem(p.itemId);
             }
 
-            gridManager.RecallAll();  // 그리드에서 전부 제거
+            gridManager.RecallAll(); // 그리드에서 전부 제거
             isChanged = true;
         }
         else if (currentMode == DecoMode.Island) // 섬모드 
@@ -885,7 +892,8 @@ public class DecoEditModeManager : MonoBehaviour
             //{
             //    itemListManager.ReturnAllItems();
             //}
-            isChanged = true;
+
+           // isChanged = true;
         }
     }
     void OnExit() // 나가기
