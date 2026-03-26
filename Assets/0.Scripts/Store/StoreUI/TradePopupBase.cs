@@ -26,6 +26,10 @@ public class TradePopupBase : MonoBehaviour
     {
         StoreManager.Instance.BuyAndSellPanel.MyCanvasGroup.interactable = true;
         StoreManager.Instance.BuyAndSellPanel.MyCanvasGroup.blocksRaycasts = true;
+        if(StoreManager.Instance.currentCat == StoreCat.lake)
+        {
+            StoreManager.Instance.BuyAndSellPanel.gameObject.SetActive(false);
+        }
         exitButton.onClick.RemoveAllListeners();
     }
 }
