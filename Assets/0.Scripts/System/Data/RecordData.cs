@@ -101,7 +101,7 @@ public class RecordData : MonoBehaviour
 
         LpPieceCount = data._lpPieceCount;
 
-        UnlockRecords = new HashSet<int>(data._unlockRecords);
+        UnlockRecords = new HashSet<int>(data._unlockRecords ?? new List<int>());
     }
 
     private void Awake()

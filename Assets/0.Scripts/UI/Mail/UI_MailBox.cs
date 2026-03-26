@@ -38,18 +38,15 @@ public class UI_MailBox : MonoBehaviour
         }
 
         List<MailData> allMails = MailManager.Instance.GetAllMails();
+        int visibleCount = 0;
 
-        if (allMails.Count == 0)
-        {
-            _emptyMailText.gameObject.SetActive(true);
-        }
-        else
-        {
-            _emptyMailText.gameObject.SetActive(false);
-        }
 
         foreach (MailData mail in allMails)
         {
+            if (MailManager.Instance.IsMailDeleted(mail._mailID)) continue;
+
+            visibleCount++;
+
             GameObject slotObj = Instantiate(_mailSlotPrefab, _contentTransform);
             UI_MailSlot mailSlot = slotObj.GetComponent<UI_MailSlot>();
 
@@ -57,6 +54,14 @@ public class UI_MailBox : MonoBehaviour
             {
                 mailSlot.MailSlot(mail, _mailPopup);
             }
+        }
+        if (visibleCount == 0)
+        {
+            _emptyMailText.gameObject.SetActive(true);
+        }
+        else
+        {
+            _emptyMailText.gameObject.SetActive(false);
         }
     }
 

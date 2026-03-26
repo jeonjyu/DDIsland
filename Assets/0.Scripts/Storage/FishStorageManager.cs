@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using System.Collections.Generic;
+using System.Collections;
 
 public struct FishInstance
 {
@@ -38,16 +39,16 @@ public class FishStorageManager : Singleton<FishStorageManager>
     }
     private void Start()
     {
+        StartCoroutine(Frame());
+    }
+
+    IEnumerator Frame()
+    {
+        yield return null;
+        yield return null;
         if (DataManager.Instance != null && DataManager.Instance.Hub != null)
         {
-            if (DataManager.Instance.Hub.IsLoaded)
-            {
-                SyncFishStorageLoadData();
-            }
-            else
-            {
-                DataManager.Instance.Hub.OnDataLoaded += SyncFishStorageLoadData;
-            }
+            DataManager.Instance.Hub.OnDataLoaded += SyncFishStorageLoadData;
         }
     }
 
@@ -109,7 +110,7 @@ public class FishStorageManager : Singleton<FishStorageManager>
             if (FishSlots[i].Value.FishId != fishId) continue;
 
             var slot = FishSlots[i].Value;
-             FishSlots[i] = null;
+            FishSlots[i] = null;
 
             OnSlotChanged?.Invoke(i);
             return true;
@@ -134,7 +135,7 @@ public class FishStorageManager : Singleton<FishStorageManager>
     }
     public bool ShouldSellFish()  //보관함 5칸이하로 비어있는지 체크
     {
-       int emptyCount = 0;
+        int emptyCount = 0;
         for (int i = 0; i < FishSlots.Length; i++)
         {
             if (!FishSlots[i].HasValue) emptyCount++;
@@ -164,7 +165,7 @@ public class FishStorageManager : Singleton<FishStorageManager>
         if (Capacity >= MaxCapacity || StorageLevel >= MaxLevel)    //이미 최대면 업그레이드 막기
         {
             return;
-        }  
+        }
         _storagelevel++;   //레벨 올리고, 그 레벨에 맞는 Capacity 적용
         ApplyCapacityByLevel();
     }
@@ -177,7 +178,7 @@ public class FishStorageManager : Singleton<FishStorageManager>
         else if (_storagelevel == 3) newCap = 17;
         else if (_storagelevel == 4) newCap = 22;
         else newCap = 27;
-        if (_storageCapacity == newCap) return; 
+        if (_storageCapacity == newCap) return;
 
         if (FishSlots == null) FishSlots = new FishStackSlot?[newCap];   //실제 슬롯 배열 크기 변경(기존 데이터 유지)
         else if (FishSlots.Length != newCap) Array.Resize(ref FishSlots, newCap);
@@ -232,10 +233,10 @@ public class FishStorageManager : Singleton<FishStorageManager>
         if (_storagelevel == 2) return 200;
         if (_storagelevel == 3) return 300;
         if (_storagelevel == 4) return 400;
-        return 500; 
+        return 500;
     }
 
-    private void SyncFishStorageSaveData() 
+    private void SyncFishStorageSaveData()
     {
         var userData = DataManager.Instance.Hub._allUserData;
         if (userData == null || userData.fishstoage == null) return;
@@ -265,30 +266,41 @@ public class FishStorageManager : Singleton<FishStorageManager>
     {
         DataManager.Instance.Hub.OnDataLoaded -= SyncFishStorageLoadData;
 
-        var userData = DataManager.Instance.Hub._allUserData;
-        if (userData == null || userData.fishstoage == null) return;
+        var userData = DataManager.Instance.Hub._allUserData.fishstoage;
 
-        _storagelevel = userData.fishstoage.StorageLevel;
-        _acquireCounter = userData.fishstoage.AcquireCounter;
+        Debug.Log(userData.AcquireCounter);
+        Debug.Log(DataManager.Instance.Hub._allUserData.Currency._gold);
+        
+        if (userData == null || userData == null) return;
+
+        _storagelevel = userData.StorageLevel;
+        _acquireCounter = userData.AcquireCounter;
+
+        Debug.Log($"<color=cyan> 레벨: {_storagelevel} | 저장된 카운터: {_acquireCounter}</color>");
 
         ApplyCapacityByLevel();
 
+        int dataCount = userData.SlotList != null ? userData.SlotList.Count : -2;
+        Debug.Log($"<color=yellow> 슬롯 크기: {userData.SlotList.Count} | 물고기 개수: {dataCount}</color>");
+
         // 기존 슬롯 초기화
         for (int i = 0; i < FishSlots.Length; i++) FishSlots[i] = null;
-
-        foreach (var savedSlot in userData.fishstoage.SlotList)
+        if (userData.SlotList != null)
         {
-            if (savedSlot.Index >= 0 && savedSlot.Index < FishSlots.Length)
+            foreach (var savedSlot in userData.SlotList)
             {
-                FishSlots[savedSlot.Index] = new FishStackSlot
+                if (savedSlot.Index >= 0 && savedSlot.Index < FishSlots.Length)
                 {
-                    FishId = savedSlot.FishId,
-                    LastAcquiredOrder = savedSlot.LastAcquiredOrder,
-                    Price = savedSlot.MaxPrice,
-                };
+                    FishSlots[savedSlot.Index] = new FishStackSlot
+                    {
+                        FishId = savedSlot.FishId,
+                        LastAcquiredOrder = savedSlot.LastAcquiredOrder,
+                        Price = savedSlot.MaxPrice,
+                    };
+                    Debug.Log($"<color=green> 인덱스: {savedSlot.Index} 에 물고기 ID: {savedSlot.FishId} 넣음</color>");
+                }
             }
         }
-
         for (int i = 0; i < FishSlots.Length; i++) OnSlotChanged?.Invoke(i);
     }
 }

@@ -34,7 +34,11 @@ public class UserAllData
     //재화
     public Currency_Data Currency = new();
 
+    //음반
     public Record_Data Record = new();
+
+    //우편
+    public Mail_Data Mail = new();
 }
 
 [Serializable]
@@ -125,8 +129,9 @@ public class Record_Data
 [Serializable]
 public class Mail_Data
 {
-    public List<string> ReadMailIDs = new ();
-    public List<string> ClaimedMailIDs = new ();
+    public List<string> _readMailIDs = new ();
+    public List<string> _claimedMailIDs = new ();
+    public List<string> _deletedMailIDs = new ();
 }
 
 #region 변수 저장 클래스

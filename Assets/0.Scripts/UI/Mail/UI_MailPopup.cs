@@ -7,6 +7,7 @@ public class UI_MailPopup : MonoBehaviour
     [Header("UI 연결")]
     [SerializeField] private TMP_Text _titleText;
     [SerializeField] private TMP_Text _contentText;
+    [SerializeField] private TMP_Text _expireDateText;
     [SerializeField] private Image _rewardImage;
     [SerializeField] private TMP_Text _rewardCountText;
 
@@ -24,14 +25,22 @@ public class UI_MailPopup : MonoBehaviour
 
         _titleText.text = _currentData._title;
         _contentText.text = _currentData._content;
+        _expireDateText.text = $"만료일: {_currentData._expireDate}";
 
         MailManager.Instance.MarkAsRead(_currentData._mailID);
 
         if (_currentData._rewardItemID > 0)
         {
             _rewardImage.gameObject.SetActive(true);
-            _rewardCountText.text = $"{_currentData._rewardCount}";
             _rewardImage.sprite = DataManager.Instance.CurrencyDatabase.CurrencyInfoData[_currentData._rewardItemID].CurrencyImgPath_Sprite;
+            if (MailManager.Instance.IsMailClaimed(_currentData._mailID))
+            {
+                _rewardCountText.text = "0";
+            }
+            else
+            {
+                _rewardCountText.text = $"{_currentData._rewardCount}";
+            }
         }
         else
         {
@@ -65,7 +74,9 @@ public class UI_MailPopup : MonoBehaviour
     private void OnClickClaim()
     {
         MailManager.Instance.ClaimReward(_currentData);
+        OpenPopup(_currentData);
         UpdateButtonState();
+        ClosePopup();
     }
 
     public void ClosePopup()
