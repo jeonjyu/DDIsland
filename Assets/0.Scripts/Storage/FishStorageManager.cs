@@ -157,7 +157,11 @@ public class FishStorageManager : Singleton<FishStorageManager>
                 OnSlotChanged?.Invoke(i);
             }
         }
-        if (totalGold > 0) GameManager.Instance.SetGold(totalGold);
+        if (totalGold > 0)
+        {
+            GameManager.Instance.SetGold(totalGold);
+            RewardEffect.Instance.PlaySellGoldEffect();
+        }
     }
 
     public void UpgradeStorageindex()
