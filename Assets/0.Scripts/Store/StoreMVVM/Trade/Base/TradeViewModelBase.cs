@@ -18,11 +18,14 @@ public class TradeViewModelBase : MonoBehaviour, INotifyPropertyChanged
     int totalPrice;
     public bool isGained;
     [SerializeField] CanvasGroup canvasGroup;
+    [SerializeField] CanvasGroup myCanvasGroup;
 
     public event PropertyChangedEventHandler PropertyChanged;
 
     public StoreCat storeCat => StoreManager.Instance.currentCat;
 
+    public CanvasGroup CanvasGroup => canvasGroup;
+    public CanvasGroup MyCanvasGroup => myCanvasGroup;
 
     public IStoreItem Model
     {
@@ -66,10 +69,10 @@ public class TradeViewModelBase : MonoBehaviour, INotifyPropertyChanged
         }
     }
 
-    //protected virtual void Awake()
-    //{
-    //    canvasGroup = transform.GetComponent<CanvasGroup>();
-    //}
+    protected virtual void Awake()
+    {
+        myCanvasGroup = transform.GetComponent<CanvasGroup>();
+    }
 
     protected virtual void OnEnable()
     {
