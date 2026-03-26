@@ -30,7 +30,7 @@ public class MailManager : Singleton<MailManager>
 
     private void Start()
     {
-        // TODO: DataManager.Instance.Hub.OnDataLoaded += SyncMailDataLoad 이벤트 구독시키기;
+        LoadGlobalMails();
     }
 
     public void MarkAsRead(string mailID)
@@ -76,16 +76,22 @@ public class MailManager : Singleton<MailManager>
 
     public void LoadGlobalMails()
     {
+        Debug.Log("파이어베이스에 우편 데이터 요청 시작");
+
         DatabaseReference globalMailRef = FirebaseDatabase.DefaultInstance.GetReference("GlobalMails");
 
         globalMailRef.GetValueAsync().ContinueWith(task => 
         {
             if (task.IsFaulted)
             {
+                Debug.LogError($"우편 데이터 로드 실패: {task.Exception}");
                 return;
             }
 
             DataSnapshot snapshot = task.Result;
+
+            Debug.Log($"가져온 우편 개수: {snapshot.ChildrenCount}");
+
             _serverMails.Clear();
 
             foreach (var child in snapshot.Children)
