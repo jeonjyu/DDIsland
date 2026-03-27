@@ -70,8 +70,6 @@ public class SoundManager : Singleton<SoundManager>
     public void PlayBGM(AudioClip clip)
     {
         SafeStartCoroutine(PlayCoroutine, Co_PlayBGM(clip));
-
-        CheckAudioPlayDone(bgmPlayDoneCoroutine, BgmSource, BgmSource.clip.length, OnBGMPlayDone);
     }
 
     public void PlayAMB(AudioClip clip)
@@ -210,14 +208,16 @@ public class SoundManager : Singleton<SoundManager>
     /// <summary>
     /// 오디오 소스가 재생 완료되었는지 체크하는 메서드
     /// </summary>
-    /// <param name="coroutine"> 코루틴 변수 </param>
     /// <param name="source"> 오디오 소스 </param>
     /// <param name="length"> 최대 재생 시간 </param>
     /// <returns></returns>
     private IEnumerator Co_CheckAudioPlayDone(AudioSource source, float length, Action action)
     {
+        Debug.Log($"SourceTime: {source.time}");
+        Debug.Log($"Length: {length}");
         yield return new WaitUntil(() => source.time >= length);
 
+        Debug.Log("넘어옴");
         action?.Invoke();
     }
     #endregion
@@ -236,12 +236,13 @@ public class SoundManager : Singleton<SoundManager>
         // 이미 배경음악이 재생중일 때 볼륨을 서서히 줄임
         if (BgmSource.isPlaying)
         {
-            yield return StartCoroutine(Co_FadeVolume("BGM", PlayerPrefsDataManager.BgmVolume, 0f, 0.75f));
+            yield return StartCoroutine(Co_FadeVolume("BGM", PlayerPrefsDataManager.BgmVolume, 0f, 0.5f));
         }
 
         // 배경음 재생
         SetVolume("BGM", vol, PlayerPrefsDataManager.BgmVolumeMute);
         PlaySound(Soundtype.BGM, BgmSource, clip);
+        CheckAudioPlayDone(bgmPlayDoneCoroutine, BgmSource, clip.length, OnBGMPlayDone);
     }
 
     public void FadeOutBGMVolume(bool isPlay) => SafeStartCoroutine(PlayCoroutine, Co_FadeOutBGMVolume(isPlay));
@@ -249,11 +250,11 @@ public class SoundManager : Singleton<SoundManager>
 
     private IEnumerator Co_FadeOutBGMVolume(bool isPlay)
     {
-        Coroutine preVol = StartCoroutine(Co_FadeVolume("Preview", 0f, PlayerPrefsDataManager.BgmVolume, 0.75f));
+        Coroutine preVol = StartCoroutine(Co_FadeVolume("Preview", 0f, PlayerPrefsDataManager.BgmVolume, 0.5f));
 
         if(isPlay)
         {
-            Coroutine bgmVol = StartCoroutine(Co_FadeVolume("BGM", PlayerPrefsDataManager.BgmVolume, 0f, 0.75f));
+            Coroutine bgmVol = StartCoroutine(Co_FadeVolume("BGM", PlayerPrefsDataManager.BgmVolume, 0f, 0.5f));
 
             yield return bgmVol;
         }

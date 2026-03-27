@@ -1,6 +1,8 @@
 using AOT;
 using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.Text;
 using UnityEditor;
 using UnityEngine;
 using static WindowController;
@@ -153,6 +155,10 @@ public class WindowCore : IDisposable
         [DllImport("LibUniWinC", CallingConvention = CallingConvention.Winapi)]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool DetachWindow();
+
+        // 현재 게임 창 찾기
+        [DllImport("user32.dll")]
+        public static extern IntPtr GetActiveWindow();
         #endregion
 
         #region 창 스타일 제어
@@ -310,6 +316,15 @@ public class WindowCore : IDisposable
         // 특정 윈도우 핸들 찾기
         [DllImport("user32.dll")]
         public static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
+
+        // 윈도우 열거를 위한 델리게이트
+        public delegate bool EnumWindowsProc(IntPtr hWnd, IntPtr lParam);
+
+        [DllImport("user32.dll")]
+        public static extern bool EnumWindows(EnumWindowsProc lpEnumFunc, IntPtr lParam);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        public static extern int GetClassName(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount);
         #endregion
 
         // 내부 상태 갱신 루프
@@ -366,7 +381,11 @@ public class WindowCore : IDisposable
     // 투명화, 마우스 통과 지정 색
     private Color32 keyColor = new Color32(1, 0, 1, 0);
 
+    public IntPtr GameWindowHandle { get; private set; }    // 현재 게임 창의 주소
+
     private TaskbarData taskbarData;
+
+    public IntPtr Taskbar { get; private set; }     // 현재 작업 표시줄을 담아둘 변수, 모니터가 바뀌면 따라 바뀜
 
     private float monitorPosX = 0;
     private float monitorPosY = 0;
@@ -439,6 +458,7 @@ public class WindowCore : IDisposable
         }
 #else
         LibWindowC.AttachMyWindow();
+        GameWindowHandle = LibWindowC.GetActiveWindow();
 #endif
         LibWindowC.RegisterMonitorChangedCallback(MonitorChangedCallback);
         LibWindowC.RegisterWindowStyleChangedCallback(WindowStyleChangedCallback);
@@ -773,7 +793,12 @@ public class WindowCore : IDisposable
         return LibWindowC.UnhookWinEvent(hWindEventHook);
     }
 
-    // 윈도우 창 찾기
+    /// <summary>
+    /// 윈도우 창 찾기
+    /// </summary>
+    /// <param name="lpClassName"> 찾고자 하는 창의 클래스 이름 </param>
+    /// <param name="lpWindowName"> 창의 캡션 or 제목 표시줄 텍스트 </param>
+    /// <returns> 조건에 부합하는 창의 고유 핸들 ID </returns>
     public IntPtr FindWindow(string lpClassName, string lpWindowName)
     {
         return LibWindowC.FindWindow(lpClassName, lpWindowName);
@@ -794,12 +819,20 @@ public class WindowCore : IDisposable
     {
         if (GetMonitorRectangle(monitorIndex))
         {
+            //Debug.Log($"{monitorIndex}번째 모니터 위치: ({monitorPosX}, {monitorPosY})");
+            //Debug.Log($"{monitorIndex}번째 모니터 크기: ({monitorWidth}, {monitorHeight})");
+
             if (!IsBorderless)
                 LibWindowC.SetBorderless(true);
 
             // 이미 최대화 상태일 경우 최대화를 잠시 풀어줌 → 모니터를 이동해야할 경우 최대화가 풀려야 이동 가능하기 때문
             if (LibWindowC.IsMaximized())
                 LibWindowC.SetMaximized(false);
+
+            Taskbar = FindCurrentTaskbar(ref taskbarData);
+
+            //Debug.Log($"작업 표시줄 발견: {Taskbar}");
+            //Debug.Log($"작업 표시줄 이름: {taskbarData.hWnd}");
 
             if (IsTaskBarAutoHide())
             {
@@ -812,13 +845,16 @@ public class WindowCore : IDisposable
             else
             {
                 // 작업표시줄이 숨김 상태가 아니라면
-                taskbarData.tbSize = (uint)Marshal.SizeOf(typeof(TaskbarData));
+                //taskbarData.tbSize = (uint)Marshal.SizeOf(typeof(TaskbarData));
 
-                LibWindowC.SHAppBarMessage(ABM_GETTASKBARPOS, ref taskbarData);
+                //LibWindowC.SHAppBarMessage(ABM_GETTASKBARPOS, ref taskbarData);
 
                 // 작업표시줄 크기 구하기
                 int tbWidth = taskbarData.rc.Right - taskbarData.rc.Left;
                 int tbHeight = taskbarData.rc.Bottom - taskbarData.rc.Top;
+
+                //Debug.Log($"작업 표시줄 위치: ({taskbarData.rc.Left}, {taskbarData.rc.Top})");
+                //Debug.Log($"작업 표시줄 크기: ({tbWidth}, {tbHeight})");
 
                 // 현재 창 크기 받아옴
                 float windowWidth = monitorWidth;
@@ -861,6 +897,61 @@ public class WindowCore : IDisposable
         return false;
     }
 
+    // 현재 모니터에 맞는 작업 표시줄 찾아서 캐싱하는 메서드
+    public IntPtr FindCurrentTaskbar(ref TaskbarData taskbarData)
+    {
+        // 모든 작업 표시줄 저장해두기
+        List<IntPtr> taskbarList = GetAllTaskbarHandles();
+
+        // 변경할 모니터의 작업 표시줄 찾기
+        foreach (IntPtr taskbar in taskbarList)
+        {
+            TaskbarData data = new TaskbarData();
+            data.tbSize = (uint)Marshal.SizeOf(typeof(TaskbarData));
+            data.hWnd = taskbar;
+
+            LibWindowC.GetWindowRect(taskbar, out data.rc);
+
+            //Debug.Log($"현재 모니터 작업 표시줄 찾는 중... {data.hWnd}");
+            //Debug.Log($"후보 작업 표시줄의 위치: ({data.rc.Left}, {data.rc.Top})");
+            //Debug.Log($"작업 표시줄 하단 위치 {data.rc.Bottom}");
+
+            if (data.rc.Left >= monitorPosX && data.rc.Left < monitorPosX + monitorWidth &&
+                data.rc.Top > monitorPosY && data.rc.Top <= monitorPosY + monitorHeight)
+            {
+                Debug.Log("현재 모니터 작업 표시줄 찾음!");
+                taskbarData = data;
+                return taskbar;
+            }
+        }
+
+        return IntPtr.Zero;
+    }
+
+    // 받아올 수 있는 모든 모니터의 작업 표시줄을 반환
+    private List<IntPtr> GetAllTaskbarHandles()
+    {
+        List<IntPtr> taskbarList = new List<IntPtr>();
+
+        LibWindowC.EnumWindows((hWnd, lParam) =>
+        {
+            StringBuilder sb = new StringBuilder(256);
+            LibWindowC.GetClassName(hWnd, sb, sb.Capacity);
+            string className = sb.ToString();
+
+            if(className == "Shell_TrayWnd" || className == "Shell_SecondaryTrayWnd")
+            {
+                Debug.Log($"{DateTime.UtcNow}: {className} = {hWnd}");
+                taskbarList.Add(hWnd);
+            }
+
+            return true;
+
+        }, IntPtr.Zero);
+
+        return taskbarList;
+    }
+
     /// <summary>
     /// 작업표시줄이 숨김 상태인지 확인, 자동숨김 설정이더라도 작업표시줄이 내려가있을 때만 true
     /// </summary>
@@ -872,11 +963,9 @@ public class WindowCore : IDisposable
         LibWindowC.SHAppBarMessage(ABM_GETTASKBARPOS, ref taskbarData);
         IntPtr state = LibWindowC.SHAppBarMessage(ABM_GETSTATE, ref taskbarData);
 
-        RECT taskbarRect;
-        IntPtr hTaskbar = LibWindowC.FindWindow("Shell_TrayWnd", null);
-        LibWindowC.GetWindowRect(hTaskbar, out taskbarRect);
+        LibWindowC.GetWindowRect(Taskbar, out taskbarData.rc);
 
         // 모니터 크기에 -5를 하는 이유는 작업표시줄이 내려가있어도 2px 정도는 걸쳐있기 때문
-        return ((int)state & ABS_AUTOHIDE) == ABS_AUTOHIDE && taskbarRect.Top >= Mathf.RoundToInt(monitorHeight) - 5;
+        return ((int)state & ABS_AUTOHIDE) == ABS_AUTOHIDE && taskbarData.rc.Top >= Mathf.RoundToInt(monitorHeight) - 5;
     }
 }
