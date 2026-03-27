@@ -216,6 +216,7 @@ public class FishManager : Singleton<FishManager>
         Debug.Log($"Name: {fish.FishName_String}, price: {price}, Length: {length}");
 
         FishToStorage(fish, length, price);
+        EmojiController.Instance.ShowFishEmoji(fish);
         OnFishGet?.Invoke(fish.ID, length); // 낚았다 
     }
 
