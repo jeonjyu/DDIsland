@@ -171,6 +171,7 @@ public class StatData
 {
     public float Value; // 현재 수치
     public int Level;   // 강화 단계
+    public float MaxValue; // 최대 수치 (add 타입용)
 }
 [Serializable]
 public class FishRecordData
