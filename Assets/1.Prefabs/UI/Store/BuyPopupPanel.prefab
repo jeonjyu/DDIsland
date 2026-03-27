@@ -100,6 +100,14 @@ PrefabInstance:
       propertyPath: view
       value: 
       objectReference: {fileID: 5982260780247127322}
+    - target: {fileID: 1628195049058973061, guid: ee3cb6636df60164b854f0df52804f8f, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 600
+      objectReference: {fileID: 0}
+    - target: {fileID: 1628195049058973061, guid: ee3cb6636df60164b854f0df52804f8f, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 5.4946
+      objectReference: {fileID: 0}
     - target: {fileID: 1922359553625175345, guid: ee3cb6636df60164b854f0df52804f8f, type: 3}
       propertyPath: _equipBtn
       value: 
@@ -132,6 +140,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: ItemPrice
       objectReference: {fileID: 0}
+    - target: {fileID: 5982131815106769182, guid: ee3cb6636df60164b854f0df52804f8f, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 600
+      objectReference: {fileID: 0}
+    - target: {fileID: 5982131815106769182, guid: ee3cb6636df60164b854f0df52804f8f, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5982131815106769182, guid: ee3cb6636df60164b854f0df52804f8f, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 134
+      objectReference: {fileID: 0}
     - target: {fileID: 9086050232554904237, guid: ee3cb6636df60164b854f0df52804f8f, type: 3}
       propertyPath: _equipTradeView
       value: 
@@ -154,6 +174,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 953949292096940274, guid: ee3cb6636df60164b854f0df52804f8f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5982260780247127322}
+    - targetCorrespondingSourceObject: {fileID: 953949292096940274, guid: ee3cb6636df60164b854f0df52804f8f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4050276444422960156}
     - targetCorrespondingSourceObject: {fileID: 3806774567852589423, guid: ee3cb6636df60164b854f0df52804f8f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1186505204626183123}
@@ -203,6 +226,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3514018d84fb9394ea5c9d50afcd41e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SingleItemUnitViewModel
+  tradeVM: {fileID: 0}
   TradeConfirmPanel: {fileID: 0}
 --- !u!114 &6904758869888793980 stripped
 MonoBehaviour:
@@ -245,3 +269,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RecipeTradeView
   itemName: {fileID: 5411673193187297956}
   itemDesc: {fileID: 7306144622051606822}
+--- !u!225 &4050276444422960156
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7995116426408347935}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0

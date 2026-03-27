@@ -10,6 +10,7 @@ public class PurchaseStrategy : MonoBehaviour, ITradeStrategy
             return false;        
 
         StoreManager.Instance.ItemCountChanged(tradeCount);
+        Debug.Log($"<color=purple>골드 변경: {GameManager.Instance.PlayerGold}에서 {tradePrice} 차감</color>");
         GameManager.Instance.SetGold(-tradePrice);
 
         //Debug.Log("구매 로직 " + StoreManager.Instance.TradeItemCount);

@@ -341,14 +341,12 @@ public class QuestManager : Singleton<QuestManager>
         if (rewardItemId == 202) // 예시: 골드 ID
         {
             GameManager.Instance.SetGold(rewardCount);
+            RewardEffect.Instance.PlayQuestGoldEffect();
         }
         else if (rewardItemId == 201) // 예시: LP조각 ID
         {
             DataManager.Instance.RecordDatabase.LpPieceCount += rewardCount;
-        }
-        else
-        {
-            // 일반 아이템 지급
+            RewardEffect.Instance.PlayQuestLpEffect();
         }
     }
 }

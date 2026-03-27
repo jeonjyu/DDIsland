@@ -11,7 +11,7 @@ public class StoreManager : Singleton<StoreManager>, INotifyPropertyChanged
     List<Enum> category = new List<Enum>();
 
     [SerializeField] GameObject storeListPanel;
-    [SerializeField] GameObject buyAndSellPanel;
+    [SerializeField] TradeViewModelBase buyAndSellPanel;
     [SerializeField] public FilterDropdown filterDropdown;
     [SerializeField] public SortDropdown sortDropdown;
 
@@ -26,10 +26,12 @@ public class StoreManager : Singleton<StoreManager>, INotifyPropertyChanged
 
     public event PropertyChangedEventHandler PropertyChanged;
 
+    public TradePopupBase tradePopup;
+
     #endregion
 
     #region properties
-    public GameObject BuyAndSellPanel => buyAndSellPanel;
+    public TradeViewModelBase BuyAndSellPanel => buyAndSellPanel;
     public ItemSlotViewModelBase TradeItemSlot
     {
         get => tradeItemSlot;

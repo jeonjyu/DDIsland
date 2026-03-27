@@ -7,9 +7,4 @@ public class SingleItemUnitViewModel : TradeUnitViewModelBase
         SetTotalPrice();
         view.SetButton();
     }
-
-    public override void SetTotalPrice()
-    {
-        view.SetTotalPriceText(view.GetTradeStrategy().GetPrice(Model));
-    }
 }

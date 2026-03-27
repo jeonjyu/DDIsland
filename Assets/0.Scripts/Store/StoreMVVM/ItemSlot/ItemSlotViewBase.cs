@@ -82,7 +82,7 @@ public class ItemSlotViewBase : MonoBehaviour, IStoreItemView, IPointerClickHand
         viewModel.SetPopupModel();
         StoreManager.Instance.TradeItemSlot = this.viewModel;
         if (StoreManager.Instance.BuyAndSellPanel != null)
-            StoreManager.Instance.BuyAndSellPanel.SetActive(true);
+            StoreManager.Instance.BuyAndSellPanel.gameObject.SetActive(true);
         else
             Debug.LogError("패널이없어요");
         StoreManager.Instance.ChangeDropdownAvailability(false);

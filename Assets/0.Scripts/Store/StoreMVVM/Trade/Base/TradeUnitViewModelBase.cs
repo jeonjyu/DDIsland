@@ -146,7 +146,7 @@ public class TradeUnitViewModelBase : MonoBehaviour, INotifyPropertyChanged
     {
         if (tradeStrategy.Trade(TradeCount, TotalPrice))
         {
-            StoreManager.Instance.BuyAndSellPanel.SetActive(true);
+            StoreManager.Instance.BuyAndSellPanel.gameObject.SetActive(true);
             TradeConfirmPanel.SetActive(true);
         }
 
@@ -200,7 +200,10 @@ public class TradeUnitViewModelBase : MonoBehaviour, INotifyPropertyChanged
     public virtual void SetTotalPrice()
     {
         if (TradeCount <= 0)
+        {
             view.SetTotalPriceText(0);
+            Debug.Log("SetTotalPrice 거래 가격이 0" );
+        }
         else
         {
             //view.SetTotalPriceText(TradeCount * view.GetTradeStrategy().GetPrice(Model));
