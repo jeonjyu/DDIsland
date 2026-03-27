@@ -461,10 +461,9 @@ public class DecoEditModeManager : MonoBehaviour
 
     #endregion
 
-    void OnIslandDecoClicked() // 섬 
+    public void OnIslandDecoClicked() // 섬 
     {
         EnterEditMode(DecoMode.Island);
-        HideDropdown();
     }
 
     void OnLakeDecoClicked() // 호수
