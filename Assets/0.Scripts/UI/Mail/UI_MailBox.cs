@@ -11,6 +11,8 @@ public class UI_MailBox : MonoBehaviour
     [SerializeField] private TMP_Text _emptyMailText;
     [SerializeField] private UI_MailPopup _mailPopup;
     [SerializeField] private Button _exitButton;
+    [SerializeField] private GameObject _popupDelete;
+    [SerializeField] private GameObject _popupClaim;
 
     private void Awake()
     {
@@ -45,6 +47,11 @@ public class UI_MailBox : MonoBehaviour
         {
             if (MailManager.Instance.IsMailDeleted(mail._mailID)) continue;
 
+            if (System.DateTime.TryParse(mail._expireDate, out System.DateTime expireDate))
+            {
+                if (System.DateTime.Now > expireDate) continue;
+            }
+
             visibleCount++;
 
             GameObject slotObj = Instantiate(_mailSlotPrefab, _contentTransform);
@@ -69,6 +76,5 @@ public class UI_MailBox : MonoBehaviour
     {
         gameObject.SetActive(false);
     }
-
 }
 
