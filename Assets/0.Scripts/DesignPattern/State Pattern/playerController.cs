@@ -198,7 +198,11 @@ public class PlayerController : MonoBehaviour
             PlayerManager.Instance.OnEquipChanged += ChangeCostume;
         if (_environment != null)
             _environment.OnDailyChanged += HandleDailyChanged;
-        
+        if (EmojiController.Instance != null)
+        {
+            PlayerDataOld.OnHungerChanged += (_) => UpdateEmoji();
+            PlayerDataOld.OnStaminaChanged += (_) => UpdateEmoji();
+        }
     }
 
     private void OnDisable()
@@ -220,6 +224,11 @@ public class PlayerController : MonoBehaviour
             PlayerManager.Instance.OnEquipChanged -= ChangeCostume;
         if (_environment != null)
             _environment.OnDailyChanged -= HandleDailyChanged;
+        if (EmojiController.Instance != null)
+        {
+            PlayerDataOld.OnHungerChanged -= (_) => UpdateEmoji();
+            PlayerDataOld.OnStaminaChanged -= (_) => UpdateEmoji();
+        }
     }
 
     public void ApplyPlayerStats(CharacterDataSO SO)
@@ -949,6 +958,10 @@ public class PlayerController : MonoBehaviour
             return true;
         }
         return false;
+    }
+    void UpdateEmoji()
+    {
+        EmojiController.Instance.RefreshStateEmoji(PlayerDataOld, IsResting);
     }
 
     public void RequestReplan()  //idle에서 자율적으로 다음행동 결정

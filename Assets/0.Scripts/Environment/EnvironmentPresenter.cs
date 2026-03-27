@@ -25,11 +25,9 @@ public class EnvironmentPresenter : MonoBehaviour
     private void OnEnable()
     {
         // 켜질 때 구독 (이벤트 연결)
-        _model.OnSeasonChanged += _view.ChangeSeasonSprite;
         _model.OnDailyChanged += _lakeImage.HandleDailyChanged;
 
         _model.OnDailyChanged += _view.ChangeDayilyBackGround;
-        _model.OnDailyChanged += _view.ChangeDailySprite;
         _model.OnWeatherChanged += _view.PlaySeasonParticle;
 
 
@@ -41,11 +39,9 @@ public class EnvironmentPresenter : MonoBehaviour
     private void OnDisable()
     {
         // 꺼질 때 해제 (중복 구독 및 메모리 누수 방지)
-        _model.OnSeasonChanged -= _view.ChangeSeasonSprite;
         _model.OnDailyChanged -= _lakeImage.HandleDailyChanged;
 
         _model.OnDailyChanged -= _view.ChangeDayilyBackGround;
-        _model.OnDailyChanged -= _view.ChangeDailySprite;
         _model.OnWeatherChanged -= _view.PlaySeasonParticle;
         
 
@@ -125,8 +121,6 @@ public class EnvironmentPresenter : MonoBehaviour
         _model.UpdateTimeSet(now);
 
         _view.ChangeDayilyBackGround(_model.CurrentDay);
-        _view.ChangeDailySprite(_model.CurrentDay);
-        _view.ChangeSeasonSprite(_model.CurrentSeason);
         _lakeImage.HandleDailyChanged(_model.CurrentDay);
     }
 

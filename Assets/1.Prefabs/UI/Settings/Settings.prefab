@@ -219,7 +219,19 @@ MonoBehaviour:
     m_Options: []
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 6633398537231197337}
+        m_TargetAssemblyTypeName: UI_Settings, Assembly-CSharp
+        m_MethodName: OnValueChanged_SwitchMonitor
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_AlphaFadeSpeed: 0.15
 --- !u!1 &205769387656139379
 GameObject:
@@ -230,6 +242,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5882026437312158611}
+  - component: {fileID: 2400431048873065588}
   - component: {fileID: 4152960481181269376}
   - component: {fileID: 4561531450990820054}
   m_Layer: 5
@@ -258,6 +271,19 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &2400431048873065588
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 205769387656139379}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2134d9cf1904084596ca987dae836c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI_BaseLocalizedText
+  textId: Setting_Button_Save_Text
 --- !u!222 &4152960481181269376
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -603,6 +629,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8664686291629996752}
+  - component: {fileID: 2102293978991887529}
   - component: {fileID: 5312385884121191201}
   - component: {fileID: 4457402458787621242}
   m_Layer: 5
@@ -631,6 +658,19 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 85, y: 30}
   m_Pivot: {x: 0, y: 0.5}
+--- !u!114 &2102293978991887529
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 586304819321379701}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2134d9cf1904084596ca987dae836c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI_BaseLocalizedText
+  textId: Setting_Dropdown_Monitor_Text
 --- !u!222 &5312385884121191201
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1259,6 +1299,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2282129766764419223}
+  - component: {fileID: 7394112591511722106}
   - component: {fileID: 4237051423628727016}
   - component: {fileID: 7573097133876749356}
   m_Layer: 5
@@ -1287,6 +1328,19 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 85, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &7394112591511722106
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1146525513295423962}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2134d9cf1904084596ca987dae836c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI_BaseLocalizedText
+  textId: Setting_Slider_SFX_Text
 --- !u!222 &4237051423628727016
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1839,6 +1893,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1508707547512318867}
+  - component: {fileID: 8075970059881751569}
   - component: {fileID: 2431870653860632520}
   - component: {fileID: 821785458331161545}
   m_Layer: 5
@@ -1867,6 +1922,19 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &8075970059881751569
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1940075312793374822}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2134d9cf1904084596ca987dae836c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI_BaseLocalizedText
+  textId: Setting_Category_Sound_Text
 --- !u!222 &2431870653860632520
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2349,6 +2417,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1930041992904162732}
+  - component: {fileID: 1254859804158197283}
   - component: {fileID: 8915890174985537562}
   - component: {fileID: 7920155788390536566}
   m_Layer: 5
@@ -2377,6 +2446,19 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 85, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1254859804158197283
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2442304975430538648}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2134d9cf1904084596ca987dae836c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI_BaseLocalizedText
+  textId: Setting_Slider_AMB_Text
 --- !u!222 &8915890174985537562
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2788,6 +2870,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1209350060547739711}
+  - component: {fileID: 911754416849642480}
   - component: {fileID: 6139309799250113254}
   - component: {fileID: 8444254670731798547}
   m_Layer: 5
@@ -2816,6 +2899,19 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &911754416849642480
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3003786920645502289}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2134d9cf1904084596ca987dae836c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI_BaseLocalizedText
+  textId: Setting_Category_Screen_Text
 --- !u!222 &6139309799250113254
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -4777,6 +4873,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4648503672253702684}
+  - component: {fileID: 7588635255920114351}
   - component: {fileID: 4423652941087596618}
   - component: {fileID: 5016137135657134984}
   m_Layer: 5
@@ -4805,6 +4902,19 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 47.609985, y: 35.7}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &7588635255920114351
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5030023555994194414}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2134d9cf1904084596ca987dae836c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI_BaseLocalizedText
+  textId: Setting_Message_Title_Text
 --- !u!222 &4423652941087596618
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -5375,6 +5485,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4155446697233332368}
+  - component: {fileID: 7923365259931705621}
   - component: {fileID: 5857409484398458135}
   - component: {fileID: 341887026346456399}
   m_Layer: 5
@@ -5403,6 +5514,19 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 85, y: 30}
   m_Pivot: {x: 0, y: 0.5}
+--- !u!114 &7923365259931705621
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5626703548486804088}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2134d9cf1904084596ca987dae836c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI_BaseLocalizedText
+  textId: Setting_Dropdown_Language_Text
 --- !u!222 &5857409484398458135
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -6656,6 +6780,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4025545900007476055}
+  - component: {fileID: 4718180243044159606}
   - component: {fileID: 5509512638888457757}
   - component: {fileID: 3862786332350908707}
   m_Layer: 5
@@ -6684,6 +6809,19 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &4718180243044159606
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6772491473635645622}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2134d9cf1904084596ca987dae836c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI_BaseLocalizedText
+  textId: Setting_Category_Record_Text
 --- !u!222 &5509512638888457757
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -7395,6 +7533,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3026962214345959334}
+  - component: {fileID: 8261303314492619309}
   - component: {fileID: 1429396667414160400}
   - component: {fileID: 4147103520068672493}
   m_Layer: 5
@@ -7423,6 +7562,19 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 310, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &8261303314492619309
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7722226389072644674}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2134d9cf1904084596ca987dae836c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI_BaseLocalizedText
+  textId: Setting_Toggle_BackgroundPlay_Text
 --- !u!222 &1429396667414160400
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -7986,6 +8138,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5747235462925613951}
+  - component: {fileID: 6182944152085991969}
   - component: {fileID: 2865587834200675460}
   - component: {fileID: 4568940435941968143}
   m_Layer: 5
@@ -8014,6 +8167,19 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 310, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &6182944152085991969
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7825967153897298804}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2134d9cf1904084596ca987dae836c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI_BaseLocalizedText
+  textId: Setting_Toggle_AutoPlayDefault_Text
 --- !u!222 &2865587834200675460
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -8428,6 +8594,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2171977398181102108}
+  - component: {fileID: 3315735673193879658}
   - component: {fileID: 5661376292640215045}
   - component: {fileID: 1402078738260167871}
   m_Layer: 5
@@ -8456,6 +8623,19 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &3315735673193879658
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8098629739237923933}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2134d9cf1904084596ca987dae836c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI_BaseLocalizedText
+  textId: Setting_Category_General_Text
 --- !u!222 &5661376292640215045
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -8616,7 +8796,8 @@ MonoBehaviour:
   bgmVolumeText: {fileID: 6857420964683627217}
   sfxVolumeText: {fileID: 4094420861714353570}
   ambVolumeText: {fileID: 1869692463683171819}
-  topMostToggle: {fileID: 0}
+  monitorDropdown: {fileID: 5611707347551109731}
+  topMostToggle: {fileID: 6051417905941471909}
 --- !u!1 &8133998052190616455
 GameObject:
   m_ObjectHideFlags: 0
@@ -8793,6 +8974,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 175779906507000115}
+  - component: {fileID: 482076164213596023}
   - component: {fileID: 2158269335732895650}
   - component: {fileID: 2052785629274668746}
   m_Layer: 5
@@ -8821,6 +9003,19 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 85, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &482076164213596023
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8346612368911223705}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2134d9cf1904084596ca987dae836c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI_BaseLocalizedText
+  textId: Setting_Slider_BGM_Text
 --- !u!222 &2158269335732895650
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -9116,6 +9311,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8851673934612827887}
+  - component: {fileID: 4252517960686629904}
   - component: {fileID: 1992068316475226873}
   - component: {fileID: 1329332812993724529}
   m_Layer: 5
@@ -9144,6 +9340,19 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &4252517960686629904
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8538312866273618914}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2134d9cf1904084596ca987dae836c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI_BaseLocalizedText
+  textId: Setting_Button_Exit_Text
 --- !u!222 &1992068316475226873
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -9289,6 +9498,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6756336266310216963}
+  - component: {fileID: 778468940913725883}
   - component: {fileID: 1236489255317829559}
   - component: {fileID: 7559869612673965872}
   m_Layer: 5
@@ -9317,6 +9527,19 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 310, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &778468940913725883
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8622359706122447142}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2134d9cf1904084596ca987dae836c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI_BaseLocalizedText
+  textId: Setting_Toggle_AlwaysOnTop_Text
 --- !u!222 &1236489255317829559
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -9762,7 +9985,7 @@ MonoBehaviour:
     - m_Text: "\uD55C\uAD6D\uC5B4"
       m_Image: {fileID: 0}
       m_Color: {r: 1, g: 1, b: 1, a: 1}
-    - m_Text: "\uC601\uC5B4"
+    - m_Text: English
       m_Image: {fileID: 0}
       m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_OnValueChanged:

@@ -14,7 +14,13 @@ public class UI_MailSlot : MonoBehaviour
 
     private MailData _data;
     private UI_MailPopup _popup;
-   
+    private CanvasGroup _group;
+
+    private void Awake()
+    {
+        _group = GetComponent<CanvasGroup>();
+    }
+
     public void MailSlot(MailData mail, UI_MailPopup popup)
     {
         // 우편 데이터 매개변수로 끌고오기
@@ -32,7 +38,15 @@ public class UI_MailSlot : MonoBehaviour
         if (_data._rewardItemID > 0)
         {
             _rewardImage.gameObject.SetActive(true);
-            _rewardCount.text = $"{_data._rewardCount}";
+
+            if (MailManager.Instance.IsMailClaimed(_data._mailID))
+            {
+                _rewardCount.text = "0";
+            }
+            else
+            {
+                _rewardCount.text = $"{_data._rewardCount}";
+            }
 
             _rewardImage.sprite = DataManager.Instance.CurrencyDatabase.CurrencyInfoData[_data._rewardItemID].CurrencyImgPath_Sprite;
         }
@@ -44,6 +58,18 @@ public class UI_MailSlot : MonoBehaviour
         }
         _slotButton.onClick.RemoveAllListeners();
         _slotButton.onClick.AddListener(OnClickSlot);
+
+        if (_group != null)
+        {
+            if (MailManager.Instance.IsMailRead(_data._mailID))
+            {
+                _group.alpha = 0.5f;
+            }
+            else
+            {
+                _group.alpha = 1.0f; 
+            }
+        }
     }
 
     // 만약 이미 받은 우편이라면

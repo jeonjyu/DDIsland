@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -24,16 +25,24 @@ public class UI_Settings : MonoBehaviour
     [SerializeField] private TMP_Text ambVolumeText;
 
     [Header("화면 설정 관련")]
-    [SerializeField] private Toggle topMostToggle;
+    [SerializeField] private TMP_Dropdown monitorDropdown;      // 게임 플레이 모니터 설정 드랍다운
+    [SerializeField] private Toggle topMostToggle;              // 게임 화면 최상단 여부 설정 토글
 
     private bool isInitializing = false;
 
     private void Start()
     {
+        SettingInit();
+    }
+
+    private void SettingInit()
+    {
         isInitializing = true;
 
+        // 언어 설정 초기화
         languageDropdown.value = PlayerPrefsDataManager.Language;
 
+        // 사운드 설정 초기화
         bgmSlider.value = PlayerPrefsDataManager.BgmVolume;
         sfxSlider.value = PlayerPrefsDataManager.SFXVolume;
         ambSlider.value = PlayerPrefsDataManager.BGSVolume;
@@ -46,8 +55,26 @@ public class UI_Settings : MonoBehaviour
         OnValueChangedVolume(sfxSlider, sfxVolumeText);
         OnValueChangedVolume(ambSlider, ambVolumeText);
 
+        int monitorCount = WindowController.Instance.GetMonitorCount();
+
+        monitorDropdown.options.Clear();
+
+        List<string> options = new List<string>();
+
+        for(int i = 0; i < monitorCount; i++)
+        {
+            options.Add($"{i}번 모니터");
+        }
+
+        if(options.Count > 0)
+        {
+            monitorDropdown.AddOptions(options);
+            monitorDropdown.value = WindowController.Instance.GetCurrentMonitor();
+        }
+
         isInitializing = false;
     }
+
 
     public void OnOffUISettings(bool isOn)
     {
@@ -96,6 +123,13 @@ public class UI_Settings : MonoBehaviour
     #endregion
 
     #region 화면 설정
+    public void OnValueChanged_SwitchMonitor()
+    {
+        if (isInitializing) return;
+
+        WindowController.Instance.ChangeMonitor(monitorDropdown.value);
+    }
+
     public void OnValueChanged_WindowTopMost()
     {
         WindowController.Instance.IsTopmost = topMostToggle.isOn;
@@ -104,9 +138,9 @@ public class UI_Settings : MonoBehaviour
     #endregion
 
     #region 하단 버튼 (저장 / 게임 종료)
-    public void OnClick_SaveData()
+    public async void OnClick_SaveData()
     {
-        // todo: 유저 서버 데이터 저장 코드 작성
+        await DataManager.Instance.Hub.UploadAllData();
     }
 
     public void OnClick_GameExit()

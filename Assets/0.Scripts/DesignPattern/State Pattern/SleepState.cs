@@ -15,9 +15,9 @@ public class SleepState : IState
         _player.Agent.velocity = Vector3.zero;
         _player.Agent.updateRotation = false;
 
-
         _player.transform.SetPositionAndRotation(_player.RestAreaPoint.position, _player.RestAreaPoint.rotation);
         _player.Animator.SetBool("isSleep", true);
+        EmojiController.Instance.RefreshStateEmoji(_player.PlayerDataOld, true);
         _player.StartRecover();
     }
 
@@ -30,6 +30,7 @@ public class SleepState : IState
     {
         _player.StopRecover();
         _player.Animator.SetBool("isSleep", false);
+        EmojiController.Instance.RefreshStateEmoji(_player.PlayerDataOld, false);
         _player.Agent.updateRotation = true;
         _player.Agent.isStopped = false;
     }

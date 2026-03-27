@@ -47,6 +47,11 @@ public class MailManager : Singleton<MailManager>
 
         DataManager.Instance.Hub.OnRequestSave += SyncMailDataSave;
         LoadGlobalMails();
+
+        foreach(var a in _deletedMailIDs)
+        {
+            Debug.Log(a);
+        }
     }
 
     private void InitMailData()
@@ -68,7 +73,7 @@ public class MailManager : Singleton<MailManager>
             _readMailIDs.Add(mailID);
             OnMailUpdated?.Invoke();
 
-             DataManager.Instance.Hub.SaveAllData();
+             _ = DataManager.Instance.Hub.UploadAllData();
         }
     }
 
@@ -153,13 +158,15 @@ public class MailManager : Singleton<MailManager>
         if (hasDeleted)
         {
             OnMailUpdated?.Invoke();
-            DataManager.Instance.Hub.SaveAllData();
+            _ = DataManager.Instance.Hub.UploadAllData();
         }
     }
 
     public void LoadGlobalMails()
     {
         DatabaseReference globalMailRef = FirebaseDatabase.DefaultInstance.GetReference("GlobalMails");
+
+        globalMailRef.KeepSynced(true);
 
         globalMailRef.GetValueAsync().ContinueWith(task => 
         {

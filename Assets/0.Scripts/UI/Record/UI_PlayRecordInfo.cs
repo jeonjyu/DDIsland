@@ -49,6 +49,7 @@ public class UI_PlayRecordInfo : MonoBehaviour
         this.record = record;
 
         recordImage.sprite = record.RecordImgPath_Sprite;
+        playModeImg.sprite = pauseSprite;
         titleText.text = record.RecordName_String;
         artistText.text = record.RecordArtist_String;
         currentPlaySlider.PlaySlider.value = 0f;
