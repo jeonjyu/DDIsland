@@ -32,7 +32,15 @@ public class UI_MailSlot : MonoBehaviour
         if (_data._rewardItemID > 0)
         {
             _rewardImage.gameObject.SetActive(true);
-            _rewardCount.text = $"{_data._rewardCount}";
+
+            if (MailManager.Instance.IsMailClaimed(_data._mailID))
+            {
+                _rewardCount.text = "0";
+            }
+            else
+            {
+                _rewardCount.text = $"{_data._rewardCount}";
+            }
 
             _rewardImage.sprite = DataManager.Instance.CurrencyDatabase.CurrencyInfoData[_data._rewardItemID].CurrencyImgPath_Sprite;
         }
