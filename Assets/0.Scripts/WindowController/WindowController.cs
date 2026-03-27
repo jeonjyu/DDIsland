@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
+[DefaultExecutionOrder(-50)]
 public class WindowController : Singleton<WindowController>
 {
     private WindowCore core = null;
@@ -17,8 +18,9 @@ public class WindowController : Singleton<WindowController>
     private const uint WINEVENT_OUTOFCONTEXT = 0;
 
     private IntPtr hook;
-    private IntPtr taskbarHandle;
     private WinEventDelegate procDelegate;
+
+    private bool isTaskbarAlreadyChanged = false;
 
     private Coroutine taskbarCoroutine;
     #endregion
@@ -109,6 +111,15 @@ public class WindowController : Singleton<WindowController>
 
     private bool onObject;      // 현재 마우스가 오브젝트 위에 있는지 판단하는 변수
 
+    // 현재 모니터 인덱스 반환
+    public int GetCurrentMonitor() => core.GetCurrentMonitor();
+
+    // 모니터 개수 반환
+    public int GetMonitorCount() => core.GetMonitorCount();
+
+    // 모니터 변경
+    public void ChangeMonitor(int monitorIndex) => core.FitToMonitor(monitorIndex);
+
     protected override void Awake()
     {
         base.Awake();
@@ -148,8 +159,6 @@ public class WindowController : Singleton<WindowController>
         //IsClickThrough = isClickThrough;
         IsTopmost = isTopmost;
 
-        // 작업표시줄 핸들 찾기
-        taskbarHandle = core.FindWindow("Shell_TrayWnd", null);
         // 이벤트를 받을 함수 받기
         procDelegate = new WinEventDelegate(WinEventProc);
 
@@ -314,7 +323,7 @@ public class WindowController : Singleton<WindowController>
     private void WinEventProc(IntPtr hWinEventHook, uint eventType, IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime)
     {
         // 변경된 정보가 작업표시줄일 경우 실행
-        if (hwnd == taskbarHandle && !isTaskbarAlreadyChanged)
+        if (hwnd != IntPtr.Zero && hwnd == core.Taskbar && !isTaskbarAlreadyChanged)
         {
             // 작업표시줄 설정이 변경되었을 때 실행할 로직
             if (taskbarCoroutine != null)
@@ -325,9 +334,14 @@ public class WindowController : Singleton<WindowController>
 
             taskbarCoroutine = StartCoroutine(FitMonitorToTaskbar());
         }
-    }
 
-    private bool isTaskbarAlreadyChanged = false;
+        // 게임 창의 상태가 변했을 때 (단 게임 내의 오브젝트 상태가 변했을 때는 실행X)
+        if(hwnd == core.GameWindowHandle && idObject != 0)
+        {
+            int newMonitor = core.GetCurrentMonitor();
+            Debug.Log("단축키로 모니터 위치 변경");
+        }
+    }
 
     private IEnumerator FitMonitorToTaskbar()
     {
