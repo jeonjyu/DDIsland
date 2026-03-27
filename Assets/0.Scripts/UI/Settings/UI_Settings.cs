@@ -138,9 +138,9 @@ public class UI_Settings : MonoBehaviour
     #endregion
 
     #region 하단 버튼 (저장 / 게임 종료)
-    public void OnClick_SaveData()
+    public async void OnClick_SaveData()
     {
-        // todo: 유저 서버 데이터 저장 코드 작성
+        await DataManager.Instance.Hub.UploadAllData();
     }
 
     public void OnClick_GameExit()
