@@ -556,15 +556,15 @@ PrefabInstance:
       objectReference: {fileID: 4760758713811130792}
     - target: {fileID: 8511567440625557574, guid: 176da03993ea90d48a925d62d01fecd1, type: 3}
       propertyPath: _maxFishCount
-      value: 80
+      value: 60
       objectReference: {fileID: 0}
     - target: {fileID: 8511567440625557574, guid: 176da03993ea90d48a925d62d01fecd1, type: 3}
       propertyPath: _maxFlockSize
-      value: 7
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 8511567440625557574, guid: 176da03993ea90d48a925d62d01fecd1, type: 3}
       propertyPath: _minFlockSize
-      value: 5
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 8511567440625557574, guid: 176da03993ea90d48a925d62d01fecd1, type: 3}
       propertyPath: _waterWindows
@@ -12272,12 +12272,12 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 8391859129719183928}
+  m_Father: {fileID: 5215944689831491487}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: -437}
+  m_SizeDelta: {x: 0, y: -874}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &2922401728409813086 stripped
 RectTransform:
@@ -12793,6 +12793,7 @@ RectTransform:
   - {fileID: 1164267760}
   - {fileID: 8391859129719183928}
   - {fileID: 911225961441406770}
+  - {fileID: 2774385005601638188}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -13280,11 +13281,17 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 7623327449481815795, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
   m_PrefabInstance: {fileID: 5669495222384035312}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &5669495222384035316 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3031930150367672260, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
+--- !u!114 &5669495222384035316 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3765837066511238604, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
   m_PrefabInstance: {fileID: 5669495222384035312}
   m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e92c1615c300eb343afe38b4580974e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TradeViewModelBase
 --- !u!1 &5669495222384035317 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4541523570967976678, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
@@ -13612,7 +13619,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 478690072}
-  - {fileID: 2774385005601638188}
   - {fileID: 362971060}
   - {fileID: 1644438077}
   - {fileID: 1446348772}
