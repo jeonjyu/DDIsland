@@ -11,46 +11,50 @@ public class StoreListView : MonoBehaviour
     [SerializeField] GameObject storeListPanel;
     //[SerializeField] Button StoreButton;
 
-    List<Button> stores = new List<Button>();
+    List<CategoryButton> stores = new List<CategoryButton>();
 
     StoreListViewModel viewModel;
     
     Color normalColor = new Color(0.831f, 0.706f, 0.600f, 1f);
     Color selectedColor = new Color(0.992f, 0.969f, 0.906f, 1f);
 
-    public List<Button> Stores => stores;
+    public List<CategoryButton> Stores => stores;
 
     void Awake()
     {
         viewModel = GetComponent<StoreListViewModel>();
         viewModel.PropertyChanged += OnStoreListViewModelChanged;
 
-        foreach (Button button in storeListPanel.transform.GetComponentsInChildren<Button>())
+        foreach (CategoryButton button in storeListPanel.transform.GetComponentsInChildren<CategoryButton>())
+        {
             stores.Add(button);
+        }
 
         SetStoreCat();
     }
 
     private void OnDisable()
     {
-        foreach(Button button in stores)
+        foreach(CategoryButton button in stores)
         {
-            SetSelectedCatBtnColor(button, false);
+            SetSelectedCatBtnColor(button.CatBtn, false);
         }
     }
 
     // 스토어 버튼 설정
     void SetStoreCat()
     {
-        List<string> catList = DescriptionExtracter.GetEnumList<StoreCat>(Enum.GetValues(typeof(StoreCat)));
-        foreach (string item in catList)
+        List<string> catUiStr = DescriptionExtracter.GetEnumList<StoreCat>(Enum.GetValues(typeof(StoreCat)));
+        foreach (string item in catUiStr)
         {
-            int idx = catList.IndexOf(item);
-    // 이름 변경
-            stores[idx].GetComponentInChildren<TMP_Text>().text = item;
-    // 버튼 이벤트 추가
+            int idx = catUiStr.IndexOf(item);
+            // 이름 변경
+            //stores[idx].GetComponentInChildren<TMP_Text>().text = item;
+            stores[idx].CatUiString.TextId = item;
+
+            // 버튼 이벤트 추가
             // 버튼에 모델을 현재 상점 카테고리로 설정하도록 하는 로직 추가
-            stores[idx].GetComponent<Button>().onClick.AddListener(() =>
+            stores[idx].CatBtn.onClick.AddListener(() =>
             {
                 viewModel.UpdateCurrentCat(idx);
             });

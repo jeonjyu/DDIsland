@@ -67,8 +67,7 @@ public class StoreManager : Singleton<StoreManager>, INotifyPropertyChanged
             if (tradeModel.ItemCount != value)
             {
                 tradeModel.ItemCount = value;
-                //Debug.Log("[StoreManager] | 아이템 개수 변경 " + TradeItemCount);
-
+                Debug.Log("[StoreManager] 아이템 개수 변경 " + TradeItemCount);
                 OnTradeModelChanged(nameof(TradeItemCount));
             }
         }
@@ -82,7 +81,7 @@ public class StoreManager : Singleton<StoreManager>, INotifyPropertyChanged
             if(tradeModel.IsGained != value)
             {
                 tradeModel.IsGained = value;
-                //Debug.Log(this.name + " 아이템 보유 여부 변경 " + tradeModel.IsGained);
+                Debug.Log("[StoreManager] 아이템 보유 여부 변경 " + IsTradeItemGained);
                 OnTradeModelChanged(nameof(IsTradeItemGained));
             }
         }
@@ -125,10 +124,9 @@ public class StoreManager : Singleton<StoreManager>, INotifyPropertyChanged
                 }
             }
 
+            Debug.Log("[StoreManager] 아이템 정보 변경됨 ");
             TradeItemCount += inCount;
-            //IsTradeItemGained = true;
-            //Debug.Log("IsTradeItemGained : " + IsTradeItemGained);
-            TradeItemSlot.IsGained = IsTradeItemGained; // TradeModel.IsGained;
+            TradeItemSlot.IsGained = IsTradeItemGained;
             TradeItemSlot.ItemCount = TradeItemCount;
         }
         else

@@ -99,12 +99,14 @@ public class ItemSlotViewBase : MonoBehaviour, IStoreItemView, IPointerClickHand
                 Init();
                 break;
             case "IsGained":
+                Debug.Log("[ItemSlotViewBase] 보유 여부 변경됨");
                 UpdateSlotUI(modelData.ItemCount);
                 UpdateSlotColor(modelData.IsGained);
                 StoreManager.Instance.sortDropdown.ApplySortPriority();
                 StoreManager.Instance.StoreListVM.LoadSlotList();
                 break;
             case "ItemCount":
+                Debug.Log("[ItemSlotViewBase] 아이템 개수 변경됨");
                 UpdateSlotUI(modelData.ItemCount);
                 StoreManager.Instance.sortDropdown.ApplySortPriority();
                 StoreManager.Instance.StoreListVM.LoadSlotList();

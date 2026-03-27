@@ -10,9 +10,6 @@ public class StoreListViewModel : MonoBehaviour, INotifyPropertyChanged
     [Tooltip("슬롯을 채워줄 아이템 그리드")]
     public GameObject itemContents;
 
-    [Header("슬롯 프리팹")]
-    public ItemSlotViewModelBase itemSlot;
-
     List<ItemSlotViewModelBase> storeItemViewModels = new List<ItemSlotViewModelBase>();
     //[SerializeField] FilterDropdown filterDropdown;
     //[SerializeField] SortDropdown sortDropdown;
@@ -79,7 +76,7 @@ public class StoreListViewModel : MonoBehaviour, INotifyPropertyChanged
         //Debug.Log((int)CurrentCat);
 
         if (view.Stores.Count > 0)
-            view.SetSelectedCatBtnColor(view.Stores[(int)CurrentCat], false);
+            view.SetSelectedCatBtnColor(view.Stores[(int)CurrentCat].CatBtn, false);
 
         // 현재 카테고리 변경
         CurrentCat = (StoreCat)catIdx;
@@ -93,7 +90,7 @@ public class StoreListViewModel : MonoBehaviour, INotifyPropertyChanged
         ItemManager.Instance.SetCurrentCategory(CurrentCat);
 
         if (view.Stores.Count > 0)
-            view.SetSelectedCatBtnColor(view.Stores[(int)CurrentCat], true);
+            view.SetSelectedCatBtnColor(view.Stores[(int)CurrentCat].CatBtn, true);
 
         LoadSlotList();
         // 아이템 리스트 업데이트

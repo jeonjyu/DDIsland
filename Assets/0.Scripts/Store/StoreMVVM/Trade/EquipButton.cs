@@ -54,13 +54,13 @@ public class EquipButton : MonoBehaviour
         {
             _text.text = PlayerManager.Instance.CompareID(item) ? "해제": "장착" ;
             _equipButton.interactable = true;
-            Debug.Log("isGained 변수 : " + isGained + " 현재 거래 모델 보유 여부 : " + StoreManager.Instance.TradeModel.IsGained + " 텍스트 : " + _text.text);
+            //Debug.Log("isGained 변수 : " + isGained + " 현재 거래 모델 보유 여부 : " + StoreManager.Instance.TradeModel.IsGained + " 텍스트 : " + _text.text);
         }
         else
         {
             _equipButton.interactable = false;
             _text.text = "장착";
-            Debug.Log("isGained 변수 : " + isGained + " 현재 거래 모델 보유 여부 : " + StoreManager.Instance.TradeModel.IsGained + " 텍스트 : " + _text.text);
+            //Debug.Log("isGained 변수 : " + isGained + " 현재 거래 모델 보유 여부 : " + StoreManager.Instance.TradeModel.IsGained + " 텍스트 : " + _text.text);
         }
     }
 

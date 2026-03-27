@@ -4,11 +4,11 @@ using System.ComponentModel;
 
 public enum StoreCat
 {
-    [Description("섬 인테리어")] interior,
-    [Description("호수 인테리어")] lake,
-    [Description("코스튬")] costume,
-    [Description("낚시")] fishing,
-    [Description("레시피")] recipe
+    [Description("Shop_Category_IslandInterior_Text")] interior,
+    [Description("Shop_Category_LakeInterior_Text")] lake,
+    [Description("Shop_Category_Costume_Text")] costume,
+    [Description("Shop_Category_FishingItem_Text")] fishing,
+    [Description("Shop_Category_Recipe_Text")] recipe
 }
 
 // 드롭다운 옵션으로 설정해줄 enum들
@@ -32,32 +32,32 @@ public enum Filter
 
 public enum InteriorFilter
 {
-    [Description("모든 아이템")] all,
-    [Description("메인 하우스")] mainHouse,
-    [Description("섬 바닥")] floor,
-    [Description("섬 고정 장식물")] fix,
-    [Description("섬 자유 배치물")] free,
+    [Description("IslandInteriorShop_Filter_All_Text")] all,
+    [Description("IslandInteriorShop_Filter_MainHouse_Text")] mainHouse,
+    [Description("IslandInteriorShop_Filter_Floor_Text")] floor,
+    [Description("IslandInteriorShop_Filter_Fix_Text")] fix,
+    [Description("IslandInteriorShop_Filter_Free_Text")] free,
 
 }
 
-public enum LakeFilter
-{
-    [Description("모든 아이템")] all,
-    [Description("바닥재")] floor,
-    [Description("장식물")] ornament
-}
+//public enum LakeFilter
+//{
+//    [Description("모든 아이템")] all,
+//    [Description("바닥재")] floor,
+//    [Description("장식물")] ornament
+//}
 
 public enum CostumeFilter 
 {
-    [Description("모든 아이템")] all,
-    [Description("머리 장식")] head,
-    [Description("한벌옷")] body
+    [Description("CostumeShop_Filter_All_Text")] all,
+    [Description("CostumeShop_Filter_Head_Text")] head,
+    [Description("CostumeShop_Filter_Body_Text")] body
 }
 
 public enum FishingFilter
 {
-    [Description("모든 아이템")] all,
-    [Description("낚싯대")] pole,
-    [Description("미끼")] bait,
-    [Description("낚시찌")] bobber
+    [Description("FishingItemShop_Filter_All_Text")] all,
+    [Description("FishingItemShop_Filter_Pole_Text")] pole,
+    [Description("FishingItemShop_Filter_Bait_Text")] bait,
+    [Description("FishingItemShop_Filter_Bobber_Text")] bobber
 }

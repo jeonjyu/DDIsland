@@ -149,6 +149,8 @@ GameObject:
   - component: {fileID: 6329210901567034146}
   - component: {fileID: 3829287554889341508}
   - component: {fileID: 5057562494597000823}
+  - component: {fileID: 1591410845778286586}
+  - component: {fileID: 9217644267421463411}
   m_Layer: 5
   m_Name: Category
   m_TagString: Untagged
@@ -258,3 +260,31 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6276459403459358187}
   m_CullTransparentMesh: 1
+--- !u!114 &1591410845778286586
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6276459403459358187}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce8e9539a773bcb45b10ca5217d48374, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CategoryButton
+  button: {fileID: 3829287554889341508}
+  catUiString: {fileID: 9217644267421463411}
+  btnText: {fileID: 508286454965909056}
+--- !u!114 &9217644267421463411
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6276459403459358187}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b104394d4cdeb1c4787660271464e7b3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI_StoreCategoryText
+  textId: 

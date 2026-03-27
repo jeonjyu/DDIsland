@@ -10,6 +10,8 @@ public static class DescriptionExtracter
 {
 
     // 각 enum에 설정된 Description으로 리스트 반환
+    // === 2026-03-27 ===
+    // 다국어 전환 기능으로 용도 변경
     public static List<string> GetEnumList<T>(Array optionEnum) where T : Enum
     {
 
@@ -22,11 +24,14 @@ public static class DescriptionExtracter
     }
 
     // 각 enum에 지정된 description 반환
+    // === ===
+    // enum으로 
     public static string GetEnumDesc(Enum value)
     {
         FieldInfo fieldInfo = value.GetType().GetField(value.ToString());
         DescriptionAttribute description = fieldInfo.GetCustomAttribute(typeof(DescriptionAttribute), false) as DescriptionAttribute;
+        string str = LocalizationManager.Instance.GetString(description.Description);
 
-        return description.Description;
+        return str;
     }
 }

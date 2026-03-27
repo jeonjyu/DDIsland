@@ -452,6 +452,7 @@ GameObject:
   - component: {fileID: 2146323300972314023}
   - component: {fileID: 8617019052920824305}
   - component: {fileID: 3045118557760977713}
+  - component: {fileID: 2068607500363243315}
   m_Layer: 0
   m_Name: SortDropdown
   m_TagString: Untagged
@@ -568,6 +569,24 @@ MonoBehaviour:
   dropdown: {fileID: 8617019052920824305}
   storeListViewModel: {fileID: 0}
   sortDrop: {fileID: 8617019052920824305}
+--- !u!114 &2068607500363243315
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4487583200456433767}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea999652958ce024a9422359cf04cdb7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI_DropdownText
+  textId: Shop_Sort_NotHave_Text
+  keys:
+  - Shop_Sort_Have_Text
+  - Shop_Sort_NotHave_Text
+  - Shop_Sort_HighPrice_Text
+  - Shop_Sort_LowPrice_Text
 --- !u!1001 &3596096062199132403
 PrefabInstance:
   m_ObjectHideFlags: 0
