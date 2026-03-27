@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Reflection;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -48,8 +49,8 @@ public class StoreListView : MonoBehaviour
         foreach (string item in catUiStr)
         {
             int idx = catUiStr.IndexOf(item);
+
             // 이름 변경
-            //stores[idx].GetComponentInChildren<TMP_Text>().text = item;
             stores[idx].CatUiString.TextId = item;
 
             // 버튼 이벤트 추가
@@ -85,14 +86,10 @@ public class StoreListView : MonoBehaviour
 
     private void OnStoreListViewModelChanged(object sender, PropertyChangedEventArgs e)
     {
-        if(viewModel.CurrentCat != StoreCat.recipe)
-        {
-            viewModel.Filter.filterDrop.interactable = true;
-            viewModel.Filter.UpdateFilter((Filter)viewModel.CurrentCat);
-        }
-        else
-            viewModel.Filter.filterDrop.interactable = false;
-
+        viewModel.Filter.filterDrop.value = 0;
+        viewModel.Filter.filterDrop.interactable = viewModel.CurrentCat != StoreCat.recipe ? true : false;
+        viewModel.Filter.UpdateFilter((Filter)viewModel.CurrentCat);
+        
         switch (e.PropertyName)
         {
             case null:

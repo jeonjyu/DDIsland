@@ -124,7 +124,7 @@ public class StoreManager : Singleton<StoreManager>, INotifyPropertyChanged
                 }
             }
 
-            Debug.Log("[StoreManager] 아이템 정보 변경됨 ");
+            //Debug.Log("[StoreManager] 아이템 정보 변경됨 ");
             TradeItemCount += inCount;
             TradeItemSlot.IsGained = IsTradeItemGained;
             TradeItemSlot.ItemCount = TradeItemCount;

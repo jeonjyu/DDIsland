@@ -32,6 +32,7 @@ public class StoreDropdownBase : MonoBehaviour
 
         foreach (var option in optionList)
         {
+            //Debug.Log(option.ToString());
             dropdown.options.Add(new TMP_Dropdown.OptionData(option.ToString()));
         }
 

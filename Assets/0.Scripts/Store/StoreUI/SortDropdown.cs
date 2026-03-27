@@ -33,16 +33,22 @@ public class SortDropdown : StoreDropdownBase
     {
         // 드롭다운 옵션 리스트 전달
         comparers = (Enum.GetValues(typeof(Comparer)) as Comparer[]).ToList();
-        optionList = DescriptionExtracter.GetEnumList<StoreSort>(Enum.GetValues(typeof(StoreSort)));
+        //optionList = DescriptionExtracter.GetFilterEnumList<StoreSort>(Enum.GetValues(typeof(StoreSort)));
         SetOptions();
     }
 
     public override void SetOptions()
     {
-        base.SetOptions();
+        //base.SetOptions();
+        //foreach (var option in optionList)
+        //{
+        //    Debug.Log(option.ToString());
+        //    dropdown.options.Add(new TMP_Dropdown.OptionData(option.ToString()));
+        //}
+
         if (optionList.Count > 0)
         {
-            dropdown.value = 1;
+            dropdown.value = 0;
             //dropdown.captionText.text = optionList[1];
         }
     }
@@ -51,11 +57,6 @@ public class SortDropdown : StoreDropdownBase
     // 정렬 체이닝 돌리기
     public void SortSlots(Comparer comparer)
     {
-        // 드롭다운 설정에 따라 정렬 기준을 정렬
-        // 정렬 enum에 따라 해당 enum을 맨 앞으로 가져옴
-        // 리스트가 있고 순서를 지키지만 특정한 하나를 1순위로 >
-        // 해당 리스트 요소를 널으로 만들고 0 위치에 insert, 빈 거 제거/무시 후 리스트화 
-        //Debug.Log("[SortDropdown] 정렬 시작");
         comparers = comparers.OrderBy(x => x).ToList();
         comparers.Remove(comparer);
         comparers.Insert(0, comparer);
@@ -64,7 +65,6 @@ public class SortDropdown : StoreDropdownBase
         // 여기서부터 정렬 기준에 맞춰 아이템 정렬
         IEnumerable<IStoreItem> items = ItemManager.Instance.displayDatas;
 
-        //Debug.Log("[SortDropdown] SortSlots | SelectedOption 1 : " + (StoreSort)SelectedOption);
 
         foreach (Comparer comp in comparers)
         {
@@ -91,7 +91,6 @@ public class SortDropdown : StoreDropdownBase
             }
         }
         ItemManager.Instance.displayDatas = items.ToList();
-        //Debug.Log("[SortDropdown] SortSlots | SelectedOption 2 : " + (StoreSort)SelectedOption);
 
         //Debug.Log("정렬 기준 : " + string.Join(" > ", comparers.Select(x => x)));
         //Debug.Log("정렬 완료: " + string.Join(", ", ItemManager.Instance.displayItems.Select(x => x.ItemName + "(" + x.IsGained + "):" + x.PurchasePrice)));

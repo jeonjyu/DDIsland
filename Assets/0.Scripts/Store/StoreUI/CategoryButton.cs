@@ -11,11 +11,4 @@ public class CategoryButton : MonoBehaviour
 
     public Button CatBtn => button;
     public UI_StoreCategoryText CatUiString => catUiString;
-
-    //private void Awake()
-    //{
-    //    button = GetComponent<Button>();
-    //    catUiString = GetComponentInChildren<UI_StoreCategoryText>();
-    //    btnText = GetComponentInChildren<TMP_Text>();
-    //}
 }
