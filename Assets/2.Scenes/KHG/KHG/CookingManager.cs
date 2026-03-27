@@ -1,6 +1,7 @@
 
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public struct CookingContext
 {
@@ -175,6 +176,7 @@ public class CookingManager : Singleton<CookingManager>
         {
             FoodId = myFood.ID,
         };
+        EmojiController.Instance.ShowFoodEmoji(myFood);
         Debug.Log($"Name: {myFood.FoodName_String}");
         bool success = FoodStorageManager.Instance.TryAddToFoodStorage(food);
         if (!success)
