@@ -2,7 +2,6 @@ using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
-using TMPro.EditorUtilities;
 
 public enum EmojiType
 {
