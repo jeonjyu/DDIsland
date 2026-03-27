@@ -61,8 +61,8 @@ public class UpgradeManagerV2 : MonoBehaviour
 
     void Start()
     {
-        ResetDataAll();
-        ResetUpgradeLevels();
+        //ResetDataAll();
+        //ResetUpgradeLevels();
         if (playerController == null)
             playerController = FindObjectOfType<PlayerController>();
         if (playerController != null)
