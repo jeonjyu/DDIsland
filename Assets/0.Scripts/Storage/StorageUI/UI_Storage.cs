@@ -439,4 +439,9 @@ public class UI_Storage : MonoBehaviour
         _ofFoodFishButton.interactable = true;
         _ofFoodFoodButton.interactable = false;
     }
+    public void CloseAllStorage()  //임시
+    {
+        _fishStorageUI.SetActive(false);
+        _foodStorageUI.SetActive(false);
+    }
 }
