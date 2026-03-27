@@ -219,7 +219,19 @@ MonoBehaviour:
     m_Options: []
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 6633398537231197337}
+        m_TargetAssemblyTypeName: UI_Settings, Assembly-CSharp
+        m_MethodName: OnValueChanged_SwitchMonitor
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_AlphaFadeSpeed: 0.15
 --- !u!1 &205769387656139379
 GameObject:
@@ -8616,7 +8628,8 @@ MonoBehaviour:
   bgmVolumeText: {fileID: 6857420964683627217}
   sfxVolumeText: {fileID: 4094420861714353570}
   ambVolumeText: {fileID: 1869692463683171819}
-  topMostToggle: {fileID: 0}
+  monitorDropdown: {fileID: 5611707347551109731}
+  topMostToggle: {fileID: 6051417905941471909}
 --- !u!1 &8133998052190616455
 GameObject:
   m_ObjectHideFlags: 0
