@@ -27,8 +27,10 @@ public class UpgradeManagerV2 : MonoBehaviour
     public Sprite[] statIcons;        // 포만감, 스태미너, 이동속도, 낚시, 휴식
 
     [Header("구매 버튼")]
+    public GameObject enableButton;  
+    public GameObject disableButton; 
     public Button buyButton;
-    public TextMeshProUGUI buyCostText;  // 필요 재화량
+    public TextMeshProUGUI[] buyCostTexts;  // 필요 재화량
 
     [Header("페이지 네비게이션")]
     public Button prevButton;      // < 버튼
@@ -77,7 +79,6 @@ public class UpgradeManagerV2 : MonoBehaviour
         buyButton.onClick.AddListener(OnbuyClicked);
         prevButton.onClick.AddListener(OnPrevPage);
         nextButton.onClick.AddListener(OnNextPage);
-
 
         UpdatePage();
     }
@@ -453,15 +454,19 @@ public class UpgradeManagerV2 : MonoBehaviour
         UpgradeData currentLevelData = FindCurrentLevelData(type, level);
         if (currentLevelData == null) return;
 
+        string costStr = currentLevelData.IsMax ? "MAX" : currentLevelData.Cost.ToString();
+        foreach (var text in buyCostTexts) text.text = costStr;
+
         if (currentLevelData.IsMax)
         {
-            buyCostText.text = "MAX";
-            buyButton.interactable = false;
+            enableButton.SetActive(false);         
+            disableButton.SetActive(true);         
         }
         else
         {
-            buyCostText.text = currentLevelData.Cost.ToString();
-            buyButton.interactable = (GameManager.Instance.PlayerGold >= currentLevelData.Cost);
+            bool canBuy = GameManager.Instance.PlayerGold >= currentLevelData.Cost;
+            enableButton.SetActive(canBuy);          
+            disableButton.SetActive(!canBuy);        
         }
     }
 
