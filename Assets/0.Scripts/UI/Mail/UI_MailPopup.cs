@@ -33,14 +33,8 @@ public class UI_MailPopup : MonoBehaviour
         {
             _rewardImage.gameObject.SetActive(true);
             _rewardImage.sprite = DataManager.Instance.CurrencyDatabase.CurrencyInfoData[_currentData._rewardItemID].CurrencyImgPath_Sprite;
-            if (MailManager.Instance.IsMailClaimed(_currentData._mailID))
-            {
-                _rewardCountText.text = "0";
-            }
-            else
-            {
-                _rewardCountText.text = $"{_currentData._rewardCount}";
-            }
+            _rewardCountText.text = $"{_currentData._rewardCount}";
+            
         }
         else
         {

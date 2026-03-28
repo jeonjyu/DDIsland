@@ -30,16 +30,27 @@ public abstract class UI_RecordSlot : MonoBehaviour
 
     public abstract void OnClick_Slot();        // 음반 슬롯 클릭 메서드
 
+    
     protected void OnEnable()
     {
         PlayerPrefsDataManager.OnLanguageChanged += InitTextData;
 
         if (DataManager.Instance != null && DataManager.Instance.StringUIDatabase != null && Record != null)
+        {
             InitTextData();
+            // 추가한 부분
+            DataManager.Instance.RecordDatabase.OnRecordsUpdated += CheckUserData;
+        }
     }
 
     protected void OnDisable()
     {
         PlayerPrefsDataManager.OnLanguageChanged -= InitTextData;
+
+        // 추가한 부분
+        if (DataManager.Instance?.RecordDatabase != null)
+        {
+            DataManager.Instance.RecordDatabase.OnRecordsUpdated -= CheckUserData;
+        }
     }
 }

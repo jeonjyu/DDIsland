@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -39,9 +40,9 @@ public class UI_MailBox : MonoBehaviour
             Destroy(child.gameObject);
         }
 
-        List<MailData> allMails = MailManager.Instance.GetAllMails();
+        List<MailData> allMails = MailManager.Instance.GetAllMails().ToList();
+        allMails.Reverse();
         int visibleCount = 0;
-
 
         foreach (MailData mail in allMails)
         {

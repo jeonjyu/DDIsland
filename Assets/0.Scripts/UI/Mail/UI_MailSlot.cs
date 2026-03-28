@@ -27,7 +27,7 @@ public class UI_MailSlot : MonoBehaviour
         _data = mail;
         _popup = popup;
 
-        if (_titleText == null|| _contentText == null) return;
+        if (_titleText == null || _contentText == null) return;
 
         // 끌고온 우편 데이터를 각각 슬롯에 집어 넣기
         _titleText.text = _data._title;
@@ -38,16 +38,8 @@ public class UI_MailSlot : MonoBehaviour
         if (_data._rewardItemID > 0)
         {
             _rewardImage.gameObject.SetActive(true);
-
-            if (MailManager.Instance.IsMailClaimed(_data._mailID))
-            {
-                _rewardCount.text = "0";
-            }
-            else
-            {
-                _rewardCount.text = $"{_data._rewardCount}";
-            }
-
+            _rewardCount.text = $"{_data._rewardCount}";
+            
             _rewardImage.sprite = DataManager.Instance.CurrencyDatabase.CurrencyInfoData[_data._rewardItemID].CurrencyImgPath_Sprite;
         }
         //아니면 비활성화
@@ -63,11 +55,18 @@ public class UI_MailSlot : MonoBehaviour
         {
             if (MailManager.Instance.IsMailRead(_data._mailID))
             {
-                _group.alpha = 0.5f;
+                if (_data._rewardItemID > 0 && !MailManager.Instance.IsMailClaimed(_data._mailID))
+                {
+                    _group.alpha = 1f;
+                }
+                else
+                {
+                    _group.alpha = 0.5f;
+                }
             }
             else
             {
-                _group.alpha = 1.0f; 
+                _group.alpha = 1.0f;
             }
         }
     }
