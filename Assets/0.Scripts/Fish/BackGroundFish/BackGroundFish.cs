@@ -40,7 +40,7 @@ public class BackGroundFish : MonoBehaviour
 
     [Header("물고기 관련")]
     public float _speed = 15f;
-    private float _rotationSpeed = 8f;
+    private float _rotationSpeed = 4f;
     [SerializeField] private float _spawnTime = 0.2f;
 
     [Header("물고기 군집 관련")]
@@ -112,17 +112,22 @@ public class BackGroundFish : MonoBehaviour
             }
 
             float targetAngle = Mathf.Atan2(_velocity.y, _velocity.x) * Mathf.Rad2Deg;
-
-            if (xDirection < 0) targetAngle += 180f;
-
+            float xRotation = (_velocity.x < 0) ? 180f : 0f;
             Quaternion targetRot = Quaternion.Euler(0, 0, targetAngle);
 
-            if (Quaternion.Angle(_rectTransform.localRotation, targetRot) > 0.1f)
+            if (Quaternion.Angle(_rectTransform.localRotation, targetRot) > 0.5f)
             {
                 _rectTransform.localRotation = Quaternion.Slerp(
                     _rectTransform.localRotation,
                     targetRot,
                     dt * _rotationSpeed);
+            }
+
+            float expectedYScale = (_velocity.x < 0) ? -1f : 1f;
+
+            if (!Mathf.Approximately(_rectTransform.localScale.y, expectedYScale))
+            {
+                _rectTransform.localScale = new Vector3(1f, expectedYScale, 1f);
             }
         }
 
@@ -165,7 +170,8 @@ public class BackGroundFish : MonoBehaviour
 
 
             _fishImage.SetNativeSize();
-            _rectTransform.sizeDelta *= _fishScale;
+            _rectTransform.sizeDelta *= _fishScale/2;
+            _rectTransform.localScale = Vector3.one;
         }
 
         _moveDir = _isGoingRight ? Vector2.right : Vector2.left;

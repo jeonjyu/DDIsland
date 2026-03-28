@@ -316,7 +316,7 @@ public class AquariumMgr : MonoBehaviour
             if (_currentActiveGroups < _maxTotalGroups)
             {
                 // 50% 확률로 군집 또는 일반 물고기 결정
-                if (Random.value > 0.5f)
+                if (Random.value > 0.7f)
                 {
                     StartCoroutine(SpawnFlock()); // 군집 소환
                 }
@@ -326,8 +326,17 @@ public class AquariumMgr : MonoBehaviour
                 }
                 _currentActiveGroups++; // 그룹 카운트 증가
             }
-            // 다음 무리 생성 대기시간
-            yield return new WaitForSeconds(_spawnInterval);
+
+            if(_currentActiveGroups > _maxTotalGroups / 2)
+            {
+                // 다음 무리 생성 대기시간
+                yield return new WaitForSeconds(_spawnInterval);
+            }
+            else
+            {
+                yield return new WaitForSeconds(_spawnInterval/4);
+            }
+
         }
     }
     public void ReturnFish(BackGroundFish fish)
@@ -413,7 +422,7 @@ public class AquariumMgr : MonoBehaviour
         // 물고기 투명도 1 (보이는 상태로)
         var cg = _spawnArea.GetComponent<CanvasGroup>();
         if (cg != null) cg.alpha = 1f;
-        StartCoroutine(RepeatSpawnFish());
+        _spawnCoroutine ??= StartCoroutine(RepeatSpawnFish());
     }
 
     // 물고기 일시정지
