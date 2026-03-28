@@ -421,6 +421,19 @@ public class BuildingManager : MonoBehaviour
         Quaternion rot = oldBuilding.transform.rotation;
         FixGroup locId = oldBuilding.LocationID;
 
+        Placeable3D oldPlaceable = oldBuilding.GetComponentInChildren<Placeable3D>();
+        Vector2Int gridPos = new (-1, -1);
+
+        if (oldPlaceable != null && oldPlaceable.PlacedIndex.x != -1)
+        {
+            gridPos = oldPlaceable.PlacedIndex;
+            _gridSystem.RemoveItem(gridPos.x, gridPos.y, oldPlaceable.PlacedSize.x, oldPlaceable.PlacedSize.y);
+        }
+        else
+        {
+            gridPos = _gridSystem.GetGridIndex(pos);
+        }
+
         IInterchangeableInteract transferComponent = oldBuilding.GetComponentInChildren<IInterchangeableInteract>();
 
         _locationBuildings.Remove(oldBuilding);
@@ -434,6 +447,22 @@ public class BuildingManager : MonoBehaviour
 
         transferComponent?.TransferTo(newGo);
         newFix.Setup(locId, newItemId);
+
+        if (!newGo.TryGetComponent(out Placeable3D newPlaceable))
+        {
+            newPlaceable = newGo.AddComponent<Placeable3D>();
+        }
+
+        newPlaceable.Initialize(_gridSystem, this, newData);
+
+        Vector2Int newSize = (newPlaceable.IsRotated % 2 == 1) ?
+            new Vector2Int(newData.GridSizeY, newData.GridSizeX) :
+            new Vector2Int(newData.GridSizeX, newData.GridSizeY);
+
+        _gridSystem.PlaceItem(gridPos.x, gridPos.y, newSize.x, newSize.y, newPlaceable);
+
+        newPlaceable.SetBakeData(gridPos, newSize);
+
         _locationBuildings.Add(newFix);
 
         Destroy(oldBuilding.gameObject);

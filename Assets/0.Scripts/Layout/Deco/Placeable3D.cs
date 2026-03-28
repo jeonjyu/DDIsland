@@ -226,6 +226,10 @@ public class Placeable3D : Placeable
             {
                 _targetGrid.RemoveItem(_lastPlacedIndex.x, _lastPlacedIndex.y, _lastPlacedSize.x, _lastPlacedSize.y);
             }
+
+            _isPlaced = true;
+            ItemState = ItemState.Placed;
+
             // 그리드에 아이템 배치
             _targetGrid.PlaceItem(index.x, index.y, size.x, size.y, this);
 
@@ -236,9 +240,7 @@ public class Placeable3D : Placeable
             _selectedRenderer.material.color = _originalColor;
 
             _targetGrid.ClearGrid(); // 셰이더 하이라이트 초기화
-
-            _isPlaced = true;
-            ItemState = ItemState.Placed;
+    
             _build.CompletePlacement(this);
         }
     }
