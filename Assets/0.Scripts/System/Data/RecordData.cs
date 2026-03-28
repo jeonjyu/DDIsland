@@ -15,6 +15,8 @@ public class RecordData : MonoBehaviour
     public RecordDataSO CurrentRecord;
     public List<int> DefaultRecords { get; private set; } = new List<int>();    // todo: 임시 기본 재생 목록
     public event Action<int> OnLPPieceChanged;
+    //추가한 부분
+    public event Action OnRecordsUpdated;
 
     private void OnEnable()
     {
@@ -102,6 +104,11 @@ public class RecordData : MonoBehaviour
         LpPieceCount = data._lpPieceCount;
 
         UnlockRecords = new HashSet<int>(data._unlockRecords ?? new List<int>());
+
+        //추가한 부분
+        OnRecordsUpdated?.Invoke();
+
+        Debug.Log(UnlockRecords == null);
     }
 
     private void Awake()
