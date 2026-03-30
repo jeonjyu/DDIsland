@@ -32,7 +32,7 @@ public enum Filter
 
 public enum InteriorFilter
 {
-    [Description("IslandInteriorShop_Filter_All_Text")] all,
+    [Description("IslandInteriorShopFilterAllText")] all,
     [Description("IslandInteriorShopFilterMainHouse")] mainHouse,
     [Description("IslandInteriorShopFilterFloor")] floor,
     [Description("IslandInteriorShopFilterFix")] fix,
@@ -49,14 +49,14 @@ public enum InteriorFilter
 
 public enum CostumeFilter 
 {
-    [Description("CostumeShop_Filter_All_Text")] all,
+    [Description("CostumeShopFilterAllText")] all,
     [Description("CostumeShopFilterHead")] head,
     [Description("CostumeShopFilterBody")] body
 }
 
 public enum FishingFilter
 {
-    [Description("FishingItemShop_Filter_All_Text")] all,
+    [Description("FishingItemShopFilterAllText")] all,
     [Description("FishingItemShopFilterPole")] pole,
     [Description("FishingItemShopFilterBait")] bait,
     [Description("FishingItemShopFilterBobber")] bobber
