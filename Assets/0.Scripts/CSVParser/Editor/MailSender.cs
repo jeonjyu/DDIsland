@@ -6,8 +6,10 @@ using UnityEngine;
 public class MailSender : EditorWindow
 {
     private string _mailKey = "";
-    private string _title = "";
-    private string _content = "";
+    private string _title_kr = "";
+    private string _content_kr = "";
+    private string _title_en = "";
+    private string _content_en = "";
     private int _rewardItemID;
     private int _rewardCount;
     private string _expireDate = "";
@@ -49,8 +51,15 @@ public class MailSender : EditorWindow
 
         EditorGUILayout.Space();
         _mailID = EditorGUILayout.IntField("우편 ID", _mailID);
-        _title = EditorGUILayout.TextField("제목", _title);
-        _content = EditorGUILayout.TextArea(_content, GUILayout.Height(60));
+        GUILayout.Label("한국어 우편", EditorStyles.boldLabel);
+        _title_kr = EditorGUILayout.TextField("제목 (한)", _title_kr);
+        _content_kr = EditorGUILayout.TextArea(_content_kr, GUILayout.Height(60));
+
+        EditorGUILayout.Space();
+
+        GUILayout.Label("영어 우편", EditorStyles.boldLabel);
+        _title_en = EditorGUILayout.TextField("제목 (영)", _title_en);
+        _content_en = EditorGUILayout.TextArea(_content_en, GUILayout.Height(60));
         _rewardItemID = EditorGUILayout.IntField("보상 아이템 ID", _rewardItemID);
         _rewardCount = EditorGUILayout.IntField("보상 수량", _rewardCount);
         _expireDate = EditorGUILayout.TextField("만료일", _expireDate);
@@ -122,8 +131,10 @@ public class MailSender : EditorWindow
         MailUploadData uploadData = new()
         {
             _mailID = this._mailID,
-            _title = _title,
-            _content = _content,
+            _title_kr = _title_kr,
+            _title_en = _title_en,
+            _content_kr = _content_kr,
+            _content_en = _content_en,
             _rewardItemID = _rewardItemID,
             _rewardCount = _rewardCount,
             _expireDate = _expireDate,
@@ -152,8 +163,10 @@ public class MailSender : EditorWindow
     private class MailUploadData
     {
         public int _mailID;
-        public string _title;
-        public string _content;
+        public string _title_kr;  
+        public string _title_en;  
+        public string _content_kr; 
+        public string _content_en; 
         public int _rewardItemID;
         public int _rewardCount;
         public string _expireDate;

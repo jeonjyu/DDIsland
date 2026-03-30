@@ -23,9 +23,20 @@ public class UI_MailPopup : MonoBehaviour
         _currentData = mail;
         gameObject.SetActive(true);
 
-        _titleText.text = _currentData._title;
-        _contentText.text = _currentData._content;
-        _expireDateText.text = $"만료일: {_currentData._expireDate}";
+        bool isKorean = PlayerPrefsDataManager.Language == 0;
+
+        if (isKorean)
+        {
+            _titleText.text = _currentData._title_kr;
+            _contentText.text = _currentData._content_kr;
+            _expireDateText.text = $"만료일: {_currentData._expireDate}";
+        }
+        else
+        {
+            _titleText.text = _currentData._title_en;
+            _contentText.text = _currentData._content_en;
+            _expireDateText.text = $"Expire Date: {_currentData._expireDate}";
+        }
 
         MailManager.Instance.MarkAsRead(_currentData._mailID);
 
