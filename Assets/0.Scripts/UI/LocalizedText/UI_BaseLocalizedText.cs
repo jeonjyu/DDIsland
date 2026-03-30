@@ -20,6 +20,8 @@ public class UI_BaseLocalizedText : MonoBehaviour
 
     protected virtual void SetText()
     {
+        Debug.Log(textId);
+        Debug.Log(DataManager.Instance.StringUIDatabase.StringUIInfoData[textId] == null ? "못찾음": "찾음");
         text.text = $"{DataManager.Instance.StringUIDatabase.StringUIInfoData[textId].ID_String}";
     }
 
