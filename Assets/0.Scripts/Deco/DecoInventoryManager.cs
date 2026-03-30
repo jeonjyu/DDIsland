@@ -75,17 +75,19 @@ public class DecoInventoryManager : Singleton<DecoInventoryManager>
                 ItemManager.Instance.AddToPlayerItem(originalItem, StoreCat.interior);
 
                 invenList.Add(new LakeInvenSlot { itemId = itemId, quantity = 1 });
-
-                Debug.Log($"<color=cyan> 아이템 복구 </color>");
             }
-            else
-            {
-                Debug.LogError($"해당 아이템 코드({itemId})를 찾을 수 없습니다!");
-            }
-
-
             return;
         }
+        // 고정물(Fix)은 최대 1개까지만 보유
+        try
+        {
+            var interiorData = DataManager.Instance.DecorationDatabase.InteriorData[itemId];
+            if (interiorData != null && interiorData.interior_itemType == Interior_ItemType.Fix)
+            {
+                if (playerItem.ItemCount >= 1) return; // 이미 1개면 증가 안 함
+            }
+        }
+        catch { }
 
         playerItem.ItemCount++;
         if (!playerItem.IsGained)
