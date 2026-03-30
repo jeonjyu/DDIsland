@@ -68,7 +68,7 @@ public class FilterDropdown : StoreDropdownBase
     {
         base.SetOptions();
         dropdown.value = 0;
-        Debug.Log("value 0 됨");
+        //Debug.Log("value 0 됨");
         if (optionList.Count > 0) dropdown.captionText.text = optionList[0];
     }
 

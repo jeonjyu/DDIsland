@@ -2,7 +2,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 
-[RequireComponent(typeof(TradeViewBase))]
+//[RequireComponent(typeof(TradeViewBase))]
 
 // 모델 받아오기
 // 원래의 모델 값 변경하기
@@ -14,7 +14,7 @@ using UnityEngine;
 
 public class TradeViewModelBase : MonoBehaviour, INotifyPropertyChanged
 {
-    public TradeViewBase view;
+    //public TradeViewBase view;
     int totalPrice;
     public bool isGained;
     [SerializeField] CanvasGroup canvasGroup;
@@ -50,7 +50,7 @@ public class TradeViewModelBase : MonoBehaviour, INotifyPropertyChanged
             if (totalPrice != value)
             {
                 totalPrice = value;
-
+                OnPropertyChanged(nameof(TotalPrice));
             }
         }
     }
@@ -87,10 +87,10 @@ public class TradeViewModelBase : MonoBehaviour, INotifyPropertyChanged
         canvasGroup.blocksRaycasts = true;
         canvasGroup.interactable = true;
     }
-    void Start()
-    {
-        view = GetComponent<TradeViewBase>();
-    }
+    //void Start()
+    //{
+    //    view = GetComponent<TradeViewBase>();
+    //}
 
   
 
