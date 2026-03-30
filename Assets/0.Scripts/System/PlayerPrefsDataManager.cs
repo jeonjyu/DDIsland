@@ -27,7 +27,7 @@ public static class PlayerPrefsDataManager
 
     public static event Action OnLanguageChanged;
 
-    public static int Language   // StringDataSO 타입과 호환
+    public static int Language   // StringDataSO 타입과 호환, (0 = 한국어, 1 = 영어)
     {
         get { return PlayerPrefs.GetInt(KEY_LANGUAGE, 0); }
 

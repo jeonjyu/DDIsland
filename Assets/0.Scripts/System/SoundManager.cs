@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
@@ -69,7 +68,7 @@ public class SoundManager : Singleton<SoundManager>
     #region 오디오 클립을 받아와 재생
     public void PlayBGM(AudioClip clip)
     {
-        SafeStartCoroutine(PlayCoroutine, Co_PlayBGM(clip));
+        SafeStartCoroutine(ref PlayCoroutine, Co_PlayBGM(clip));
     }
 
     public void PlayAMB(AudioClip clip)
@@ -98,7 +97,7 @@ public class SoundManager : Singleton<SoundManager>
     public void PlayPreview(AudioClip clip, float maxTime)
     {
         PlaySound(Soundtype.Preview, previewSource, clip);
-        CheckAudioPlayDone(previewPlayDoneCoroutine, previewSource, maxTime, OnPreviewPlayDone);
+        CheckAudioPlayDone(ref previewPlayDoneCoroutine, previewSource, maxTime, OnPreviewPlayDone);
     }
     #endregion
 
@@ -200,9 +199,9 @@ public class SoundManager : Singleton<SoundManager>
 
     #region 오디오 소스 재생 체크
     // 오디오 소스 재생 완료 체크 메서드
-    private void CheckAudioPlayDone(Coroutine coroutine, AudioSource source, float length, Action action)
+    private void CheckAudioPlayDone(ref Coroutine coroutine, AudioSource source, float length, Action action)
     {
-        SafeStartCoroutine(coroutine, Co_CheckAudioPlayDone(source, length, action));
+        SafeStartCoroutine(ref coroutine, Co_CheckAudioPlayDone(source, length, action));
     }
 
     /// <summary>
@@ -213,11 +212,8 @@ public class SoundManager : Singleton<SoundManager>
     /// <returns></returns>
     private IEnumerator Co_CheckAudioPlayDone(AudioSource source, float length, Action action)
     {
-        Debug.Log($"SourceTime: {source.time}");
-        Debug.Log($"Length: {length}");
         yield return new WaitUntil(() => source.time >= length);
 
-        Debug.Log("넘어옴");
         action?.Invoke();
     }
     #endregion
@@ -242,11 +238,11 @@ public class SoundManager : Singleton<SoundManager>
         // 배경음 재생
         SetVolume("BGM", vol, PlayerPrefsDataManager.BgmVolumeMute);
         PlaySound(Soundtype.BGM, BgmSource, clip);
-        CheckAudioPlayDone(bgmPlayDoneCoroutine, BgmSource, clip.length, OnBGMPlayDone);
+        CheckAudioPlayDone(ref bgmPlayDoneCoroutine, BgmSource, clip.length, OnBGMPlayDone);
     }
 
-    public void FadeOutBGMVolume(bool isPlay) => SafeStartCoroutine(PlayCoroutine, Co_FadeOutBGMVolume(isPlay));
-    public void FadeInBGMVolume(bool isPlay) => SafeStartCoroutine(PlayCoroutine, Co_FadeInBGMVolume(isPlay));
+    public void FadeOutBGMVolume(bool isPlay) => SafeStartCoroutine(ref PlayCoroutine, Co_FadeOutBGMVolume(isPlay));
+    public void FadeInBGMVolume(bool isPlay) => SafeStartCoroutine(ref PlayCoroutine, Co_FadeInBGMVolume(isPlay));
 
     private IEnumerator Co_FadeOutBGMVolume(bool isPlay)
     {
@@ -295,7 +291,7 @@ public class SoundManager : Singleton<SoundManager>
     }
     #endregion
 
-    private void SafeStartCoroutine(Coroutine coroutine, IEnumerator coroutineMethod)
+    private void SafeStartCoroutine(ref Coroutine coroutine, IEnumerator coroutineMethod)
     {
         if (coroutine != null)
         {
