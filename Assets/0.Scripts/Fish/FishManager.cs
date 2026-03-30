@@ -15,6 +15,8 @@ public struct FishingContext
     public bool IsSnow;
     public int GoldAmount;
     public int SeasonChange;
+    public int FishPool;
+    public float FishLengthBonus;
 }
 
 public enum SpecialType
@@ -29,6 +31,7 @@ public enum SpecialType
 }
 public class FishManager : Singleton<FishManager>
 {
+    [SerializeField] PlayerController _playerController;
     Dictionary<int, FishDataSO> _fishById;
     List<FishDataSO> _allFish;
     // 추가한 부분입니다
@@ -163,7 +166,9 @@ public class FishManager : Singleton<FishManager>
         //날씨, 골드도 필요함 일단테스트
         //ctx.GoldAmount = GameManager.Instance.PlayerGold;
         ctx.GoldAmount = 50000;
-        ctx.IsCherryblossom = true;
+        ctx.IsCherryblossom = true; 
+        ctx.FishPool = _playerController.BaitFishPool;
+        ctx.FishLengthBonus = _playerController.BobberLengthBonus;
         return ctx;
     }
 
@@ -205,12 +210,15 @@ public class FishManager : Singleton<FishManager>
             Debug.LogWarning("[FishManager] PickWeighted 실패");
             return;
         }
-        GiveFishingReward(pickedDrop.RewardItem);
+        GiveFishingReward(pickedDrop.RewardItem, ctx);
     }
 
-    public void CreateInstance(FishDataSO fish)  
+    public void CreateInstance(FishDataSO fish, FishingContext ctx)  
     {
-        float length = UnityEngine.Random.Range(fish.MinLength, fish.MaxLength);
+        float min = fish.MinLength + ctx.FishLengthBonus;
+        float max = fish.MaxLength + ctx.FishLengthBonus;
+
+        float length = UnityEngine.Random.Range(min, max);
         int price = fish.Price;
 
         Debug.Log($"Name: {fish.FishName_String}, price: {price}, Length: {length}");
@@ -266,6 +274,8 @@ public class FishManager : Singleton<FishManager>
             //장소 조건
             if (ctx.IsLake && !drop.IsLake) continue;
             if (ctx.IsSea && !drop.IsSea) continue;
+
+            if (ctx.FishPool != 0 && drop.RewardGroup != ctx.FishPool) continue;
 
             int fishId = drop.RewardItem;
             if (!PassSpecialRuleByFishId(fishId, ctx)) continue;
@@ -351,7 +361,7 @@ public class FishManager : Singleton<FishManager>
         }
         return weight;
     }
-    public void GiveFishingReward(int rewardItemId)
+    public void GiveFishingReward(int rewardItemId, FishingContext ctx)
     {
         if (rewardItemId == 201)  //LP보상
         {
@@ -371,8 +381,8 @@ public class FishManager : Singleton<FishManager>
             QuestManager.Instance.AddDetailsProgress(QuestConditionKey.FishCatchById,rewardItemId.ToString(),1);
         }
 
-        CreateInstance(fishSO);
-
+        CreateInstance(fishSO,ctx);
+        
         if ((int)fishSO.gradeType == 4)
         {
             DataManager.Instance.Hub.SaveAllData();

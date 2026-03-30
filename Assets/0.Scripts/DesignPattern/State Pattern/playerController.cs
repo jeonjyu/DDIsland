@@ -85,6 +85,12 @@ public class PlayerController : MonoBehaviour
     private Dictionary<int, GameObject> _bodyById;
     private Dictionary<int, GameObject> _fishingRodsById;
 
+    private int _equippedBaitId;  //저장용들임
+    private int _equippedBobberId;
+
+    private float _bobberLengthBonus;
+    private int _baitFishPool;
+
     private EnvironmentModel _environment;
     private DayilyCycle _currentSeason;
 
@@ -121,7 +127,9 @@ public class PlayerController : MonoBehaviour
     public Transform TablePoint => _tablePoint;
     public Transform SellPoint => _SellPoint;
     public int FishingCount => _fishingCount;
-   
+    public float BobberLengthBonus => _bobberLengthBonus;
+    public int BaitFishPool => _baitFishPool;
+
     private void Awake()
     {
         _animator = GetComponent<Animator>();
@@ -252,6 +260,14 @@ public class PlayerController : MonoBehaviour
          {
              SetTool(objectId);
          }
+        else if (typeName == "Bait")
+        {
+            SetBait(objectId);
+        }
+        else if (typeName == "Bobber")
+        {
+            SetBobber(objectId);
+        }
 
         DataManager.Instance.Hub.SaveAllData();
     }
@@ -357,7 +373,7 @@ public class PlayerController : MonoBehaviour
         }
         else Debug.LogWarning($"의상 ID 없음: {id}");
     }
-     public void SetTool(int id)
+     public void SetTool(int id)  //pole
      {
          foreach (var pair in _fishingRodsById)
          {
@@ -382,7 +398,25 @@ public class PlayerController : MonoBehaviour
          }
          else Debug.LogWarning($"의상 ID 없음: {id}");
      }
+    public void SetBait(int id)
+    {
+        if (id == 0) id = 40001; // 하급 미끼 기본값
+        _equippedBaitId = id;
 
+        var data = DataManager.Instance.FishingDatabase.FishingItemData[id];
+        _baitFishPool = data != null ? data.FishPool : 0;
+
+        Debug.Log($"미끼 장착 성공: {id}");
+    }
+    public void SetBobber(int id)
+    {
+        if (id == 0) id = 40004; // 기본 낚시찌 기본값
+        _equippedBobberId = id;
+
+        var data = DataManager.Instance.FishingDatabase.FishingItemData[id];
+        _bobberLengthBonus = data != null ? data.FishLength : 0f;
+        Debug.Log($"낚시찌 장착 성공: {id}");
+    }
     public void StartAcornSupply(Vector3 center)  //도토리 떨어지는 함수
     {
         _isAcornFalling = true;
