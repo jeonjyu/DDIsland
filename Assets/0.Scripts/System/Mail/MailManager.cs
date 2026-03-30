@@ -89,10 +89,12 @@ public class MailManager : Singleton<MailManager>
             if (currentData.ID == 202)
             {
                 GameManager.Instance.SetGold(mail._rewardCount);
+                RewardEffect.Instance.PlayQuestGoldEffect();
             }
             else if (currentData.ID == 201)
             {
                 DataManager.Instance.RecordDatabase.LpPieceCount += mail._rewardCount;
+                RewardEffect.Instance.PlayQuestLpEffect();
             }
         }
         else
@@ -121,8 +123,16 @@ public class MailManager : Singleton<MailManager>
                 //재화만 획득 처리
                 if (currentData)
                 {
-                    if (currentData.ID == 202) GameManager.Instance.SetGold(mail._rewardCount);
-                    else if (currentData.ID == 201) DataManager.Instance.RecordDatabase.LpPieceCount += mail._rewardCount;
+                    if (currentData.ID == 202)
+                    {
+                        GameManager.Instance.SetGold(mail._rewardCount);
+                        RewardEffect.Instance.PlayQuestGoldEffect();
+                    }
+                    else if (currentData.ID == 201)
+                    {
+                        DataManager.Instance.RecordDatabase.LpPieceCount += mail._rewardCount;
+                        RewardEffect.Instance.PlayQuestLpEffect();
+                    }
                 }
 
                 _claimedMailIDs.Add(mail._mailID);
