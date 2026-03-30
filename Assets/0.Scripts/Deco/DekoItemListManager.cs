@@ -509,15 +509,10 @@ public class DecoItemListManager : MonoBehaviour
     {
         if (snapshotData == null) return;
 
-        // playerItems에서 직접 0으로 초기화 (읽기 전용)
-        if (ItemManager.Instance.playerItemDatas.ContainsKey(StoreCat.interior))
+        // 스냅샷에 있는 아이템만 0으로 초기화 
+        foreach (var slot in snapshotData)
         {
-            var playerItems = ItemManager.Instance.playerItemDatas[StoreCat.interior].Items;
-            foreach (var item in playerItems)
-            {
-                if (item.IsGained)
-                    DecoInventoryManager.Instance.SetItemCount(item.ObjectId, 0);
-            }
+            DecoInventoryManager.Instance.SetItemCount(slot.itemId, 0);
         }
 
         // 그 다음 스냅샷 값으로 복원

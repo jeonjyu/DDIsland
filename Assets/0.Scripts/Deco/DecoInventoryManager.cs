@@ -107,8 +107,10 @@ public class DecoInventoryManager : Singleton<DecoInventoryManager>
         if (playerItem == null) return;
 
         playerItem.ItemCount = count;
-      //playerItem.IsGained = count > 0;
-        if (count > 0) playerItem.IsGained = true;
+        playerItem.IsGained = count > 0; // 수량이 0이면 미소유 처리 or 
+                                         // TODO: 나중에 파베/도감/상점 등에서 터진다면 아이템 데이터는 남게 아래 주석으로 교체
+                                         // if (count > 0) playerItem.IsGained = true; 
+
 
         var slot = FindSlot(itemId);
         if (slot != null)
