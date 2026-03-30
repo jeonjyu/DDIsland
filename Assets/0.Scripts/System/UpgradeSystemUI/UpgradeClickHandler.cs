@@ -48,6 +48,15 @@ public class UpgradeClickHandler : MonoBehaviour
             pressStartTime = Time.time;
             isPressing = true;
         }
+        // esc 업글창 닫기
+        if (Keyboard.current != null
+            && Keyboard.current.escapeKey.wasPressedThisFrame
+            && popupWindow != null
+            && popupWindow.transform.localScale != Vector3.zero) // 스케일0
+        {
+            popupWindow.Hide();
+            return;
+        }
 
         // 떼는 순간 판정
         if (Mouse.current.leftButton.wasReleasedThisFrame && isPressing)

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.InputSystem;
 
 /// <summary>
 /// UI만 담당: 창 열기/닫기, 탭 전환, 카테고리 전환, 필터 적용
@@ -96,6 +97,25 @@ public class JournalManager : MonoBehaviour
         if (uiRecord != null && uiRecord.recordUnlock != null) // 음반 이벤트 구독 
             uiRecord.recordUnlock.OnRecordUnlock += OnRecordUnlocked;
     }
+
+    private void Update()
+    {
+        if (Keyboard.current != null
+            && Keyboard.current.escapeKey.wasPressedThisFrame
+            && journalPanel != null
+            && journalPanel.activeSelf)
+        {
+            if (detailPopup != null && detailPopup.gameObject.activeSelf)
+            {
+                detailPopup.Hide();
+                return;
+            }
+
+            CloseJournal();
+        }
+    }
+
+
     // 외부 연동, 아이템 해금 시 호출 (상점 구매, 낚시 획득, 요리 완성 등)
     public void OnItemUnlocked(JournalCategory category, int itemId)
     {

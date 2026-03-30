@@ -285,13 +285,6 @@ public class JournalDataLoader : MonoBehaviour
                 item.Description = isUnlocked ? recordSO.RecordDesc_String : "";
                 item.SpecialInfo["테마"] = JournalLocalize.Enum(recordSO.bgthemeType);
                 item.SpecialInfo["아티스트"] = recordSO.RecordArtist_String;
-                // item.SpecialInfo["재생 길이"] = ""; 
-
-                // TODO: 재생길이가 데이터테이블에 추가되면 아래 삭제, 일단 임시로 AudioClip 길이로 계산 
-                item.SpecialInfo["재생 길이"] = recordSO.RecordSoundPath_AudioClip != null
-                     ? Mathf.FloorToInt(recordSO.RecordSoundPath_AudioClip.length / 60) + ":"
-                       + Mathf.FloorToInt(recordSO.RecordSoundPath_AudioClip.length % 60).ToString("D2")
-                     : "null"; //(JournalLocalize.IsKr ? "알 수 없음" : "Unknown"); 
             }
             items.Add(item);
         }
