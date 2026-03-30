@@ -51,7 +51,7 @@ public class StoreListView : MonoBehaviour
             int idx = catUiStr.IndexOf(item);
 
             // 이름 변경
-            stores[idx].CatUiString.TextId = item;
+            //stores[idx].CatUiString.TextId = item;
 
             // 버튼 이벤트 추가
             // 버튼에 모델을 현재 상점 카테고리로 설정하도록 하는 로직 추가

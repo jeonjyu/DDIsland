@@ -74,6 +74,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] GameObject _chubbyPrefab;
     [SerializeField] GameObject _roundPrefab;
 
+    [SerializeField] FishingHookEffect _fishingHookEffect;
+
     [SerializeField] private GameObject _fishingRod;
     [SerializeField] private GameObject _fork;
     [SerializeField] private GameObject _pan;
@@ -169,7 +171,6 @@ public class PlayerController : MonoBehaviour
         _fishingRod.gameObject.SetActive(false);
         _fork.gameObject.SetActive(false);
         _pan.gameObject.SetActive(false);
-
         BuildCostumeMap();
         RefreshCanCook();
     }
@@ -845,7 +846,17 @@ public class PlayerController : MonoBehaviour
         }
         _cycleRunning = false;  //다음 사이클로 넘어갈 수 있게 코루틴 대기 해제
     }
-  
+
+    public void AnimEvent_StartFishingHookEffect() //낚시cast에 넣을 함수
+    {
+        _fishingHookEffect.PlayerFishingHookEffect();
+    }
+
+    public void PullUpFishingHookEffect()
+    {
+        _fishingHookEffect.PullUpHook();
+    }
+
     public void ResetFishingCount()
     {
         _fishingCount = 5;
