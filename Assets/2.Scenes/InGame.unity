@@ -1206,8 +1206,14 @@ PrefabInstance:
       objectReference: {fileID: 9100000, guid: 72fb1e9ae32feab4da6ef93216241398, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 7869127711252119265, guid: b441b61efc3fedf448c59354b91df058, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 992407852}
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6615638564417610095, guid: b441b61efc3fedf448c59354b91df058, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 821693281}
   m_SourcePrefab: {fileID: 100100000, guid: b441b61efc3fedf448c59354b91df058, type: 3}
 --- !u!224 &362971060 stripped
 RectTransform:
@@ -2056,7 +2062,7 @@ Camera:
   far clip plane: 1000
   field of view: 60.000004
   orthographic: 1
-  orthographic size: 16
+  orthographic size: 11.6
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -2080,8 +2086,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 538781003}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.38144904, y: -0.39017552, z: 0.18194182, w: 0.81802016}
-  m_LocalPosition: {x: 25, y: 38, z: -20}
+  m_LocalRotation: {x: -0.39746544, y: 0.37225565, z: -0.1806538, w: -0.81903064}
+  m_LocalPosition: {x: 3.5, y: 16.597057, z: -8.46717}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2277,7 +2283,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6972699824503476110, guid: b441b61efc3fedf448c59354b91df058, type: 3}
   m_PrefabInstance: {fileID: 362971059}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 821693277}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2177502772ab1124fb31f32e0308db01, type: 3}
@@ -2379,7 +2385,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3257013496498611637, guid: b441b61efc3fedf448c59354b91df058, type: 3}
   m_PrefabInstance: {fileID: 362971059}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 821693277}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
@@ -3413,6 +3419,25 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c8c6696fe7172b04eaa827c7faa6c031, type: 3}
+--- !u!1 &821693277 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6615638564417610095, guid: b441b61efc3fedf448c59354b91df058, type: 3}
+  m_PrefabInstance: {fileID: 362971059}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &821693281
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 821693277}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3312d7739989d2b4e91e6319e9a96d76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.RectMask2D
+  m_Padding: {x: 0, y: 0, z: 0, w: 0}
+  m_Softness: {x: 0, y: 0}
 --- !u!1001 &849499452
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3997,6 +4022,81 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e74e01df765a5940bd877b4e9bc6790, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI_IslandWindow
+--- !u!1 &992407851
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 992407852}
+  - component: {fileID: 992407853}
+  - component: {fileID: 992407854}
+  m_Layer: 5
+  m_Name: FishingHook
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &992407852
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 992407851}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 362971060}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 30, y: 30}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &992407853
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 992407851}
+  m_CullTransparentMesh: 1
+--- !u!114 &992407854
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 992407851}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 429601444, guid: 50ae3c1a8581cb14f9632e1170e4fb2b, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
 --- !u!1 &1007267942
 GameObject:
   m_ObjectHideFlags: 0
@@ -8515,6 +8615,10 @@ PrefabInstance:
       propertyPath: _restAreaPoint
       value: 
       objectReference: {fileID: 922184497}
+    - target: {fileID: 6038522852140780350, guid: 339406eb6a27c9348aeb8e75ea1ba258, type: 3}
+      propertyPath: _fishingHookEffect
+      value: 
+      objectReference: {fileID: 1800068104}
     - target: {fileID: 6280484870891386956, guid: 339406eb6a27c9348aeb8e75ea1ba258, type: 3}
       propertyPath: m_Convex
       value: 1
@@ -8540,7 +8644,10 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1889996173259242745, guid: 339406eb6a27c9348aeb8e75ea1ba258, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1331547600}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4140408901512295962, guid: 339406eb6a27c9348aeb8e75ea1ba258, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1800068104}
   m_SourcePrefab: {fileID: 100100000, guid: 339406eb6a27c9348aeb8e75ea1ba258, type: 3}
 --- !u!137 &1800068102 stripped
 SkinnedMeshRenderer:
@@ -8552,6 +8659,23 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1889996173259242745, guid: 339406eb6a27c9348aeb8e75ea1ba258, type: 3}
   m_PrefabInstance: {fileID: 1800068101}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1800068104
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 673764087}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 469ce5cadfb398f42878653cbdd80e90, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FishingHookEffect
+  _fishingHook: {fileID: 992407854}
+  _hookSpawnRect: {fileID: 992407852}
+  _fishingTr: {fileID: 253377396}
+  _effectRoot: {fileID: 362971060}
+  duration: 0.5
 --- !u!1 &1807011506
 GameObject:
   m_ObjectHideFlags: 0
