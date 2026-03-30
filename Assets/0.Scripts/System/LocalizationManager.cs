@@ -30,4 +30,20 @@ public class LocalizationManager : Singleton<LocalizationManager>
 
         return null;
     }
+
+    public void SetUserLanguage()
+    {
+        SystemLanguage language = Application.systemLanguage;
+
+        switch(language)
+        {
+            case SystemLanguage.Korean:
+                PlayerPrefsDataManager.Language = 0;
+                break;
+            case SystemLanguage.English:
+            default:
+                PlayerPrefsDataManager.Language = 1;
+                break;
+        }
+    }
 }
