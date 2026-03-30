@@ -1,6 +1,7 @@
 using Firebase.Database;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class MailManager : Singleton<MailManager>
@@ -189,9 +190,44 @@ public class MailManager : Singleton<MailManager>
 
             ThreadDispatcher.Instance.Enqueue(() => 
             {
+                EnforceMail();
                 OnMailUpdated?.Invoke();
             });
         });
+    }
+
+    private void EnforceMail()
+    {
+        int maxMail = 100;
+
+        var visibleMails = _serverMails.Where(m => !_deletedMailIDs.Contains(m._mailID)).ToList();
+
+        if (visibleMails.Count <= maxMail) return;
+
+        int excessCount = visibleMails.Count - maxMail;
+
+        var deleteCandidates = visibleMails.Where(m =>
+            _claimedMailIDs.Contains(m._mailID)).ToList();
+
+        deleteCandidates.Sort((a, b) =>
+        {
+            DateTime.TryParse(a._expireDate, out DateTime dateA);
+            DateTime.TryParse(b._expireDate, out DateTime dateB);
+            return dateA.CompareTo(dateB);
+        });
+
+        bool isDeleted = false;
+
+        for (int i = 0; i < deleteCandidates.Count && i < excessCount; i++)
+        {
+            _deletedMailIDs.Add(deleteCandidates[i]._mailID);
+            isDeleted = true;
+        }
+
+        if (isDeleted)
+        {
+            _ = DataManager.Instance.Hub.UploadAllData();
+        }
     }
 
     private void SyncMailDataSave()
@@ -200,24 +236,4 @@ public class MailManager : Singleton<MailManager>
         DataManager.Instance.Hub._allUserData.Mail._claimedMailIDs = new List<string>(_claimedMailIDs);
         DataManager.Instance.Hub._allUserData.Mail._deletedMailIDs = new List<string>(_deletedMailIDs);
     }
-
-#if UNITY_EDITOR
-    public void AddTestMail()
-    {
-        MailData newMail = new()
-        {
-            _mailID = "test_mail_01",
-            _title = "테스트 우편 도착!",
-            _content = "이것은 슬롯에 데이터가 잘 들어가는지 확인하기 위한 테스트 우편입니다.",
-            _rewardItemID = 202, // 골드 ID (기존 코드 기준)
-            _rewardCount = 5000,
-            _isRead = false,
-            _isClaimed = false
-        };
-
-        _serverMails.Add(newMail);
-
-        OnMailUpdated?.Invoke();
-    }
-#endif
 }

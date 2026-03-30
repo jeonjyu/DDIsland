@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -29,10 +30,45 @@ public class UI_MailSlot : MonoBehaviour
 
         if (_titleText == null || _contentText == null) return;
 
+        bool isKorean = PlayerPrefsDataManager.Language == 0;
+
         // 끌고온 우편 데이터를 각각 슬롯에 집어 넣기
-        _titleText.text = _data._title;
-        _contentText.text = _data._content;
-        _expireDateText.text = $"만료일: {_data._expireDate}";
+        if (isKorean) 
+        {
+            _titleText.text = _data._title_kr;
+            _contentText.text = _data._content_kr;
+        }
+        else
+        {
+            _titleText.text = _data._title_en;
+            _contentText.text = _data._content_en;
+        }
+        if (DateTime.TryParse(_data._expireDate, out DateTime expireTime))
+        {
+            TimeSpan timeLeft = expireTime - DateTime.Now;
+
+            if (timeLeft.TotalDays >= 1)
+            {
+                _expireDateText.text = isKorean ?
+                    $"{(int)timeLeft.TotalDays}일 {(int)timeLeft.TotalHours}시간 남음 " :
+                    $"{(int)timeLeft.TotalDays}d {(int)timeLeft.TotalHours}h left";
+            }
+            else if (timeLeft.TotalHours >= 1)
+            {
+                _expireDateText.text = isKorean ?
+                    $"{(int)timeLeft.TotalHours}시간 남음" :
+                    $"{(int)timeLeft.TotalHours}h left";
+            }
+            else
+            {
+                _expireDateText.text = isKorean ? "만료됨" : "Expired";
+            }
+
+        }
+        else
+        {
+            _expireDateText.text = isKorean ? "기한 없음" : "No Expiration";
+        }
 
         //만약 아이템이 있으면 아이템을 보여주는 아이콘을 활성화하고
         if (_data._rewardItemID > 0)
