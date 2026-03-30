@@ -2,7 +2,7 @@ using TMPro;
 using UnityEngine;
 
 // 레시피, 낚시, 코스튬, 기본 아이템 슬롯
-public class ItemSlotView : ItemSlotViewBase
+public class ItemSlotView : ItemSlotViewBase<ItemSlotViewModelBase>
 {
     [SerializeField] protected TMP_Text _itemPrice;
     [SerializeField] protected TMP_Text _itemName;

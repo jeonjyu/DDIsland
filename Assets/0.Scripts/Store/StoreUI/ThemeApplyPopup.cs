@@ -9,7 +9,7 @@ public class ThemeApplyPopup : MonoBehaviour
 
     public Button ApplyBtn;
 
-    public Action<int> OnApplyTheme;
+    public Action OnApplyTheme;
 
     private void OnEnable()
     {
@@ -20,13 +20,14 @@ public class ThemeApplyPopup : MonoBehaviour
     private void OnDisable()
     {
         ApplyBtn.onClick.RemoveAllListeners();
+        OnApplyTheme = null;
     }
 
     public void ApplyThisTheme()
     {
         LakeItemManager.Instance.ChangedLakeSlot(_item);
+        OnApplyTheme?.Invoke();
         Debug.Log("ThemeApplyPopup 테마 적용 완료");
-        
         this.gameObject.SetActive(false);
     }
 }
