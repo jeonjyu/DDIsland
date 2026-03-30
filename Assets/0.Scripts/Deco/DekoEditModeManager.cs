@@ -20,7 +20,6 @@ public class DecoEditModeManager : MonoBehaviour
     public AquariumMgr aquariumMgr; // 물고기 안보이게 
     public UI_WaterWindow waterWindow;
 
-
     [Header("3D배치템 상호작용 버튼")]
     public Button btnObjRecall;   // 회수
     public Button btnObjMove;     // 이동
@@ -64,6 +63,13 @@ public class DecoEditModeManager : MonoBehaviour
     public GameObject playerObject;
     [Header("편집모드 들어가면 안보일 날씨 파티클들 부모")]
     public Transform weatherParticleParent;
+    
+    [Header("편집모드 진입시 비활성화할 UI들")]
+    public GameObject windowEdgeGroup;   // 창 테두리 
+    public GameObject mainMenuBtnGroup;  // 메인 메뉴 
+    public GameObject topMoneyBarUI;          // 재화 UI
+    public GameObject waterLevelButton;  // 호수 올리는 버튼 
+
     // 내부 변수
     bool isEditMode = false;
     DecoMode currentMode = DecoMode.Lake;   // 현재 편집 모드
@@ -515,6 +521,8 @@ public class DecoEditModeManager : MonoBehaviour
         isEditMode = true;
         isChanged = false;
 
+        SetMainUIActive(false); // ui들 숨기기 메서드
+
         // 공용 백그라운드 
         if (dimBackground != null)
         {
@@ -720,6 +728,7 @@ public class DecoEditModeManager : MonoBehaviour
                 isUnlocked = true;
         }
         RestoreWeatherParticle(); // 날씨 파티클 복원
+        SetMainUIActive(true);
         // 인벤 
         if (bottomPanel != null)
         {
@@ -1065,7 +1074,7 @@ public class DecoEditModeManager : MonoBehaviour
     }
     #endregion
 
-#region 호수 높이 0이 되면 배경과 물고기 비활성화
+    #region 호수 높이 0이 되면 배경(비활성화), 물고기(투명화)
     void OnEnable()
     {
         if (waterWindow != null)
@@ -1093,6 +1102,17 @@ public class DecoEditModeManager : MonoBehaviour
               //  aquariumMgr.ResumeFish();
         }
     }
-
+    
+    void SetMainUIActive(bool active)
+    {
+        if (windowEdgeGroup != null)
+            windowEdgeGroup.SetActive(active);
+        if (mainMenuBtnGroup != null)
+            mainMenuBtnGroup.SetActive(active);
+        if (topMoneyBarUI != null)
+            topMoneyBarUI.SetActive(active);
+        if (waterLevelButton != null)
+            waterLevelButton.SetActive(active);
+    }
     #endregion
 }
