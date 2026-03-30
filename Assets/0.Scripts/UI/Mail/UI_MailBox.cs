@@ -56,9 +56,8 @@ public class UI_MailBox : MonoBehaviour
             visibleCount++;
 
             GameObject slotObj = Instantiate(_mailSlotPrefab, _contentTransform);
-            UI_MailSlot mailSlot = slotObj.GetComponent<UI_MailSlot>();
 
-            if (mailSlot != null)
+            if (slotObj.TryGetComponent<UI_MailSlot>(out var mailSlot))
             {
                 mailSlot.MailSlot(mail, _mailPopup);
             }
