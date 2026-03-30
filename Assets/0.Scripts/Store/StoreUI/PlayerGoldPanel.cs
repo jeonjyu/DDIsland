@@ -8,15 +8,15 @@ public class PlayerGoldPanel : MonoBehaviour
     private void OnEnable()
     {
         goldText.text = GameManager.Instance.PlayerGold.ToString();
-        GameManager.Instance.OnGoldChanged += Instance_OnGoldChanged;
+        GameManager.Instance.OnGoldChanged += OnGoldChanged;
     }
 
     private void OnDisable()
     {
-        GameManager.Instance.OnGoldChanged -= Instance_OnGoldChanged;
+        GameManager.Instance.OnGoldChanged -= OnGoldChanged;
     }
 
-    private void Instance_OnGoldChanged(int currentGold)
+    private void OnGoldChanged(int currentGold)
     {
         goldText.text = currentGold.ToString();
     }
