@@ -33,7 +33,6 @@ public class ItemSlotViewModelBase : MonoBehaviour, INotifyPropertyChanged
             if (_itemId != value || _itemId == 99999999)
             {
                 _itemId = value;
-                //OnPropertyChanged(nameof(_model.ID));
             }
         }
     }
@@ -100,7 +99,6 @@ public class ItemSlotViewModelBase : MonoBehaviour, INotifyPropertyChanged
 
     protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
     {
-        //if(PropertyChanged != null) 
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }

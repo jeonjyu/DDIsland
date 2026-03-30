@@ -4,12 +4,11 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class ItemSlotViewBase : MonoBehaviour, IStoreItemView, IPointerClickHandler
+public class ItemSlotViewBase<T> : MonoBehaviour, IStoreItemView, IPointerClickHandler where T : ItemSlotViewModelBase
 {
 //field
-    protected ItemSlotViewModelBase viewModel;
+    protected T viewModel;
     protected IStoreItem modelData;
-    protected Image slotImage;
 
     protected Color gainedColor = new Color(0.93f, 0.87f, 0.75f, 1f);
     protected Color ungainedColor = new Color(0.99f, 0.97f, 0.91f, 1f);
@@ -22,16 +21,16 @@ public class ItemSlotViewBase : MonoBehaviour, IStoreItemView, IPointerClickHand
 
 
     // property
-    public ItemSlotViewModelBase ViewModel => viewModel;
+    public T ViewModel => viewModel;
     public IStoreItem ModelData => modelData;
     public Image SlotBackground => _slotBackground;
     public Image ItemImage => _itemImage;
 
     protected virtual void Awake()
     {
-        viewModel = GetComponent<ItemSlotViewModelBase>();
+        viewModel = GetComponent<T>();
         eventTrigger = GetComponent<EventTrigger>();
-        Init();
+        //Init();
     }
 
     void OnEnable()
@@ -55,7 +54,7 @@ public class ItemSlotViewBase : MonoBehaviour, IStoreItemView, IPointerClickHand
 
         if (modelData is null)
         {
-            //Debug.Log("model이 없음");
+            Debug.Log("model이 없음");
             ResetSlot();
             return;
         }
@@ -78,7 +77,6 @@ public class ItemSlotViewBase : MonoBehaviour, IStoreItemView, IPointerClickHand
     // 해당 뷰의 모델을 전달하는 메서드 
     public virtual void OnPointerClick(PointerEventData eventData)
     {
-        //Debug.Log("슬롯 클릭됨");
         viewModel.SetPopupModel();
         StoreManager.Instance.TradeItemSlot = this.viewModel;
         if (StoreManager.Instance.BuyAndSellPanel != null)
@@ -90,23 +88,24 @@ public class ItemSlotViewBase : MonoBehaviour, IStoreItemView, IPointerClickHand
 
     public virtual void UpdateSlotUI(int count){}
 
-    private void OnViewModelPropChanged(object sender, PropertyChangedEventArgs e)
+    protected virtual void OnViewModelPropChanged(object sender, PropertyChangedEventArgs e)
     {
         switch (e.PropertyName)
         {
             case null:
             case "":
+                //Debug.Log("[ItemSlotViewBase] 모델 변경됨");
                 Init();
                 break;
             case "IsGained":
-                Debug.Log("[ItemSlotViewBase] 보유 여부 변경됨");
+                //Debug.Log("[ItemSlotViewBase] 보유 여부 변경됨");
                 UpdateSlotUI(modelData.ItemCount);
                 UpdateSlotColor(modelData.IsGained);
                 StoreManager.Instance.sortDropdown.ApplySortPriority();
                 StoreManager.Instance.StoreListVM.LoadSlotList();
                 break;
             case "ItemCount":
-                Debug.Log("[ItemSlotViewBase] 아이템 개수 변경됨");
+                //Debug.Log("[ItemSlotViewBase] 아이템 개수 변경됨");
                 UpdateSlotUI(modelData.ItemCount);
                 StoreManager.Instance.sortDropdown.ApplySortPriority();
                 StoreManager.Instance.StoreListVM.LoadSlotList();

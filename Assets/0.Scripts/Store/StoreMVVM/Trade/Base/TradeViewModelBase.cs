@@ -87,12 +87,12 @@ public class TradeViewModelBase : MonoBehaviour, INotifyPropertyChanged
         canvasGroup.blocksRaycasts = true;
         canvasGroup.interactable = true;
     }
+
+  
     //void Start()
     //{
     //    view = GetComponent<TradeViewBase>();
     //}
-
-  
 
     protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
     {

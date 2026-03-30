@@ -7,18 +7,23 @@ public class LakeItemManager : Singleton<LakeItemManager>
     public LakeDecoManagerV2 lakeDecoManager;
     public ThemeApplyPopup themeApplyPopup;
 
-    public int floorID;
-    public int ornamentID;
+    private int _themeID;
+    private int _floorID;
+    private int _ornamentID;
 
+    public int ThemeID => _themeID;
     [SerializeField] GameObject content;
 
     public void ChangedLakeSlot(IStoreItem item)
     {
-        Debug.Log(item.ID);
         LakeStoreItem lakeStoreItem = (LakeStoreItem)item;
-        floorID = lakeStoreItem.LakeFloorID;
-        ornamentID = lakeStoreItem.LakeOrnamentID;
-        lakeDecoManager?.ChangeImage(0, floorID);    
-        lakeDecoManager?.ChangeImage(1, ornamentID);    
+  
+        _themeID = lakeStoreItem.ID;
+        _floorID = lakeStoreItem.LakeFloorID;
+        _ornamentID = lakeStoreItem.LakeOrnamentID;
+        
+
+        lakeDecoManager?.ChangeImage(0, _floorID);    
+        lakeDecoManager?.ChangeImage(1, _ornamentID);    
     }
 }
