@@ -288,23 +288,37 @@ public class BuildingManager : MonoBehaviour
         }
 
         // 삭제한 건물 부활 시키기
+        //foreach (var b in _deletedBuildings)
+        //{
+        //    if (b != null)
+        //    {
+        //        b.gameObject.SetActive(true);
+        //        _gridSystem.PlaceItem(b.PlacedIndex.x, b.PlacedIndex.y, b.PlacedSize.x, b.PlacedSize.y, b);
+        //        if (_movedSnapshots.ContainsKey(b))
+        //        {
+        //            if (!_allBuildings.Contains(b)) _allBuildings.Add(b);
+        //        }
+        //        else
+        //        {
+        //            if (!_activeBuildings.Contains(b)) _activeBuildings.Add(b);
+        //        }
+        //    }
+        //}
         foreach (var b in _deletedBuildings)
         {
             if (b != null)
             {
                 b.gameObject.SetActive(true);
-                _gridSystem.PlaceItem(b.PlacedIndex.x, b.PlacedIndex.y, b.PlacedSize.x, b.PlacedSize.y, b);
                 if (_movedSnapshots.ContainsKey(b))
                 {
                     if (!_allBuildings.Contains(b)) _allBuildings.Add(b);
+                    continue;
                 }
-                else
-                {
-                    if (!_activeBuildings.Contains(b)) _activeBuildings.Add(b);
-                }
+                _gridSystem.PlaceItem(b.PlacedIndex.x, b.PlacedIndex.y, b.PlacedSize.x, b.PlacedSize.y, b);
+                if (!_activeBuildings.Contains(b)) _activeBuildings.Add(b);
             }
-
         }
+
         if (_activePlaceable != null)
         {
             if (!_movedSnapshots.ContainsKey(_activePlaceable))
@@ -337,14 +351,21 @@ public class BuildingManager : MonoBehaviour
 
     public void ClearAll()
     {
+        // 이전 ClearAll에서 남은 건물 정리
+        foreach (var b in _deletedBuildings)
+        {
+            if (b != null) Destroy(b.gameObject);
+        }
+        _deletedBuildings.Clear();
+  
         List<int> destroyedIds = new(); // 삭제된 아이템 ID를 추적         
         HashSet<Placeable3D> processed = new(); // 이미 처리한 건물 중복 방지          
 
         if (_activePlaceable != null)
         {
             processed.Add(_activePlaceable);
-            int id = _activePlaceable.GetItemId();
-            if (id >= 0) destroyedIds.Add(id);
+            //int id = _activePlaceable.GetItemId();
+            //if (id >= 0) destroyedIds.Add(id);
 
             Destroy(_activePlaceable.gameObject);
             _activePlaceable = null;
@@ -366,7 +387,6 @@ public class BuildingManager : MonoBehaviour
 
         for (int i = _allBuildings.Count - 1; i >= 0; i--)
         {
-
             var b = _allBuildings[i];
             if (b != null && !processed.Contains(b))
             {
@@ -376,6 +396,18 @@ public class BuildingManager : MonoBehaviour
                 int id = b.GetItemId();
                 if (id >= 0) destroyedIds.Add(id);
 
+                if (!_movedSnapshots.ContainsKey(b))
+                {
+                    _movedSnapshots.Add(b, new BuildingSnapshot
+                    {
+                        Target = b,
+                        Pos = b.PlacedIndex,
+                        Size = b.PlacedSize,
+                        Rotation = b.transform.eulerAngles.y,
+                        IsRotated = b.IsRotated
+                    });
+                }
+
                 RemoveBuildingFromGrid(b);
                 b.gameObject.SetActive(false); // 파괴 대신 비활성화
                 _deletedBuildings.Add(b);      // 복원할 수 있게 보관
@@ -384,25 +416,26 @@ public class BuildingManager : MonoBehaviour
         _activeBuildings.Clear();
         _allBuildings.Clear();
 
-        foreach (var b in _deletedBuildings)
-        {
-            if (b != null && !processed.Contains(b))
-            {
-                processed.Add(b);
-                int id = b.GetItemId();
-                if (id >= 0) destroyedIds.Add(id);
+        //foreach (var b in _deletedBuildings)
+        //{
+        //    if (b != null && !processed.Contains(b))
+        //    {
+        //        processed.Add(b);
+        //        int id = b.GetItemId();
+        //        if (id >= 0) destroyedIds.Add(id);
 
-                Destroy(b.gameObject);
-            }
-        }
-
+        //        Destroy(b.gameObject);
+        //    }
+        //}
+        //_deletedBuildings.Clear();
+     
         _gridSystem.ClearGrid();
-        _movedSnapshots.Clear();
+      //_movedSnapshots.Clear();
         _activePlaceable = null;
 
         OnClearAll?.Invoke(destroyedIds);  // 초기화 알림
 
-        ConfirmAll();
+       // ConfirmAll(); 
     }
     #endregion
     public void SwapFixBuilding(FixedBuilding oldBuilding, int newItemId)

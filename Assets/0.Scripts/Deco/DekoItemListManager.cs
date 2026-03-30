@@ -467,8 +467,6 @@ public class DecoItemListManager : MonoBehaviour
     // 아이템 회수 시 수량 복구
     public void RestoreItem(int itemId)
     {
-    
-
         int dataIdx = -1;
         for (int i = 0; i < invenData.Count; i++)
         {
@@ -478,7 +476,18 @@ public class DecoItemListManager : MonoBehaviour
                 break;
             }
         }
-        if (dataIdx < 0) return; 
+        //  if (dataIdx < 0) return; 
+        // invenData에 없는 아이템이 수량이 0이라 GetInven에서 빠진 경우 방어코드 
+        if (dataIdx < 0)
+        {
+            DecoInventoryManager.Instance.RestoreItem(itemId);
+
+            LakeInvenSlot newSlot = new LakeInvenSlot { itemId = itemId, quantity = 1 };
+            invenData.Add(newSlot);
+            dataIdx = invenData.Count - 1;
+            AddSlot(newSlot, dataIdx);
+            return;
+        }
 
         bool wasZero = (invenData[dataIdx].quantity <= 0);
         // invenData[dataIdx].quantity++;
@@ -499,6 +508,19 @@ public class DecoItemListManager : MonoBehaviour
     public void ReturnAllItems()
     {
         if (snapshotData == null) return;
+
+        // playerItems에서 직접 0으로 초기화 (읽기 전용)
+        if (ItemManager.Instance.playerItemDatas.ContainsKey(StoreCat.interior))
+        {
+            var playerItems = ItemManager.Instance.playerItemDatas[StoreCat.interior].Items;
+            foreach (var item in playerItems)
+            {
+                if (item.IsGained)
+                    DecoInventoryManager.Instance.SetItemCount(item.ObjectId, 0);
+            }
+        }
+
+        // 그 다음 스냅샷 값으로 복원
         foreach (var slot in snapshotData)
         {
             DecoInventoryManager.Instance.SetItemCount(slot.itemId, slot.quantity);

@@ -90,6 +90,7 @@ public class DecoEditModeManager : MonoBehaviour
     bool isUnlocked = false;
     System.Action pendingConfirmAction; // 상단 확인 팝업창용
     private ParticleSystem cachedParticle; // 파티클 상태 복원용, 편집모드 진입 시 재생 중이던 파티클 캐싱
+    bool isClearingAll = false; // 전체회수중일땐 스냅샷 보호 
 
     // FixGroup별 기본 아이템 ID (교체 시 이전 템 복구용)
     //static readonly Dictionary<FixGroup, int> DefaultFixItems = new()
@@ -226,7 +227,35 @@ public class DecoEditModeManager : MonoBehaviour
     //        itemListManager.ExitFilterMode();
     //}
 
+    // ESC 키로 나가기 팝업
+    void Update()
+    {
+        if (!isEditMode) return;
 
+        if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
+        {
+            // 확인 팝업이 열려있으면 팝업만 닫기
+            if (confirmPopupPanel != null && confirmPopupPanel.activeSelf)
+            {
+                OnConfirmClose();
+                return;
+            }
+
+            // 나가기 팝업이 열려있으면 팝업만 닫기
+            if (exitPopupPanel != null && exitPopupPanel.activeSelf)
+            {
+                OnExitPopupCancel();
+                return;
+            }
+
+            // 배치템 들고있으면 esc 무시
+            if (buildingMgr != null && buildingMgr.ActivePlaceable != null)
+                return;
+
+            // 그 외에는 나가기 로직
+            OnExit();
+        }
+    }
     #region 섬 전용 
     // 핸들러
     void OnFixReverted(int restoredId, int removedId)
@@ -363,6 +392,7 @@ public class DecoEditModeManager : MonoBehaviour
     void OnIslandConfirm()
     {
         if (currentMode != DecoMode.Island) return;
+        if (isClearingAll) return; // 전체회수의 자동저장엔 스냅샷보호 
         if (itemListManager != null)
             itemListManager.SaveSnapshot();
     }
@@ -372,7 +402,8 @@ public class DecoEditModeManager : MonoBehaviour
     {
         if (currentMode != DecoMode.Island) return;
         if (itemListManager != null)
-            itemListManager.LoadSnapshot();
+            itemListManager.LoadSnapshot(); // 스냅샷만 불러오기 
+            //itemListManager.ReturnAllItems(); // 데이터까지 복원하기
     }
 
     // 섬 전체회수
@@ -394,8 +425,8 @@ public class DecoEditModeManager : MonoBehaviour
         if (itemListManager != null)
             itemListManager.SetupInventory();
 
-        // isChanged = true; // TODO: 나중에 전체회수에 저장 로직을 빼면, 배치>저장>전체회수>초기화
-        isChanged = false;
+        isChanged = true;
+    
     }
 
     // 고정물(FixedBuilding) 클릭 시 인벤 필터 모드 진입 
@@ -840,9 +871,8 @@ public class DecoEditModeManager : MonoBehaviour
     }
     void OnReset() // 초기화, 저장한 상태로 불러오기
     {
-     //   if (!isChanged) return; // 변경사항 없으면 무시 // TODO: 리턴이 없으면 초기화버튼 2번 누르면 전체회수 버그 발생하는지 확인필요  
-
-        // TODO:  (파베 연결 후에 나중에 구현)
+        if (!isChanged) return; // 변경사항 없으면 무시 
+       
         if (currentMode == DecoMode.Lake) // 호수 모드
         {
             // 인벤을 마지막 저장 시점으로 복구
@@ -855,10 +885,10 @@ public class DecoEditModeManager : MonoBehaviour
         }
         else if (currentMode == DecoMode.Island) // 섬모드 
         {
-            PlacementMgr.Instance?.OnClickCancelSession(); // 모든 변경사항 취소
-
             if (itemListManager != null)
-                itemListManager.ReturnAllItems();
+                itemListManager.ReturnAllItems(); // 인벤을 스냅샷으로 복원
+            PlacementMgr.Instance?.OnClickCancelSession(); // 모든 변경사항 취소, 건물복원
+
             //if (buildingMgr != null)
             //{
             //    buildingMgr.RevertAll();          // 되돌리기
@@ -888,8 +918,9 @@ public class DecoEditModeManager : MonoBehaviour
         }
         else if (currentMode == DecoMode.Island) // 섬모드 
         {
+            isClearingAll = true;  
             PlacementMgr.Instance?.OnClickAllDelete(); // 전체회수 버튼클릭 
-
+            isClearingAll = false; 
             //if (buildingMgr != null)
             //{
             //    buildingMgr.ClearAll();
@@ -901,7 +932,7 @@ public class DecoEditModeManager : MonoBehaviour
             //    itemListManager.ReturnAllItems();
             //}
 
-           // isChanged = true;
+            isChanged = true;
         }
     }
     void OnExit() // 나가기

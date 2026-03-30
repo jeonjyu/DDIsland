@@ -27,7 +27,8 @@ public class DecoInventoryManager : Singleton<DecoInventoryManager>
 
         foreach (var item in playerItems)
         {
-            if (item.IsGained && item.ItemCount > 0)
+          //if (item.IsGained && item.ItemCount > 0)
+            if (item.IsGained)
             {
                 invenList.Add(new LakeInvenSlot
                 {
@@ -78,6 +79,8 @@ public class DecoInventoryManager : Singleton<DecoInventoryManager>
             }
             return;
         }
+
+
         // 고정물(Fix)은 최대 1개까지만 보유
         try
         {
@@ -104,7 +107,8 @@ public class DecoInventoryManager : Singleton<DecoInventoryManager>
         if (playerItem == null) return;
 
         playerItem.ItemCount = count;
-        playerItem.IsGained = count > 0;
+      //playerItem.IsGained = count > 0;
+        if (count > 0) playerItem.IsGained = true;
 
         var slot = FindSlot(itemId);
         if (slot != null)
