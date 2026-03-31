@@ -20,9 +20,9 @@ public class LakeStoreItem : StoreItem<LakeStoreDataSO>
 
     public override int PurchasePrice => _data.PurchasePrice;
 
-    public override string ItemName => _data.LakeThemeName;
+    public override string ItemName => LocalizationManager.Instance.GetString(DataManager.Instance.StoreDatabase.LakeStoreData[ID].LakeThemeName);
 
-    public override string ItemDesc => _data.LakeThemeDesc;
+    public override string ItemDesc => LocalizationManager.Instance.GetString(DataManager.Instance.StoreDatabase.LakeStoreData[ID].LakeThemeDesc);
 
     public override Sprite ImgSprite => _data.InteriorImgPath_Sprite;
 }
