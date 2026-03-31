@@ -16,7 +16,7 @@ public class UI_QuestPanel : MonoBehaviour
     [SerializeField] private Image _rewardIcon1;
     [SerializeField] private Image _rewardIcon2;
     [SerializeField] private TMP_Text _rewardtext1;
-    [SerializeField] private TMP_Text _rewardtext2; 
+    [SerializeField] private TMP_Text _rewardtext2;
     [SerializeField] private Transform rewardParent;
 
     [SerializeField] private GameObject _StoreTabButtonClick;
@@ -48,20 +48,7 @@ public class UI_QuestPanel : MonoBehaviour
     {
         _rewardUIPanel.SetActive(false);
     }
-    void Update()
-    {
-       // if (Input.GetKeyDown(KeyCode.Escape))
-       // {
-       //     if (_rewardUIPanel.activeSelf)
-       //     {
-       //         CloseRewardPanel();
-       //     }
-       //     else
-       //     {
-       //         gameObject.SetActive(false);
-       //     }
-       // }
-    }
+
     public void RefreshCategory(QuestType category)
     {
         _currentCategory = category;
