@@ -18,6 +18,7 @@ public class DataManager : Singleton<DataManager>
     [field: SerializeField] public JournalData JournalDatabase { get; private set; }
     [field: SerializeField] public RecordData RecordDatabase { get; private set; }
     [field: SerializeField] public StringUIData StringUIDatabase { get; private set; }
+    [field: SerializeField] public HelpData HelpDatabase { get; private set; }
 
     protected override void Awake()
     {
@@ -28,5 +29,5 @@ public class DataManager : Singleton<DataManager>
     // 데이터 박스에 저장을 시키고
     public void SaveAll() => _hub.SaveAllData();
     //얘를 통해서 Json으로 변환 후 서버로 전송
-    public void UploadALl() => _hub.UploadAllData();
+    public void UploadALl() => _ =_hub.UploadAllData();
 }

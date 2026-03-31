@@ -652,8 +652,10 @@ MonoBehaviour:
   closeButton: {fileID: 1206351458111795567}
   questTabButton: {fileID: 1039208333827337100}
   journalTabButton: {fileID: 4530035460196724447}
-  questTabHighlight: {fileID: 1936979235582656374}
-  journalTabHighlight: {fileID: 5066405813193093632}
+  questTabBackground: {fileID: 0}
+  journalTabBackground: {fileID: 0}
+  questTabTexts: []
+  journalTabTexts: []
   journalArea: {fileID: 4417278212000374772}
   categoryButtons:
   - {fileID: 7092091569902162134}
@@ -667,22 +669,20 @@ MonoBehaviour:
   - {fileID: 840255425804062750}
   - {fileID: 748857918485547197}
   - {fileID: 7801355202551214364}
-  categoryHighlights:
-  - {fileID: 112530299695220104}
-  - {fileID: 4451941967491867359}
-  - {fileID: 2590087232396875657}
-  - {fileID: 2466990773883555626}
-  - {fileID: 4907518966678353547}
   slotTemplate: {fileID: 7040548092755489794}
   slotContent: {fileID: 2016787490377790249}
   scrollRect: {fileID: 1666789051694181381}
-  filterDropdown: {fileID: 7371692941666375928}
+  filterDropdown: {fileID: 0}
   journalCategoryNames:
   - "\uC5B4\uC885"
   - "\uCF54\uC2A4\uD2AC"
   - "\uC778\uD14C\uB9AC\uC5B4"
   - "\uC74C\uBC18"
   - "\uC74C\uC2DD"
+  categoryBackgrounds: []
+  categoryOutlines: []
+  boxBackground: {fileID: 0}
+  uiRecord: {fileID: 0}
 --- !u!114 &2005909061109342058
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3313,11 +3313,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
---- !u!1 &2466990773883555626 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2779790441410733751, guid: 7614c8fe500ddcf47941efe4f1e73174, type: 3}
-  m_PrefabInstance: {fileID: 337576064868870557}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &387901314624549182
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3446,11 +3441,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
---- !u!1 &2590087232396875657 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2779790441410733751, guid: 7614c8fe500ddcf47941efe4f1e73174, type: 3}
-  m_PrefabInstance: {fileID: 387901314624549182}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &947554269874360750
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3850,11 +3840,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
---- !u!1 &1936979235582656374 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 920733861511354580, guid: 77eddc7d53f25ee438a23076c106732f, type: 3}
-  m_PrefabInstance: {fileID: 1596124521582618530}
-  m_PrefabAsset: {fileID: 0}
 --- !u!224 &6552400400452556513 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5532777390417310019, guid: 77eddc7d53f25ee438a23076c106732f, type: 3}
@@ -3975,11 +3960,6 @@ MonoBehaviour:
 --- !u!224 &1907816387039860757 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 81726601070353533, guid: 7614c8fe500ddcf47941efe4f1e73174, type: 3}
-  m_PrefabInstance: {fileID: 1971368327185007720}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &4451941967491867359 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2779790441410733751, guid: 7614c8fe500ddcf47941efe4f1e73174, type: 3}
   m_PrefabInstance: {fileID: 1971368327185007720}
   m_PrefabAsset: {fileID: 0}
 --- !u!114 &4530587497647259275 stripped
@@ -4336,11 +4316,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 33558f82140fe754da776889db544589, type: 3}
---- !u!1 &112530299695220104 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3424215505896022526, guid: 33558f82140fe754da776889db544589, type: 3}
-  m_PrefabInstance: {fileID: 3317614064973931638}
-  m_PrefabAsset: {fileID: 0}
 --- !u!224 &2122604430021130968 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3710835326475312814, guid: 33558f82140fe754da776889db544589, type: 3}
@@ -4386,27 +4361,27 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1779549142383778143, guid: f0eceb11eb10f634898857fd0e5f825f, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1779549142383778143, guid: f0eceb11eb10f634898857fd0e5f825f, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1779549142383778143, guid: f0eceb11eb10f634898857fd0e5f825f, type: 3}
       propertyPath: m_AnchorMin.x
-      value: 0.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1779549142383778143, guid: f0eceb11eb10f634898857fd0e5f825f, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1779549142383778143, guid: f0eceb11eb10f634898857fd0e5f825f, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 222
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1779549142383778143, guid: f0eceb11eb10f634898857fd0e5f825f, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 242
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1779549142383778143, guid: f0eceb11eb10f634898857fd0e5f825f, type: 3}
       propertyPath: m_LocalScale.x
@@ -4442,11 +4417,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1779549142383778143, guid: f0eceb11eb10f634898857fd0e5f825f, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -273.42444
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1779549142383778143, guid: f0eceb11eb10f634898857fd0e5f825f, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 131.82458
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1779549142383778143, guid: f0eceb11eb10f634898857fd0e5f825f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -5403,11 +5378,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
---- !u!1 &5066405813193093632 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 754068923089964752, guid: e5718d7291ef122499a704513b2a653c, type: 3}
-  m_PrefabInstance: {fileID: 5492562571278515408}
-  m_PrefabAsset: {fileID: 0}
 --- !u!224 &9045234519123764493 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3584478626706381277, guid: e5718d7291ef122499a704513b2a653c, type: 3}
@@ -5722,11 +5692,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7614c8fe500ddcf47941efe4f1e73174, type: 3}
---- !u!1 &4907518966678353547 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2779790441410733751, guid: 7614c8fe500ddcf47941efe4f1e73174, type: 3}
-  m_PrefabInstance: {fileID: 7100152215818129468}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &5119636807755786975 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2703378444573915875, guid: 7614c8fe500ddcf47941efe4f1e73174, type: 3}
