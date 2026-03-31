@@ -119,24 +119,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &35336412 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7696774057903255264, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
-  m_PrefabInstance: {fileID: 4261510180227368517}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &35336416
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 35336412}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c2134d9cf1904084596ca987dae836c4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UI_BaseLocalizedText
-  textId: Quest_Category_Complete_Text
 --- !u!114 &144958583 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 871696523728768805, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
@@ -148,6 +130,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f571966bfd19ca4aa33f13ad6ece956, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FilterDropdown
+--- !u!1 &206806021 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4083528757955006344, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
+  m_PrefabInstance: {fileID: 4261510180227368517}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &373234770
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -209,24 +196,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e62733538472cb647a8304a732c123b6, type: 3}
---- !u!1 &622710278 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 762543881823102645, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
-  m_PrefabInstance: {fileID: 4261510180227368517}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &622710282
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 622710278}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c2134d9cf1904084596ca987dae836c4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UI_BaseLocalizedText
-  textId: LakeInterior_Popup_Yes_Text
 --- !u!1001 &734790570
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -973,6 +942,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5129100145089045370, guid: e660d4befd8dd0b4296790381f5104a0, type: 3}
+      propertyPath: text
+      value: 
+      objectReference: {fileID: 1983750883}
+    - target: {fileID: 5129100145089045370, guid: e660d4befd8dd0b4296790381f5104a0, type: 3}
+      propertyPath: tooltip
+      value: 
+      objectReference: {fileID: 206806021}
     - target: {fileID: 5317953901293144188, guid: e660d4befd8dd0b4296790381f5104a0, type: 3}
       propertyPath: m_Name
       value: StoreManager
@@ -1242,6 +1219,17 @@ MonoBehaviour:
   m_DefaultActionMap: 
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
+--- !u!114 &1983750883 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7062297459066713536, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
+  m_PrefabInstance: {fileID: 4261510180227368517}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!224 &2027557323 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 8063592495171394554, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
@@ -1630,174 +1618,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4412533036373564723}
     m_Modifications:
-    - target: {fileID: 1168417389733203694, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
-      propertyPath: textId
-      value: Shop_Category_FishingItem_Text
-      objectReference: {fileID: 0}
-    - target: {fileID: 1615812486135810711, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
-      propertyPath: textId
-      value: LakeInterior_Popup_Confirm_Text
-      objectReference: {fileID: 0}
-    - target: {fileID: 2377424783164345643, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2377424783164345643, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
-      propertyPath: m_AnchorMin.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2377424783164345643, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 146
-      objectReference: {fileID: 0}
-    - target: {fileID: 2377424783164345643, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 86
-      objectReference: {fileID: 0}
-    - target: {fileID: 2377424783164345643, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 72.56985
-      objectReference: {fileID: 0}
-    - target: {fileID: 2377424783164345643, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: -387
-      objectReference: {fileID: 0}
-    - target: {fileID: 2989104157096295986, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2989104157096295986, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
-      propertyPath: m_AnchorMin.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2989104157096295986, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 146
-      objectReference: {fileID: 0}
-    - target: {fileID: 2989104157096295986, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 86
-      objectReference: {fileID: 0}
-    - target: {fileID: 2989104157096295986, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 72.56985
-      objectReference: {fileID: 0}
-    - target: {fileID: 2989104157096295986, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: -129
-      objectReference: {fileID: 0}
-    - target: {fileID: 3499355690335425535, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
-      propertyPath: textId
-      value: Shop_Popup_Complete_Text
-      objectReference: {fileID: 0}
-    - target: {fileID: 3736164745912556556, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3736164745912556556, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
-      propertyPath: m_AnchorMin.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3736164745912556556, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 146
-      objectReference: {fileID: 0}
-    - target: {fileID: 3736164745912556556, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 86
-      objectReference: {fileID: 0}
-    - target: {fileID: 3736164745912556556, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 72.56985
-      objectReference: {fileID: 0}
-    - target: {fileID: 3736164745912556556, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: -215
-      objectReference: {fileID: 0}
-    - target: {fileID: 4034153282333876447, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4034153282333876447, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
-      propertyPath: m_AnchorMin.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4034153282333876447, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 146
-      objectReference: {fileID: 0}
-    - target: {fileID: 4034153282333876447, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 86
-      objectReference: {fileID: 0}
-    - target: {fileID: 4034153282333876447, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 72.56985
-      objectReference: {fileID: 0}
-    - target: {fileID: 4034153282333876447, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: -43
-      objectReference: {fileID: 0}
-    - target: {fileID: 4664571127478122669, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
-      propertyPath: textId
-      value: Shop_Button_Close_Text
-      objectReference: {fileID: 0}
-    - target: {fileID: 5370087470065998149, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5824194917922383647, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6358017813731887572, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
-      propertyPath: m_SizeDelta.x
-      value: -8.676331
-      objectReference: {fileID: 0}
-    - target: {fileID: 6461370976676205304, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6461370976676205304, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
-      propertyPath: m_AnchorMin.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6461370976676205304, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 146
-      objectReference: {fileID: 0}
-    - target: {fileID: 6461370976676205304, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 86
-      objectReference: {fileID: 0}
-    - target: {fileID: 6461370976676205304, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 72.56985
-      objectReference: {fileID: 0}
-    - target: {fileID: 6461370976676205304, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: -301
-      objectReference: {fileID: 0}
-    - target: {fileID: 6495739978568913690, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6942137329542837130, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
-      propertyPath: m_AnchorMax.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6942137329542837130, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6982555946291307044, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
-      propertyPath: textId
-      value: Shop_Category_LakeInterior_Text
-      objectReference: {fileID: 0}
-    - target: {fileID: 7593672573735047485, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
-      propertyPath: textId
-      value: Shop_Category_Recipe_Text
-      objectReference: {fileID: 0}
     - target: {fileID: 8063592495171394554, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -1882,24 +1702,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: StoreUI
       objectReference: {fileID: 0}
-    - target: {fileID: 8810709711228141594, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
-      propertyPath: textId
-      value: Shop_Category_Costume_Text
-      objectReference: {fileID: 0}
-    - target: {fileID: 9106378290982993097, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
-      propertyPath: textId
-      value: Shop_Category_IslandInterior_Text
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 762543881823102645, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 622710282}
-    - targetCorrespondingSourceObject: {fileID: 7696774057903255264, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 35336416}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
 --- !u!1 &4261510180227368520 stripped
 GameObject:

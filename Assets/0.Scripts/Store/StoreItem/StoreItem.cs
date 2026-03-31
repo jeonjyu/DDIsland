@@ -27,6 +27,8 @@ public abstract class StoreItem<T> : IStoreItem where T : TableBase<int>
     public virtual int SellPrice { get; } 
     public abstract string ItemName { get; } 
     public abstract string ItemDesc { get; } 
+    public virtual string MainIngName { get; }
+    public virtual string SubIngName { get; }
     public abstract Sprite ImgSprite { get; }
     public virtual Enum Filter { get; }
     public virtual Sprite MainIngSprite { get; }
