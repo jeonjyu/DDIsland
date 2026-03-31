@@ -1204,7 +1204,19 @@ MonoBehaviour:
       m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 8792934405854286137}
+        m_TargetAssemblyTypeName: UI_BGMList, Assembly-CSharp
+        m_MethodName: OnValueChanged_SortDropdown
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_AlphaFadeSpeed: 0.15
 --- !u!1 &752853083329813220
 GameObject:
@@ -8930,9 +8942,12 @@ MonoBehaviour:
   recordSlot: {fileID: 8046812426373374293, guid: 8d0027501a2611d4ea9141b40447e45f, type: 3}
   slotContent: {fileID: 6046949266061775849}
   recordType: 1
+  poolManager: {fileID: 6927484849411958321}
   recordSlotList: []
   unlockPopup: {fileID: 5268621794246032067}
   playRecordInfo: {fileID: 6805170409864556970}
+  sortDropdown: {fileID: 8502846295056998341}
+  filterDropdown: {fileID: 3911887182067908528}
 --- !u!114 &5707861694985626229
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8948,6 +8963,7 @@ MonoBehaviour:
   recordSlot: {fileID: 5713508050153274370, guid: da592f2b349c6994b82126d7502a3e38, type: 3}
   slotContent: {fileID: 6916007507294506735}
   recordType: 2
+  poolManager: {fileID: 2310584508142318077}
   recordSlotList: []
 --- !u!1 &5697495609752958621
 GameObject:
@@ -10016,6 +10032,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6916007507294506735}
+  - component: {fileID: 2310584508142318077}
   - component: {fileID: 1748936615538439836}
   - component: {fileID: 7847365847823881452}
   m_Layer: 5
@@ -10044,6 +10061,23 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 5}
   m_Pivot: {x: 0, y: 1}
+--- !u!114 &2310584508142318077
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6716736565192206497}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 48e7fb988db78ec4cb82dd31e98ef688, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AMBSlotPool
+  initSize: 16
+  maxSize: 200
+  initCount: 0
+  instantiateTrans: {fileID: 6916007507294506735}
+  data: {fileID: 5713508050153274370, guid: da592f2b349c6994b82126d7502a3e38, type: 3}
 --- !u!114 &1748936615538439836
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10360,6 +10394,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6046949266061775849}
+  - component: {fileID: 6927484849411958321}
   - component: {fileID: 4088287354627594496}
   - component: {fileID: 3714990048616526535}
   m_Layer: 5
@@ -10388,6 +10423,23 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: -0.0000019073486}
   m_SizeDelta: {x: 0, y: 5}
   m_Pivot: {x: 0, y: 1}
+--- !u!114 &6927484849411958321
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7620774403283791322}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 447e93a43e22ac54ba94761cdd89172c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BGMSlotPool
+  initSize: 50
+  maxSize: 200
+  initCount: 0
+  instantiateTrans: {fileID: 6046949266061775849}
+  data: {fileID: 8046812426373374293, guid: 8d0027501a2611d4ea9141b40447e45f, type: 3}
 --- !u!114 &4088287354627594496
 MonoBehaviour:
   m_ObjectHideFlags: 0

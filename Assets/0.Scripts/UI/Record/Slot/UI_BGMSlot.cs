@@ -12,6 +12,8 @@ public class UI_BGMSlot : UI_RecordSlot
     [Header("음반 재생시간 텍스트")]
     [SerializeField] private TMP_Text playTimeText;
 
+    public bool IsFavorite { get; private set; }    // 즐겨찾기 여부
+
     private UI_BGMList bgmList;
     private bool isLocked;      // 음반이 해금된 상태인지 여부
 
@@ -35,7 +37,6 @@ public class UI_BGMSlot : UI_RecordSlot
 
         playTimeText.text = record.RecordSoundPath_AudioClip.GetClipLength();
 
-        // IsLocked = !record.IsDefaultRecord;
         CheckUserData();
 
         InitTextData();
@@ -46,12 +47,12 @@ public class UI_BGMSlot : UI_RecordSlot
         base.InitTextData();
 
         artistText.text = Record.RecordArtist_String;
+
+        
     }
 
     public override void CheckUserData()
     {
-        // todo: 파이어베이스 음반 데이터 저장 기능 추가 후 작성
-
         if(Record.IsDefaultRecord)
         {
             IsLocked = false;

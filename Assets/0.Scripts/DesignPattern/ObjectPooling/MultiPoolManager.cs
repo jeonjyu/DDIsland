@@ -58,7 +58,7 @@ public class MultiPoolManager<T> : ObjectPoolManager where T : Component
     // 생성할 때
     protected virtual Func<T> CreateObject(T obj)
     {
-        return () => Instantiate(obj, transform);
+        return () => Instantiate(obj, instantiateTrans);
     }
 
     // 활성화할 때

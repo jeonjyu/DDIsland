@@ -110,11 +110,6 @@ public class UI_PlayRecordInfo : MonoBehaviour
             0f,
             record.RecordSoundPath_AudioClip.length - 0.1f);
 
-        Debug.Log(SoundManager.Instance.BgmSource.time);
-        Debug.Log(SoundManager.Instance.BgmSource.clip.length);
-        Debug.Log(record.RecordSoundPath_AudioClip.length);
-        Debug.Log(currentPlaySlider.PlaySlider.value);
-        Debug.Log(currentPlaySlider.PlaySlider.value * record.RecordSoundPath_AudioClip.length);
         CheckPlayTime();
     }
 
