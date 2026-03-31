@@ -26,6 +26,7 @@ public class InteractObject_LP : InteractObject, IInterchangeableInteract
             return;
         if (RecordUI == null || RecordUI.activeSelf) return;
 
+        Debug.Log("클릭");
         RecordUI.SetActive(true);
     }
 

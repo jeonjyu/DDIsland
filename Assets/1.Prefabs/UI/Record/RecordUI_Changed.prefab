@@ -54,6 +54,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96923123985bb134a81016e34fab6aa7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI_CurrentPlaySlider
+  <PlaySlider>k__BackingField: {fileID: 0}
 --- !u!114 &6752008941685240811
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -661,9 +662,9 @@ RectTransform:
   m_Father: {fileID: 7593725013990487110}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: -17, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!222 &1985021830142579185
 CanvasRenderer:
@@ -3187,7 +3188,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &7262175758208473671
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3978,9 +3979,9 @@ RectTransform:
   - {fileID: 6370454190882131219}
   m_Father: {fileID: 7924410154198565106}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 80, y: -25}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &267827849370137270
@@ -4843,9 +4844,12 @@ MonoBehaviour:
   recordSlot: {fileID: 8046812426373374293, guid: 8d0027501a2611d4ea9141b40447e45f, type: 3}
   slotContent: {fileID: 4840511701190129911}
   recordType: 1
+  poolManager: {fileID: 0}
   recordSlotList: []
   unlockPopup: {fileID: 6890010783678786253}
   playRecordInfo: {fileID: 8070175581378364084}
+  sortDropdown: {fileID: 0}
+  filterDropdown: {fileID: 0}
 --- !u!1 &1834175260850455688
 GameObject:
   m_ObjectHideFlags: 0
@@ -6683,6 +6687,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96923123985bb134a81016e34fab6aa7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI_CurrentPlaySlider
+  <PlaySlider>k__BackingField: {fileID: 0}
 --- !u!114 &118897430369252179
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7814,7 +7819,7 @@ RectTransform:
   m_Father: {fileID: 6274297978869251872}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -13347,7 +13352,6 @@ MonoBehaviour:
   recordImage: {fileID: 786215366707234553}
   titleText: {fileID: 8590422875573040094}
   artistText: {fileID: 8987413812876535505}
-  processBar: {fileID: 6752008941685240811}
   currentTimeText: {fileID: 7735782855539378975}
   endTimeText: {fileID: 1389668013186935660}
   currentPlaySlider: {fileID: 7413547350739527497}
@@ -13372,7 +13376,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &6230802387099330878
 RectTransform:
   m_ObjectHideFlags: 0
@@ -14192,6 +14196,7 @@ MonoBehaviour:
   requireLpPieceCount: 3
   successPopup: {fileID: 181906304075092122}
   failurePopup: {fileID: 4830178528182029414}
+  previewPopup: {fileID: 0}
   bgmList: {fileID: 2541618951240072222}
 --- !u!222 &4111715541407922393
 CanvasRenderer:
@@ -18962,7 +18967,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: -0.0000019073486}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 5}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &2318949098780296936
 MonoBehaviour:
@@ -20325,6 +20330,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96923123985bb134a81016e34fab6aa7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI_CurrentPlaySlider
+  <PlaySlider>k__BackingField: {fileID: 0}
 --- !u!114 &998913877042860543
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21131,9 +21137,9 @@ RectTransform:
   - {fileID: 9108944455106092591}
   m_Father: {fileID: 7924410154198565106}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 270, y: -25}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7194620247293884625
@@ -21358,7 +21364,9 @@ MonoBehaviour:
   recordSlot: {fileID: 5713508050153274370, guid: da592f2b349c6994b82126d7502a3e38, type: 3}
   slotContent: {fileID: 4302030400932778669}
   recordType: 2
+  poolManager: {fileID: 0}
   recordSlotList: []
+  filterDropdown: {fileID: 0}
 --- !u!1 &8560045513562075357
 GameObject:
   m_ObjectHideFlags: 0
@@ -21963,9 +21971,9 @@ RectTransform:
   - {fileID: 8259847948823482385}
   m_Father: {fileID: 3196301462514633359}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 200, y: -25}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8306044824456289347
