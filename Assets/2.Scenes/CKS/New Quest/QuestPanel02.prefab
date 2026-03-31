@@ -2141,7 +2141,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1285684971796872278, guid: 5c898615f381db6489e2b69e90642c1d, type: 3}
+      insertIndex: 2
+      addedObject: {fileID: 2098033915320063771}
   m_SourcePrefab: {fileID: 100100000, guid: 5c898615f381db6489e2b69e90642c1d, type: 3}
 --- !u!1 &864883471781406924 stripped
 GameObject:
@@ -2175,6 +2178,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+--- !u!1 &4012078679704972185 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1285684971796872278, guid: 5c898615f381db6489e2b69e90642c1d, type: 3}
+  m_PrefabInstance: {fileID: 2772651558120789967}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2098033915320063771
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4012078679704972185}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2134d9cf1904084596ca987dae836c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI_BaseLocalizedText
+  textId: Quest_Popup_Complete_Text
 --- !u!224 &5169696806268586397 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7044786761165528658, guid: 5c898615f381db6489e2b69e90642c1d, type: 3}
@@ -2350,8 +2371,29 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 7956223816825944459, guid: 0e49b8912cc452b4990102295daee570, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2344479401118283776}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1293664487365517490, guid: 0e49b8912cc452b4990102295daee570, type: 3}
+      insertIndex: 2
+      addedObject: {fileID: 5288562807073567633}
   m_SourcePrefab: {fileID: 100100000, guid: 0e49b8912cc452b4990102295daee570, type: 3}
+--- !u!1 &4316486212724075431 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1293664487365517490, guid: 0e49b8912cc452b4990102295daee570, type: 3}
+  m_PrefabInstance: {fileID: 3031830369893583637}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &5288562807073567633
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4316486212724075431}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2134d9cf1904084596ca987dae836c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI_BaseLocalizedText
+  textId: Quest_Category_Journal_Text
 --- !u!114 &4471031674841285899 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1450003185028615710, guid: 0e49b8912cc452b4990102295daee570, type: 3}
@@ -2625,7 +2667,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6542998551309592359, guid: d48bb65f9f298c04f9f51bcb28509b1f, type: 3}
+      insertIndex: 2
+      addedObject: {fileID: 3418548103472988064}
   m_SourcePrefab: {fileID: 100100000, guid: d48bb65f9f298c04f9f51bcb28509b1f, type: 3}
 --- !u!1 &6162894367253225237 stripped
 GameObject:
@@ -2637,6 +2682,24 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 6548219734266959954, guid: d48bb65f9f298c04f9f51bcb28509b1f, type: 3}
   m_PrefabInstance: {fileID: 3150056539007557370}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &8176946203335145949 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6542998551309592359, guid: d48bb65f9f298c04f9f51bcb28509b1f, type: 3}
+  m_PrefabInstance: {fileID: 3150056539007557370}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &3418548103472988064
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8176946203335145949}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2134d9cf1904084596ca987dae836c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI_BaseLocalizedText
+  textId: Quest_Category_Store_Text
 --- !u!1001 &3230641021885009999
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2775,7 +2838,10 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 7956223816825944459, guid: 0e49b8912cc452b4990102295daee570, type: 3}
       insertIndex: -1
       addedObject: {fileID: 227025117855479386}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1293664487365517490, guid: 0e49b8912cc452b4990102295daee570, type: 3}
+      insertIndex: 2
+      addedObject: {fileID: 6926825782585857796}
   m_SourcePrefab: {fileID: 100100000, guid: 0e49b8912cc452b4990102295daee570, type: 3}
 --- !u!114 &4092356793665199697 stripped
 MonoBehaviour:
@@ -2788,6 +2854,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
+--- !u!1 &4404958160544559357 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1293664487365517490, guid: 0e49b8912cc452b4990102295daee570, type: 3}
+  m_PrefabInstance: {fileID: 3230641021885009999}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &6926825782585857796
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4404958160544559357}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2134d9cf1904084596ca987dae836c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI_BaseLocalizedText
+  textId: Quest_Category_Fishing_Text
 --- !u!224 &4809744951412484548 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7956223816825944459, guid: 0e49b8912cc452b4990102295daee570, type: 3}
@@ -2935,13 +3019,34 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 7956223816825944459, guid: 0e49b8912cc452b4990102295daee570, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8172006494282073768}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1293664487365517490, guid: 0e49b8912cc452b4990102295daee570, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6864059426923698431}
   m_SourcePrefab: {fileID: 100100000, guid: 0e49b8912cc452b4990102295daee570, type: 3}
 --- !u!224 &3410938844455518269 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7956223816825944459, guid: 0e49b8912cc452b4990102295daee570, type: 3}
   m_PrefabInstance: {fileID: 4700695499638045110}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &5820969973233113348 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1293664487365517490, guid: 0e49b8912cc452b4990102295daee570, type: 3}
+  m_PrefabInstance: {fileID: 4700695499638045110}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &6864059426923698431
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5820969973233113348}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2134d9cf1904084596ca987dae836c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI_BaseLocalizedText
+  textId: Quest_Category_Store_Text
 --- !u!114 &6134830199589779368 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1450003185028615710, guid: 0e49b8912cc452b4990102295daee570, type: 3}
@@ -3198,8 +3303,29 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6542998551309592359, guid: d48bb65f9f298c04f9f51bcb28509b1f, type: 3}
+      insertIndex: 2
+      addedObject: {fileID: 8318935085513799132}
   m_SourcePrefab: {fileID: 100100000, guid: d48bb65f9f298c04f9f51bcb28509b1f, type: 3}
+--- !u!1 &1198110611818802700 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6542998551309592359, guid: d48bb65f9f298c04f9f51bcb28509b1f, type: 3}
+  m_PrefabInstance: {fileID: 5363204160753879339}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8318935085513799132
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1198110611818802700}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2134d9cf1904084596ca987dae836c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI_BaseLocalizedText
+  textId: Quest_Category_Complete_Text
 --- !u!224 &1203058012102496633 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6548219734266959954, guid: d48bb65f9f298c04f9f51bcb28509b1f, type: 3}
@@ -3353,8 +3479,29 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6542998551309592359, guid: d48bb65f9f298c04f9f51bcb28509b1f, type: 3}
+      insertIndex: 2
+      addedObject: {fileID: 8425059103309889199}
   m_SourcePrefab: {fileID: 100100000, guid: d48bb65f9f298c04f9f51bcb28509b1f, type: 3}
+--- !u!1 &1652495390219379532 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6542998551309592359, guid: d48bb65f9f298c04f9f51bcb28509b1f, type: 3}
+  m_PrefabInstance: {fileID: 5486423700142752875}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8425059103309889199
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1652495390219379532}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2134d9cf1904084596ca987dae836c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI_BaseLocalizedText
+  textId: Quest_Category_Growing_Text
 --- !u!224 &1656271807245999161 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6548219734266959954, guid: d48bb65f9f298c04f9f51bcb28509b1f, type: 3}
@@ -3503,7 +3650,10 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 7956223816825944459, guid: 0e49b8912cc452b4990102295daee570, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1203058012102496633}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1293664487365517490, guid: 0e49b8912cc452b4990102295daee570, type: 3}
+      insertIndex: 2
+      addedObject: {fileID: 248487118402702653}
   m_SourcePrefab: {fileID: 100100000, guid: 0e49b8912cc452b4990102295daee570, type: 3}
 --- !u!224 &4136098420668893101 stripped
 RectTransform:
@@ -3521,6 +3671,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
+--- !u!1 &5113964982783581844 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1293664487365517490, guid: 0e49b8912cc452b4990102295daee570, type: 3}
+  m_PrefabInstance: {fileID: 6272512564957003302}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &248487118402702653
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5113964982783581844}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2134d9cf1904084596ca987dae836c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI_BaseLocalizedText
+  textId: Quest_Category_Complete_Text
 --- !u!1001 &6483350593987587592
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3664,13 +3832,34 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6542998551309592359, guid: d48bb65f9f298c04f9f51bcb28509b1f, type: 3}
+      insertIndex: 2
+      addedObject: {fileID: 6895770009037701108}
   m_SourcePrefab: {fileID: 100100000, guid: d48bb65f9f298c04f9f51bcb28509b1f, type: 3}
 --- !u!224 &227025117855479386 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6548219734266959954, guid: d48bb65f9f298c04f9f51bcb28509b1f, type: 3}
   m_PrefabInstance: {fileID: 6483350593987587592}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &230839751635536175 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6542998551309592359, guid: d48bb65f9f298c04f9f51bcb28509b1f, type: 3}
+  m_PrefabInstance: {fileID: 6483350593987587592}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &6895770009037701108
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 230839751635536175}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2134d9cf1904084596ca987dae836c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI_BaseLocalizedText
+  textId: Quest_Category_Fishing_Text
 --- !u!1 &2866749512177807335 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 9093260769123058159, guid: d48bb65f9f298c04f9f51bcb28509b1f, type: 3}
@@ -3814,13 +4003,34 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 7956223816825944459, guid: 0e49b8912cc452b4990102295daee570, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1656271807245999161}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1293664487365517490, guid: 0e49b8912cc452b4990102295daee570, type: 3}
+      insertIndex: 2
+      addedObject: {fileID: 1152383865455335280}
   m_SourcePrefab: {fileID: 100100000, guid: 0e49b8912cc452b4990102295daee570, type: 3}
 --- !u!224 &1609899585521087015 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7956223816825944459, guid: 0e49b8912cc452b4990102295daee570, type: 3}
   m_PrefabInstance: {fileID: 8664270704379808684}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &7622809333865409310 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1293664487365517490, guid: 0e49b8912cc452b4990102295daee570, type: 3}
+  m_PrefabInstance: {fileID: 8664270704379808684}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1152383865455335280
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7622809333865409310}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2134d9cf1904084596ca987dae836c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI_BaseLocalizedText
+  textId: Quest_Category_Growing_Text
 --- !u!114 &7792034921856435634 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1450003185028615710, guid: 0e49b8912cc452b4990102295daee570, type: 3}
@@ -3975,7 +4185,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6542998551309592359, guid: d48bb65f9f298c04f9f51bcb28509b1f, type: 3}
+      insertIndex: 2
+      addedObject: {fileID: 4057667165354818374}
   m_SourcePrefab: {fileID: 100100000, guid: d48bb65f9f298c04f9f51bcb28509b1f, type: 3}
 --- !u!1 &317346327532675517 stripped
 GameObject:
@@ -3987,3 +4200,21 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 6548219734266959954, guid: d48bb65f9f298c04f9f51bcb28509b1f, type: 3}
   m_PrefabInstance: {fileID: 8815427592645468242}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &2349707150948517749 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6542998551309592359, guid: d48bb65f9f298c04f9f51bcb28509b1f, type: 3}
+  m_PrefabInstance: {fileID: 8815427592645468242}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &4057667165354818374
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2349707150948517749}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2134d9cf1904084596ca987dae836c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI_BaseLocalizedText
+  textId: Quest_Category_Journal_Text

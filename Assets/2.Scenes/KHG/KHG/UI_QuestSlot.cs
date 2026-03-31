@@ -86,7 +86,10 @@ public class UI_QuestSlot : MonoBehaviour
 
         _rewardButton.gameObject.SetActive(true);
         _rewardButton.interactable = (state == QuestStateType.Claimable && !_questPanel.IsRewardPopupOpen);
-        _rewardButtonText.text = state == QuestStateType.Claimable ? "받기" : "진행중";
+
+        var rewardNotClaimable = LocalizationManager.Instance.GetString("QuestButtonGet");
+        var rewardClaimable = LocalizationManager.Instance.GetString("QuestButtonContinuing");
+        _rewardButtonText.text = state == QuestStateType.Claimable ? rewardNotClaimable : rewardClaimable;
 
         _questSlider.value = current;
         _progressText.text = $"{current}/{requirement}";
