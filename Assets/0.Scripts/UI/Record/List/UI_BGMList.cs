@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -29,6 +28,9 @@ public class UI_BGMList : UI_RecordList<UI_BGMSlot>
             if(slot.Record != null)
                 recordList.Add(slot.Record);
         }
+
+        Debug.Log($"배경음 슬롯 개수: {recordSlotList.Count}");
+        Debug.Log($"배경음 데이터 개수: {recordList.Count}");
     }
 
     /// <summary>

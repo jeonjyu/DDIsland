@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.UI;
 
 public class Test : MonoBehaviour
 {
@@ -18,7 +17,6 @@ public class Test : MonoBehaviour
             obj3.SetActive(true);
             obj4.SetActive(true);
             obj5.SetActive(true);
-
         }
 
         if (Keyboard.current.f4Key.wasPressedThisFrame)
