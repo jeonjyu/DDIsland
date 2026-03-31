@@ -47,7 +47,6 @@ public class UI_BGMSlot : UI_RecordSlot
         base.InitData(record, recordList);
 
         bgmList = recordList as UI_BGMList;
-
         playTimeText.text = record.RecordSoundPath_AudioClip.GetClipLength();
 
         CheckUserData();
@@ -60,8 +59,6 @@ public class UI_BGMSlot : UI_RecordSlot
         base.InitTextData();
 
         artistText.text = Record.RecordArtist_String;
-
-        
     }
 
     public override void CheckUserData()
