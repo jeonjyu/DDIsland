@@ -127,12 +127,15 @@ public class UI_MailSlot : MonoBehaviour
     private void OnEnable()
     {
         MailManager.Instance.OnMailUpdated += RefreshSlot;
+        PlayerPrefsDataManager.OnLanguageChanged += RefreshSlot;
     }
 
     private void OnDisable()
     {
         if (MailManager.Instance != null)
             MailManager.Instance.OnMailUpdated -= RefreshSlot;
+
+        PlayerPrefsDataManager.OnLanguageChanged -= RefreshSlot;
     }
 
 }

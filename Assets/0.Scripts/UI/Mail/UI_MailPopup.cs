@@ -76,6 +76,14 @@ public class UI_MailPopup : MonoBehaviour
         }
     }
 
+    private void RefreshPopup()
+    {
+        if (_currentData != null && gameObject.activeSelf)
+        {
+            OpenPopup(_currentData);
+        }
+    }
+
     private void OnClickClaim()
     {
         MailManager.Instance.ClaimReward(_currentData);
@@ -87,5 +95,15 @@ public class UI_MailPopup : MonoBehaviour
     public void ClosePopup()
     {
         gameObject.SetActive(false);
+    }
+
+    private void OnEnable()
+    {
+        PlayerPrefsDataManager.OnLanguageChanged += RefreshPopup;
+    }
+
+    private void OnDisable()
+    {
+        PlayerPrefsDataManager.OnLanguageChanged -= RefreshPopup;
     }
 }
