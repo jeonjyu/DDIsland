@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -24,6 +25,8 @@ public class UI_BGMSlot : UI_RecordSlot
     private UI_BGMList bgmList;
     private bool isLocked;      // 음반이 해금된 상태인지 여부
 
+    private bool isInitialize;
+
     #region 프로퍼티
     public bool IsLocked
     {
@@ -40,18 +43,22 @@ public class UI_BGMSlot : UI_RecordSlot
     }
     #endregion
 
-    public void OnValueChanged_FavoriteToggle() => IsFavorite = favoriteToggle.isOn;
-
     public override void InitData<T>(RecordDataSO record, UI_RecordList<T> recordList)
     {
+        isInitialize = true;
+
         base.InitData(record, recordList);
 
         bgmList = recordList as UI_BGMList;
         playTimeText.text = record.RecordSoundPath_AudioClip.GetClipLength();
 
-        CheckUserData();
+        favoriteToggle.isOn = DataManager.Instance.RecordDatabase.BookmarkRecords.Contains(Record.RecordID);
+        IsFavorite = favoriteToggle.isOn;
 
+        CheckUserData();
         InitTextData();
+
+        isInitialize = false;
     }
 
     public override void InitTextData()
@@ -73,6 +80,30 @@ public class UI_BGMSlot : UI_RecordSlot
             IsLocked = false;
         else
             IsLocked = true;
+    }
+
+    public void OnValueChanged_FavoriteToggle()
+    {
+        if (isInitialize) return;
+
+        IsFavorite = favoriteToggle.isOn;
+
+        HashSet<int> bookmarks = DataManager.Instance.RecordDatabase.BookmarkRecords;
+
+        if (favoriteToggle.isOn)
+        {
+            if (!bookmarks.Contains(Record.RecordID))
+            {
+                bookmarks.Add(Record.RecordID);
+            }
+        }
+        else
+        {
+            if (bookmarks.Contains(Record.RecordID))
+            {
+                bookmarks.Remove(Record.RecordID);
+            }
+        }
     }
 
     public override void OnClick_Slot()

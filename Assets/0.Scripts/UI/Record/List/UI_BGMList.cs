@@ -152,9 +152,9 @@ public class UI_BGMList : UI_RecordList<UI_BGMSlot>
         {
             if (recordList[i] != null)
                 recordSlotList[i].InitData(recordList[i], this);
-
-            Debug.Log(recordList[i].RecordName_String);
         }
+
+        OnValueChanged_FilterDropdown();
     }
 
     public void OnValueChanged_FilterDropdown()

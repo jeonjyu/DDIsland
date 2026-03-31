@@ -12,16 +12,9 @@ public class RecordServerData
 
     // 해금된 음반 목록
     public HashSet<int> UnlockRecords = new HashSet<int>();
-}
 
-/// <summary>
-/// 로컬로 관리할 음반 데이터
-/// </summary>
-[Serializable]
-public class RecordLocalData
-{
     // 즐겨찾기 음반 목록
-    public List<int> BookmarkList = new List<int>();
+    public HashSet<int> BookmarkList = new HashSet<int>();
 
     // todo: 플레이리스트 목록 정보 추가
 
