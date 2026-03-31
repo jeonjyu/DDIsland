@@ -3,19 +3,6 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-// 스트링 테이블 참조하기 전 임시 열거형
-public enum HelpLocation
-{
-    Start =1,
-    Upgrade,
-    Shop,
-    Decoration,
-    Box,
-    Record,
-    Journal,
-    Quest,
-}
-
 public class HelpPageData
 {
     public HelpLocation _location;
@@ -32,7 +19,7 @@ public class HelpPage : MonoBehaviour
     public TextMeshProUGUI _subTitleText;
     public TextMeshProUGUI _bodyText;
     public TextMeshProUGUI _pageNumberText;
-    public Image _displayImage;
+    //public Image _displayImage;
 
     [Header("UI 버튼 연결")]
     public Button _prevButton;
@@ -76,12 +63,12 @@ public class HelpPage : MonoBehaviour
 
         if (pageData._imageSprite != null)
         {
-            _displayImage.gameObject.SetActive(true);
-            _displayImage.sprite = pageData._imageSprite;
+            //_displayImage.gameObject.SetActive(true);
+            //_displayImage.sprite = pageData._imageSprite;
         }
         else
         {
-            _displayImage.gameObject.SetActive(false);
+            //_displayImage.gameObject.SetActive(false);
         }
         if (!string.IsNullOrEmpty(pageData._bodyText))
         {

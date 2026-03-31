@@ -1,17 +1,6 @@
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using UnityEngine;
-
-[System.Serializable]
-public struct TempHelpData
-{
-    public HelpLocation _location; // 상점, 꾸미기 등
-    public string _mainTitle;
-    public string _subTitle;
-    [TextArea(3, 5)] // 본문 쓸 때 유니티에서 엔터 칠 수 있게 창을 늘려주는 옵션
-    public string _bodyText;
-
-    public Sprite _imageSprite;
-}
 
 public class HelpManager : MonoBehaviour
 {
@@ -21,33 +10,29 @@ public class HelpManager : MonoBehaviour
     {
         Instance = this;
     }
-
-    private void Start()
-    {
-        OpenHelp(HelpLocation.Shop);
-    }
-
     [Header("UI 연결")]
     public HelpPage _helpPageUI;
 
-    [Header("임시 테스트 데이터 넣는 곳")]
-    public List<TempHelpData> _allData = new List<TempHelpData>();
-
-    private List<HelpPageData> _allHelpDataList = new();
+    //public void OpenHelpByInt(int locationIndex)
+    //{
+    //    OpenHelp((HelpLocation)locationIndex);
+    //}
 
     public void OpenHelp(HelpLocation targetLocation)
     {
-        List<HelpPageData> helpList = new();
+        var helpList = new List<HelpPageData>();
+        var allHelpData = DataManager.Instance.HelpDatabase.HelpInfoData.datas;
 
-        foreach (var data in _allData)
+        foreach (var data in allHelpData)
         {
-            if (data._location == targetLocation)
+            if (data.helplocationType == targetLocation)
             {
                 HelpPageData page = new()
                 {
-                    _mainTitle = data._mainTitle,
-                    _subTitle = data._subTitle,
-                    _bodyText = data._bodyText
+                    _mainTitle = LocalizationManager.Instance.GetString(data.MainTitle),
+                    _subTitle = string.IsNullOrEmpty(data.SubTitle) ? "" : LocalizationManager.Instance.GetString(data.SubTitle),
+                    _bodyText = ProcessDynamicText(data.Content),
+                    //_imageSprite = data.HelpImgPath_Sprite
                 };
                 helpList.Add(page);
             }
@@ -58,5 +43,27 @@ public class HelpManager : MonoBehaviour
             _helpPageUI.gameObject.SetActive(true);
             _helpPageUI.OpenHelpWindow(helpList);
         }
+    }
+
+
+    /// <summary>
+    /// {}로 감싸인 텍스트를 해당 키의 문자열로 번역해주는 메서드
+    /// </summary>
+    /// <param name="contentKey"></param>
+    /// <returns></returns>
+    private string ProcessDynamicText(string contentKey)
+    {
+        string rawText = LocalizationManager.Instance.GetString(contentKey);
+
+        if (string.IsNullOrEmpty(rawText)) return "";
+
+        string processedText = Regex.Replace(rawText, @"\{([^}]+)\}", match =>
+        {
+            string innerKey = match.Groups[1].Value;
+
+            return LocalizationManager.Instance.GetString(innerKey);
+        });
+
+        return processedText;
     }
 }
