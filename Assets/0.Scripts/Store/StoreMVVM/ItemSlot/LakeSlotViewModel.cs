@@ -20,11 +20,16 @@ public class LakeSlotViewModel : ItemSlotViewModelBase
 
     // 호수 아이템 적용
     // 적용 버튼이 눌리면 적용
-    public void ApplyTheme()
+    public void OpenThemeApply()
     {
         LakeItemManager.Instance.themeApplyPopup.OnApplyTheme += () => IsApplied = true;
         Debug.Log("[LakeSlotView] ApplyTheme 팝업 열기");
         StoreManager.Instance.TradeModel = Model;
         LakeItemManager.Instance.themeApplyPopup.gameObject.SetActive(true);
     }
+
+    //private void UpdateApplyStatus()
+    //{
+
+    //}
 }

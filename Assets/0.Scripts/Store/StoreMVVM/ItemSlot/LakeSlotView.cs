@@ -25,7 +25,7 @@ public class LakeSlotView : ItemSlotViewBase<LakeSlotViewModel>
     {
         //Debug.Log("LakeSlotViewModel : OnEnable " + Model);
         viewModel.PropertyChanged += OnViewModelPropChanged;
-        ApplyBtn.onClick.AddListener(viewModel.ApplyTheme);
+        ApplyBtn.onClick.AddListener(viewModel.OpenThemeApply);
     }
 
     private void OnDisable()
@@ -47,6 +47,8 @@ public class LakeSlotView : ItemSlotViewBase<LakeSlotViewModel>
     // 고려 조건: 보유여부/착용여부
     public void SetBtn()
     {
+        //Debug.Log(LakeItemManager.Instance.ThemeID == modelData.ID ? viewModel.ItemName  + " 적용중": viewModel.ItemName + " 적용중 아님");
+        
         // 장착중인 호수 테마인지 확인해서 isApplied 적용해주기
         bool isApplied = LakeItemManager.Instance.ThemeID == modelData.ID;
         if (viewModel.Model is null) Debug.Log("모델이 비었음");
@@ -54,20 +56,33 @@ public class LakeSlotView : ItemSlotViewBase<LakeSlotViewModel>
         applyBtn.gameObject.SetActive(viewModel.Model.IsGained);
         applyBtn.interactable = !isApplied;
 
-        // 현재 착용중인 아이템이 아니라면 버튼 텍스트 "적용"
-        //if (btnText == null) btnText = applyBtn.GetComponent<TMP_Text>();
-
         btnText.text = isApplied ? "적용 중" : "적용";
     }
 
     protected override void OnViewModelPropChanged(object sender, PropertyChangedEventArgs e)
     {
         base.OnViewModelPropChanged(sender, e);
-        switch(e.PropertyName)
+
+        //Debug.Log("[LakeSlotView] " + e.PropertyName + " 프로퍼티 바뀜");
+
+        //switch (e.PropertyName)
+        //{
+        //    case nameof(viewModel.IsApplied):
+        //        SetBtn();
+        //        break;
+        //}
+
+        switch (e.PropertyName)
         {
             case nameof(viewModel.IsApplied):
-            SetBtn();
-            break;
-        } 
+                //Debug.Log("[LakeSlotView] 테마 적용 여부 변경됨");
+                StoreManager.Instance.sortDropdown.ApplySortPriority();
+                StoreManager.Instance.StoreListVM.LoadSlotList();
+                SetBtn();
+                break;
+            default:
+                //Debug.Log("[LakeSlotView] " + e.PropertyName + " 프로퍼티 바뀜");
+                break;
+        }
     }
 }
