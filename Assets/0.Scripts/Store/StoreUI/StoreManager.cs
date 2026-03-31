@@ -67,7 +67,7 @@ public class StoreManager : Singleton<StoreManager>, INotifyPropertyChanged
             if (tradeModel.ItemCount != value)
             {
                 tradeModel.ItemCount = value;
-                Debug.Log("[StoreManager] 아이템 개수 변경 " + TradeItemCount);
+                //Debug.Log("[StoreManager] 아이템 개수 변경 " + TradeItemCount);
                 OnTradeModelChanged(nameof(TradeItemCount));
             }
         }
@@ -81,7 +81,7 @@ public class StoreManager : Singleton<StoreManager>, INotifyPropertyChanged
             if(tradeModel.IsGained != value)
             {
                 tradeModel.IsGained = value;
-                Debug.Log("[StoreManager] 아이템 보유 여부 변경 " + IsTradeItemGained);
+                //Debug.Log("[StoreManager] 아이템 보유 여부 변경 " + IsTradeItemGained);
                 OnTradeModelChanged(nameof(IsTradeItemGained));
             }
         }
@@ -109,7 +109,7 @@ public class StoreManager : Singleton<StoreManager>, INotifyPropertyChanged
                 {
                     IsTradeItemGained = true;
                     ItemManager.Instance.AddToPlayerItem(TradeModel, currentCat);
-                    Debug.Log($"[Storemanager] 새로운 아이템 추가 | IsGained : {TradeModel.IsGained} / TradeItemCount : {TradeItemCount + inCount}");
+                    //Debug.Log($"[Storemanager] 새로운 아이템 추가 | IsGained : {TradeModel.IsGained} / TradeItemCount : {TradeItemCount + inCount}");
                     //TradeItemSlot.IsGained = IsTradeItemGained;
                 }
             }
@@ -120,7 +120,7 @@ public class StoreManager : Singleton<StoreManager>, INotifyPropertyChanged
                 {
                     IsTradeItemGained = false;
                     ItemManager.Instance.RemoveFromPlayerItem(TradeModel, currentCat);
-                    Debug.Log($"[Storemanager] 아이템 삭제 | IsGained : {TradeModel.IsGained} / TradeItemCount : {TradeItemCount + inCount}");
+                    //Debug.Log($"[Storemanager] 아이템 삭제 | IsGained : {TradeModel.IsGained} / TradeItemCount : {TradeItemCount + inCount}");
                 }
             }
 
