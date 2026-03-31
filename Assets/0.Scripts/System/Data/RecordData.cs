@@ -10,7 +10,6 @@ public class RecordData : MonoBehaviour
     #endregion
 
     private RecordServerData recordServerData = new RecordServerData();
-    private RecordLocalData recordLocalData = new RecordLocalData();
 
     public RecordDataSO CurrentRecord;
     public List<int> DefaultRecords { get; private set; } = new List<int>();    // todo: 임시 기본 재생 목록
@@ -58,11 +57,17 @@ public class RecordData : MonoBehaviour
         set { recordServerData.UnlockRecords = value; }
     }
 
+    public HashSet<int> BookmarkRecords
+    {
+        get { return recordServerData.BookmarkList; }
+        set { recordServerData.BookmarkList = value; }
+    }
+
     // 마지막으로 재생했던 음반 id
     public int CurrentRecordId
     {
-        get { return recordLocalData.CurrentRecordData.RecordId; }
-        set { recordLocalData.CurrentRecordData.RecordId = value; }
+        get { return recordServerData.CurrentRecordData.RecordId; }
+        set { recordServerData.CurrentRecordData.RecordId = value; }
     }
 
     // 마지막으로 재생했던 현재 재생 목록
@@ -70,22 +75,22 @@ public class RecordData : MonoBehaviour
     {
         get
         {
-            if (recordLocalData.CurrentRecordData.CurrentPlayList.Count == 0)
+            if (recordServerData.CurrentRecordData.CurrentPlayList.Count == 0)
                 return DefaultRecords;
             else
-                return recordLocalData.CurrentRecordData.CurrentPlayList;
+                return recordServerData.CurrentRecordData.CurrentPlayList;
         }
-        set { recordLocalData.CurrentRecordData.CurrentPlayList = value; }
+        set { recordServerData.CurrentRecordData.CurrentPlayList = value; }
     }
 
     // 마지막으로 재생했던 음반의 재생 시점
     public float PlaybackPoint
     {
-        get { return recordLocalData.CurrentRecordData.PlaybackPoint; }
+        get { return recordServerData.CurrentRecordData.PlaybackPoint; }
         set
         {
             float time = Mathf.Round(value * 100) / 100f;
-            recordLocalData.CurrentRecordData.PlaybackPoint = time;
+            recordServerData.CurrentRecordData.PlaybackPoint = time;
         }
     }
     #endregion
