@@ -14,6 +14,8 @@ public interface IStoreItem
     bool IsSaleable { get; }
     int PurchasePrice { get; }
     int SellPrice { get; }
+    string MainIngName { get; }
+    string SubIngName { get; } 
     Sprite ImgSprite { get; }
     Sprite MainIngSprite { get; }
     Sprite SubIngSprite { get; }

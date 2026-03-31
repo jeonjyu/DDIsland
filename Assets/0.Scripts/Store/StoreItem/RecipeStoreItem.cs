@@ -25,6 +25,27 @@ public class RecipeStoreItem : StoreItem<FoodDataSO>
 
     public override string ItemDesc => _data.FoodDesc_String;
 
+    public override string MainIngName
+    {
+        get
+        {
+            if (_data.MainIngredient != 0)
+                return DataManager.Instance.FishingDatabase.FishData[_data.MainIngredient].FishName_String;
+            else
+                return null;
+        }
+    }
+    public override string SubIngName
+    {
+        get
+        {
+            if (_data.SubIngredient != 0)
+                return DataManager.Instance.FishingDatabase.FishData[_data.SubIngredient].FishName_String;
+            else
+                return null;
+        }
+    }
+
     public override Sprite ImgSprite => _data.FoodImgPath_Sprite;
 
     public override Sprite MainIngSprite
