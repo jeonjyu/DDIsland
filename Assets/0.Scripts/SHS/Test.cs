@@ -55,13 +55,6 @@ public class Test : MonoBehaviour
     }
 #endif
 
-    public async void Onclick_ApplicationQuit()
-    {
-        await DataManager.Instance.Hub.UploadAllData();
-
-        Application.Quit();
-    }
-
     public void OnClick_ClearPlayerPrefsData()
     {
         PlayerPrefs.DeleteAll();

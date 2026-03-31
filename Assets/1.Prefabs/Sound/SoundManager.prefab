@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6292304396826616684}
   - component: {fileID: 6008171141178244349}
   m_Layer: 0
-  m_Name: BgsSource
+  m_Name: AmbSource
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -305,6 +305,7 @@ MonoBehaviour:
   initSize: 4
   maxSize: 200
   initCount: 1
+  instantiateTrans: {fileID: 8143726578438981541}
   data: {fileID: 3254643862653932851, guid: dd534f68d2d2026469efea86927f034a, type: 3}
 --- !u!1 &5585252686884537396
 GameObject:
@@ -356,8 +357,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SoundManager
   <MasterAudioMixer>k__BackingField: {fileID: 24100000, guid: 4ecad429d4aa3bb40829f5980f6549e7, type: 2}
   <BgmSource>k__BackingField: {fileID: 5580852822338592836}
+  <AmbSource>k__BackingField: {fileID: 6008171141178244349}
   <previewSource>k__BackingField: {fileID: 646045761466791923}
-  <BgsSource>k__BackingField: {fileID: 6008171141178244349}
   sfxSource: {fileID: 3254643862653932851, guid: dd534f68d2d2026469efea86927f034a, type: 3}
   soundPool: {fileID: 5487490402419269725}
   clearSourceTime: 0.5

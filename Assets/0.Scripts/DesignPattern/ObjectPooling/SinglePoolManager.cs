@@ -47,6 +47,24 @@ public abstract class SinglePoolManager<T> : ObjectPoolManager where T : Compone
         return pool.Get();
     }
 
+    public T Get()
+    {
+        if (pool == null)
+        {
+            pool = new ObjectPool<T>(
+                createFunc: CreateObject(data),
+                actionOnGet: ActivatePoolObject,
+                actionOnRelease: DisablePoolObject,
+                actionOnDestroy: DestroyPoolObject,
+                collectionCheck: false,
+                defaultCapacity: initSize,
+                maxSize: maxSize
+                );
+        }
+
+        return pool.Get();
+    }
+
     public void Release(T data)
     {
         pool.Release(data);
@@ -55,7 +73,7 @@ public abstract class SinglePoolManager<T> : ObjectPoolManager where T : Compone
     // 생성할 때
     protected virtual Func<T> CreateObject(T obj)
     {
-        return () => Instantiate(obj, transform);
+        return () => Instantiate(obj, instantiateTrans);
     }
 
     // 활성화할 때

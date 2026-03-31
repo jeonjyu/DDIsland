@@ -220,8 +220,20 @@ MonoBehaviour:
   m_Group: {fileID: 0}
   onValueChanged:
     m_PersistentCalls:
-      m_Calls: []
-  m_IsOn: 1
+      m_Calls:
+      - m_Target: {fileID: 8046812426373374293}
+        m_TargetAssemblyTypeName: UI_BGMSlot, Assembly-CSharp
+        m_MethodName: OnValueChanged_FavoriteToggle
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  m_IsOn: 0
 --- !u!1 &2863987431250354871
 GameObject:
   m_ObjectHideFlags: 0
@@ -239,7 +251,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &4275389573487039235
 RectTransform:
   m_ObjectHideFlags: 0
@@ -902,10 +914,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UI_BGMSlot
   recordImage: {fileID: 3772000295584391093}
   titleText: {fileID: 7340271443808258895}
-  <Record>k__BackingField: {fileID: 0}
   lockedObj: {fileID: 2863987431250354871}
   artistText: {fileID: 6037396692188920811}
   playTimeText: {fileID: 2859201926948430008}
+  favoriteToggle: {fileID: 8044488603457922762}
+  playListAddBtn: {fileID: 4454371738395266637}
 --- !u!222 &2232188711403605282
 CanvasRenderer:
   m_ObjectHideFlags: 0
