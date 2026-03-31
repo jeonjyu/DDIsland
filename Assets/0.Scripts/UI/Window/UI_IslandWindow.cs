@@ -31,8 +31,8 @@ public class UI_IslandWindow : MonoBehaviour
     private float maxFitRatio;      // 모니터 범위 밖, 호수창에 겹치지 않는 최대 비율
 
     private Vector2Int restorePos;     // 크기 조절 드래그를 종료할 때 피봇을 중앙에 놓으면서 복구할 위치값
-    public float WidthOffset => islandWindowRect.sizeDelta.x * islandWindowRect.localScale.x * 0.5f;
-    public float HeightOffset => islandWindowRect.sizeDelta.y * islandWindowRect.localScale.y * 0.5f;
+    public float WidthOffset => islandWindowRect.sizeDelta.x * islandWindowRect.lossyScale.x * 0.5f;
+    public float HeightOffset => islandWindowRect.sizeDelta.y * islandWindowRect.lossyScale.y * 0.5f;
 
     public event Action<float, float> OnPosChanged;
     public event Action<float> OnScaleChanged;
