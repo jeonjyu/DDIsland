@@ -14,7 +14,6 @@ public class GridSystem : MonoBehaviour
     [SerializeField] private GameObject _gridObject; //그리드 시각화 오브젝트
 
     private Texture2D _gridDataTexture;
-    [SerializeField] private bool _showGizmos = true;
 
     private Placeable[,] _grid; //셀의 상태를 나타내는 2차원 배열, 0은 빈 셀, 1은 채워진 셀
 

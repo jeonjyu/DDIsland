@@ -280,12 +280,10 @@ public class FishStorageManager : Singleton<FishStorageManager>
         _storagelevel = userData.StorageLevel;
         _acquireCounter = userData.AcquireCounter;
 
-        Debug.Log($"<color=cyan> 레벨: {_storagelevel} | 저장된 카운터: {_acquireCounter}</color>");
 
         ApplyCapacityByLevel();
 
         int dataCount = userData.SlotList != null ? userData.SlotList.Count : -2;
-        Debug.Log($"<color=yellow> 슬롯 크기: {userData.SlotList.Count} | 물고기 개수: {dataCount}</color>");
 
         // 기존 슬롯 초기화
         for (int i = 0; i < FishSlots.Length; i++) FishSlots[i] = null;

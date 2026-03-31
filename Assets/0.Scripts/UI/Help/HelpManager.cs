@@ -13,10 +13,14 @@ public class HelpManager : MonoBehaviour
     [Header("UI 연결")]
     public HelpPage _helpPageUI;
 
-    //public void OpenHelpByInt(int locationIndex)
-    //{
-    //    OpenHelp((HelpLocation)locationIndex);
-    //}
+    void Start()
+    {
+        if (PlayerPrefs.GetInt("FirstRun", 1) == 1)
+        {
+            OpenHelp(HelpLocation.Start);
+            PlayerPrefs.SetInt("FirstRun", 0);
+        }
+    }
 
     public void OpenHelp(HelpLocation targetLocation)
     {
@@ -27,14 +31,7 @@ public class HelpManager : MonoBehaviour
         {
             if (data.helplocationType == targetLocation)
             {
-                HelpPageData page = new()
-                {
-                    _mainTitle = LocalizationManager.Instance.GetString(data.MainTitle),
-                    _subTitle = string.IsNullOrEmpty(data.SubTitle) ? "" : LocalizationManager.Instance.GetString(data.SubTitle),
-                    _bodyText = ProcessDynamicText(data.Content),
-                    //_imageSprite = data.HelpImgPath_Sprite
-                };
-                helpList.Add(page);
+                helpList.Add(new HelpPageData(data));
             }
         }
 
@@ -51,7 +48,7 @@ public class HelpManager : MonoBehaviour
     /// </summary>
     /// <param name="contentKey"></param>
     /// <returns></returns>
-    private string ProcessDynamicText(string contentKey)
+    public string ProcessDynamicText(string contentKey)
     {
         string rawText = LocalizationManager.Instance.GetString(contentKey);
 
