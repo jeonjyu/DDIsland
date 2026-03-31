@@ -111,6 +111,13 @@ public class PlayerController : MonoBehaviour
     private int _currentFishingRodsId;
     private float _baseFishingSpeed;
 
+    [SerializeField] private AudioClip _fishingSfx;
+    [SerializeField] private AudioClip _sellSfx;
+    [SerializeField] private AudioClip _hungerSfx;
+    [SerializeField] private AudioClip _eatSfx;
+    [SerializeField] private AudioClip _cookSfx;
+    private bool _wasHungry;
+
     public Rigidbody2D Rigid => _rigid;
     public NavMeshAgent Agent => _agent;
     public Animator Animator => _animator;
@@ -514,7 +521,7 @@ public class PlayerController : MonoBehaviour
 
         if (_acornPoint == acorn.transform)
             _acornPoint = null;
-
+        SoundManager.Instance.PlaySFX(_eatSfx);
         PlayerDataOld.SetHunger(PlayerDataOld.Hunger + 10);
 
         _acorns.RemoveAt(_acornIndex);
@@ -572,6 +579,8 @@ public class PlayerController : MonoBehaviour
         if (!(_currentState is EatState))
             return;
 
+        SoundManager.Instance.PlaySFX(_eatSfx);
+
         int index = FoodStorageManager.Instance.TakeOutRandomFood();
         if (index == -1) return;
         var slot = FoodStorageManager.Instance.GetFoodSlot(index);
@@ -614,6 +623,7 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
+        SoundManager.Instance.PlaySFX(_cookSfx);
         var candidates = CookingManager.Instance.BuildCookCandidates(new CookingContext());
         var pickedFood = CookingManager.Instance.PickRecipe(candidates, new CookingContext());
         if (pickedFood == null)
@@ -731,8 +741,15 @@ public class PlayerController : MonoBehaviour
     }
     private void UpdateConditionFlags()  //상태 업데이트
     {
+        bool wasHungry = _ishungery;
         _ishungery = PlayerDataOld.Hunger <= 25;
-        
+
+        if (!wasHungry && _ishungery)
+        {
+            SoundManager.Instance.PlaySFX(_hungerSfx);
+        }
+
+
         if (_isAcornFalling) return;
         bool noCookedFood = FoodStorageManager.Instance.FoodEmptyCheck();
         bool hasCookableRecipe = HasCookableRecipe();
@@ -786,7 +803,7 @@ public class PlayerController : MonoBehaviour
     {
         _isFishingState = true;
         _cycleRunning = false;
-
+        SoundManager.Instance.PlaySFX(_fishingSfx);
         if (_fishingRoutine != null)
             StopCoroutine(_fishingRoutine);
 
@@ -936,6 +953,7 @@ public class PlayerController : MonoBehaviour
         Agent.velocity = Vector3.zero;
         yield return new WaitForSeconds(2f);
         FishStorageManager.Instance.SellAllFish();
+        SoundManager.Instance.PlaySFX(_sellSfx);
         PlayerDataOld.SetHunger(PlayerDataOld.Hunger - 4);
         ConsumeStamina(5);
         SetState(new IdleState(this));
