@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -156,9 +157,35 @@ public class UI_BGMList : UI_RecordList<UI_BGMSlot>
 
     public void OnValueChanged_FilterDropdown()
     {
-        foreach(var slot in recordSlotList)
+        foreach (var slot in recordSlotList)
         {
-
+            switch (filterDropdown.value)
+            {
+                case 0:     // 전체
+                    slot.gameObject.SetActive(true);
+                    break;
+                case 1:     // 즐겨찾기
+                    slot.gameObject.SetActive(slot.IsFavorite);
+                    break;
+                case 2:     // 일반
+                    slot.gameObject.SetActive(slot.Record.bgthemeType == BgTheme.General);
+                    break;
+                case 3:     // 봄
+                    slot.gameObject.SetActive(slot.Record.bgthemeType == BgTheme.Spring);
+                    break;
+                case 4:     // 여름
+                    slot.gameObject.SetActive(slot.Record.bgthemeType == BgTheme.Summer);
+                    break;
+                case 5:     // 가을
+                    slot.gameObject.SetActive(slot.Record.bgthemeType == BgTheme.Autumn);
+                    break;
+                case 6:     // 겨울
+                    slot.gameObject.SetActive(slot.Record.bgthemeType == BgTheme.Winter);
+                    break;
+                case 7:     // 콜라보
+                    slot.gameObject.SetActive(slot.Record.bgthemeType == BgTheme.Collaboration);
+                    break;
+            }
         }
     }
 
