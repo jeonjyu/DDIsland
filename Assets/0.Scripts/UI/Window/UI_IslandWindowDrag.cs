@@ -9,6 +9,10 @@ public class UI_IslandWindowDrag : MonoBehaviour, IDragHandler, IBeginDragHandle
     [SerializeField] private UI_IslandWindow ui_IslandWindow;
     [SerializeField] private UI_IslandWindow.PointDirection direction;
 
+    [Header("커서 에셋")]
+    [SerializeField] private Texture2D cursorTexture;
+    [SerializeField] private Vector2 cursorHotspot = new Vector2(16, 16);
+
     private float startDistance;
     private Vector3 startScale;
     private Vector2 clickPos;
@@ -61,19 +65,25 @@ public class UI_IslandWindowDrag : MonoBehaviour, IDragHandler, IBeginDragHandle
 
             if (obj != gameObject)
             {
-                dragImage.SetAlpha(0f);
+               // dragImage.SetAlpha(0f);
+                Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
             }
         }
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        dragImage.SetAlpha(1f);
+       // dragImage.SetAlpha(1f);
+        if (cursorTexture != null)
+            Cursor.SetCursor(cursorTexture, cursorHotspot, CursorMode.Auto);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        if(!isDragging)
-            dragImage.SetAlpha(0f);
+        if (!isDragging)
+        {
+          //  dragImage.SetAlpha(0f);
+            Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+        }
     }
 }
