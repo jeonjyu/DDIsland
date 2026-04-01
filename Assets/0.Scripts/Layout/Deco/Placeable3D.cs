@@ -29,6 +29,8 @@ public class Placeable3D : Placeable
     [SerializeField] int _sizeX;
     [SerializeField] int _sizeY;
 
+    [SerializeField] private AudioClip _placedAudio;
+
     private bool _isInvalidRotation = false;
     private int _lastRotated;
 
@@ -212,7 +214,7 @@ public class Placeable3D : Placeable
     }
 
     // 아이템을 그리드에 배치
-    public override void Placement()
+    public override void Placement(AudioClip audio)
     {
         if (IsEditable == false && ItemState == ItemState.Placed) return;
         Vector2Int index = _cachedIndex;
@@ -240,7 +242,9 @@ public class Placeable3D : Placeable
             _selectedRenderer.material.color = _originalColor;
 
             _targetGrid.ClearGrid(); // 셰이더 하이라이트 초기화
-    
+
+            SoundManager.Instance.PlaySFX(audio);
+
             _build.CompletePlacement(this);
         }
     }
