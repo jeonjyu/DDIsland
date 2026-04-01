@@ -161,6 +161,7 @@ GameObject:
   - component: {fileID: 545050540164898436}
   - component: {fileID: 8911993421916672143}
   - component: {fileID: 3253316290623975219}
+  - component: {fileID: 1080454102142121862}
   m_Layer: 5
   m_Name: Mail_Popup_Delete
   m_TagString: Untagged
@@ -230,6 +231,24 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &1080454102142121862
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1810076356418884850}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 040ab8ad431bd14429abb71cf59a858c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI_Popup
+  _titleText: {fileID: 4149543862355415586}
+  _contentText: {fileID: 4923775008751526922}
+  _cancelText: {fileID: 6003200409744490550}
+  _confirmText: {fileID: 6934425170613173786}
+  _cancelButton: {fileID: 1792404925626948491}
+  _confirmButton: {fileID: 1774549058889581864}
 --- !u!1 &2398468138835395544
 GameObject:
   m_ObjectHideFlags: 0
@@ -242,7 +261,7 @@ GameObject:
   - component: {fileID: 2091991262121480194}
   - component: {fileID: 6934425170613173786}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: Txt_Delete
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -580,7 +599,7 @@ GameObject:
   - component: {fileID: 5111353729601706051}
   - component: {fileID: 6003200409744490550}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: Txt_Cancle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

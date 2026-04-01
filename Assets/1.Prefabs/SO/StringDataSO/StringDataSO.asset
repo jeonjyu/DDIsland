@@ -1441,6 +1441,33 @@ MonoBehaviour:
     values:
     - "\uC74C\uBC18\uC744 \uBBF8\uB9AC \uB4E4\uC5B4\uBCF4\uACE0 \uC788\uC5B4\uC694..."
     - Previewing the record...
+  - key: RecordMessageAddPlaylist
+    values:
+    - "\uD50C\uB808\uC774\uB9AC\uC2A4\uD2B8\uC5D0 \uCD94\uAC00"
+    - Add to Playlist
+  - key: RecordInputMessagePlaylistTitle
+    values:
+    - "\uD50C\uB808\uC774\uB9AC\uC2A4\uD2B8 \uC81C\uBAA9 \uC785\uB825"
+    - Name Your Playlist
+  - key: RecordSortRecentPlay
+    values:
+    - "\uCD5C\uADFC\uC5D0 \uC7AC\uC0DD"
+    - Recently Played
+  - key: RecordSortRecentCreate
+    values:
+    - "\uCD5C\uADFC\uC5D0 \uC0DD\uC131"
+    - Recently Created
+  - key: RecordNameCurrentPlaylist
+    values:
+    - "\uD604\uC7AC \uC7AC\uC0DD \uBAA9\uB85D"
+    - Now Playing
+  - key: RecordMessagePlaylistNameError
+    values:
+    - "\uD50C\uB808\uC774\uB9AC\uC2A4\uD2B8 \uC774\uB984\uC774 \uC870\uAE08 \uAE34\uAC00
+      \uBD10\uC694!\\n\uD55C\uAE00\uC740 10\uC790, \uC601\uBB38\uC740 20\uC790 \uC774\uB0B4\uB85C
+      \uC608\uC05C \uC774\uB984\uC744 \uB2E4\uC2DC \uC9C0\uC5B4\uBCFC\uAE4C\uC694?"
+    - The playlist name is a bit too long!\nPlease keep it within 10 Korean or 20
+      English characters.
   - key: InteriorNameThemeTerrain01
     values:
     - "\uD30C\uC2A4\uD154 \uB3C4\uC790\uAE30 \uBAA8\uB798\uBC14\uB2E5"
@@ -2483,6 +2510,10 @@ MonoBehaviour:
     values:
     - "\uBAA8\uB2C8\uD130 \uC124\uC815"
     - Display Monitor
+  - key: SettingDropdownMonitorIndex
+    values:
+    - "{0}\uBC88 \uBAA8\uB2C8\uD130"
+    - Monitor {0}
   - key: SettingToggleAlwaysOnTop
     values:
     - "\uAC8C\uC784 \uCC3D \uCD5C\uC0C1\uB2E8 \uACE0\uC815"
@@ -2794,10 +2825,40 @@ MonoBehaviour:
     values:
     - "\uBAA8\uB450 \uC0AD\uC81C"
     - Delete All
-  - key: InteriorPostBoxRemoveAllBtn
+  - key: InteriorPostBoxClaimAllBtn
     values:
     - "\uBAA8\uB450 \uBC1B\uAE30"
     - Claim All
+  - key: InteriorPostBoxMailEmpty
+    values:
+    - "\uB3C4\uCC29\uD55C \uC6B0\uD3B8\uC774 \uC5C6\uC2B5\uB2C8\uB2E4"
+    - No mail available.
+  - key: InteriorPostBoxClaimBtn
+    values:
+    - "\uBC1B\uAE30"
+    - Claim
+  - key: InteriorPostBoxCancelBtn
+    values:
+    - "\uCDE8\uC18C\uD558\uAE30"
+    - Cancel
+  - key: InteriorPostBoxDeleteAll
+    values:
+    - "\uBA54\uC77C \uC804\uCCB4 \uC0AD\uC81C"
+    - Delete All Mail
+  - key: InteriorPostBoxDeleteAllConfirmDesc
+    values:
+    - "\uC77D\uC740 \uC6B0\uD3B8\uACFC \uBCF4\uC0C1\uC744 \uC218\uB839\uD55C \uBAA8\uB4E0
+      \uC6B0\uD3B8\uC774 \uC0AD\uC81C\uB429\uB2C8\uB2E4. \uC0AD\uC81C\uD558\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?"
+    - All read mails and mails with claimed rewards will be deleted. Do you want
+      to proceed?
+  - key: InteriorPostBoxClaimAll
+    values:
+    - "\uBA54\uC77C \uC804\uCCB4 \uC218\uB839"
+    - Claim All Mail
+  - key: InteriorPostBoxClaimAllConfirmDesc
+    values:
+    - "\uBAA8\uB4E0 \uC7AC\uD654\uBCF4\uC0C1\uC744 \uC218\uB839\uD558\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?"
+    - Do you want to claim all rewards?
   - key: IslandInteriorShopFilterAllText
     values:
     - "\uBAA8\uB4E0 \uC544\uC774\uD15C"

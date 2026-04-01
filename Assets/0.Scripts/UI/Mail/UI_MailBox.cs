@@ -11,9 +11,14 @@ public class UI_MailBox : MonoBehaviour
     [SerializeField] private Transform _contentTransform;
     [SerializeField] private TMP_Text _emptyMailText;
     [SerializeField] private UI_MailPopup _mailPopup;
+
+    [Header("UI 버튼 연결")]
     [SerializeField] private Button _exitButton;
-    [SerializeField] private GameObject _popupDelete;
-    [SerializeField] private GameObject _popupClaim;
+    [SerializeField] private TMP_Text _popupDelete;
+    [SerializeField] private TMP_Text _popupClaim;
+
+    [Header("팝업 연결")]
+    [SerializeField] private UI_Popup _commonPopup;
 
     private void Awake()
     {
@@ -26,12 +31,15 @@ public class UI_MailBox : MonoBehaviour
     private void OnEnable()
     {
         MailManager.Instance.OnMailUpdated += RefreshMailList;
+        PlayerPrefsDataManager.OnLanguageChanged += RefreshLocalization;
 
         RefreshMailList();
+        RefreshLocalization();
     }
     private void OnDisable()
     {
         MailManager.Instance.OnMailUpdated -= RefreshMailList;
+        PlayerPrefsDataManager.OnLanguageChanged -= RefreshLocalization;
     }
     public void RefreshMailList()
     {
@@ -72,9 +80,46 @@ public class UI_MailBox : MonoBehaviour
         }
     }
 
+    private void RefreshLocalization()
+    {
+        if (_popupDelete != null)
+            _popupDelete.text = LocalizationManager.Instance.GetString("InteriorPostBoxRemoveAllBtn");
+        if (_popupClaim != null)
+            _popupClaim.text = LocalizationManager.Instance.GetString("InteriorPostBoxClaimAllBtn");
+        if (_emptyMailText != null)
+            _emptyMailText.text = LocalizationManager.Instance.GetString("InteriorPostBoxMailEmpty");
+    }
+
     public void CloseMailBox()
     {
         gameObject.SetActive(false);
+    }
+
+    public void OnClickDeleteAllButton()
+    {
+        _commonPopup.OpenPopup(
+            "InteriorPostBoxDeleteAll",
+            "InteriorPostBoxDelPost",
+            "InteriorPostBoxRemoveAllBtn",
+            "InteriorPostBoxCancelBtn",
+            () =>
+            {
+                // [확인]을 눌렀을 때 실행될 내용
+                MailManager.Instance.DeleteAllReadMails(); // (실제 삭제 함수로 변경하세요)
+                RefreshMailList();
+            }
+        );
+    }
+
+    public void OnClickAllClaim()
+    {
+        _commonPopup.OpenPopup(
+            "InteriorPostBoxTitle",
+            "InteriorPostBoxAllGet",
+            "InteriorPostBoxClaimAllBtn",
+            "InteriorPostBoxCancelBtn",
+            () => { MailManager.Instance.ClaimAllRewards(); }
+        );
     }
 }
 
