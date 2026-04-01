@@ -31,6 +31,10 @@ public class UI_QuestPanel : MonoBehaviour
     [SerializeField] private Button _GrowthTabButton;
     [SerializeField] private Button _CompletedTabButton;
 
+    [SerializeField] private AudioClip _questTabButtonSFX;
+    [SerializeField] private AudioClip _questCloseButtonSFX;
+    [SerializeField] private AudioClip _questRewardButtonSFX;
+
     [SerializeField] private ScrollRect _questScrollRect;
     // [SerializeField] private GameObject _GuidePanel;
 
@@ -98,6 +102,7 @@ public class UI_QuestPanel : MonoBehaviour
     public void OnClickStoreTab()
     {
         RefreshCategory(QuestType.Store);
+        SoundManager.Instance.PlaySFX(_questTabButtonSFX);
         _StoreTabButtonClick.SetActive(true);
         _FishingTabButtonClick.SetActive(false);
         _GuideTabButtonClick.SetActive(false);
@@ -109,6 +114,7 @@ public class UI_QuestPanel : MonoBehaviour
     public void OnClickFishingTab()
     {
         RefreshCategory(QuestType.Fishing);
+        SoundManager.Instance.PlaySFX(_questTabButtonSFX);
         _StoreTabButtonClick.SetActive(false);
         _FishingTabButtonClick.SetActive(true);
         _GuideTabButtonClick.SetActive(false);
@@ -120,6 +126,7 @@ public class UI_QuestPanel : MonoBehaviour
     public void OnClickGuideTab()
     {
         RefreshCategory(QuestType.Guide);
+        SoundManager.Instance.PlaySFX(_questTabButtonSFX);
         _StoreTabButtonClick.SetActive(false);
         _FishingTabButtonClick.SetActive(false);
         _GuideTabButtonClick.SetActive(true);
@@ -131,6 +138,7 @@ public class UI_QuestPanel : MonoBehaviour
     public void OnClickGrowthTab()
     {
         RefreshCategory(QuestType.Growth);
+        SoundManager.Instance.PlaySFX(_questTabButtonSFX);
         _StoreTabButtonClick.SetActive(false);
         _FishingTabButtonClick.SetActive(false);
         _GuideTabButtonClick.SetActive(false);
@@ -141,6 +149,7 @@ public class UI_QuestPanel : MonoBehaviour
     public void OnClickCompletedTab()  
     {
         RefreshCompleted();
+        SoundManager.Instance.PlaySFX(_questTabButtonSFX);
         _StoreTabButtonClick.SetActive(false);
         _FishingTabButtonClick.SetActive(false);
         _GuideTabButtonClick.SetActive(false);
@@ -161,6 +170,7 @@ public class UI_QuestPanel : MonoBehaviour
     public void OpenRewardPanel(int id)
     {
         _isRewardPopupOpen = true;
+        SoundManager.Instance.PlaySFX(_questRewardButtonSFX);
         Debug.Log($"OpenRewardPanel 호출됨, id={id}");
         QuestDataSO completedQuest = QuestManager.Instance.GetByQuestId(id);
         if (completedQuest == null) return;
@@ -238,6 +248,7 @@ public class UI_QuestPanel : MonoBehaviour
     }
     public void OnExitdClick()
     {
+        SoundManager.Instance.PlaySFX(_questCloseButtonSFX);
         if (_rewardUIPanel.activeSelf)
         {
             CloseRewardPanel();
