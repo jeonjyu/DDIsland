@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class PurchaseStrategy : MonoBehaviour, ITradeStrategy
 {
-
+    [SerializeField] private AudioClip purchaseSfx;
     // 구매
     public virtual bool Trade(int tradeCount, int tradePrice)
     {
@@ -12,7 +12,7 @@ public class PurchaseStrategy : MonoBehaviour, ITradeStrategy
         StoreManager.Instance.ItemCountChanged(tradeCount);
         Debug.Log($"<color=purple>골드 변경: {GameManager.Instance.PlayerGold}에서 {tradePrice} 차감</color>");
         GameManager.Instance.SetGold(-tradePrice);
-
+        SoundManager.Instance.PlaySFX(purchaseSfx);
         //Debug.Log("구매 로직 " + StoreManager.Instance.TradeItemCount);
         return true;
     }

@@ -2,13 +2,16 @@ using UnityEngine;
 
 public class SellStrategy : MonoBehaviour, ITradeStrategy
 {
+    [SerializeField] private AudioClip sellSfx;
+
     // 판매
     public bool Trade(int tradeCount, int tradePrice)
     {
         StoreManager.Instance.ItemCountChanged(-tradeCount);
         Debug.Log($"<color=orange>골드 변경: {GameManager.Instance.PlayerGold}에서 {tradePrice} 증가</color>");
         GameManager.Instance.SetGold(tradePrice);
-           
+        SoundManager.Instance.PlaySFX(sellSfx);
+
         return true;
     }
 
