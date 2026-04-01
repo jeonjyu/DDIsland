@@ -932,7 +932,7 @@ public class DecoEditModeManager : MonoBehaviour
             //    itemListManager.ReturnAllItems();
             //}
 
-            isChanged = true;
+           // isChanged = true;
         }
     }
     void OnExit() // 나가기
