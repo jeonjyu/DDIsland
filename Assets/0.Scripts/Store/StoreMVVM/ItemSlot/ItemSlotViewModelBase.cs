@@ -1,8 +1,10 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
-public class ItemSlotViewModelBase : MonoBehaviour, INotifyPropertyChanged
+public class ItemSlotViewModelBase : MonoBehaviour, INotifyPropertyChanged, IDragHandler, IBeginDragHandler, IEndDragHandler, IScrollHandler
 {
 
     // 해당 속성이 변경되면 뷰가 수정되어야 한다
@@ -75,6 +77,18 @@ public class ItemSlotViewModelBase : MonoBehaviour, INotifyPropertyChanged
         }
     }
 
+    private ScrollRect _scrollRect;
+
+    public void SetParentSR(ScrollRect scrollRect)
+    {
+        _scrollRect = scrollRect;
+    }
+
+    public void OnBeginDrag(PointerEventData eventData) => _scrollRect.OnBeginDrag(eventData);
+    public void OnDrag(PointerEventData eventData) => _scrollRect.OnDrag(eventData);
+    public void OnEndDrag(PointerEventData eventData) => _scrollRect.OnEndDrag(eventData);
+    public void OnScroll(PointerEventData eventData) => _scrollRect.OnScroll(eventData);
+
     public virtual void SetModel(IStoreItem model)
     {
         //Debug.Log(gameObject.name + " ItemSlotViewModelBase : SetModel " + model.ItemName);
@@ -101,4 +115,6 @@ public class ItemSlotViewModelBase : MonoBehaviour, INotifyPropertyChanged
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
+
+
 }
