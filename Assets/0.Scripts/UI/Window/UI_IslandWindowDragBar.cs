@@ -20,7 +20,8 @@ public class UI_IslandWindowDragBar : MonoBehaviour, IBeginDragHandler, IDragHan
     private Vector3 startScale;
     private Vector3 expandScale;
 
-    private Sequence seq;
+    //private Sequence seq;
+    private Tween sizeTween;
 
     private void Awake()
     {
@@ -28,7 +29,7 @@ public class UI_IslandWindowDragBar : MonoBehaviour, IBeginDragHandler, IDragHan
         startScale = Vector3Int.RoundToInt(rect.sizeDelta);
         expandScale = startScale * 1.5f;
 
-        seq = DOTween.Sequence();
+      //  seq = DOTween.Sequence();
     }
 
     public void OnPointerDown(PointerEventData eventData)
@@ -99,21 +100,30 @@ public class UI_IslandWindowDragBar : MonoBehaviour, IBeginDragHandler, IDragHan
     /// <param name="isExpand"> 확장인지 축소인지 여부 </param>
     private void DoScale(float duration, bool isExpand)
     {
-        rect.DOKill(false);
+        // rect.DOKill(false);
+        sizeTween?.Kill();
 
-        if(isExpand)
+        if (isExpand)
         {
-            Debug.Log("확장");
-            seq.Append(rect.DOSizeDelta(expandScale * 1.05f, duration * 0.7f).SetEase(Ease.OutQuad))
+            //Debug.Log("확장");
+            //seq.Append(rect.DOSizeDelta(expandScale * 1.05f, duration * 0.7f).SetEase(Ease.OutQuad))
+            //.Append(rect.DOSizeDelta(expandScale, duration * 0.3f).SetEase(Ease.OutBack));
+            
+            sizeTween = DOTween.Sequence()
+            .Append(rect.DOSizeDelta(expandScale * 1.05f, duration * 0.7f).SetEase(Ease.OutQuad))
             .Append(rect.DOSizeDelta(expandScale, duration * 0.3f).SetEase(Ease.OutBack));
         }
         else
         {
-            Debug.Log("축소");
-            seq.Append(rect.DOSizeDelta(startScale * 0.95f, duration * 0.3f).SetEase(Ease.OutQuad))
+            //Debug.Log("축소");
+            //seq.Append(rect.DOSizeDelta(startScale * 0.95f, duration * 0.3f).SetEase(Ease.OutQuad))
+            //.Append(rect.DOSizeDelta(startScale, duration * 0.3f).SetEase(Ease.OutBack));
+
+            sizeTween = DOTween.Sequence()
+            .Append(rect.DOSizeDelta(startScale * 0.95f, duration * 0.3f).SetEase(Ease.OutQuad))
             .Append(rect.DOSizeDelta(startScale, duration * 0.3f).SetEase(Ease.OutBack));
         }
 
-        seq.SetUpdate(true);
+        //seq.SetUpdate(true);
     }
 }

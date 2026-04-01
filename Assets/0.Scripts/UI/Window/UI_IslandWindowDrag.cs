@@ -36,6 +36,7 @@ public class UI_IslandWindowDrag : MonoBehaviour, IDragHandler, IBeginDragHandle
             RectTransform targetRect = ui_IslandWindow.IslandWindowRect;
 
             clickPos = RectTransformUtility.WorldToScreenPoint(eventData.pressEventCamera, targetRect.position);
+           // clickPos = RectTransformUtility.WorldToScreenPoint(null, targetRect.position); // TODO: 모서리 크기조절이 이상하면 null로 교체
 
             startDistance = Vector2.Distance(clickPos, eventData.position);
             startScale = targetRect.localScale;
