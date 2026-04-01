@@ -141,7 +141,7 @@ public class WindowController : Singleton<WindowController>
         pointerEventData = new PointerEventData(EventSystem.current);
 
         // Ignore Raycast를 제외한 모든 레이어를 검출
-        hitLayerMask = ~LayerMask.GetMask("Ignore Raycast", "HoverOnly");
+        hitLayerMask = ~LayerMask.GetMask("Ignore Raycast");
 
         // 마우스 통과 여부 체크 로직 주기 초기화
         hitTime = hitTick == 0 ? new WaitForSecondsRealtime(0.1f) : new WaitForSecondsRealtime(hitTick);
@@ -290,7 +290,7 @@ public class WindowController : Singleton<WindowController>
     /// 화면상의 마우스 좌표를 유니티 좌표로 변환 후 반환
     /// </summary>
     /// <returns> 마우스 좌표값 </returns>
-    private Vector2 GetClientCursorPosition()
+    public Vector2 GetClientCursorPosition()
     {
         // 현재 마우스 좌표
         Vector2 mousePos = WindowCore.GetCursorPosition();
