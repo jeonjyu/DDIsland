@@ -14,7 +14,7 @@ public class StoreListViewModel : MonoBehaviour, INotifyPropertyChanged
     //[SerializeField] SortDropdown sortDropdown;
     StoreListView view;
 
-    public ScrollRect srcollRect;
+    public ScrollRect scrollRect;
 
     public GridLayoutGroup listGirdLayout;
 
@@ -63,7 +63,7 @@ public class StoreListViewModel : MonoBehaviour, INotifyPropertyChanged
     {
         StoreManager.Instance.currentCat = StoreCat.interior;
         UpdateCurrentCat(0);
-        srcollRect.verticalNormalizedPosition = 1f;
+        scrollRect.verticalNormalizedPosition = 1f;
     }
 
     public void UpdateCurrentCat(int catIdx)
@@ -107,6 +107,7 @@ public class StoreListViewModel : MonoBehaviour, INotifyPropertyChanged
         {
             ItemSlotViewModelBase itemViewmodel = ItemManager.Instance.itemSlotPool.Get(ItemManager.Instance.itemSlot);
             itemViewmodel.transform.SetParent(itemContents.transform);
+            itemViewmodel.SetParentSR(scrollRect);
             itemViewmodel.SetModel(item);
             storeItemViewModels.Add(itemViewmodel);
             //Debug.Log("[ItemListViewModel] UpdateSlotList | 슬롯 " + ItemManager.Instance.displayDatas.IndexOf(item) + " " + item.ItemName);
