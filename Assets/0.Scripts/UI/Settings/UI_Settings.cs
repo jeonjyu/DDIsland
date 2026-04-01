@@ -24,6 +24,10 @@ public class UI_Settings : MonoBehaviour
     [SerializeField] private TMP_Text sfxVolumeText;
     [SerializeField] private TMP_Text ambVolumeText;
 
+    [Header("음반 설정 관련")]
+    [SerializeField] private Toggle backgroundPlayToggle;
+    [SerializeField] private Toggle playDefaultRecordToggle;
+
     [Header("화면 설정 관련")]
     [SerializeField] private TMP_Dropdown monitorDropdown;      // 게임 플레이 모니터 설정 드랍다운
     [SerializeField] private Toggle topMostToggle;              // 게임 화면 최상단 여부 설정 토글
@@ -45,15 +49,20 @@ public class UI_Settings : MonoBehaviour
         // 사운드 설정 초기화
         bgmSlider.value = PlayerPrefsDataManager.BgmVolume;
         sfxSlider.value = PlayerPrefsDataManager.SFXVolume;
-        ambSlider.value = PlayerPrefsDataManager.BGSVolume;
+        ambSlider.value = PlayerPrefsDataManager.AMBVolume;
 
         bgmToggle.isOn = PlayerPrefsDataManager.BgmVolumeMute;
         sfxToggle.isOn = PlayerPrefsDataManager.SFXVolumeMute;
-        ambToggle.isOn = PlayerPrefsDataManager.BGSVolumeMute;
+        ambToggle.isOn = PlayerPrefsDataManager.AMBVolumeMute;
 
         OnValueChangedVolume(bgmSlider, bgmVolumeText);
         OnValueChangedVolume(sfxSlider, sfxVolumeText);
         OnValueChangedVolume(ambSlider, ambVolumeText);
+
+        backgroundPlayToggle.isOn = PlayerPrefsDataManager.BackgroundPlay;
+        playDefaultRecordToggle.isOn = PlayerPrefsDataManager.PlayDefaultRecord;
+
+        topMostToggle.isOn = PlayerPrefsDataManager.TopMost;
 
         int monitorCount = WindowController.Instance.GetMonitorCount();
 
@@ -122,6 +131,18 @@ public class UI_Settings : MonoBehaviour
     }
     #endregion
 
+    #region 음반 설정
+    public void OnValueChanged_BackgroundPlay()
+    {
+        PlayerPrefsDataManager.BackgroundPlay = backgroundPlayToggle.isOn;
+    }
+
+    public void OnValueChanged_PlayDefaultRecord()
+    {
+        PlayerPrefsDataManager.PlayDefaultRecord = playDefaultRecordToggle.isOn;
+    }
+    #endregion
+
     #region 화면 설정
     public void OnValueChanged_SwitchMonitor()
     {
@@ -133,6 +154,7 @@ public class UI_Settings : MonoBehaviour
     public void OnValueChanged_WindowTopMost()
     {
         WindowController.Instance.IsTopmost = topMostToggle.isOn;
+        PlayerPrefsDataManager.TopMost = topMostToggle.isOn;
     }
 
     #endregion

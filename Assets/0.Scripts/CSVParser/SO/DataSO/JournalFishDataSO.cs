@@ -17,9 +17,6 @@ public class JournalFishDataSO : TableBase<int>
     // 도감 메인 슬롯 이미지 경로
     [field: SerializeField] public Sprite FishSlotImgPath_Sprite { get; private set; }
 
-    // 도감 상세 팝업 스프라이트 경로
-    [field: SerializeField] public Sprite FishImgPath_Sprite { get; private set; }
-
     // 부모 클래스의 ID 반환 추상 메서드
     public override int GetID() => JournalFishID;
 }

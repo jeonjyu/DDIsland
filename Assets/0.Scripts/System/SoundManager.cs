@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 
 public enum Soundtype
@@ -54,7 +55,7 @@ public class SoundManager : Singleton<SoundManager>
     {
         SetSoundVolume(Soundtype.BGM, PlayerPrefsDataManager.BgmVolume, PlayerPrefsDataManager.BgmVolumeMute);
         SetSoundVolume(Soundtype.SFX, PlayerPrefsDataManager.SFXVolume, PlayerPrefsDataManager.SFXVolumeMute);
-        SetSoundVolume(Soundtype.AMB, PlayerPrefsDataManager.BGSVolume, PlayerPrefsDataManager.BGSVolumeMute);
+        SetSoundVolume(Soundtype.AMB, PlayerPrefsDataManager.AMBVolume, PlayerPrefsDataManager.AMBVolumeMute);
     }
 
     #region Init
@@ -148,8 +149,8 @@ public class SoundManager : Singleton<SoundManager>
                 SetVolume("SFX", volume, isMute);
                 break;
             case Soundtype.AMB:
-                PlayerPrefsDataManager.BGSVolume = volume;
-                PlayerPrefsDataManager.BGSVolumeMute = isMute;
+                PlayerPrefsDataManager.AMBVolume = volume;
+                PlayerPrefsDataManager.AMBVolumeMute = isMute;
                 SetVolume("AMB", volume, isMute);
                 break;
         }
@@ -327,6 +328,26 @@ public class SoundManager : Singleton<SoundManager>
         {
             StopCoroutine(PlayCoroutine);
             PlayCoroutine = null;
+        }
+    }
+
+    private void OnApplicationFocus(bool focus)
+    {
+        if (PlayerPrefsDataManager.BackgroundPlay) return;
+
+        if(focus)
+        {
+            SetVolume("BGM", PlayerPrefsDataManager.BgmVolume, PlayerPrefsDataManager.BgmVolumeMute);
+            SetVolume("Preview", PlayerPrefsDataManager.PreviewVolume, false);
+            SetVolume("SFX", PlayerPrefsDataManager.SFXVolume, PlayerPrefsDataManager.SFXVolumeMute);
+            SetVolume("AMB", PlayerPrefsDataManager.AMBVolume, PlayerPrefsDataManager.AMBVolumeMute);
+        }
+        else
+        {
+            SetVolume("BGM", 0f, PlayerPrefsDataManager.BgmVolumeMute);
+            SetVolume("Preview", 0f, false);
+            SetVolume("SFX", 0f, PlayerPrefsDataManager.SFXVolumeMute);
+            SetVolume("AMB", 0f, PlayerPrefsDataManager.AMBVolumeMute);
         }
     }
 }

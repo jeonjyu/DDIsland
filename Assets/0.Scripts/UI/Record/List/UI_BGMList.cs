@@ -29,8 +29,7 @@ public class UI_BGMList : UI_RecordList<UI_BGMSlot>
                 recordList.Add(slot.Record);
         }
 
-        Debug.Log($"배경음 슬롯 개수: {recordSlotList.Count}");
-        Debug.Log($"배경음 데이터 개수: {recordList.Count}");
+        PlayBGM(recordSlotList[0]);
     }
 
     /// <summary>
@@ -101,10 +100,20 @@ public class UI_BGMList : UI_RecordList<UI_BGMSlot>
             return;
         }
 
-        int nextIndex = (playList.IndexOf(DataManager.Instance.RecordDatabase.CurrentRecord.RecordID) + 1) % playList.Count;
+        RecordDataSO playRecord = new RecordDataSO();
 
-        RecordDataSO playRecord = DataManager.Instance.RecordDatabase.RecordInfoData[playList[nextIndex]];
+        if(PlayerPrefsDataManager.PlayDefaultRecord)
+        {
+            int nextIndex = (playList.IndexOf(DataManager.Instance.RecordDatabase.CurrentRecord.RecordID) + 1) % playList.Count;
 
+            playRecord = DataManager.Instance.RecordDatabase.RecordInfoData[playList[nextIndex]];
+        }
+        else
+        {
+            playRecord = CurrentSlot.Record;
+        }
+
+        CurrentSlot = recordSlotList[recordSlotList.FindIndex(x => x.Record == playRecord)];
         SoundManager.Instance.PlayBGM(playRecord.RecordSoundPath_AudioClip);
         ShowRecordInfo(playRecord);
         DataManager.Instance.RecordDatabase.CurrentRecord = playRecord;

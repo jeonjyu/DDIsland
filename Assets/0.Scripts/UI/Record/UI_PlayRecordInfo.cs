@@ -31,7 +31,6 @@ public class UI_PlayRecordInfo : MonoBehaviour
 
     private bool isDragging;
 
-
     private void Start()
     {
         currentPlaySlider.OnMouseDown += StartDrag;
@@ -57,6 +56,12 @@ public class UI_PlayRecordInfo : MonoBehaviour
         endTimeText.text = record.RecordSoundPath_AudioClip.GetClipLength();
 
         CheckPlayTime();
+    }
+
+    private void LocalizeRecordInfo()
+    {
+        titleText.text = record.RecordName_String;
+        artistText.text = record.RecordArtist_String;
     }
 
     private void CheckPlayTime()
@@ -130,6 +135,14 @@ public class UI_PlayRecordInfo : MonoBehaviour
     {
         if(record != null)
             CheckPlayTime();
+
+        PlayerPrefsDataManager.OnLanguageChanged += LocalizeRecordInfo;
+
+        if (record != null)
+        {
+            LocalizeRecordInfo();
+        }
+
     }
 
     private void OnDisable()
@@ -139,6 +152,8 @@ public class UI_PlayRecordInfo : MonoBehaviour
             StopCoroutine(playRecordCoroutine);
             playRecordCoroutine = null;
         }
+
+        PlayerPrefsDataManager.OnLanguageChanged -= LocalizeRecordInfo;
     }
 
     private void OnDestroy()
