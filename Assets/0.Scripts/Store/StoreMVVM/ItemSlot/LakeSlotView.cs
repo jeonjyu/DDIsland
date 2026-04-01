@@ -11,6 +11,7 @@ public class LakeSlotView : ItemSlotViewBase<LakeSlotViewModel>
 {
     [SerializeField] Button applyBtn;
     [SerializeField] TMP_Text btnText;
+    [SerializeField] UI_ReplacingButtonText uiReplacing;
 
     public Button ApplyBtn => applyBtn;
     public TMP_Text BtnText => btnText;
@@ -48,15 +49,14 @@ public class LakeSlotView : ItemSlotViewBase<LakeSlotViewModel>
     public void SetBtn()
     {
         //Debug.Log(LakeItemManager.Instance.ThemeID == modelData.ID ? viewModel.ItemName  + " 적용중": viewModel.ItemName + " 적용중 아님");
-        
+
         // 장착중인 호수 테마인지 확인해서 isApplied 적용해주기
         bool isApplied = LakeItemManager.Instance.ThemeID == modelData.ID;
         if (viewModel.Model is null) Debug.Log("모델이 비었음");
 
         applyBtn.gameObject.SetActive(viewModel.Model.IsGained);
         applyBtn.interactable = !isApplied;
-
-        btnText.text = isApplied ? "적용 중" : "적용";
+        uiReplacing.SetTextRuntime(isApplied);
     }
 
     protected override void OnViewModelPropChanged(object sender, PropertyChangedEventArgs e)
@@ -64,13 +64,6 @@ public class LakeSlotView : ItemSlotViewBase<LakeSlotViewModel>
         base.OnViewModelPropChanged(sender, e);
 
         //Debug.Log("[LakeSlotView] " + e.PropertyName + " 프로퍼티 바뀜");
-
-        //switch (e.PropertyName)
-        //{
-        //    case nameof(viewModel.IsApplied):
-        //        SetBtn();
-        //        break;
-        //}
 
         switch (e.PropertyName)
         {

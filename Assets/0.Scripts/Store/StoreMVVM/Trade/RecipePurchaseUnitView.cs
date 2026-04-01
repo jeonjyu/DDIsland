@@ -27,7 +27,7 @@ public class RecipePurchaseUnitView : TradeUnitViewBase
 
         if(GameManager.Instance.PlayerGold > tradeViewModel.Model.PurchasePrice && tradeViewModel.IsGained == false)
         {
-            //SetAllButtonAvailablity(false);
+            SetAllButtonAvailablity(true);
             //Debug.Log(this + " 레시피 구매 유닛 | 구매 가능");
 
         }
