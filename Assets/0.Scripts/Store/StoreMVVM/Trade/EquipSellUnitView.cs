@@ -32,6 +32,7 @@ public class EquipSellUnitView : TradeUnitViewBase
 
     public override ITradeStrategy GetTradeStrategy()
     {
+        if (strategy == null) strategy = GetComponent<SellStrategy>();
         return strategy;
     }
 

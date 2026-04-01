@@ -1,7 +1,6 @@
 using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using Unity.VisualScripting;
 using UnityEngine;
 
 //[RequireComponent(typeof(TradeViewBase))]
@@ -110,6 +109,7 @@ public class TradeUnitViewModelBase : MonoBehaviour, INotifyPropertyChanged
             case "":
                 _tradeCount = 1;
                 InitUnit();
+                OnPropertyChanged();
                 break;
             // 보유중인 아이템 개수 변경
             case nameof(StoreManager.Instance.TradeItemCount):
@@ -192,9 +192,22 @@ public class TradeUnitViewModelBase : MonoBehaviour, INotifyPropertyChanged
         {
             TradeCount = Math.Min(GameManager.Instance.PlayerGold / Model.PurchasePrice, Model.MaxCount - Model.ItemCount);
         }
-        else
+        else // 판매할 때
         {
-            TradeCount = Model.ItemCount;
+            if (Model.IsGained && !Model.IsDefault)
+            {
+                // 섬 인테리어가 아닌 경우 
+                if (StoreManager.Instance.currentCat != StoreCat.interior)
+                {
+                    TradeCount = 1;
+                }
+                TradeCount = Model.ItemCount;
+            }
+            else
+            {
+                TradeCount = 0;
+
+            }
         }
     }
 
@@ -208,7 +221,10 @@ public class TradeUnitViewModelBase : MonoBehaviour, INotifyPropertyChanged
         else
         {
             //view.SetTotalPriceText(TradeCount * view.GetTradeStrategy().GetPrice(Model));
+            Debug.LogWarning("[TradeUnitViewModelBase] TradeCount : " + TradeCount);
+            Debug.LogWarning("[TradeUnitViewModelBase] 현재 Strategy" + view.GetTradeStrategy());
             _totalPrice = TradeCount * view.GetTradeStrategy().GetPrice(Model);
+            Debug.LogWarning("[TradeUnitViewModelBase] _totalPrice : " + _totalPrice);
             view.SetTotalPriceText(_totalPrice);
         }
     }

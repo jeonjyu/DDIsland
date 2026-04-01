@@ -66,7 +66,7 @@ public abstract class TradeUnitViewBase : MonoBehaviour
     /// </summary>
     public virtual void SetButton()
     {
-        SetAllButtonAvailablity(true);
+        //SetAllButtonAvailablity(false);
     }
     
     public virtual void SetAllButtonAvailablity(bool isAvailable)
@@ -83,6 +83,7 @@ public abstract class TradeUnitViewBase : MonoBehaviour
     // TradeUnitViewModelBase의 TradeCount, ItemCount 변경시 실행
     private void UpdateTradeUnitUI(object sender, PropertyChangedEventArgs e)
     {
+        Debug.Log(e.PropertyName);
         UpdateUI();
     }
 }
