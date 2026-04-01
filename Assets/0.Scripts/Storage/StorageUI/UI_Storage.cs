@@ -23,10 +23,11 @@ public class UI_Storage : MonoBehaviour
     [SerializeField] private GameObject _slotPrefab;
 
     [SerializeField] private GameObject _UpgradePan;
-    [SerializeField] private TextMeshProUGUI _storageLevelText;
-    [SerializeField] private TextMeshProUGUI _systemMsgText;
+    [SerializeField] private TMP_Text _storageLevelText;
+    [SerializeField] private TMP_Text _systemMsgText;
     [SerializeField] private Button _upgradeButton;
-    [SerializeField] private TextMeshProUGUI _upgradeButtonLabel;
+    [SerializeField] private TMP_Text _upgradeButtonLabel;
+    [SerializeField] private TMP_Text _upgradeCostText;
     private Coroutine _msgRoutine;
 
 
@@ -35,10 +36,10 @@ public class UI_Storage : MonoBehaviour
     int _selectedRealIndex = -1;   // 마지막으로 선택한 realIndex(삭제 버튼 처리 등에 사용)
 
     // 상세 패널 UI
-    [SerializeField] private TextMeshProUGUI _nameText;
-    [SerializeField] private TextMeshProUGUI _gradeText;
+    [SerializeField] private TMP_Text _nameText;
+    [SerializeField] private TMP_Text _gradeText;
     //[SerializeField] private TextMeshProUGUI _bestPriceText;
-    [SerializeField] private TextMeshProUGUI _DescText;
+    [SerializeField] private TMP_Text _DescText;
     [SerializeField] private Image _detailIcon;
 
     [SerializeField] private Transform _slotParent;  // 슬롯 프리팹(원본은 꺼두고 복제해서 사용)
@@ -52,6 +53,11 @@ public class UI_Storage : MonoBehaviour
     [SerializeField] private Button _ofFishFoodButton;
     [SerializeField] private Button _ofFoodFishButton;
     [SerializeField] private Button _ofFoodFoodButton;
+
+    [SerializeField] private AudioClip _TabButtonSFX;
+    [SerializeField] private AudioClip _CloseButtonSFX;
+    [SerializeField] private AudioClip _UpgradeSFX;
+    [SerializeField] private AudioClip _ButtonSFX;
 
     private void Start()
     {
@@ -296,18 +302,24 @@ public class UI_Storage : MonoBehaviour
         FishStorageManager.Instance.Capacity >= FishStorageManager.MaxCapacity)
         {
             RefreshUpgradeUI();
-            ShowSystemMessage("최대 확장 완료 상태입니다.");
+            ShowSystemMessage(LocalizationManager.Instance.GetString("InteriorBoxMaxExpansion"));
             return;
         }
         if (!FishStorageManager.Instance.PayStorageUpgrade())  //돈체크
         {
-            ShowSystemMessage("코인이 부족합니다");
+            ShowSystemMessage(LocalizationManager.Instance.GetString("InteriorBoxNotEnoughGold"));
             return;
         }
+        SoundManager.Instance.PlaySFX(_UpgradeSFX);
         FishStorageManager.Instance.UpgradeStorageindex(); // 실제 데이터(슬롯 배열) 확장
         SlotPool();  
         RefreshUpgradeUI();
-        ShowSystemMessage($"창고가 Lv.{FishStorageManager.Instance.StorageLevel}로 확장되었습니다! (총 {FishStorageManager.Instance.Capacity}칸)");
+        string message = string.Format(
+            LocalizationManager.Instance.GetString("InteriorBoxUpgradeComplete"),
+            FishStorageManager.Instance.StorageLevel,
+            FishStorageManager.Instance.Capacity
+        );
+        ShowSystemMessage(message);
         RefreshAll();
     }
     private void SlotPool()  //UI 슬롯 풀(프리팹 복제)도 데이터 Capacity 만큼 늘려줌
@@ -338,6 +350,15 @@ public class UI_Storage : MonoBehaviour
         if (_storageLevelText != null)
             _storageLevelText.text = $"Lv.{sm.StorageLevel} / Lv.{FishStorageManager.MaxLevel}";
 
+        if (_upgradeCostText != null)
+        {
+            string message = string.Format(
+             LocalizationManager.Instance.GetString("InteriorBoxUpgradeCostGold"),
+             FishStorageManager.Instance.GetUpgradeCost().ToString()
+             );
+            _upgradeCostText.text = message;
+        }
+
         bool isMax = false;     //최대치인지 판단
 
         if (sm.StorageLevel >= FishStorageManager.MaxLevel || sm.Capacity >= FishStorageManager.MaxCapacity)
@@ -349,7 +370,11 @@ public class UI_Storage : MonoBehaviour
             _upgradeButton.interactable = !isMax;
 
         if (_upgradeButtonLabel != null)     //최대치면 버튼 글자 변경
-            _upgradeButtonLabel.text = isMax ? "최대 확장 완료" : "확장하기";
+        {
+            string maxText = LocalizationManager.Instance.GetString("Interior_Box_Upgrade_Expand_Text ");
+            string upgradeText = LocalizationManager.Instance.GetString("Interior_Box_MaxExpansion_Text");
+            _upgradeButtonLabel.text = isMax ? maxText : upgradeText;
+        }
     }
     private void ShowSystemMessage(string msg)    //시스템 알림 출력
     {
@@ -371,11 +396,13 @@ public class UI_Storage : MonoBehaviour
 
     public void OpenUpgradeUI()
     {
+        SoundManager.Instance.PlaySFX(_ButtonSFX);
         _UpgradePan.gameObject.SetActive(true);
     }
 
     public void CloseUpgradeUI()
     {
+        SoundManager.Instance.PlaySFX(_CloseButtonSFX);
         _UpgradePan.gameObject.SetActive(false);
     }
 
@@ -410,6 +437,7 @@ public class UI_Storage : MonoBehaviour
     }
     public void OnSortDropdownChanged(int value)
     {
+        SoundManager.Instance.PlaySFX(_ButtonSFX);
         _currentSort = (SortMode)value;
         RefreshAll();
     }
@@ -423,6 +451,7 @@ public class UI_Storage : MonoBehaviour
     }
     public void OpenFishStorage() 
     {
+        SoundManager.Instance.PlaySFX(_TabButtonSFX);
         Debug.Log("물고기창고 버튼눌림" + EventSystem.current.currentSelectedGameObject?.name);
         _fishStorageUI.SetActive(true);
         _foodStorageUI.SetActive(false);
@@ -432,6 +461,7 @@ public class UI_Storage : MonoBehaviour
     }
     public void OpenFoodStorage()
     {
+        SoundManager.Instance.PlaySFX(_TabButtonSFX);
         Debug.Log("음식창고 버튼눌림" + EventSystem.current.currentSelectedGameObject?.name);
         _fishStorageUI.SetActive(false);
         _foodStorageUI.SetActive(true);
@@ -441,6 +471,7 @@ public class UI_Storage : MonoBehaviour
     }
     public void CloseAllStorage()  //임시
     {
+        SoundManager.Instance.PlaySFX(_CloseButtonSFX);
         _fishStorageUI.SetActive(false);
         _foodStorageUI.SetActive(false);
     }

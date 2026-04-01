@@ -10,15 +10,18 @@ public class UI_CreatePlaylist : MonoBehaviour
     [Header("플레이리스트 제목 인풋필드")]
     [SerializeField] private TMP_InputField titleInputField;
 
+    [Header("플레이리스트 생성 불가 안내 오브젝트")]
+    [SerializeField] private GameObject failureObj;
+
     public void OnClick_CreatePlaylist()
     {
         if(IsValidPlaylistName(titleInputField.text))
         {
-            Debug.Log("플레이리스트 추가");
+            
         }
         else
         {
-            Debug.Log("명명규칙 위배");
+            failureObj.SetActive(true);
         }
     }
 
