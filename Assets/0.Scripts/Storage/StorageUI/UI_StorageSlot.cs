@@ -15,6 +15,8 @@ public class UI_StorageSlot : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _itemGradeText;
     [SerializeField] private TextMeshProUGUI _itemPriceText;
 
+    [SerializeField] private AudioClip _ButtonSFX;
+
     int _boundRealIndex = -1;  // 이 UI 슬롯이 대표하는 실제 데이터 슬롯 인덱스
 
     public void Init(UI_Storage parent) // 이 UI 슬롯이 대표하는 실제 데이터 슬롯 인덱스
@@ -106,7 +108,7 @@ public class UI_StorageSlot : MonoBehaviour
         Debug.Log($"[UI슬롯 클릭됨] boundRealIndex={_boundRealIndex} name={gameObject.name}");
 
         if (_boundRealIndex < 0) return;
-
+        SoundManager.Instance.PlaySFX(_ButtonSFX);
         _parentUI.OnSlotClicked(_boundRealIndex);
     }
 }
