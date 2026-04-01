@@ -23,7 +23,7 @@ public abstract class Placeable : MonoBehaviour
         set => _itemState = value;
     }
     
-    public virtual void Placement()
+    public virtual void Placement(AudioClip audio)
     {
 
     }
