@@ -22,7 +22,7 @@ public class EnvironmentPresenter : MonoBehaviour
             FishManager.Instance.SetEnvironment(_model);
         }
         if (_playerController != null)  _playerController.SetEnvironment(_model);
-    }
+    }  
 
     private void OnEnable()
     {

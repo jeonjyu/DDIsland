@@ -26,6 +26,17 @@ public class UI_MailPopup : MonoBehaviour
 
         bool isKorean = PlayerPrefsDataManager.Language == 0;
 
+        if (_titleText != null)
+        {
+            _titleText.text = isKorean ? mail._title_kr : mail._title_en;
+        }
+
+        if (_contentText != null)
+        {
+            _contentText.text = isKorean ? mail._content_kr : mail._content_en;
+        }
+
+
         if (DateTime.TryParse(mail._expireDate, out DateTime expireTime))
         {
             TimeSpan timeLeft = expireTime - DateTime.Now;
