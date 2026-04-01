@@ -8,6 +8,8 @@ public class Test : MonoBehaviour
     [SerializeField] private GameObject obj4;
     [SerializeField] private GameObject obj5;
 
+    [SerializeField] private GameObject debugUI;
+
 #if TESTMODE
     private void Update()
     {
@@ -49,6 +51,12 @@ public class Test : MonoBehaviour
         if (Keyboard.current.f8Key.wasPressedThisFrame)
         {
             DataManager.Instance.RecordDatabase.LpPieceCount = 0;
+        }
+
+        // F10키 누를 시 디버그 로그 UI 껐다키기
+        if (Keyboard.current.f10Key.wasPressedThisFrame)
+        {
+            debugUI.SetActive(!debugUI.activeSelf);
         }
     }
 #endif

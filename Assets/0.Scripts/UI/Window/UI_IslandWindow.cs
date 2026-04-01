@@ -17,8 +17,6 @@ public class UI_IslandWindow : MonoBehaviour
         RightDown           
     }
 
-    [SerializeField] private Canvas canvas;
-
     [Header("섬 창")]
     [SerializeField] private RectTransform islandWindowRect;
 
