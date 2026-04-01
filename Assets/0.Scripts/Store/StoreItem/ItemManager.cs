@@ -156,7 +156,7 @@ public class ItemManager : Singleton<ItemManager>
 
     private void SyncInventoryDataSave()
     {
-        var box = DataManager.Instance.Box;
+        var box = DataManager.Instance.Hub._allUserData;
 
         if (playerItemDatas.TryGetValue(StoreCat.interior, out var interiorDb))
         {
@@ -170,41 +170,51 @@ public class ItemManager : Singleton<ItemManager>
                 .ToList();
         }
 
-        if (playerItemDatas.ContainsKey(StoreCat.costume))
+        if (playerItemDatas.TryGetValue(StoreCat.costume, out var costumeDb))
         {
-            box.Store._ownedCostumes = playerItemDatas[StoreCat.costume].Items
-                .Select(x => x.ID)
-                .Distinct()
-                .ToList();
+            box.Store._ownedCostumes = costumeDb.Items.Select(x => x.ID).Distinct().ToList();
         }
 
-        if (playerItemDatas.ContainsKey(StoreCat.fishing))
+        if (playerItemDatas.TryGetValue(StoreCat.fishing, out var fishingDb))
         {
-            box.Store._ownedFishings = playerItemDatas[StoreCat.fishing].Items
-                .Select(x => x.ID)
-                .Distinct()
-                .ToList();
+            box.Store._ownedFishings = fishingDb.Items.Select(x => x.ID).Distinct().ToList();
+        }
+
+        if (playerItemDatas.TryGetValue(StoreCat.lake, out var lakeDb))
+        {
+            box.Store._ownedLakeItems = lakeDb.Items.Select(x => x.ID).Distinct().ToList();
+        }
+
+        if (playerItemDatas.TryGetValue(StoreCat.recipe, out var recipeDb))
+        {
+            box.Collection._unlockedFoodIds = recipeDb.Items.Select(x => x.ID).Distinct().ToList();
         }
 
         Debug.Log("<color=yellow> 인벤토리 데이터가 저장되었습니다 </color>");
     }
     private void SyncInventoryDataLoad()
     {
-        var box = DataManager.Instance.Box;
+        var box = DataManager.Instance.Hub._allUserData;
 
         if (box.Store._inventory == null &&
-        box.Store._ownedCostumes == null &&
-        box.Store._ownedFishings == null)
+            box.Store._ownedCostumes == null &&
+            box.Store._ownedFishings == null &&
+            box.Store._ownedLakeItems == null &&
+            box.Store._ownedRecipes == null)
         {
-
             return;
         }
 
-        playerItemDatas.Clear();
+        foreach (var category in playerItemDatas.Values)
+        {
+            category.Items.Clear();
+        }
 
         var interiorDict = storeDatas[StoreCat.interior].Items.ToDictionary(x => x.ID);
         var costumeDict = storeDatas[StoreCat.costume].Items.ToDictionary(x => x.ID);
         var fishingDict = storeDatas[StoreCat.fishing].Items.ToDictionary(x => x.ID);
+        var lakeDict = storeDatas[StoreCat.lake].Items.ToDictionary(x => x.ID);
+        var recipeDict = storeDatas[StoreCat.recipe].Items.ToDictionary(x => x.ID);
 
         if (box.Store._inventory != null)
         {
@@ -241,6 +251,32 @@ public class ItemManager : Singleton<ItemManager>
                     fishingItem.IsGained = true;
                     fishingItem.ItemCount = 1;
                     AddToPlayerItem(fishingItem, StoreCat.fishing);
+                }
+            }
+        }
+
+        if (box.Store._ownedLakeItems != null && lakeDict != null)
+        {
+            foreach (int id in box.Store._ownedLakeItems)
+            {
+                if (lakeDict.TryGetValue(id, out IStoreItem lakeItem))
+                {
+                    lakeItem.IsGained = true;
+                    lakeItem.ItemCount = 1;
+                    AddToPlayerItem(lakeItem, StoreCat.lake);
+                }
+            }
+        }
+
+        if (box.Store._ownedRecipes != null && recipeDict != null)
+        {
+            foreach (int id in box.Store._ownedRecipes)
+            {
+                if (recipeDict.TryGetValue(id, out IStoreItem recipeItem))
+                {
+                    recipeItem.IsGained = true;
+                    recipeItem.ItemCount = 1;
+                    AddToPlayerItem(recipeItem, StoreCat.recipe);
                 }
             }
         }

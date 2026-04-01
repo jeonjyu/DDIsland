@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 public enum QuestRewardType
 {
@@ -74,6 +75,31 @@ public class QuestManager : Singleton<QuestManager>
         _reawardById = new Dictionary<int, CurrencyDataSO>();
         SetQuestData(_quests);
         SetRewardData(_reaward);
+    }
+
+    private void Start()
+    {
+        if (DataManager.Instance != null && DataManager.Instance.Hub != null)
+        {
+            if (DataManager.Instance.Hub.IsLoaded)
+            {
+                SyncQuestDataLoad();
+            }
+            else
+            {
+                DataManager.Instance.Hub.OnDataLoaded += SyncQuestDataLoad;
+            }
+        }
+    }
+    private void OnEnable()
+    {
+        if (DataManager.Instance != null && DataManager.Instance.Hub != null)
+            DataManager.Instance.Hub.OnRequestSave += SyncQuestDataSave;
+    }
+    private void OnDisable()
+    {
+        if (DataManager.Instance != null && DataManager.Instance.Hub != null)
+            DataManager.Instance.Hub.OnRequestSave -= SyncQuestDataSave;
     }
 
     //데이터 보관용
@@ -347,6 +373,52 @@ public class QuestManager : Singleton<QuestManager>
         {
             DataManager.Instance.RecordDatabase.LpPieceCount += rewardCount;
             RewardEffect.Instance.PlayQuestLpEffect();
+        }
+    }
+
+    private void SyncQuestDataSave()
+    {
+        var progressBox = DataManager.Instance.Hub._allUserData.Progress;
+
+        progressBox._completedQuests = _completedQuests.ToList();
+
+        progressBox._simpleProgressList = _simpleProgress
+            .Select(kvp => new SimpleProgressData { Key = kvp.Key, Value = kvp.Value })
+            .ToList();
+
+        progressBox._detailsProgressList = _detailsProgress
+            .Select(kvp => new DetailsProgressData { Id = kvp.Key, Value = kvp.Value })
+            .ToList();
+    }
+
+    private void SyncQuestDataLoad()
+    {
+        var progressBox = DataManager.Instance.Hub._allUserData.Progress;
+
+        // 완료 퀘스트 로드
+        if (progressBox._completedQuests != null)
+        {
+            _completedQuests = new HashSet<int>(progressBox._completedQuests);
+        }
+
+        // 단순 진행도 로드
+        if (progressBox._simpleProgressList != null)
+        {
+            _simpleProgress.Clear();
+            foreach (var item in progressBox._simpleProgressList)
+            {
+                _simpleProgress[item.Key] = item.Value;
+            }
+        }
+
+        // 상세 진행도 로드
+        if (progressBox._detailsProgressList != null)
+        {
+            _detailsProgress.Clear();
+            foreach (var item in progressBox._detailsProgressList)
+            {
+                _detailsProgress[item.Id] = item.Value;
+            }
         }
     }
 }

@@ -169,6 +169,21 @@ public class PlayerController : MonoBehaviour
         _fork.gameObject.SetActive(false);
         _pan.gameObject.SetActive(false);
         BuildCostumeMap();
+
+        if (DataManager.Instance != null && DataManager.Instance.Hub != null)
+        {
+            if (DataManager.Instance.Hub.IsLoaded)
+            {
+                PlayerDataOld.SyncCharacterDataLoad();
+                SyncEquipDataLoad();
+            }
+            else
+            {
+                DataManager.Instance.Hub.OnDataLoaded += PlayerDataOld.SyncCharacterDataLoad;
+                DataManager.Instance.Hub.OnDataLoaded += SyncEquipDataLoad;
+            }
+        }
+
         RefreshCanCook();
     }
     private void Update()
@@ -207,6 +222,12 @@ public class PlayerController : MonoBehaviour
             PlayerDataOld.OnHungerChanged += (_) => UpdateEmoji();
             PlayerDataOld.OnStaminaChanged += (_) => UpdateEmoji();
         }
+
+        if (DataManager.Instance != null && DataManager.Instance.Hub != null)
+        {
+            DataManager.Instance.Hub.OnRequestSave += PlayerDataOld.SyncCharacterDataSave;
+            DataManager.Instance.Hub.OnRequestSave += SyncEquipDataSave;
+        }
     }
 
     private void OnDisable()
@@ -230,6 +251,15 @@ public class PlayerController : MonoBehaviour
         {
             PlayerDataOld.OnHungerChanged -= (_) => UpdateEmoji();
             PlayerDataOld.OnStaminaChanged -= (_) => UpdateEmoji();
+        }
+
+        if (DataManager.Instance != null && DataManager.Instance.Hub != null)
+        {
+            if (!DataManager.Instance.Hub.IsQuite)
+            {
+                DataManager.Instance.Hub.OnRequestSave -= PlayerDataOld.SyncCharacterDataSave;
+                DataManager.Instance.Hub.OnRequestSave -= SyncEquipDataSave;
+            }
         }
     }
 
@@ -1110,5 +1140,29 @@ public class PlayerController : MonoBehaviour
         _currentState?.Exit();
         _currentState = newState;
         _currentState.Enter();
+    }
+
+    private void SyncEquipDataSave()
+    {
+        // 목적지가 Store가 아니라 Character로 변경됨
+        var charBox = DataManager.Instance.Hub._allUserData.Character;
+
+        charBox._equippedHatId = _equippedHatId;
+        charBox._equippedBodyId = _equippedbodyId;
+        charBox._equippedFishingRodId = _equippedfishingRodsId;
+        charBox._equippedBaitId = _equippedBaitId;
+        charBox._equippedBobberId = _equippedBobberId;
+    }
+
+    private void SyncEquipDataLoad()
+    {
+        var charBox = DataManager.Instance.Hub._allUserData.Character;
+
+        // 파이어베이스에서 가져온 ID를 바탕으로 각각 장착 함수 실행
+        SetHat(charBox._equippedHatId);
+        SetBody(charBox._equippedBodyId);
+        SetTool(charBox._equippedFishingRodId);
+        SetBait(charBox._equippedBaitId);
+        SetBobber(charBox._equippedBobberId);
     }
 }

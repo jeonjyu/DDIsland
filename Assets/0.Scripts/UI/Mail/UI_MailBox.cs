@@ -100,8 +100,8 @@ public class UI_MailBox : MonoBehaviour
         _commonPopup.OpenPopup(
             "InteriorPostBoxDeleteAll",
             "InteriorPostBoxDeleteAllConfirmDesc",
-            "InteriorPostBoxRemoveAllBtn",
             "InteriorPostBoxCancelBtn",
+            "InteriorPostBoxRemoveAllBtn",
             () =>
             {
                 // [확인]을 눌렀을 때 실행될 내용
@@ -116,8 +116,8 @@ public class UI_MailBox : MonoBehaviour
         _commonPopup.OpenPopup(
             "InteriorPostBoxTitle",
             "InteriorPostBoxClaimAllConfirmDesc",
-            "InteriorPostBoxClaimAllBtn",
             "InteriorPostBoxCancelBtn",
+            "InteriorPostBoxClaimAllBtn",
             () => { MailManager.Instance.ClaimAllRewards(); }
         );
     }
