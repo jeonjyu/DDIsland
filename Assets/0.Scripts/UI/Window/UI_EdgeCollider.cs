@@ -18,6 +18,20 @@ public class UI_EdgeCollider : MonoBehaviour
 
     private DirEdgeMouseState edgeState;
 
+    private int lockCount;
+
+    public void Lock()
+    {
+        lockCount++;
+        windowEdge.SetActive(true);
+    }
+
+    public void Unlock()
+    {
+        lockCount = Mathf.Max(0, lockCount - 1);
+        if (lockCount == 0) CheckMouseHover();
+    }
+
     public void EnterMouse(DirEdgeMouseState dirState)
     {
         edgeState |= dirState;
@@ -32,6 +46,7 @@ public class UI_EdgeCollider : MonoBehaviour
 
     private void CheckMouseHover()
     {
+        if (lockCount > 0) return;
         windowEdge.SetActive(edgeState != DirEdgeMouseState.None);
     }
 

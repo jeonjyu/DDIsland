@@ -11,6 +11,8 @@ public class UI_IslandWindowDragBar : MonoBehaviour, IBeginDragHandler, IDragHan
     [Header("드래그 바 이미지")]
     [SerializeField] private Image dragBar;
 
+    [SerializeField] private UI_EdgeCollider edgeCollider;
+
     private Vector2 gapPos;
     private bool isDragging;
 
@@ -38,6 +40,8 @@ public class UI_IslandWindowDragBar : MonoBehaviour, IBeginDragHandler, IDragHan
     {
         if (eventData.button == PointerEventData.InputButton.Left)
         {
+            edgeCollider?.Lock();
+
             gapPos = new Vector2(
                 ui_IslandWindow.IslandWindowRect.position.x - eventData.position.x,
                 ui_IslandWindow.IslandWindowRect.position.y - eventData.position.y);
@@ -58,7 +62,7 @@ public class UI_IslandWindowDragBar : MonoBehaviour, IBeginDragHandler, IDragHan
         {
             isDragging = false;
 
-
+            edgeCollider?.Unlock();
             // 드래그가 끝났을 때 마우스 위치가 현재 스크립트를 가진 오브젝트가 아닐 경우 OnPointerExit이 실행되지 않으므로 여기서 처리
             GameObject obj = eventData.pointerCurrentRaycast.gameObject;
 

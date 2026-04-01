@@ -141,7 +141,7 @@ public class WindowController : Singleton<WindowController>
         pointerEventData = new PointerEventData(EventSystem.current);
 
         // Ignore Raycast를 제외한 모든 레이어를 검출
-        hitLayerMask = ~LayerMask.GetMask("Ignore Raycast");
+        hitLayerMask = ~LayerMask.GetMask("Ignore Raycast", "HoverOnly");
 
         // 마우스 통과 여부 체크 로직 주기 초기화
         hitTime = hitTick == 0 ? new WaitForSecondsRealtime(0.1f) : new WaitForSecondsRealtime(hitTick);
