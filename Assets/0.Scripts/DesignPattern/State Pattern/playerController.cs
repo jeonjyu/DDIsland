@@ -826,10 +826,8 @@ public class PlayerController : MonoBehaviour
         {
             // 한 사이클 시작
             _cycleRunning = true;
-
             float rodSpeed = 0f;
             _fishRodSpeed.TryGetValue(_currentFishingRodsId, out rodSpeed);
-
             float minTime = Mathf.Max(1f, 5f - rodSpeed);
             float maxTime = Mathf.Max(minTime, PlayerDataOld.FishingSpeed);
             float waitTime = UnityEngine.Random.Range(minTime, maxTime);
@@ -840,6 +838,7 @@ public class PlayerController : MonoBehaviour
 
             // 사이클이 끝났다는 이벤트가 올 때까지 기다림
             yield return new WaitUntil(() => _cycleRunning == false);
+            PullUpFishingHookEffect();
         }
     }
 
@@ -849,7 +848,7 @@ public class PlayerController : MonoBehaviour
     }
     public void AnimEvent_FishingCycleEnd() //낚시 성공 애니에 넣을 함수
     {
-        _fishingCount--; 
+        _fishingCount--;
         Debug.Log("fishingCount: " + _fishingCount);
         PlayerDataOld.SetHunger(PlayerDataOld.Hunger - 4);
         ConsumeStamina(5);
