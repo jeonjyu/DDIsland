@@ -270,6 +270,7 @@ GameObject:
   - component: {fileID: 1390462000276122923}
   - component: {fileID: 4334534953555780045}
   - component: {fileID: 7024938948341181361}
+  - component: {fileID: 6815611417355122926}
   m_Layer: 5
   m_Name: TextSave
   m_TagString: Untagged
@@ -396,6 +397,19 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &6815611417355122926
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 556038310523681010}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2134d9cf1904084596ca987dae836c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI_BaseLocalizedText
+  textId: Interior_Global_SaveLayout_Btn_Text
 --- !u!1 &1183672427874934657
 GameObject:
   m_ObjectHideFlags: 0
@@ -600,6 +614,10 @@ MonoBehaviour:
   decoTempText: {fileID: 2347263009411359560}
   playerObject: {fileID: 0}
   weatherParticleParent: {fileID: 0}
+  windowEdgeGroup: {fileID: 0}
+  mainMenuBtnGroup: {fileID: 0}
+  topMoneyBarUI: {fileID: 0}
+  waterLevelButton: {fileID: 0}
 --- !u!114 &2347263009411359560
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -612,21 +630,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e99bccb7359e9784398460b05cc6a0e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DecoLocalizeTempText
-  decoModeText: {fileID: 0}
-  islandDecoText: {fileID: 0}
-  recallAllText: {fileID: 2805028765354037842}
-  resetText: {fileID: 5797592197452510519}
-  saveText: {fileID: 7024938948341181361}
-  recallText: {fileID: 0}
-  moveText: {fileID: 0}
-  cancelText: {fileID: 0}
-  rotateText: {fileID: 0}
-  popupMsgText: {fileID: 8739677942174085305}
-  saveExitText: {fileID: 4076055866542184391}
-  noSaveExitText: {fileID: 8596703904839252641}
-  popupCancelText: {fileID: 6406137479016023834}
   confirmMsgText: {fileID: 6680780382341612149}
-  confirmYesText: {fileID: 7428684126483889477}
 --- !u!1 &2359060953127167522
 GameObject:
   m_ObjectHideFlags: 0
@@ -1019,6 +1023,7 @@ GameObject:
   - component: {fileID: 1200957771203476017}
   - component: {fileID: 2496045306878618998}
   - component: {fileID: 2805028765354037842}
+  - component: {fileID: 8438355135380633004}
   m_Layer: 5
   m_Name: TextRecallAll
   m_TagString: Untagged
@@ -1145,6 +1150,19 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &8438355135380633004
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3151084629542832046}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2134d9cf1904084596ca987dae836c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI_BaseLocalizedText
+  textId: Interior_Global_RemoveAll_Btn_Text
 --- !u!1 &3294005261670103305
 GameObject:
   m_ObjectHideFlags: 0
@@ -1875,6 +1893,7 @@ GameObject:
   - component: {fileID: 2474054237241907116}
   - component: {fileID: 760810791874589663}
   - component: {fileID: 5797592197452510519}
+  - component: {fileID: 1186087880297658519}
   m_Layer: 5
   m_Name: TextReset
   m_TagString: Untagged
@@ -2001,6 +2020,19 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &1186087880297658519
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7111942747604074178}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2134d9cf1904084596ca987dae836c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI_BaseLocalizedText
+  textId: Interior_Global_ResetLayout_Btn_Text
 --- !u!1 &7474261149369188630
 GameObject:
   m_ObjectHideFlags: 0
@@ -2939,10 +2971,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: ExitPopupPanel
       objectReference: {fileID: 0}
-    - target: {fileID: 1917629941461595168, guid: 35a90122c207cbc4ba39488692cfe302, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2969,17 +2997,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 612549652844576398, guid: 35a90122c207cbc4ba39488692cfe302, type: 3}
   m_PrefabInstance: {fileID: 2073494539891724863}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &4076055866542184391 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2618710669281822200, guid: 35a90122c207cbc4ba39488692cfe302, type: 3}
-  m_PrefabInstance: {fileID: 2073494539891724863}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!114 &4704119503276341536 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6741584694052170527, guid: 35a90122c207cbc4ba39488692cfe302, type: 3}
@@ -3002,39 +3019,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
---- !u!114 &6406137479016023834 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4909385752831612197, guid: 35a90122c207cbc4ba39488692cfe302, type: 3}
-  m_PrefabInstance: {fileID: 2073494539891724863}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
---- !u!114 &8596703904839252641 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7749332574188431518, guid: 35a90122c207cbc4ba39488692cfe302, type: 3}
-  m_PrefabInstance: {fileID: 2073494539891724863}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
---- !u!114 &8739677942174085305 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7318097077218517638, guid: 35a90122c207cbc4ba39488692cfe302, type: 3}
-  m_PrefabInstance: {fileID: 2073494539891724863}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!1001 &5673577796355893932
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3139,10 +3123,31 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6619413909090512474, guid: 00450c1918e8f454ab8564838ccb7170, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4853880625473918032}
     - targetCorrespondingSourceObject: {fileID: 4582440771410584026, guid: 00450c1918e8f454ab8564838ccb7170, type: 3}
       insertIndex: -1
       addedObject: {fileID: 9035821117031316350}
   m_SourcePrefab: {fileID: 100100000, guid: 00450c1918e8f454ab8564838ccb7170, type: 3}
+--- !u!1 &1540364195974382838 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6619413909090512474, guid: 00450c1918e8f454ab8564838ccb7170, type: 3}
+  m_PrefabInstance: {fileID: 5673577796355893932}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &4853880625473918032
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1540364195974382838}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2134d9cf1904084596ca987dae836c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI_BaseLocalizedText
+  textId: Interior_Global_SaveLayout_Btn_Yes
 --- !u!114 &2649634817771286690 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7672440681223526926, guid: 00450c1918e8f454ab8564838ccb7170, type: 3}
@@ -3178,17 +3183,6 @@ MonoBehaviour:
 --- !u!114 &6680780382341612149 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1299990730966100185, guid: 00450c1918e8f454ab8564838ccb7170, type: 3}
-  m_PrefabInstance: {fileID: 5673577796355893932}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
---- !u!114 &7428684126483889477 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3002603701932234729, guid: 00450c1918e8f454ab8564838ccb7170, type: 3}
   m_PrefabInstance: {fileID: 5673577796355893932}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
