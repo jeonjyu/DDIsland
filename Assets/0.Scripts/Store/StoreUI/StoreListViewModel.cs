@@ -18,6 +18,8 @@ public class StoreListViewModel : MonoBehaviour, INotifyPropertyChanged
 
     public GridLayoutGroup listGirdLayout;
 
+    [SerializeField] CanvasGroup btnTrayGroup;
+
     public StoreCat CurrentCat
     {
         get => StoreManager.Instance.currentCat;
@@ -61,18 +63,21 @@ public class StoreListViewModel : MonoBehaviour, INotifyPropertyChanged
 
     public void OnEnable()
     {
+        if (btnTrayGroup != null) btnTrayGroup.interactable = false;
         StoreManager.Instance.currentCat = StoreCat.interior;
         UpdateCurrentCat(0);
         scrollRect.verticalNormalizedPosition = 1f;
+    }
+
+    public void OnDisable()
+    {
+        if (btnTrayGroup != null) btnTrayGroup.interactable = true;
     }
 
     public void UpdateCurrentCat(int catIdx)
     {
         //Debug.Log("슬롯 리스트: " + string.Join(", ", ItemManager.Instance.displayItems.Select(x => x.ItemName + "(" + x.IsGained + "):" + x.PurchasePrice)));
 
-        //Debug.Log("[ItemListViewModel] UpdateCurrentCat");
-
-        //Debug.Log((int)CurrentCat);
 
         if (view.Stores.Count > 0)
             view.SetSelectedCatBtnColor(view.Stores[(int)CurrentCat].CatBtn, false);

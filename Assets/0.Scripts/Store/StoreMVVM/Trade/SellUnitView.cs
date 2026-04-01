@@ -80,7 +80,7 @@ public class SellUnitView : TradeUnitViewBase
 
         if (viewModel.Model.IsSaleable == false)
         {
-            Debug.Log(this + " 판매 유닛 | 판매 불가능");
+            //Debug.Log(this + " 판매 유닛 | 판매 불가능");
             SetAllButtonAvailablity(false);
             return;
         }
@@ -89,7 +89,7 @@ public class SellUnitView : TradeUnitViewBase
         // 보유하지 않은 아이템일 경우 
         if (viewModel.TradeCount == 0)
         {
-            Debug.Log(this + " 판매 유닛 | 거래 개수가 0");
+            //Debug.Log(this + " 판매 유닛 | 거래 개수가 0");
 
             SetBtnInteractable(CountDecBtn, false);
             SetBtnInteractable(tradeBtn, false);
@@ -98,7 +98,7 @@ public class SellUnitView : TradeUnitViewBase
 
         if (viewModel.ItemCount == 0 && viewModel.IsGained == false)
         {
-            Debug.Log(this + " 판매 유닛 | 보유하지 않은 아이템 " + viewModel.IsGained);
+            //Debug.Log(this + " 판매 유닛 | 보유하지 않은 아이템 " + viewModel.IsGained);
             
             SetAllButtonAvailablity(false);
             return;
@@ -106,7 +106,7 @@ public class SellUnitView : TradeUnitViewBase
 
         if (viewModel.TradeCount == viewModel.Model.ItemCount)
         {
-            Debug.Log(this + " 판매 유닛 | 보유한 아이템보다 더 많이 판매할 수 없음");
+            //Debug.Log(this + " 판매 유닛 | 보유한 아이템보다 더 많이 판매할 수 없음");
 
             SetBtnInteractable(CountIncBtn, false);
             SetBtnInteractable(CountMaxBtn, false);

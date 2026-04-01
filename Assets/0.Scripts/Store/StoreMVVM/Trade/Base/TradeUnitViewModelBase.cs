@@ -160,7 +160,7 @@ public class TradeUnitViewModelBase : MonoBehaviour, INotifyPropertyChanged
     {
         if(TradeCount >= view.GetTradeStrategy().GetMaxCount(Model))
         {
-            Debug.LogWarning("[TradeUnitViewModelBase] 아이템 최대 범위 초과");
+            //Debug.LogWarning("[TradeUnitViewModelBase] 아이템 최대 범위 초과");
             return;
         }
         else
@@ -175,7 +175,7 @@ public class TradeUnitViewModelBase : MonoBehaviour, INotifyPropertyChanged
         // 0보다 낮을 때
         if(TradeCount <= 0)
         {
-            Debug.LogWarning("[TradeUnitViewModelBase] 거래 개수가 0보다 작아질 수 없음");
+            //Debug.LogWarning("[TradeUnitViewModelBase] 거래 개수가 0보다 작아질 수 없음");
             //TradeCount = 1;
             return;
         }
@@ -220,11 +220,7 @@ public class TradeUnitViewModelBase : MonoBehaviour, INotifyPropertyChanged
         }
         else
         {
-            //view.SetTotalPriceText(TradeCount * view.GetTradeStrategy().GetPrice(Model));
-            Debug.LogWarning("[TradeUnitViewModelBase] TradeCount : " + TradeCount);
-            Debug.LogWarning("[TradeUnitViewModelBase] 현재 Strategy" + view.GetTradeStrategy());
             _totalPrice = TradeCount * view.GetTradeStrategy().GetPrice(Model);
-            Debug.LogWarning("[TradeUnitViewModelBase] _totalPrice : " + _totalPrice);
             view.SetTotalPriceText(_totalPrice);
         }
     }

@@ -341,7 +341,7 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 52170583043615829, guid: 18d768406d1d19f4f9300fbdec4e8138, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 7680683352175636270}
+      addedObject: {fileID: 8297121577940619943}
   m_SourcePrefab: {fileID: 100100000, guid: 18d768406d1d19f4f9300fbdec4e8138, type: 3}
 --- !u!224 &1296302263353619340 stripped
 RectTransform:
@@ -353,19 +353,20 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 52170583043615829, guid: 18d768406d1d19f4f9300fbdec4e8138, type: 3}
   m_PrefabInstance: {fileID: 1307224481195022946}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &7680683352175636270
+--- !u!114 &8297121577940619943
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1341344138843977271}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c2134d9cf1904084596ca987dae836c4, type: 3}
+  m_Script: {fileID: 11500000, guid: 5759458024fe97e4ca9a2b09045aed86, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UI_BaseLocalizedText
+  m_EditorClassIdentifier: Assembly-CSharp::UI_ReplacingButtonText
   textId: LakeInterior_Title_Apply_Btn_Text
+  replaceTextId: LakeInteriorTitleApplied_Text
 --- !u!114 &3966570512005451215 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2677433272611182509, guid: 18d768406d1d19f4f9300fbdec4e8138, type: 3}
@@ -635,6 +636,7 @@ MonoBehaviour:
   _itemImage: {fileID: 6095450586704189879}
   applyBtn: {fileID: 3966570512005451215}
   btnText: {fileID: 6062340748349167216}
+  uiReplacing: {fileID: 8297121577940619943}
 --- !u!114 &-7339193631303167743
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -26,6 +26,17 @@ public class UI_MailPopup : MonoBehaviour
 
         bool isKorean = PlayerPrefsDataManager.Language == 0;
 
+        if (_titleText != null)
+        {
+            _titleText.text = isKorean ? mail._title_kr : mail._title_en;
+        }
+
+        if (_contentText != null)
+        {
+            _contentText.text = isKorean ? mail._content_kr : mail._content_en;
+        }
+
+
         if (DateTime.TryParse(mail._expireDate, out DateTime expireTime))
         {
             TimeSpan timeLeft = expireTime - DateTime.Now;
@@ -76,13 +87,13 @@ public class UI_MailPopup : MonoBehaviour
         // 보상이 있고, 아직 수령하지 않았다면 -> '받기'
         if (_currentData._rewardItemID > 0 && !isClaimed)
         {
-            _actionButtonText.text = "받기";
+            _actionButtonText.text = LocalizationManager.Instance.GetString("InteriorPostBoxClaimBtn");
             _actionButton.onClick.AddListener(OnClickClaim);
         }
         // 보상이 없거나 이미 수령했다면 -> '닫기'
         else
         {
-            _actionButtonText.text = "닫기";
+            _actionButtonText.text = LocalizationManager.Instance.GetString("InteriorPostBoxCloseBtn");
             _actionButton.onClick.AddListener(ClosePopup);
         }
     }
