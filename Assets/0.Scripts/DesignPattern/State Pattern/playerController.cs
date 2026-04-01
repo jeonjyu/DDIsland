@@ -1015,7 +1015,7 @@ public class PlayerController : MonoBehaviour
     }
     public bool IsDailyNight()
     {
-        if (_currentSeason == DayilyCycle.Night)
+        if (_currentSeason == DayilyCycle.Sunset)
         {
             return true;
         }
