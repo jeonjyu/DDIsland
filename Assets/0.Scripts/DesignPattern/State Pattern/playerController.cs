@@ -95,6 +95,7 @@ public class PlayerController : MonoBehaviour
 
     private EnvironmentModel _environment;
     private DayilyCycle _currentSeason;
+    private bool _isSummerRain;
 
     private float _hungerTickTimer;
     private float _baseMoveSpeed;
@@ -212,8 +213,6 @@ public class PlayerController : MonoBehaviour
             DataManager.Instance.Hub.OnRequestSave += PlayerDataOld.SyncCharacterDataSave;
         if (PlayerManager.Instance != null)
             PlayerManager.Instance.OnEquipChanged += ChangeCostume;
-        if (_environment != null)
-            _environment.OnDailyChanged += HandleDailyChanged;
         if (EmojiController.Instance != null)
         {
             PlayerDataOld.OnHungerChanged += (_) => UpdateEmoji();
@@ -238,8 +237,6 @@ public class PlayerController : MonoBehaviour
         }
         if (PlayerManager.Instance != null)
             PlayerManager.Instance.OnEquipChanged -= ChangeCostume;
-        if (_environment != null)
-            _environment.OnDailyChanged -= HandleDailyChanged;
         if (EmojiController.Instance != null)
         {
             PlayerDataOld.OnHungerChanged -= (_) => UpdateEmoji();
@@ -719,11 +716,19 @@ public class PlayerController : MonoBehaviour
     public void ApplyHungerTier()  //배고픔 단계에 따른 둥둥 감소 간격 조절
     {
         float interval = 0f;
+
         if (PlayerDataOld.Hunger <= 9) interval = 1f;
         else if (PlayerDataOld.Hunger <= 14) interval = 3f;
         else if (PlayerDataOld.Hunger <= 19) interval = 5f;
         else if (PlayerDataOld.Hunger <= 25) interval = 10f;
+
+        if (_isSummerRain)  interval /= 1.2f;
+
         ApplyHunger(interval);
+    }
+    private void HandleWeatherChanged(Season season, bool isPlaying)
+    {
+        _isSummerRain = (season == Season.Summer && isPlaying);
     }
     public void ApplyHunger(float inter)  //배고픔 단계에 따른 둥둥 감소 간격 조절
     {
@@ -1002,6 +1007,7 @@ public class PlayerController : MonoBehaviour
 
         _agent.speed = finalSpeed;
     }
+   
     private void HandleDailyChanged(DayilyCycle newSeason)
     {
         _currentSeason = newSeason;
@@ -1025,7 +1031,25 @@ public class PlayerController : MonoBehaviour
     {
         EmojiController.Instance.RefreshStateEmoji(PlayerDataOld, IsResting);
     }
+    public void SetEnvironment(EnvironmentModel time)
+    {
+        if (_environment != null)
+        {
+            _environment.OnDailyChanged -= HandleDailyChanged;
+            _environment.OnWeatherChanged -= HandleWeatherChanged;
+        }
 
+        _environment = time;
+
+        if (_environment != null)
+        {
+            _environment.OnDailyChanged += HandleDailyChanged;
+            _environment.OnWeatherChanged += HandleWeatherChanged;
+
+            HandleDailyChanged(_environment.CurrentDay);
+            HandleWeatherChanged(_environment.CurrentSeason, _environment.IsWeatherActive);
+        }
+    }
     public void RequestReplan()  //idle에서 자율적으로 다음행동 결정
     {
         RefreshCanCook();
