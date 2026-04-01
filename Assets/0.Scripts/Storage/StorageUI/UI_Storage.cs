@@ -48,6 +48,7 @@ public class UI_Storage : MonoBehaviour
 
     [SerializeField] private GameObject _fishStorageUI;
     [SerializeField] private GameObject _foodStorageUI;
+    [SerializeField] private UI_FoodStorage _UI_FoodStorage;
 
     [SerializeField] private Button _ofFishFishButton;
     [SerializeField] private Button _ofFishFoodButton;
@@ -453,6 +454,8 @@ public class UI_Storage : MonoBehaviour
     {
         SoundManager.Instance.PlaySFX(_TabButtonSFX);
         Debug.Log("물고기창고 버튼눌림" + EventSystem.current.currentSelectedGameObject?.name);
+        _selectedRealIndex = -1;
+        _UI_FoodStorage.ResetSelection();
         _fishStorageUI.SetActive(true);
         _foodStorageUI.SetActive(false);
         
@@ -463,6 +466,8 @@ public class UI_Storage : MonoBehaviour
     {
         SoundManager.Instance.PlaySFX(_TabButtonSFX);
         Debug.Log("음식창고 버튼눌림" + EventSystem.current.currentSelectedGameObject?.name);
+        _selectedRealIndex = -1;
+        _UI_FoodStorage.ResetSelection();
         _fishStorageUI.SetActive(false);
         _foodStorageUI.SetActive(true);
 
@@ -472,6 +477,9 @@ public class UI_Storage : MonoBehaviour
     public void CloseAllStorage()  //임시
     {
         SoundManager.Instance.PlaySFX(_CloseButtonSFX);
+        _selectedRealIndex = -1;
+        ClearDetailFish();
+        _UI_FoodStorage.ResetSelection();
         _fishStorageUI.SetActive(false);
         _foodStorageUI.SetActive(false);
     }
