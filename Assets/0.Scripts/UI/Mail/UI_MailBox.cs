@@ -99,7 +99,7 @@ public class UI_MailBox : MonoBehaviour
     {
         _commonPopup.OpenPopup(
             "InteriorPostBoxDeleteAll",
-            "InteriorPostBoxDelPost",
+            "InteriorPostBoxDeleteAllConfirmDesc",
             "InteriorPostBoxRemoveAllBtn",
             "InteriorPostBoxCancelBtn",
             () =>
@@ -115,7 +115,7 @@ public class UI_MailBox : MonoBehaviour
     {
         _commonPopup.OpenPopup(
             "InteriorPostBoxTitle",
-            "InteriorPostBoxAllGet",
+            "InteriorPostBoxClaimAllConfirmDesc",
             "InteriorPostBoxClaimAllBtn",
             "InteriorPostBoxCancelBtn",
             () => { MailManager.Instance.ClaimAllRewards(); }

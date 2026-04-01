@@ -87,13 +87,13 @@ public class UI_MailPopup : MonoBehaviour
         // 보상이 있고, 아직 수령하지 않았다면 -> '받기'
         if (_currentData._rewardItemID > 0 && !isClaimed)
         {
-            _actionButtonText.text = "받기";
+            _actionButtonText.text = LocalizationManager.Instance.GetString("InteriorPostBoxClaimBtn");
             _actionButton.onClick.AddListener(OnClickClaim);
         }
         // 보상이 없거나 이미 수령했다면 -> '닫기'
         else
         {
-            _actionButtonText.text = "닫기";
+            _actionButtonText.text = LocalizationManager.Instance.GetString("InteriorPostBoxCloseBtn");
             _actionButton.onClick.AddListener(ClosePopup);
         }
     }
