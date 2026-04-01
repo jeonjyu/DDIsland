@@ -44,8 +44,8 @@ public class JournalManager : MonoBehaviour
     [Header("필터/정렬 드롭다운")]
     [SerializeField] private JournalFilterDropdown filterDropdown; // 전체/등록/미등록
 
-    [Header("카테고리 라벨 설정")]
-    [SerializeField] private string[] journalCategoryNames = { "어종", "코스튬", "인테리어", "음반", "음식" };
+    //[Header("카테고리 라벨 설정")]
+    //[SerializeField] private string[] journalCategoryNames = { "어종", "코스튬", "인테리어", "음반", "음식" };
 
     [Header("카테고리 버튼 색상")]
     [SerializeField] private Image[] categoryBackgrounds;  // 각 버튼의 Background Image
@@ -301,10 +301,11 @@ public class JournalManager : MonoBehaviour
         //    questTabText.text = JournalLocalize.Tab(MainTab.Quest);
         //if (journalTabText != null)
         //    journalTabText.text = JournalLocalize.Tab(MainTab.Journal);
-        foreach (var t in questTabTexts)
-            if (t != null) t.text = JournalLocalize.Tab(MainTab.Quest);
-        foreach (var t in journalTabTexts)
-            if (t != null) t.text = JournalLocalize.Tab(MainTab.Journal);
+        //foreach (var t in questTabTexts)
+        //    if (t != null) t.text = JournalLocalize.Tab(MainTab.Quest);
+        //foreach (var t in journalTabTexts)
+        //    if (t != null) t.text = JournalLocalize.Tab(MainTab.Journal);
+
         // 도감 영역 통째로 끄기
         if (journalArea != null)
             journalArea.SetActive(tab == MainTab.Journal);
@@ -435,23 +436,28 @@ public class JournalManager : MonoBehaviour
     // 카테고리 라벨 업데이트
     private void UpdateCategoryLabels()
     {
-        if (currentMainTab == MainTab.Journal)
+        //if (currentMainTab == MainTab.Journal)
+        //{
+        //    for (int i = 0; i < categoryTexts.Length; i++)
+        //    { 
+        //        if (categoryTexts[i] != null)
+        //            categoryTexts[i].text = JournalLocalize.Category((JournalCategory)i); 
+        //    }
+        //}
+        //else
+        //{
+        //    // TODO: 퀘스트 카테고리 라벨 (상점, 낚시, 도감, 성장, 완료퀘스트)
+        //    string[] questCategoryNames = { "상점", "낚시", "도감", "성장", "완료" };
+        //    for (int i = 0; i < categoryTexts.Length; i++)
+        //    {
+        //        if (categoryTexts[i] != null && i < questCategoryNames.Length)
+        //            categoryTexts[i].text = questCategoryNames[i];
+        //    }
+        //}
+        for (int i = 0; i < categoryTexts.Length; i++)
         {
-            for (int i = 0; i < categoryTexts.Length; i++)
-            { 
-                if (categoryTexts[i] != null)
-                    categoryTexts[i].text = JournalLocalize.Category((JournalCategory)i); 
-            }
-        }
-        else
-        {
-            // TODO: 퀘스트 카테고리 라벨 (상점, 낚시, 도감, 성장, 완료퀘스트)
-            string[] questCategoryNames = { "상점", "낚시", "도감", "성장", "완료" };
-            for (int i = 0; i < categoryTexts.Length; i++)
-            {
-                if (categoryTexts[i] != null && i < questCategoryNames.Length)
-                    categoryTexts[i].text = questCategoryNames[i];
-            }
+            if (categoryTexts[i] != null)
+                categoryTexts[i].text = JournalLocalize.Category((JournalCategory)i);
         }
     }
 

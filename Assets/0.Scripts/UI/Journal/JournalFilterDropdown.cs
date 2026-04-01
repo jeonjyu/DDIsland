@@ -21,12 +21,12 @@ public class JournalFilterDropdown : MonoBehaviour
     //[SerializeField] private TextMeshProUGUI textNotOwned;                                       
 
     // StringUI 테이블 키
-    private readonly string[] filterStringKeys =
-    {
-        "Journal_Dropdown_All_Text",       // 전체/All
-        "Journal_Dropdown_Unlocked_Text",  // 등록/Unlocked
-        "Journal_Dropdown_Locked_Text"     // 미등록/Locked
-    };
+    //private readonly string[] filterStringKeys =
+    //{
+    //    "Journal_Dropdown_All_Text",       // 전체/All
+    //    "Journal_Dropdown_Unlocked_Text",  // 등록/Unlocked
+    //    "Journal_Dropdown_Locked_Text"     // 미등록/Locked
+    //};
 
     [Header("버튼 배경 이미지 (색상 전환용)")]
     [SerializeField] private Image bgAll;      // 전체 버튼 배경
@@ -113,23 +113,24 @@ public class JournalFilterDropdown : MonoBehaviour
             bgNotOwned.color = (filter == CollectionFilter.NotOwned) ? selectedColor : unselectedColor;
 
         if (labelText != null)
-            labelText.text = GetLocalizedFilterName((int)filter);
+            labelText.text = JournalLocalize.Filter(filter);
     }
 
-    // StringUI 테이블에서 로컬라이징 텍스트 가져오기
-    private string GetLocalizedFilterName(int index)
-    {
-        try
-        {
-            return DataManager.Instance.StringUIDatabase.StringUIInfoData[filterStringKeys[index]].ID_String;
-        }
-        catch
-        {
-            // 테이블 로드 전이거나 키가 없을 때 폴백
-            string[] fallback = { "전체", "등록", "미등록" };
-            return fallback[index];
-        }
-    }
+    //// StringUI 테이블에서 로컬라이징 텍스트 가져오기
+    //private string GetLocalizedFilterName(int index)
+    //{
+    //    try
+    //    {
+    //        return DataManager.Instance.StringUIDatabase.StringUIInfoData[filterStringKeys[index]].ID_String;
+    //    }
+    //    catch
+    //    {
+    //        // 테이블 로드 전이거나 키가 없을 때 폴백
+    //        string[] fallback = { "전체", "등록", "미등록" };
+    //        return fallback[index];
+    //    }
+    //}
+
     // 외부에서 필터 초기화할 때 호출 (카테고리 전환 시)
     public void ResetFilter()
     {
