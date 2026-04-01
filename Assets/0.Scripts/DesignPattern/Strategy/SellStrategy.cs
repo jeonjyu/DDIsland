@@ -10,7 +10,6 @@ public class SellStrategy : MonoBehaviour, ITradeStrategy
         StoreManager.Instance.ItemCountChanged(-tradeCount);
         Debug.Log($"<color=orange>골드 변경: {GameManager.Instance.PlayerGold}에서 {tradePrice} 증가</color>");
         GameManager.Instance.SetGold(tradePrice);
-        SoundManager.Instance.PlaySFX(sellSfx);
 
         return true;
     }
@@ -24,5 +23,10 @@ public class SellStrategy : MonoBehaviour, ITradeStrategy
     public int GetMaxCount(IStoreItem item)
     {
         return item.ItemCount;
+    }
+
+    public void PlayTradeSFX()
+    {
+        SoundManager.Instance.PlaySFX(sellSfx);
     }
 }
