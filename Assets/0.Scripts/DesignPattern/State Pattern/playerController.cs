@@ -527,6 +527,8 @@ public class PlayerController : MonoBehaviour
         _agent.ResetPath();
         _agent.velocity = Vector3.zero;
 
+        PullUpFishingHookEffect();
+
         ExitFishingState();
         _isFishing = false;
         _animator.SetBool("isFish", false);
@@ -804,7 +806,7 @@ public class PlayerController : MonoBehaviour
     {
         _isFishingState = false;
         _cycleRunning = false;
-
+        PullUpFishingHookEffect();
         if (_fishingRoutine != null)
         {
             StopCoroutine(_fishingRoutine);
@@ -1004,7 +1006,6 @@ public class PlayerController : MonoBehaviour
     {
         float cost = baseCost;
         if (IsDailyNight()) cost *= 1.5f;
-
         PlayerDataOld.SetStamina(PlayerDataOld.Stamina - cost);
     }
     public bool IsDailyNight()
