@@ -15,7 +15,7 @@ public enum RecordType
 public enum BgTheme
 {
     None = 0,
-    General = 1,             //기본
+    General = 1,             //일반
     Spring = 2,              //봄
     Summer = 3,              //여름
     Autumn = 4,              //가을

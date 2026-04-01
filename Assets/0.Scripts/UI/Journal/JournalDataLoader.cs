@@ -89,7 +89,7 @@ public class JournalDataLoader : MonoBehaviour
                 ItemId = journal.FishID,
                 IsUnlocked = isUnlocked,
                 SlotSprite = journal.FishSlotImgPath_Sprite,
-                ItemSprite = journal.FishImgPath_Sprite,
+                ItemSprite = journal.FishSlotImgPath_Sprite,
                 Category = JournalCategory.Fish,
                 SpecialInfo = new Dictionary<string, string>()
             };
