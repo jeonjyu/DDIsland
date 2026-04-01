@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -25,17 +26,27 @@ public class UI_MailPopup : MonoBehaviour
 
         bool isKorean = PlayerPrefsDataManager.Language == 0;
 
-        if (isKorean)
+        if (DateTime.TryParse(mail._expireDate, out DateTime expireTime))
         {
-            _titleText.text = _currentData._title_kr;
-            _contentText.text = _currentData._content_kr;
-            _expireDateText.text = $"만료일: {_currentData._expireDate}";
-        }
-        else
-        {
-            _titleText.text = _currentData._title_en;
-            _contentText.text = _currentData._content_en;
-            _expireDateText.text = $"Expire Date: {_currentData._expireDate}";
+            TimeSpan timeLeft = expireTime - DateTime.Now;
+
+            if (timeLeft.TotalDays >= 1)
+            {
+                _expireDateText.text = isKorean ?
+                    $"{(int)timeLeft.TotalDays}일 {(int)timeLeft.TotalHours % 24}시간 남음 " :
+                    $"{(int)timeLeft.TotalDays}d {(int)timeLeft.TotalHours % 24}h left";
+            }
+            else if (timeLeft.TotalHours >= 1)
+            {
+                _expireDateText.text = isKorean ?
+                    $"{(int)timeLeft.TotalHours}시간 남음" :
+                    $"{(int)timeLeft.TotalHours}h left";
+            }
+            else
+            {
+                _expireDateText.text = isKorean ? "만료됨" : "Expired";
+            }
+
         }
 
         MailManager.Instance.MarkAsRead(_currentData._mailID);
