@@ -482,7 +482,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: -294.8656}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &8035684546955767011
 MonoBehaviour:
@@ -2333,7 +2333,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &5745648796404815795
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2576,8 +2576,9 @@ GameObject:
   - component: {fileID: 6587335503000114561}
   - component: {fileID: 3270949379561722333}
   - component: {fileID: 7763256346135537768}
+  - component: {fileID: 5011180747249507040}
   m_Layer: 5
-  m_Name: Item-LabelJ
+  m_Name: Journal_Dropdown_All_Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2702,6 +2703,19 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &5011180747249507040
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4005770824752024266}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2134d9cf1904084596ca987dae836c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI_BaseLocalizedText
+  textId: Journal_Dropdown_All_Text
 --- !u!1 &4047564755809417580
 GameObject:
   m_ObjectHideFlags: 0
@@ -3746,9 +3760,6 @@ MonoBehaviour:
   btnAll: {fileID: 186253924867101056}
   btnOwned: {fileID: 4532424927672427842}
   btnNotOwned: {fileID: 6059554122411127960}
-  textAll: {fileID: 7763256346135537768}
-  textOwned: {fileID: 5927267215158569177}
-  textNotOwned: {fileID: 3418746066111659974}
   bgAll: {fileID: 6281009378565123291}
   bgOwned: {fileID: 3218105320755754509}
   bgNotOwned: {fileID: 6828405959203021395}
@@ -3888,7 +3899,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &88414434273557578
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4034,8 +4045,9 @@ GameObject:
   - component: {fileID: 444819384461361654}
   - component: {fileID: 4313606162541959295}
   - component: {fileID: 3418746066111659974}
+  - component: {fileID: 3919104516427155273}
   m_Layer: 5
-  m_Name: Item-LabelJ
+  m_Name: Journal_Dropdown_Locked_Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4160,6 +4172,19 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &3919104516427155273
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6300134485748057131}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2134d9cf1904084596ca987dae836c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI_BaseLocalizedText
+  textId: Journal_Dropdown_Locked_Text
 --- !u!1 &6454647406707843205
 GameObject:
   m_ObjectHideFlags: 0
@@ -4284,8 +4309,9 @@ GameObject:
   - component: {fileID: 8829308564389649210}
   - component: {fileID: 2052935006358707330}
   - component: {fileID: 5927267215158569177}
+  - component: {fileID: 6072959827861788393}
   m_Layer: 5
-  m_Name: Item-LabelJ
+  m_Name: Journal_Dropdown_Unlocked_Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4410,6 +4436,19 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &6072959827861788393
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6758266108247046685}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2134d9cf1904084596ca987dae836c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI_BaseLocalizedText
+  textId: Journal_Dropdown_Unlocked_Text
 --- !u!1 &6891780001129501915
 GameObject:
   m_ObjectHideFlags: 0
@@ -4839,7 +4878,7 @@ RectTransform:
   m_Father: {fileID: 4704032021120152766}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -5461,7 +5500,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2652893774834312169, guid: ba6893fd72ff4fc49b7199a1e6be61bf, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2652893774834312169, guid: ba6893fd72ff4fc49b7199a1e6be61bf, type: 3}
       propertyPath: m_AnchorMin.x
@@ -5469,15 +5508,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2652893774834312169, guid: ba6893fd72ff4fc49b7199a1e6be61bf, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2652893774834312169, guid: ba6893fd72ff4fc49b7199a1e6be61bf, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 195
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2652893774834312169, guid: ba6893fd72ff4fc49b7199a1e6be61bf, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 200
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2652893774834312169, guid: ba6893fd72ff4fc49b7199a1e6be61bf, type: 3}
       propertyPath: m_LocalPosition.x
@@ -5509,11 +5548,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2652893774834312169, guid: ba6893fd72ff4fc49b7199a1e6be61bf, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 368.846
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2652893774834312169, guid: ba6893fd72ff4fc49b7199a1e6be61bf, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -110
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2652893774834312169, guid: ba6893fd72ff4fc49b7199a1e6be61bf, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
