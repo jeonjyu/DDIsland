@@ -148,6 +148,7 @@ public class TradeUnitViewModelBase : MonoBehaviour, INotifyPropertyChanged
         {
             StoreManager.Instance.BuyAndSellPanel.gameObject.SetActive(true);
             TradeConfirmPanel.SetActive(true);
+            tradeStrategy.PlayTradeSFX();
         }
 
         _ = DataManager.Instance.Hub.UploadAllData();
