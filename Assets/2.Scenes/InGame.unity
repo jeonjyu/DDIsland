@@ -6162,6 +6162,23 @@ MonoBehaviour:
   precomputeOutline: 0
   bakeKeys: []
   bakeValues: []
+--- !u!1 &1203675374 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8406454957170041387, guid: d889fb38af9ecf649aadad7812e01f21, type: 3}
+  m_PrefabInstance: {fileID: 1823093777}
+  m_PrefabAsset: {fileID: 0}
+--- !u!225 &1203675375
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1203675374}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &1208405309
 GameObject:
   m_ObjectHideFlags: 0
@@ -10712,7 +10729,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8406454957170041387, guid: d889fb38af9ecf649aadad7812e01f21, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1203675375}
   m_SourcePrefab: {fileID: 100100000, guid: d889fb38af9ecf649aadad7812e01f21, type: 3}
 --- !u!224 &1823093778 stripped
 RectTransform:
@@ -14921,6 +14941,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -250
       objectReference: {fileID: 0}
+    - target: {fileID: 7150888200242529391, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
+      propertyPath: btnTrayGroup
+      value: 
+      objectReference: {fileID: 1203675375}
     - target: {fileID: 7590385599925288274, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
       propertyPath: m_Color.b
       value: 0.7169812
