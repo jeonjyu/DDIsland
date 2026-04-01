@@ -17,14 +17,14 @@ public class TradePopupBase : MonoBehaviour
         if(StoreManager.Instance.BuyAndSellPanel)
         {
             StoreManager.Instance.BuyAndSellPanel.MyCanvasGroup.interactable = false;
-            StoreManager.Instance.BuyAndSellPanel.MyCanvasGroup.blocksRaycasts = false;
+            //StoreManager.Instance.BuyAndSellPanel.MyCanvasGroup.blocksRaycasts = false;
         }
     }
 
     private void OnDisable()
     {
         StoreManager.Instance.BuyAndSellPanel.MyCanvasGroup.interactable = true;
-        StoreManager.Instance.BuyAndSellPanel.MyCanvasGroup.blocksRaycasts = true;
+        //StoreManager.Instance.BuyAndSellPanel.MyCanvasGroup.blocksRaycasts = true;
         if(StoreManager.Instance.currentCat == StoreCat.lake)
         {
             StoreManager.Instance.BuyAndSellPanel.gameObject.SetActive(false);
