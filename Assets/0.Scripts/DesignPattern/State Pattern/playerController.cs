@@ -5,20 +5,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-//public struct PlayerContext
-//{
-//    public int ID;
-//    public string Name;
-//    public float Hunger;
-//    public float Stamina;
-//    public float MoveSpeed;
-//    public float FishingSpeed;
-//    public float RestSpeed;
-//    public int DoongDoongStat;
-//    public int VisualGroupID;
-//    public int UpgradGroupID;
-//}
-
 public enum Point
 {
     Fish,Kitchen,Rest,Acorn,Table,Sell
@@ -870,12 +856,14 @@ public class PlayerController : MonoBehaviour
 
     public void AnimEvent_StartFishingHookEffect() //낚시cast에 넣을 함수
     {
-        _fishingHookEffect.PlayerFishingHookEffect();
+        if (_fishingHookEffect != null)
+            _fishingHookEffect.PlayerFishingHookEffect();
     }
 
     public void PullUpFishingHookEffect()
     {
-        _fishingHookEffect.PullUpHook();
+        if (_fishingHookEffect != null)
+            _fishingHookEffect.PullUpHook();
     }
 
     public void ResetFishingCount()
