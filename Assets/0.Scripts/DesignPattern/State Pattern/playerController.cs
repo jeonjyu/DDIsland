@@ -75,6 +75,9 @@ public class PlayerController : MonoBehaviour
 
     private int _equippedBaitId;  //저장용들임
     private int _equippedBobberId;
+    private int _equippedHatId;
+    private int _equippedbodyId;
+    private int _equippedfishingRodsId;
 
     private float _bobberLengthBonus;
     private int _baitFishPool;
@@ -344,6 +347,7 @@ public class PlayerController : MonoBehaviour
         if (_hatById.TryGetValue(id, out var hatObj))
         {
             hatObj.SetActive(true);
+            _equippedHatId = id;
             Debug.Log($"모자 장착 성공: {id}");
         }
         else Debug.LogWarning($"모자 ID 없음: {id}");
@@ -360,6 +364,7 @@ public class PlayerController : MonoBehaviour
         if (_bodyById.TryGetValue(id, out var bodyObj))
         {
             bodyObj.SetActive(true);
+            _equippedbodyId = id;
             Debug.Log($"의상 장착 성공: {id}");
         }
         else Debug.LogWarning($"의상 ID 없음: {id}");
@@ -383,6 +388,7 @@ public class PlayerController : MonoBehaviour
          {
              PlayerDataOld.SetFishingSpeed(_baseFishingSpeed - _fishRodSpeed[id]);
             _currentFishingRodsId = id;
+            _equippedfishingRodsId = id;
             if (_isFishingState) HandOnFishingRod();
 
             Debug.Log($"의상 장착 성공: {id}");
