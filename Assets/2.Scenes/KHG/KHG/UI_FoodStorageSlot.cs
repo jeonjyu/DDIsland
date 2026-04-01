@@ -11,6 +11,7 @@ public class UI_FoodStorageSlot : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _itemNameText;
     [SerializeField] private TextMeshProUGUI _itemGradeText;
     [SerializeField] private TextMeshProUGUI _itemPriceText;
+    [SerializeField] private AudioClip _ButtonSFX;
     int _boundRealIndex = -1;
 
     public void Init(UI_FoodStorage parent) // 이 UI 슬롯이 대표하는 실제 데이터 슬롯 인덱스
@@ -96,6 +97,7 @@ public class UI_FoodStorageSlot : MonoBehaviour
 
         if (_boundRealIndex < 0) return;
 
+        SoundManager.Instance.PlaySFX(_ButtonSFX);
         _parentUI.OnSlotClicked(_boundRealIndex);
     }
 }

@@ -34,9 +34,8 @@ public class FishingHookEffect : MonoBehaviour
 
     public void PlayerFishingHookEffect()
     {
-        if (_isPlaying) return;
         _moveTween?.Kill();
-
+        _isPlaying = false;
         Vector2 localPoint;
         Vector2 screenPoint = Camera.main.WorldToScreenPoint(_fishingTr.position);
 

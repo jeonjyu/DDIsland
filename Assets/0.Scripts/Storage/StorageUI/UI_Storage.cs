@@ -54,6 +54,11 @@ public class UI_Storage : MonoBehaviour
     [SerializeField] private Button _ofFoodFishButton;
     [SerializeField] private Button _ofFoodFoodButton;
 
+    [SerializeField] private AudioClip _TabButtonSFX;
+    [SerializeField] private AudioClip _CloseButtonSFX;
+    [SerializeField] private AudioClip _UpgradeSFX;
+    [SerializeField] private AudioClip _ButtonSFX;
+
     private void Start()
     {
         _slotPrefab.SetActive(false);  // 슬롯 프리팹(원본은 꺼두고 복제해서 사용)
@@ -305,6 +310,7 @@ public class UI_Storage : MonoBehaviour
             ShowSystemMessage(LocalizationManager.Instance.GetString("InteriorBoxNotEnoughGold"));
             return;
         }
+        SoundManager.Instance.PlaySFX(_UpgradeSFX);
         FishStorageManager.Instance.UpgradeStorageindex(); // 실제 데이터(슬롯 배열) 확장
         SlotPool();  
         RefreshUpgradeUI();
@@ -390,11 +396,13 @@ public class UI_Storage : MonoBehaviour
 
     public void OpenUpgradeUI()
     {
+        SoundManager.Instance.PlaySFX(_ButtonSFX);
         _UpgradePan.gameObject.SetActive(true);
     }
 
     public void CloseUpgradeUI()
     {
+        SoundManager.Instance.PlaySFX(_CloseButtonSFX);
         _UpgradePan.gameObject.SetActive(false);
     }
 
@@ -429,6 +437,7 @@ public class UI_Storage : MonoBehaviour
     }
     public void OnSortDropdownChanged(int value)
     {
+        SoundManager.Instance.PlaySFX(_ButtonSFX);
         _currentSort = (SortMode)value;
         RefreshAll();
     }
@@ -442,6 +451,7 @@ public class UI_Storage : MonoBehaviour
     }
     public void OpenFishStorage() 
     {
+        SoundManager.Instance.PlaySFX(_TabButtonSFX);
         Debug.Log("물고기창고 버튼눌림" + EventSystem.current.currentSelectedGameObject?.name);
         _fishStorageUI.SetActive(true);
         _foodStorageUI.SetActive(false);
@@ -451,6 +461,7 @@ public class UI_Storage : MonoBehaviour
     }
     public void OpenFoodStorage()
     {
+        SoundManager.Instance.PlaySFX(_TabButtonSFX);
         Debug.Log("음식창고 버튼눌림" + EventSystem.current.currentSelectedGameObject?.name);
         _fishStorageUI.SetActive(false);
         _foodStorageUI.SetActive(true);
@@ -460,6 +471,7 @@ public class UI_Storage : MonoBehaviour
     }
     public void CloseAllStorage()  //임시
     {
+        SoundManager.Instance.PlaySFX(_CloseButtonSFX);
         _fishStorageUI.SetActive(false);
         _foodStorageUI.SetActive(false);
     }

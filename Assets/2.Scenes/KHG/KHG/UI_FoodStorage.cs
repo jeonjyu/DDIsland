@@ -40,6 +40,12 @@ public class UI_FoodStorage : MonoBehaviour
     [SerializeField] private Transform _slotParent;  // 슬롯 프리팹(원본은 꺼두고 복제해서 사용)
 
     [SerializeField] private TMP_Dropdown _sortDropdown;
+
+    [SerializeField] private AudioClip _TabButtonSFX;
+    [SerializeField] private AudioClip _CloseButtonSFX;
+    [SerializeField] private AudioClip _UpgradeSFX;
+    [SerializeField] private AudioClip _ButtonSFX;
+
     private void Start()
     {
         _slotPrefab.SetActive(false);  // 슬롯 프리팹(원본은 꺼두고 복제해서 사용)
@@ -277,6 +283,7 @@ public class UI_FoodStorage : MonoBehaviour
             ShowSystemMessage(LocalizationManager.Instance.GetString("InteriorBoxNotEnoughGold"));
             return;
         }
+        SoundManager.Instance.PlaySFX(_UpgradeSFX);
         FoodStorageManager.Instance.UpgradeFoodStorageindex(); // 실제 데이터(슬롯 배열) 확장
         FoodSlotPool();
         RefreshFoodUpgradeUI();
@@ -361,11 +368,13 @@ public class UI_FoodStorage : MonoBehaviour
 
     public void OpenFoodUpgradeUI()
     {
+        SoundManager.Instance.PlaySFX(_ButtonSFX);
         _UpgradePan.gameObject.SetActive(true);
     }
 
     public void CloseFoodUpgradeUI()
     {
+        SoundManager.Instance.PlaySFX(_CloseButtonSFX);
         _UpgradePan.gameObject.SetActive(false);
     }
 
@@ -400,6 +409,7 @@ public class UI_FoodStorage : MonoBehaviour
     }
     public void OnSortDropdownChanged(int value)
     {
+        SoundManager.Instance.PlaySFX(_ButtonSFX);
         _currentSort = (FoodSortMode)value;
         RefreshAll();
     }
