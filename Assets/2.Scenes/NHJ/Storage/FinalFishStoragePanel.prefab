@@ -447,6 +447,7 @@ MonoBehaviour:
   _systemMsgText: {fileID: 4014277213643154417}
   _upgradeButton: {fileID: 839366486194496826}
   _upgradeButtonLabel: {fileID: 7533347108600430213}
+  _upgradeCostText: {fileID: 3802055373452320108}
   _nameText: {fileID: 4457771599649650694}
   _gradeText: {fileID: 9189981818853328923}
   _DescText: {fileID: 662181189327561342}
@@ -793,6 +794,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1608947132550220004}
   - component: {fileID: 4216824010503224618}
+  - component: {fileID: 785446718060494993}
   - component: {fileID: 4433159973683518974}
   m_Layer: 5
   m_Name: Text (TMP)
@@ -828,6 +830,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5535368002158964087}
   m_CullTransparentMesh: 1
+--- !u!114 &785446718060494993
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5535368002158964087}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2134d9cf1904084596ca987dae836c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI_BaseLocalizedText
+  textId: Interior_Box_Category_Fishing_Text
 --- !u!114 &4433159973683518974
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1040,8 +1055,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1711670128552573409}
   m_HandleRect: {fileID: 3920835779220124571}
   m_Direction: 2
-  m_Value: 1
-  m_Size: 0.123048075
+  m_Value: 0
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -1429,6 +1444,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6068946851183301468}
   - component: {fileID: 6323874763946479031}
+  - component: {fileID: 435327385890471907}
   - component: {fileID: 3488752763973985285}
   m_Layer: 5
   m_Name: Text (TMP)
@@ -1464,6 +1480,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9092769481493597131}
   m_CullTransparentMesh: 1
+--- !u!114 &435327385890471907
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9092769481493597131}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2134d9cf1904084596ca987dae836c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI_BaseLocalizedText
+  textId: Interior_Box_Category_Food_Text
 --- !u!114 &3488752763973985285
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2032,7 +2061,10 @@ PrefabInstance:
     - {fileID: 3480634382361168549, guid: b132b5fe9ff6198448f29cdf09f63cfa, type: 3}
     - {fileID: 7975263014293830313, guid: b132b5fe9ff6198448f29cdf09f63cfa, type: 3}
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5050269813380421120, guid: b132b5fe9ff6198448f29cdf09f63cfa, type: 3}
+      insertIndex: 2
+      addedObject: {fileID: 4005691209877522330}
   m_SourcePrefab: {fileID: 100100000, guid: b132b5fe9ff6198448f29cdf09f63cfa, type: 3}
 --- !u!114 &1277830833848247279 stripped
 MonoBehaviour:
@@ -2055,12 +2087,35 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2630167579190676775, guid: b132b5fe9ff6198448f29cdf09f63cfa, type: 3}
   m_PrefabInstance: {fileID: 1378053487042313556}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 6127708023143934804}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7b743370ac3e4ec2a1668f5455a8ef8a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &6127708023143934804 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5050269813380421120, guid: b132b5fe9ff6198448f29cdf09f63cfa, type: 3}
+  m_PrefabInstance: {fileID: 1378053487042313556}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &4005691209877522330
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6127708023143934804}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea999652958ce024a9422359cf04cdb7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI_DropdownText
+  textId: Interior_Box_Sort_ByRecent_Text
+  keys:
+  - Interior_Box_Sort_ByRecent_Text
+  - Interior_Box_Sort_ByGradeDesc_Text
+  - Interior_Box_Sort_ByGradeAsc_Text
+  - Interior_Box_Sort_ByNameAsc_Text
 --- !u!1001 &1569391869142457053
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3013,7 +3068,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1487077842484598419, guid: 4075f3bb4bc0ed24f8c92875260daf26, type: 3}
+      insertIndex: 2
+      addedObject: {fileID: 7240369191277547917}
   m_SourcePrefab: {fileID: 100100000, guid: 4075f3bb4bc0ed24f8c92875260daf26, type: 3}
 --- !u!114 &501558614590061267 stripped
 MonoBehaviour:
@@ -3047,6 +3105,17 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 6898190215989891961, guid: 4075f3bb4bc0ed24f8c92875260daf26, type: 3}
   m_PrefabInstance: {fileID: 8013069933146666204}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &3802055373452320108 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6626969412935903664, guid: 4075f3bb4bc0ed24f8c92875260daf26, type: 3}
+  m_PrefabInstance: {fileID: 8013069933146666204}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!114 &4014277213643154417 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6377580296320374573, guid: 4075f3bb4bc0ed24f8c92875260daf26, type: 3}
@@ -3069,3 +3138,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+--- !u!1 &8905601962657440335 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1487077842484598419, guid: 4075f3bb4bc0ed24f8c92875260daf26, type: 3}
+  m_PrefabInstance: {fileID: 8013069933146666204}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &7240369191277547917
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8905601962657440335}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2134d9cf1904084596ca987dae836c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI_BaseLocalizedText
+  textId: Interior_Box_Upgrade_No_Text

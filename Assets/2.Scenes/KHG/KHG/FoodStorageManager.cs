@@ -149,11 +149,11 @@ public class FoodStorageManager : Singleton<FoodStorageManager>
     public int FoodGetUpgradeCost()  //비용 계산
     {
 
-        if (_storagelevel <= 1) return 100;
-        if (_storagelevel == 2) return 200;
-        if (_storagelevel == 3) return 300;
-        if (_storagelevel == 4) return 400;
-        return 500;
+        if (_storagelevel <= 1) return 0;
+        if (_storagelevel == 2) return 1500;
+        if (_storagelevel == 3) return 3000;
+        if (_storagelevel == 4) return 4500;
+        return 6000;
     }
     public bool TryFoodRemoveAt(int slotIndex)
     {
