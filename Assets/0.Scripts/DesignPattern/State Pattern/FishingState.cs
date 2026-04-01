@@ -33,7 +33,6 @@ public class FishingState : IState
         _player.ExitFishingState();
         _player.HandOffFishingRod();
         _player.Animator.SetBool("isFish", false);
-        _player.PullUpFishingHookEffect();
     }
 
     public void FixedExecute()
