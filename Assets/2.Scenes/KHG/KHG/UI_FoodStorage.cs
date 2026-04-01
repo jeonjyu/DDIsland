@@ -29,7 +29,7 @@ public class UI_FoodStorage : MonoBehaviour
 
     FoodSortMode _currentSort;      // 현재 정렬 모드
     List<int> _viewIndices = new List<int>();   // 화면에 보여줄 realIndex 목록
-    int _selectedRealIndex = -1;   // 마지막으로 선택한 realIndex(삭제 버튼 처리 등에 사용)
+    public int _selectedRealIndex = -1;   // 마지막으로 선택한 realIndex(삭제 버튼 처리 등에 사용)
 
     // 상세 패널 UI
     [SerializeField] private TMP_Text _nameText;
@@ -406,6 +406,11 @@ public class UI_FoodStorage : MonoBehaviour
     {
         if (_sortDropdown != null)
             _sortDropdown.onValueChanged.RemoveListener(OnSortDropdownChanged);
+    }
+    public void ResetSelection()
+    {
+        _selectedRealIndex = -1;
+        ClearDetailFood();
     }
     public void OnSortDropdownChanged(int value)
     {
