@@ -20,6 +20,9 @@ public class PlacementMgr : MonoBehaviour
     private InputAction _scrollAction;
     private InputAction _cameraWalk;
 
+    [SerializeField] private AudioClip _placedAudio;
+
+
     [Header("Cinemachine Cameras")]
     [SerializeField] private CinemachineCamera _viewCamera;
     [SerializeField] private CinemachineCamera _editCamera;
@@ -174,7 +177,7 @@ public class PlacementMgr : MonoBehaviour
 
         if (_buildingManager.ActivePlaceable != null)
         {
-            _buildingManager.ActivePlaceable.Placement(); // 건물의 Placement 실행
+            _buildingManager.ActivePlaceable.Placement(_placedAudio); // 건물의 Placement 실행
             return;
         }
 

@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 
 public class UI_DirEdgeCollider : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
@@ -14,6 +15,8 @@ public class UI_DirEdgeCollider : MonoBehaviour, IPointerEnterHandler, IPointerE
 
     public void OnPointerExit(PointerEventData eventData)
     {
+        if (Mouse.current.leftButton.isPressed) return;
+
         edgeCollider.ExitMouse(edgeState);
     }
 }

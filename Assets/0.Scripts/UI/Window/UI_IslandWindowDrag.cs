@@ -13,6 +13,8 @@ public class UI_IslandWindowDrag : MonoBehaviour, IDragHandler, IBeginDragHandle
     [SerializeField] private Texture2D cursorTexture;
     [SerializeField] private Vector2 cursorHotspot = new Vector2(16, 16);
 
+    [SerializeField] private UI_EdgeCollider edgeCollider;
+
     private float startDistance;
     private Vector3 startScale;
     private Vector2 clickPos;
@@ -25,6 +27,8 @@ public class UI_IslandWindowDrag : MonoBehaviour, IDragHandler, IBeginDragHandle
         {
             isDragging = true;
 
+            edgeCollider?.Lock();
+            
             if (ui_IslandWindow == null || direction == UI_IslandWindow.PointDirection.None) return;
 
             ui_IslandWindow.SetPivot(direction);
@@ -32,6 +36,7 @@ public class UI_IslandWindowDrag : MonoBehaviour, IDragHandler, IBeginDragHandle
             RectTransform targetRect = ui_IslandWindow.IslandWindowRect;
 
             clickPos = RectTransformUtility.WorldToScreenPoint(eventData.pressEventCamera, targetRect.position);
+           // clickPos = RectTransformUtility.WorldToScreenPoint(null, targetRect.position); // TODO: 모서리 크기조절이 이상하면 null로 교체
 
             startDistance = Vector2.Distance(clickPos, eventData.position);
             startScale = targetRect.localScale;
@@ -57,6 +62,8 @@ public class UI_IslandWindowDrag : MonoBehaviour, IDragHandler, IBeginDragHandle
         if (eventData.button == PointerEventData.InputButton.Left)
         {
             isDragging = false;
+
+            edgeCollider?.Unlock();
 
             ui_IslandWindow.SetPivot(UI_IslandWindow.PointDirection.None);
 

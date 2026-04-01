@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,6 +12,7 @@ public struct ThemeResource
     public Sprite background;   // 배경 이미지
     public string buttonText;   // 버튼에 표시될 텍스트
     public RuntimeAnimatorController themeAnimator; // 테마에 따른 애니메이터
+    public Sprite Icon;         // 버튼 아이콘
 }
 
 /// <summary>
@@ -27,6 +29,7 @@ public class AquariumMgr : MonoBehaviour
     [SerializeField] private ThemeResource[] _themes; // 테마 데이터 배열
     [SerializeField] private Image _backgroundImage;
     [SerializeField] private TMP_Text _themeButtonText;
+    [SerializeField] private Image switchThemeBtnImg;
     private Dictionary<FishType, ThemeResource> _themeDict = new();
 
     [Header("물고기 관련 설정")]
@@ -150,7 +153,7 @@ public class AquariumMgr : MonoBehaviour
         _currentThemeIndex = (_currentThemeIndex + 1) % _themes.Length;
 
         FishType nextType = _themes[_currentThemeIndex].type;
-
+        switchThemeBtnImg.sprite = _themes[_currentThemeIndex].Icon;
         StartCoroutine(ChangeTheme(nextType));
     }
 

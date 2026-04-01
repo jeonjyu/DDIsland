@@ -13,6 +13,7 @@ public class UI_MainMenuArrow : MonoBehaviour
 
     private void SetArrowSprite(bool isShow)
     {
+        Debug.Log("화살표");
         arrowImg.sprite = isShow ? showArrow : hideArrow;
     }
 

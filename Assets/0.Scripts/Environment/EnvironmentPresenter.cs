@@ -6,6 +6,7 @@ public class EnvironmentPresenter : MonoBehaviour
     private EnvironmentModel _model;
     [SerializeField] private EnvironmentView _view;
     [SerializeField] private LakeImage _lakeImage;
+    [SerializeField] private PlayerController _playerController;
 
     //여기서 미리 지정해줍니다
     private DateTime now = DateTime.UtcNow.AddHours(9);
@@ -20,6 +21,7 @@ public class EnvironmentPresenter : MonoBehaviour
         {
             FishManager.Instance.SetEnvironment(_model);
         }
+        if (_playerController != null)  _playerController.SetEnvironment(_model);
     }
 
     private void OnEnable()

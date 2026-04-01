@@ -290,7 +290,7 @@ public class WindowController : Singleton<WindowController>
     /// 화면상의 마우스 좌표를 유니티 좌표로 변환 후 반환
     /// </summary>
     /// <returns> 마우스 좌표값 </returns>
-    private Vector2 GetClientCursorPosition()
+    public Vector2 GetClientCursorPosition()
     {
         // 현재 마우스 좌표
         Vector2 mousePos = WindowCore.GetCursorPosition();

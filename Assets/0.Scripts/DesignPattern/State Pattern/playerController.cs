@@ -5,20 +5,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-//public struct PlayerContext
-//{
-//    public int ID;
-//    public string Name;
-//    public float Hunger;
-//    public float Stamina;
-//    public float MoveSpeed;
-//    public float FishingSpeed;
-//    public float RestSpeed;
-//    public int DoongDoongStat;
-//    public int VisualGroupID;
-//    public int UpgradGroupID;
-//}
-
 public enum Point
 {
     Fish,Kitchen,Rest,Acorn,Table,Sell
@@ -95,6 +81,7 @@ public class PlayerController : MonoBehaviour
 
     private EnvironmentModel _environment;
     private DayilyCycle _currentSeason;
+    private bool _isSummerRain;
 
     private float _hungerTickTimer;
     private float _baseMoveSpeed;
@@ -212,8 +199,6 @@ public class PlayerController : MonoBehaviour
             DataManager.Instance.Hub.OnRequestSave += PlayerDataOld.SyncCharacterDataSave;
         if (PlayerManager.Instance != null)
             PlayerManager.Instance.OnEquipChanged += ChangeCostume;
-        if (_environment != null)
-            _environment.OnDailyChanged += HandleDailyChanged;
         if (EmojiController.Instance != null)
         {
             PlayerDataOld.OnHungerChanged += (_) => UpdateEmoji();
@@ -238,8 +223,6 @@ public class PlayerController : MonoBehaviour
         }
         if (PlayerManager.Instance != null)
             PlayerManager.Instance.OnEquipChanged -= ChangeCostume;
-        if (_environment != null)
-            _environment.OnDailyChanged -= HandleDailyChanged;
         if (EmojiController.Instance != null)
         {
             PlayerDataOld.OnHungerChanged -= (_) => UpdateEmoji();
@@ -719,11 +702,19 @@ public class PlayerController : MonoBehaviour
     public void ApplyHungerTier()  //배고픔 단계에 따른 둥둥 감소 간격 조절
     {
         float interval = 0f;
+
         if (PlayerDataOld.Hunger <= 9) interval = 1f;
         else if (PlayerDataOld.Hunger <= 14) interval = 3f;
         else if (PlayerDataOld.Hunger <= 19) interval = 5f;
         else if (PlayerDataOld.Hunger <= 25) interval = 10f;
+
+        if (_isSummerRain)  interval /= 1.2f;
+
         ApplyHunger(interval);
+    }
+    private void HandleWeatherChanged(Season season, bool isPlaying)
+    {
+        _isSummerRain = (season == Season.Summer && isPlaying);
     }
     public void ApplyHunger(float inter)  //배고픔 단계에 따른 둥둥 감소 간격 조절
     {
@@ -826,10 +817,8 @@ public class PlayerController : MonoBehaviour
         {
             // 한 사이클 시작
             _cycleRunning = true;
-
             float rodSpeed = 0f;
             _fishRodSpeed.TryGetValue(_currentFishingRodsId, out rodSpeed);
-
             float minTime = Mathf.Max(1f, 5f - rodSpeed);
             float maxTime = Mathf.Max(minTime, PlayerDataOld.FishingSpeed);
             float waitTime = UnityEngine.Random.Range(minTime, maxTime);
@@ -840,6 +829,7 @@ public class PlayerController : MonoBehaviour
 
             // 사이클이 끝났다는 이벤트가 올 때까지 기다림
             yield return new WaitUntil(() => _cycleRunning == false);
+            PullUpFishingHookEffect();
         }
     }
 
@@ -849,7 +839,7 @@ public class PlayerController : MonoBehaviour
     }
     public void AnimEvent_FishingCycleEnd() //낚시 성공 애니에 넣을 함수
     {
-        _fishingCount--; 
+        _fishingCount--;
         Debug.Log("fishingCount: " + _fishingCount);
         PlayerDataOld.SetHunger(PlayerDataOld.Hunger - 4);
         ConsumeStamina(5);
@@ -866,12 +856,14 @@ public class PlayerController : MonoBehaviour
 
     public void AnimEvent_StartFishingHookEffect() //낚시cast에 넣을 함수
     {
-        _fishingHookEffect.PlayerFishingHookEffect();
+        if (_fishingHookEffect != null)
+            _fishingHookEffect.PlayerFishingHookEffect();
     }
 
     public void PullUpFishingHookEffect()
     {
-        _fishingHookEffect.PullUpHook();
+        if (_fishingHookEffect != null)
+            _fishingHookEffect.PullUpHook();
     }
 
     public void ResetFishingCount()
@@ -1003,6 +995,7 @@ public class PlayerController : MonoBehaviour
 
         _agent.speed = finalSpeed;
     }
+   
     private void HandleDailyChanged(DayilyCycle newSeason)
     {
         _currentSeason = newSeason;
@@ -1016,7 +1009,7 @@ public class PlayerController : MonoBehaviour
     }
     public bool IsDailyNight()
     {
-        if (_currentSeason == DayilyCycle.Night)
+        if (_currentSeason == DayilyCycle.Sunset)
         {
             return true;
         }
@@ -1026,7 +1019,25 @@ public class PlayerController : MonoBehaviour
     {
         EmojiController.Instance.RefreshStateEmoji(PlayerDataOld, IsResting);
     }
+    public void SetEnvironment(EnvironmentModel time)
+    {
+        if (_environment != null)
+        {
+            _environment.OnDailyChanged -= HandleDailyChanged;
+            _environment.OnWeatherChanged -= HandleWeatherChanged;
+        }
 
+        _environment = time;
+
+        if (_environment != null)
+        {
+            _environment.OnDailyChanged += HandleDailyChanged;
+            _environment.OnWeatherChanged += HandleWeatherChanged;
+
+            HandleDailyChanged(_environment.CurrentDay);
+            HandleWeatherChanged(_environment.CurrentSeason, _environment.IsWeatherActive);
+        }
+    }
     public void RequestReplan()  //idle에서 자율적으로 다음행동 결정
     {
         RefreshCanCook();

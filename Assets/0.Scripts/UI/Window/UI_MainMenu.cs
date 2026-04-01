@@ -24,7 +24,7 @@ public class UI_MainMenu : MonoBehaviour
             else
                 MoveTweening(showPos, hidePos);
 
-                OnMenuStateChanged?.Invoke(value);
+            OnMenuStateChanged?.Invoke(value);
         }
     }
 
