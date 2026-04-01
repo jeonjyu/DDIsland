@@ -50,8 +50,8 @@ public class UI_MailSlot : MonoBehaviour
             if (timeLeft.TotalDays >= 1)
             {
                 _expireDateText.text = isKorean ?
-                    $"{(int)timeLeft.TotalDays}일 {(int)timeLeft.TotalHours}시간 남음 " :
-                    $"{(int)timeLeft.TotalDays}d {(int)timeLeft.TotalHours}h left";
+                    $"{(int)timeLeft.TotalDays}일 {(int)timeLeft.TotalHours%24}시간 남음 " :
+                    $"{(int)timeLeft.TotalDays}d {(int)timeLeft.TotalHours%24}h left";
             }
             else if (timeLeft.TotalHours >= 1)
             {

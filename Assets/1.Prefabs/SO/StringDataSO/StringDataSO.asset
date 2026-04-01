@@ -2850,7 +2850,7 @@ MonoBehaviour:
     values:
     - "\uBCF4\uAD00\uD568\uC744 \uD655\uC7A5\uD558\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?"
     - Would you like to expand the storage?
-  - key: InteriorBoxUpgradeYes
+  - key: InteriorBoxUpgradeExpand
     values:
     - "\uC608"
     - Yes
@@ -2860,13 +2860,13 @@ MonoBehaviour:
     - No
   - key: InteriorBoxUpgradeComplete
     values:
-    - "\uCC3D\uACE0\uAC00 Lv.{}\uB85C \uD655\uC7A5\uB418\uC5C8\uC2B5\uB2C8\uB2E4.
-      (\uCD1D{}\uCE78)"
-    - Storage has been expanded to Lv. {}. (Total {} slots)
+    - "\uCC3D\uACE0\uAC00 Lv.{0}\uB85C \uD655\uC7A5\uB418\uC5C8\uC2B5\uB2C8\uB2E4.
+      (\uCD1D{0}\uCE78)"
+    - Storage has been expanded to Lv. {0}. (Total {0} slots)
   - key: InteriorBoxUpgradeCostGold
     values:
-    - "\uC18C\uBAA8 \uACE8\uB4DC : {}"
-    - 'Cost: {} Gold'
+    - "\uC18C\uBAA8 \uACE8\uB4DC : {0}"
+    - 'Cost: {0} Gold'
   - key: InteriorBoxMaxExpansion
     values:
     - "\uCD5C\uB300 \uD655\uC7A5 \uC644\uB8CC"
@@ -2967,10 +2967,9 @@ MonoBehaviour:
       \uB370\uC2A4\uD06C\uD0D1 \uC6D0\uD558\uB294 \uC704\uCE58\uB85C \uC62E\uAE30\uACE0,
       \uBAA8\uC11C\uB9AC\uB97C \uB4DC\uB798\uADF8\uD574 16:9 \uBE44\uC728\uC744 \uC720\uC9C0\uD558\uBA70
       \uC704\uC82F \uD06C\uAE30\uB97C \uC790\uC720\uB86D\uAC8C \uC870\uC808\uD558\uC138\uC694.\\n<b>\uC0C1\uC810\uACFC
-      \uAFB8\uBBF8\uAE30</b>: \uBAA8\uC740 \uACE8\uB4DC\uB85C \uC0C1\uC810\uC5D0\uC11C
-      \uC778\uD14C\uB9AC\uC5B4 \uC18C\uD488\uC744 \uAD6C\uB9E4\uD574 \uC12C\uACFC
-      \uD638\uC218 \uACF5\uAC04\uC744 \uB098\uB9CC\uC758 \uC2A4\uD0C0\uC77C\uB85C
-      \uC790\uC720\uB86D\uAC8C \uAFB8\uBA70\uBCF4\uC138\uC694.\\n<b>\uCF54\uC2A4\uD2AC
+      \uAFB8\uBBF8\uAE30</b>: \uACE8\uB4DC\uB85C \uC0C1\uC810\uC5D0\uC11C \uC778\uD14C\uB9AC\uC5B4
+      \uC18C\uD488\uC744 \uAD6C\uB9E4\uD574 \uC12C\uACFC \uD638\uC218 \uACF5\uAC04\uC744
+      \uB098\uB9CC\uC758 \uC2A4\uD0C0\uC77C\uB85C \uC790\uC720\uB86D\uAC8C \uAFB8\uBA70\uBCF4\uC138\uC694.\\n<b>\uCF54\uC2A4\uD2AC
       \uAD50\uCCB4</b>: \uBA38\uB9AC \uC7A5\uC2DD, \uD55C\uBC8C\uC637, \uB09A\uC2EF\uB300\uAE4C\uC9C0
       3\uAC00\uC9C0 \uC2AC\uB86F\uC744 \uB0B4 \uB9C8\uC74C\uB300\uB85C \uC870\uD569\uD558\uC5EC
       \uACF0\uB3CC\uC774\uC5D0\uAC8C \uAC00\uC7A5 \uC798 \uC5B4\uC6B8\uB9AC\uB294
@@ -2983,23 +2982,17 @@ MonoBehaviour:
       \uC544\uC774\uD15C\uC758 \uC0C1\uC138 \uC815\uBCF4\uB97C \uD655\uC778\uD558\uB294
       \uC131\uCDE8\uAC10\uC744 \uB290\uAEF4\uBCF4\uC138\uC694.\\n<b>\uD018\uC2A4\uD2B8
       \uB2EC\uC131</b>: \uC12C \uC0DD\uD65C \uC911 \uC8FC\uC5B4\uC9C0\uB294 \uB2E4\uC591\uD55C
-      \uD018\uC2A4\uD2B8 \uBBF8\uC158\uC744 \uC9C1\uC811 \uC644\uB8CC\uD558\uACE0,
-      \uC131\uC7A5\uC5D0 \uD544\uC694\uD55C \uD2B9\uBCC4\uD55C \uBCF4\uC0C1\uC744
-      \uD68D\uB4DD\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4."
-    - "<b>Widget Optimization</b>: Click the game screen to move it to your desired
-      location on the desktop, and drag the corners to freely adjust the widget size
-      while maintaining the 16:9 aspect ratio.\\n<b>Shop and Decoration</b>: Purchase
-      interior items from the shop with collected gold to freely decorate your island
-      and lake space in your own style.\\n<b>Costume Change</b>: You can dress your
-      bear in the outfit that suits it best by combining the three slots\u2014headpiece,
-      outfit, and fishing rod\u2014as you please.\\n<b>Unlock and Manage Albums</b>:
-      Collect fragments obtained through fishing to unlock new albums. Select songs
-      that suit your taste and adjust the volume to create the optimal 'Bear-Woof'
-      environment.\\n<b>Check the Encyclopedia</b>: Feel the sense of accomplishment
+      \uD018\uC2A4\uD2B8 \uBBF8\uC158\uC744 \uC644\uB8CC\uD558\uACE0, \uC131\uC7A5\uC5D0
+      \uD544\uC694\uD55C \uBCF4\uC0C1\uC744 \uD68D\uB4DD\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4."
+    - '<b>Widget Optimization</b>: Click the screen to move the widget and drag corners
+      to resize it while maintaining a 16:9 ratio.\n<b>Shop and Decoration</b>: Purchase
+      items with gold to decorate your island and lake.\n<b>Costume Change</b>: Customize
+      your bear by combining headpieces, outfits, and fishing rods.\n<b>Unlock and
+      Manage Albums</b>: Collect fragments to unlock albums, then select songs and
+      adjust the volume.\n<b>Check the Encyclopedia</b>: Feel the sense of accomplishment
       as you fill in the empty silhouettes (???) in the encyclopedia and check the
-      detailed information of items.\\n<b>Complete Quests</b>: Complete various quest
-      missions given during island life yourself and obtain special rewards necessary
-      for growth."
+      detailed information of items.\n<b>Complete Quests</b>: Finish missions to
+      obtain rewards for growth.'
   - key: UpgradeMainTitle
     values:
     - "\uCE90\uB9AD\uD130 \uC0C1\uD0DC \uC774\uC6A9 \uAC00\uC774\uB4DC"
