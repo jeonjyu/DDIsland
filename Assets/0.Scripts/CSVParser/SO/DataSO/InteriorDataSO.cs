@@ -60,7 +60,7 @@ public class InteriorDataSO : TableBase<int>
     // 인테리어 ID
     [field: SerializeField] public int InteriorID { get; private set; }
 
-    //  
+    // 인테리어 이름
     [SerializeField] private string interiorName;
     public string InteriorName_String => LocalizationManager.Instance.GetString(interiorName);
 
