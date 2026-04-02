@@ -113,7 +113,7 @@ public class DecoLocalizeTempText : MonoBehaviour
             // 0 => Get("Interior_Global_SaveLayout_Btn_Text"),  // 배치 내용을 저장하시겠습니까?
             0 => GetDirect("InteriorGlobalSaveLayoutBtnText"),
             1 => GetDirect("InteriorGlobalRemoveAllBtnText"), // TODO: StringUI 매핑 추가되면 Get()으로 통일
-            2 => GetDirect("InteriorGlobalResetLayoutBtnText"),
+            2 => GetDirect("InteriorGlobalResetLayoutPopupText"),
             // 2 => Get("Interior_Global_ResetLayout_Btn_Text"), // 마지막 저장 상태로 되돌리시겠습니까?
             _ => ""
         };

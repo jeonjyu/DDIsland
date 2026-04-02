@@ -58,7 +58,7 @@ public static class JournalLocalize
 
         List<string> parts = new List<string>();
         if ((season & ArriveSeason.Spring) != 0) parts.Add(Get("Journal_Season_Spring_Text"));
-        if ((season & ArriveSeason.Summer) != 0) parts.Add(Get("Journal_Season_Simmer_Text")); // TODO: summer 오타 있는데??
+        if ((season & ArriveSeason.Summer) != 0) parts.Add(Get("Journal_Season_Summer_Text")); // TODO: summer 오타 있는데??
         if ((season & ArriveSeason.Autumn) != 0) parts.Add(Get("Journal_Season_Autumn_Text"));
         if ((season & ArriveSeason.Winter) != 0) parts.Add(Get("Journal_Season_Winter_Text"));
         return string.Join(", ", parts);
