@@ -58,7 +58,7 @@ public class BackGroundFish : MonoBehaviour
     private Image _fishImage;
     private Vector2 _moveDir;
     public bool _isGoingRight = true; // true면 우행, false면 좌행
-    public float _fishScale = 0.3f;
+    public float _fishScale = 0.15f;
 
     #region 프로퍼티
     public Vector2 CurrentVelocity => _velocity;
@@ -123,11 +123,13 @@ public class BackGroundFish : MonoBehaviour
                     dt * _rotationSpeed);
             }
 
-            float expectedYScale = (_velocity.x < 0) ? -1f : 1f;
+            float expectedYScale = (_velocity.x < 0) ? -_fishScale : _fishScale;
 
-            if (!Mathf.Approximately(_rectTransform.localScale.y, expectedYScale))
+            Vector3 targetScale = new (_fishScale, expectedYScale, 1f);
+
+            if (_rectTransform.localScale != targetScale)
             {
-                _rectTransform.localScale = new Vector3(1f, expectedYScale, 1f);
+                _rectTransform.localScale = targetScale;
             }
         }
 
@@ -170,8 +172,7 @@ public class BackGroundFish : MonoBehaviour
 
 
             _fishImage.SetNativeSize();
-            _rectTransform.sizeDelta *= _fishScale/2;
-            _rectTransform.localScale = Vector3.one;
+            _rectTransform.localScale = new Vector3(_fishScale, _fishScale, 1f);
         }
 
         _moveDir = _isGoingRight ? Vector2.right : Vector2.left;
