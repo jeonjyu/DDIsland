@@ -72,7 +72,14 @@ public class UI_Settings : MonoBehaviour
 
         for(int i = 0; i < monitorCount; i++)
         {
-            options.Add($"{i}번 모니터");
+            if(PlayerPrefsDataManager.Language == 0)
+            {
+                options.Add($"모니터 {i}");
+            }
+            else
+            {
+                options.Add($"Monitor {i}");
+            }
         }
 
         if(options.Count > 0)
@@ -97,6 +104,30 @@ public class UI_Settings : MonoBehaviour
     public void OnValueChangedLanguage()
     {
         PlayerPrefsDataManager.Language = languageDropdown.value;
+
+        int monitorCount = WindowController.Instance.GetMonitorCount();
+
+        monitorDropdown.options.Clear();
+
+        List<string> options = new List<string>();
+
+        for (int i = 0; i < monitorCount; i++)
+        {
+            if (PlayerPrefsDataManager.Language == 0)
+            {
+                options.Add($"모니터 {i}");
+            }
+            else
+            {
+                options.Add($"Monitor {i}");
+            }
+        }
+
+        if (options.Count > 0)
+        {
+            monitorDropdown.AddOptions(options);
+            monitorDropdown.value = WindowController.Instance.GetCurrentMonitor();
+        }
     }
     #endregion
 

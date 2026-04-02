@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
-using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 
 public enum Soundtype
@@ -67,9 +66,9 @@ public class SoundManager : Singleton<SoundManager>
     #endregion
 
     #region 오디오 클립을 받아와 재생
-    public void PlayBGM(AudioClip clip)
+    public void PlayBGM(AudioClip clip, Action<RecordDataSO> action, RecordDataSO data)
     {
-        SafeStartCoroutine(ref PlayCoroutine, Co_PlayBGM(clip));
+        SafeStartCoroutine(ref PlayCoroutine, Co_PlayBGM(clip, action, data));
     }
 
     public void PlayAMB(AudioClip clip)
@@ -226,7 +225,7 @@ public class SoundManager : Singleton<SoundManager>
     /// </summary>
     /// <param name="clip"> 새로 재생할 배경음 </param>
     /// <returns></returns>
-    private IEnumerator Co_PlayBGM(AudioClip clip)
+    private IEnumerator Co_PlayBGM(AudioClip clip, Action<RecordDataSO> action, RecordDataSO data)
     {
         float vol = PlayerPrefsDataManager.BgmVolume;
 
@@ -236,9 +235,9 @@ public class SoundManager : Singleton<SoundManager>
             yield return StartCoroutine(Co_FadeVolume("BGM", PlayerPrefsDataManager.BgmVolume, 0f, 0.5f));
         }
 
-        // 배경음 재생
         SetVolume("BGM", vol, PlayerPrefsDataManager.BgmVolumeMute);
         PlaySound(Soundtype.BGM, BgmSource, clip);
+        action?.Invoke(data);
         CheckAudioPlayDone(ref bgmPlayDoneCoroutine, BgmSource, clip.length, OnBGMPlayDone);
     }
 
@@ -280,7 +279,7 @@ public class SoundManager : Singleton<SoundManager>
     {
         float timer = 0f;
 
-        while (timer < duration)
+        while (timer <= duration)
         {
             float vol = Mathf.Lerp(startVol, endVol, timer / duration);
             vol = Mathf.Clamp(vol, 0f, 1f);
