@@ -15,6 +15,9 @@ public class ObjectPoolManager : MonoBehaviour
     [Range(0, 200)]
     [SerializeField] protected int initCount = 0;       // 처음에 미리 생성해둘 개수
 
+    [Header("프리팹을 생성할 트랜스폼")]
+    [SerializeField] protected Transform instantiateTrans;
+
     protected void OnValidate()
     {
         if (initCount > maxSize)

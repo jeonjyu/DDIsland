@@ -3,24 +3,22 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.UIElements;
 
 public class StoreListViewModel : MonoBehaviour, INotifyPropertyChanged
 {
     [Tooltip("슬롯을 채워줄 아이템 그리드")]
     public GameObject itemContents;
 
-    [Header("슬롯 프리팹")]
-    public ItemSlotViewModelBase itemSlot;
-
     List<ItemSlotViewModelBase> storeItemViewModels = new List<ItemSlotViewModelBase>();
     //[SerializeField] FilterDropdown filterDropdown;
     //[SerializeField] SortDropdown sortDropdown;
     StoreListView view;
 
-    public ScrollRect srcollRect;
+    public ScrollRect scrollRect;
 
     public GridLayoutGroup listGirdLayout;
+
+    [SerializeField] CanvasGroup btnTrayGroup;
 
     public StoreCat CurrentCat
     {
@@ -65,21 +63,24 @@ public class StoreListViewModel : MonoBehaviour, INotifyPropertyChanged
 
     public void OnEnable()
     {
+        if (btnTrayGroup != null) btnTrayGroup.interactable = false;
         StoreManager.Instance.currentCat = StoreCat.interior;
         UpdateCurrentCat(0);
-        srcollRect.verticalNormalizedPosition = 1f;
+        scrollRect.verticalNormalizedPosition = 1f;
+    }
+
+    public void OnDisable()
+    {
+        if (btnTrayGroup != null) btnTrayGroup.interactable = true;
     }
 
     public void UpdateCurrentCat(int catIdx)
     {
         //Debug.Log("슬롯 리스트: " + string.Join(", ", ItemManager.Instance.displayItems.Select(x => x.ItemName + "(" + x.IsGained + "):" + x.PurchasePrice)));
 
-        //Debug.Log("[ItemListViewModel] UpdateCurrentCat");
-
-        Debug.Log((int)CurrentCat);
 
         if (view.Stores.Count > 0)
-            view.SetSelectedCatBtnColor(view.Stores[(int)CurrentCat], false);
+            view.SetSelectedCatBtnColor(view.Stores[(int)CurrentCat].CatBtn, false);
 
         // 현재 카테고리 변경
         CurrentCat = (StoreCat)catIdx;
@@ -87,13 +88,13 @@ public class StoreListViewModel : MonoBehaviour, INotifyPropertyChanged
         if (StoreManager.Instance != null)
             StoreManager.Instance.ChangeLayout();
         else
-            Debug.Log("StoreManager가 없음");
+            Debug.LogError("StoreManager가 없음");
 
         // 카탈로그 변경
         ItemManager.Instance.SetCurrentCategory(CurrentCat);
 
         if (view.Stores.Count > 0)
-            view.SetSelectedCatBtnColor(view.Stores[(int)CurrentCat], true);
+            view.SetSelectedCatBtnColor(view.Stores[(int)CurrentCat].CatBtn, true);
 
         LoadSlotList();
         // 아이템 리스트 업데이트
@@ -111,6 +112,7 @@ public class StoreListViewModel : MonoBehaviour, INotifyPropertyChanged
         {
             ItemSlotViewModelBase itemViewmodel = ItemManager.Instance.itemSlotPool.Get(ItemManager.Instance.itemSlot);
             itemViewmodel.transform.SetParent(itemContents.transform);
+            itemViewmodel.SetParentSR(scrollRect);
             itemViewmodel.SetModel(item);
             storeItemViewModels.Add(itemViewmodel);
             //Debug.Log("[ItemListViewModel] UpdateSlotList | 슬롯 " + ItemManager.Instance.displayDatas.IndexOf(item) + " " + item.ItemName);

@@ -50,6 +50,15 @@ public class DecoItemListManager : MonoBehaviour
     // 아이템 선택 이벤트
     public event Action<int, int> OnSlotPick;   // (itemId, slotIndex)
     public event Action OnSlotCancel;           // 선택 해제
+
+    // Fix 필터 모드 변수 
+    bool isFixFilterMode = false;               // 현재 Fix 필터 모드인지
+    FixGroup currentFixGroup = FixGroup.None;   // 필터링 중인 그룹
+    FixedBuilding currentFixTarget = null;      // 교체 대상 고정물
+    List<LakeInvenSlot> normalInvenBackup = null; // 필터 진입 전 일반 인벤 백업
+
+    // Fix 슬롯 선택 이벤트
+    public event Action<int, FixedBuilding> OnFixSlotPick;
     #endregion
 
     void Start()
@@ -69,9 +78,30 @@ public class DecoItemListManager : MonoBehaviour
     // 인벤토리 데이터 넣고 슬롯 생성 (편집 모드 진입 시 호출)
     public void SetupInventory()
     {
+        // 필터 모드면 해제하고 일반 모드로 복귀
+        isFixFilterMode = false;
+        currentFixGroup = FixGroup.None;
+        currentFixTarget = null;
+        normalInvenBackup = null;
+
         if (currentMode == DecoMode.Island) // 섬 인벤 
         {
             invenData = DecoInventoryManager.Instance.GetInven();
+
+            // 메인 인벤에서 Fix 그룹 아이템 제외
+            // Fix 그룹(집/침대/LP/보관함)은 고정물 클릭 시에만 표시
+            var database = DataManager.Instance.DecorationDatabase;
+            invenData = invenData.FindAll(slot =>
+            {
+                try
+                {
+                    var data = database.InteriorData[slot.itemId];
+                    // FixGroup이 None이 아닌 Fix 아이템은 제외
+                    return data == null || data.fixgroupType == FixGroup.None;
+                }
+                catch { return true; }
+            });
+            
         }
         else if (currentMode == DecoMode.Lake) // 호수 인벤
         {
@@ -86,6 +116,65 @@ public class DecoItemListManager : MonoBehaviour
         RecalcPages();
         UpdatePageDisplay();
     }
+
+    // Fix 필터 모드 진입
+    // 고정물 클릭 시 해당 FixGroup 아이템만 인벤에 표시
+    public void SetupFilteredInventory(FixGroup group, FixedBuilding target)
+    {
+        // 현재 일반 인벤 백업 (필터 해제 시 복귀용)
+        normalInvenBackup = invenData;
+
+        isFixFilterMode = true;
+        currentFixGroup = group;
+        currentFixTarget = target;
+
+        // 전체 인벤에서 해당 FixGroup만 필터링
+        var fullInven = DecoInventoryManager.Instance.GetInven();
+        var database = DataManager.Instance.DecorationDatabase;
+
+        invenData = new List<LakeInvenSlot>();
+        foreach (var slot in fullInven)
+        {
+            if (slot.quantity <= 0) continue;
+
+            try
+            {
+                var data = database.InteriorData[slot.itemId];
+                if (data != null
+                    && data.interior_itemType == Interior_ItemType.Fix
+                    && data.fixgroupType == group
+                    && slot.itemId != target.CurrentItemID) // 현재 설치된 아이템은 제외
+                {
+                    invenData.Add(slot);
+                }
+            }
+            catch { }
+        }
+
+        selectedIndex = -1;
+        currentPage = 0;
+
+        ClearSlots();
+        CreateSlots();
+        RecalcPages();
+        UpdatePageDisplay();
+    }
+
+    // 필터 모드 해제 
+    public void ExitFilterMode()
+    {
+        if (!isFixFilterMode) return;
+
+        isFixFilterMode = false;
+        currentFixGroup = FixGroup.None;
+        currentFixTarget = null;
+        normalInvenBackup = null;
+
+        SetupInventory(); // 일반 인벤 다시 로드
+    }
+
+    // 현재 Fix 필터 모드인지 외부에서 확인용
+    public bool IsFixFilterMode => isFixFilterMode;
 
     #region 인벤토리 세팅 
 
@@ -246,11 +335,24 @@ public class DecoItemListManager : MonoBehaviour
         if (totalPages <= 1) return;
 
         // 페이지 수만큼 점 생성
-        for (int i = 0; i < totalPages; i++)
+        //for (int i = 0; i < totalPages; i++)
+        //{
+        //    // 현재 프리팹 = NowCount, 나머지 프리팹 = WaitCount
+        //    GameObject dot = Instantiate(
+        //        (i == currentPage) ? NowCount : WaitCount,
+        //        pageCountParent
+        //    );
+        //    pageCountDots.Add(dot);
+        //}
+
+        // currentPage % 3 순환
+        int dotCount = Mathf.Min(totalPages, 3); // 2페이지면 2개, 3페이지 이상이면 3개 고정
+        int activeDot = currentPage % dotCount; // 0, 1, 2 순환
+
+        for (int i = 0; i < dotCount; i++)
         {
-            // 현재 프리팹 = NowCount, 나머지 프리팹 = WaitCount
             GameObject dot = Instantiate(
-                (i == currentPage) ? NowCount : WaitCount,
+                (i == activeDot) ? NowCount : WaitCount,
                 pageCountParent
             );
             pageCountDots.Add(dot);
@@ -280,7 +382,17 @@ public class DecoItemListManager : MonoBehaviour
         if (index < slotDataIndex.Count)
         {
             int dataIdx = slotDataIndex[index];  // slotDataIndex로 매핑 변환
-            OnSlotPick?.Invoke(invenData[dataIdx].itemId, index); 
+            //OnSlotPick?.Invoke(invenData[dataIdx].itemId, index);
+            int itemId = invenData[dataIdx].itemId;
+            // Fix 필터 모드일 때는 OnFixSlotPick 이벤트 발생 
+            if (isFixFilterMode && currentFixTarget != null)
+            {
+                OnFixSlotPick?.Invoke(itemId, currentFixTarget);
+            }
+            else
+            {
+                OnSlotPick?.Invoke(itemId, index);
+            }
         }
     }
 
@@ -305,7 +417,7 @@ public class DecoItemListManager : MonoBehaviour
         if (highlighted)
             bg.color = new Color(0.3f, 0.8f, 0.4f, 0.9f); // 초록 하이라이트
         else
-            bg.color = new Color(0.18f, 0.18f, 0.22f, 0.92f); // 원래 색상
+            bg.color = new Color(0.992f, 0.969f, 0.906f, 0.878f); // 원래 색상으로 
     }
 
     //  invenData 인덱스로 슬롯(slotObjects) 위치 찾기
@@ -355,8 +467,6 @@ public class DecoItemListManager : MonoBehaviour
     // 아이템 회수 시 수량 복구
     public void RestoreItem(int itemId)
     {
-    
-
         int dataIdx = -1;
         for (int i = 0; i < invenData.Count; i++)
         {
@@ -366,7 +476,18 @@ public class DecoItemListManager : MonoBehaviour
                 break;
             }
         }
-        if (dataIdx < 0) return; 
+        //  if (dataIdx < 0) return; 
+        // invenData에 없는 아이템이 수량이 0이라 GetInven에서 빠진 경우 방어코드 
+        if (dataIdx < 0)
+        {
+            DecoInventoryManager.Instance.RestoreItem(itemId);
+
+            LakeInvenSlot newSlot = new LakeInvenSlot { itemId = itemId, quantity = 1 };
+            invenData.Add(newSlot);
+            dataIdx = invenData.Count - 1;
+            AddSlot(newSlot, dataIdx);
+            return;
+        }
 
         bool wasZero = (invenData[dataIdx].quantity <= 0);
         // invenData[dataIdx].quantity++;
@@ -387,6 +508,14 @@ public class DecoItemListManager : MonoBehaviour
     public void ReturnAllItems()
     {
         if (snapshotData == null) return;
+
+        // 스냅샷에 있는 아이템만 0으로 초기화 
+        foreach (var slot in snapshotData)
+        {
+            DecoInventoryManager.Instance.SetItemCount(slot.itemId, 0);
+        }
+
+        // 그 다음 스냅샷 값으로 복원
         foreach (var slot in snapshotData)
         {
             DecoInventoryManager.Instance.SetItemCount(slot.itemId, slot.quantity);

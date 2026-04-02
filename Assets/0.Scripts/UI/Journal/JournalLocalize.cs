@@ -1,44 +1,52 @@
 using System.Collections.Generic;
 
-/// <summary>
-/// 도감 enum 로컬라이징 (임시 하드코딩)
-/// TODO: 스트링테이블 추가되면 LocalizationManager.GetString()으로 교체
-/// </summary>
 public static class JournalLocalize
 {
-    public static bool IsKr => PlayerPrefsDataManager.Language == 0; // 0=한국어, 1=영어
+    //   public static bool IsKr => PlayerPrefsDataManager.Language == 0; // 0=한국어, 1=영어
+
+    // StringUI 테이블에서 가져오는 헬퍼
+    private static string Get(string key)
+    {
+        try
+        {
+            return DataManager.Instance.StringUIDatabase.StringUIInfoData[key].ID_String;
+        }
+        catch
+        {
+            return key; // 키 없으면 키 자체를 폴백
+        }
+    }
 
     public static string Enum(System.Enum value)
     {
         return value switch
         {
-            // 등급
-            Grade.Normal => IsKr ? "일반" : "Normal",
-            Grade.Rare => IsKr ? "고급" : "Rare",
-            Grade.Epic => IsKr ? "희귀" : "Epic",
-            Grade.Legendary => IsKr ? "전설" : "Legendary",
+            // 어종 등급
+            Grade.Normal => Get("Journal_Grade_Normal_Text"),
+            Grade.Rare => Get("Journal_Grade_Rare_Text"),
+            Grade.Epic => Get("Journal_Grade_Epic_Text"),
+            Grade.Legendary => Get("Journal_Grade_Legendary_Text"),
             // 서식지
-            FishType.Lake => IsKr ? "민물" : "Freshwater",
-            FishType.Sea => IsKr ? "바다" : "Sea",
+            FishType.Lake => Get("Journal_Type_Lake_Text"),
+            FishType.Sea => Get("Journal_Type_Sea_Text"),
             // 장착 파츠
-            CostumeType.Head => IsKr ? "머리 장식" : "Headwear",
-            CostumeType.Body => IsKr ? "한벌옷" : "Outfit",
-            CostumeType.Tool => IsKr ? "도구 스킨" : "Tool Skin",
+            CostumeType.Head => Get("Journal_CostumeType_Head_Text"),
+            CostumeType.Body => Get("Journal_CostumeType_Body_Text"),
             // 배치 공간
-            LocationType.Island => IsKr ? "섬" : "Island",
-            LocationType.Lake => IsKr ? "호수" : "Lake",
+            LocationType.Island => Get("Journal_LocationType_Island_Text"),
+            LocationType.Lake => Get("Journal_LocationType_Lake_Text"),
             // 음식 등급
-            FoodRateType.Normal => IsKr ? "일반" : "Normal",
-            FoodRateType.Rare => IsKr ? "고급" : "Rare",
-            FoodRateType.Epic => IsKr ? "희귀" : "Epic",
-            FoodRateType.Legendary => IsKr ? "전설" : "Legendary",
+            FoodRateType.Normal => Get("Journal_FoodGrade_Normal_Text"),
+            FoodRateType.Rare => Get("Journal_FoodGrade_Rare_Text"),
+            FoodRateType.Epic => Get("Journal_FoodGrade_Epic_Text"),
+            FoodRateType.Legendary => Get("Journal_FoodGrade_Legendary_Text"),
             // 배경음 테마
-            BgTheme.General => IsKr ? "기본" : "General",
-            BgTheme.Spring => IsKr ? "봄" : "Spring",
-            BgTheme.Summer => IsKr ? "여름" : "Summer",
-            BgTheme.Autumn => IsKr ? "가을" : "Autumn",
-            BgTheme.Winter => IsKr ? "겨울" : "Winter",
-            BgTheme.Collaboration => IsKr ? "콜라보" : "Collaboration",
+            BgTheme.General => Get("Journal_RecordBG_General_Text"),
+            BgTheme.Spring => Get("Journal_RecordBG_Spring_Text"),
+            BgTheme.Summer => Get("Journal_RecordBG_Summer_Text"),
+            BgTheme.Autumn => Get("Journal_RecordBG_Autumn_Text"),
+            BgTheme.Winter => Get("Journal_RecordBG_Winter_Text"),
+            BgTheme.Collaboration => Get("Journal_RecordBG_Collaboration_Text"),
             _ => value.ToString()
         };
     }
@@ -46,13 +54,13 @@ public static class JournalLocalize
     public static string Season(ArriveSeason season)
     {
         ArriveSeason all = ArriveSeason.Spring | ArriveSeason.Summer | ArriveSeason.Autumn | ArriveSeason.Winter;
-        if ((season & all) == all) return IsKr ? "모든 계절" : "All Seasons";
+        if ((season & all) == all) return Get("Journal_Season_All_Text");
 
         List<string> parts = new List<string>();
-        if ((season & ArriveSeason.Spring) != 0) parts.Add(IsKr ? "봄" : "Spring");
-        if ((season & ArriveSeason.Summer) != 0) parts.Add(IsKr ? "여름" : "Summer");
-        if ((season & ArriveSeason.Autumn) != 0) parts.Add(IsKr ? "가을" : "Autumn");
-        if ((season & ArriveSeason.Winter) != 0) parts.Add(IsKr ? "겨울" : "Winter");
+        if ((season & ArriveSeason.Spring) != 0) parts.Add(Get("Journal_Season_Spring_Text"));
+        if ((season & ArriveSeason.Summer) != 0) parts.Add(Get("Journal_Season_Summer_Text")); // TODO: summer 오타 있는데??
+        if ((season & ArriveSeason.Autumn) != 0) parts.Add(Get("Journal_Season_Autumn_Text"));
+        if ((season & ArriveSeason.Winter) != 0) parts.Add(Get("Journal_Season_Winter_Text"));
         return string.Join(", ", parts);
     }
     // 카테고리 버튼
@@ -60,11 +68,11 @@ public static class JournalLocalize
     {
         return category switch
         {
-            JournalCategory.Fish => IsKr ? "어종" : "Fish",
-            JournalCategory.Costume => IsKr ? "코스튬" : "Costume",
-            JournalCategory.Interior => IsKr ? "인테리어" : "Interior",
-            JournalCategory.Album => IsKr ? "음반" : "Album",
-            JournalCategory.Food => IsKr ? "음식" : "Food",
+            JournalCategory.Fish => Get("Journal_Category_Fish_Text"),
+            JournalCategory.Costume => Get("Journal_Category_Costume_Text"),
+            JournalCategory.Interior => Get("Journal_Category_Interior_Text"),
+            JournalCategory.Album => Get("Journal_Category_Record_Text"),
+            JournalCategory.Food => Get("Journal_Category_Food_Text"),
             _ => category.ToString()
         };
     }
@@ -74,44 +82,46 @@ public static class JournalLocalize
     {
         return key switch
         {
-            "등급" => IsKr ? "등급" : "Grade",
-            "서식지" => IsKr ? "서식지" : "Habitat",
-            "계절" => IsKr ? "계절" : "Season",
-            "최고 기록" => IsKr ? "최고 기록" : "Best Record",
-            "장착 파츠" => IsKr ? "장착 파츠" : "Parts",
-            "배치 공간" => IsKr ? "배치 공간" : "Location",
-            "배고픔 지수" => IsKr ? "배고픔 지수" : "Hunger",
-            "둥둥 지수" => IsKr ? "둥둥 지수" : "DoongDoong",
-            "테마" => IsKr ? "테마" : "Theme",
-            "아티스트" => IsKr ? "아티스트" : "Artist",
-            "재생 길이" => IsKr ? "재생 길이" : "Duration",
+            "등급" => Get("Journal_Grade_Text"),
+            "서식지" => Get("Journal_Type_Text"),
+            "계절" => Get("Journal_Season_Text"),
+            "최고 기록" => Get("Journal_Size_Best_Text"),
+            "장착 파츠" => Get("Journal_CostumeType_Text"),
+            "배치 공간" => Get("Journal_LocationType_Text"),
+            "배고픔 지수" => Get("Journal_FoodEffect_HungerBuff_Text"),
+            "둥둥 지수" => Get("Journal_FoodEffect_DoongDoongBuff_Text"),
+            "테마" => Get("Journal_RecordBG_Text"),
+            //"아티스트" => Get("Journal_RecordArtist_Text"), // TODO: StringUI 테이블 추가되면 교체 
+            "아티스트" => LocalizationManager.Instance.GetString("JournalRecordArtist"),
             _ => key
         };
     }
 
-    // 물고기 기록 저장된게 없으면
-    public static string NoRecord => IsKr ? "기록 없음" : "No Record";
 
-    // 대분류 탭
-    public static string Tab(MainTab tab)
-    {
-        return tab switch
-        {
-            MainTab.Quest => IsKr ? "퀘스트" : "Quest",
-            MainTab.Journal => IsKr ? "도감" : "Journal",
-            _ => tab.ToString()
-        };
-    }
+    //// 대분류 탭
+    //public static string Tab(MainTab tab)
+    //{
+    //    return tab switch
+    //    {
+    //        MainTab.Quest => IsKr ? "퀘스트" : "Quest",
+    //        MainTab.Journal => IsKr ? "도감" : "Journal",
+    //        _ => tab.ToString()
+    //    };
+    //}
+
     // 드롭다운 정렬 필터
     public static string Filter(CollectionFilter filter)
     {
         return filter switch
         {
-            CollectionFilter.All => IsKr ? "전체" : "All",
-            CollectionFilter.Owned => IsKr ? "등록" : "Owned",
-            CollectionFilter.NotOwned => IsKr ? "미등록" : "Not Owned",
+            CollectionFilter.All => Get("Journal_Dropdown_All_Text"),
+            CollectionFilter.Owned => Get("Journal_Dropdown_Unlocked_Text"),
+            CollectionFilter.NotOwned => Get("Journal_Dropdown_Locked_Text"),
             _ => filter.ToString()
         };
     }
+
+    // 물고기 기록 저장된게 없으면 폴백
+    public static string NoRecord => "No Record";
 
 }

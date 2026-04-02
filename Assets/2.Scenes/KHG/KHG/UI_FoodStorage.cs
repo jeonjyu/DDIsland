@@ -20,25 +20,32 @@ public class UI_FoodStorage : MonoBehaviour
     [SerializeField] private GameObject _slotPrefab;
 
     [SerializeField] private GameObject _UpgradePan;
-    [SerializeField] private TextMeshProUGUI _storageLevelText;
-    [SerializeField] private TextMeshProUGUI _systemMsgText;
+    [SerializeField] private TMP_Text _storageLevelText;
+    [SerializeField] private TMP_Text _systemMsgText;
     [SerializeField] private Button _upgradeButton;
-    [SerializeField] private TextMeshProUGUI _upgradeButtonLabel;
+    [SerializeField] private TMP_Text _upgradeButtonLabel;
+    [SerializeField] private TMP_Text _upgradeCostText;
     private Coroutine _msgRoutine;
 
     FoodSortMode _currentSort;      // 현재 정렬 모드
     List<int> _viewIndices = new List<int>();   // 화면에 보여줄 realIndex 목록
-    int _selectedRealIndex = -1;   // 마지막으로 선택한 realIndex(삭제 버튼 처리 등에 사용)
+    public int _selectedRealIndex = -1;   // 마지막으로 선택한 realIndex(삭제 버튼 처리 등에 사용)
 
     // 상세 패널 UI
-    [SerializeField] private TextMeshProUGUI _nameText;
-    [SerializeField] private TextMeshProUGUI _gradeText;
-    [SerializeField] private TextMeshProUGUI _DescText;
+    [SerializeField] private TMP_Text _nameText;
+    [SerializeField] private TMP_Text _gradeText;
+    [SerializeField] private TMP_Text _DescText;
     [SerializeField] private Image _detailIcon;
 
     [SerializeField] private Transform _slotParent;  // 슬롯 프리팹(원본은 꺼두고 복제해서 사용)
 
     [SerializeField] private TMP_Dropdown _sortDropdown;
+
+    [SerializeField] private AudioClip _TabButtonSFX;
+    [SerializeField] private AudioClip _CloseButtonSFX;
+    [SerializeField] private AudioClip _UpgradeSFX;
+    [SerializeField] private AudioClip _ButtonSFX;
+
     private void Start()
     {
         _slotPrefab.SetActive(false);  // 슬롯 프리팹(원본은 꺼두고 복제해서 사용)
@@ -125,6 +132,7 @@ public class UI_FoodStorage : MonoBehaviour
                 _foodSlots[ui].SetEmpty();
             }
         }
+        RefreshSelectedDetail();
     }
 
     public int CompareByCurrentSort(int a, int b)  
@@ -187,6 +195,16 @@ public class UI_FoodStorage : MonoBehaviour
         var def = DataManager.Instance.FoodDatabase.FoodInfoData[slot.Value.FoodId];
         if (def == null) return;
 
+        RefreshDetailFood(def, slot);
+    }
+    public void RefreshDetailFood(FoodDataSO def, FoodStackSlot? slot)
+    {
+        if (!slot.HasValue || def == null)
+        {
+            ClearDetailFood();
+            return;
+        }
+
         var sp = def.FoodImgPath_Sprite;
 
         if (_detailIcon != null)
@@ -196,15 +214,53 @@ public class UI_FoodStorage : MonoBehaviour
             _detailIcon.sprite = sp;
         }
 
-        string name = def.FoodName_String;
-        _nameText.text = name;
-
-        var grade = def.foodrateType;
-        _gradeText.text = grade.ToString();
-        string desc = def.FoodDesc_String;
-        _DescText.text = desc;
+        _nameText.text = def.FoodName_String;
+        _gradeText.text = def.foodrateType.ToString();
+        _DescText.text = def.FoodDesc_String;
     }
+    private void RefreshSelectedDetail()
+    {
+        if (_selectedRealIndex < 0)
+        {
+            ClearDetailFood();
+            return;
+        }
 
+        var slot = FoodStorageManager.Instance.GetFoodSlot(_selectedRealIndex);
+        if (!slot.HasValue)
+        {
+            _selectedRealIndex = -1;
+            ClearDetailFood();
+            return;
+        }
+
+        var def = DataManager.Instance.FoodDatabase.FoodInfoData[slot.Value.FoodId];
+        if (def == null)
+        {
+            _selectedRealIndex = -1;
+            ClearDetailFood();
+            return;
+        }
+
+        RefreshDetailFood(def, slot);
+    }
+    private void ClearDetailFood()
+    {
+        if (_detailIcon != null)
+        {
+            _detailIcon.sprite = null;
+            _detailIcon.enabled = false;
+        }
+
+        if (_nameText != null)
+            _nameText.text = string.Empty;
+
+        if (_gradeText != null)
+            _gradeText.text = string.Empty;
+
+        if (_DescText != null)
+            _DescText.text = string.Empty;
+    }
     public void OnRemoveClicked()
     {
         if (_selectedRealIndex < 0) return;
@@ -219,18 +275,24 @@ public class UI_FoodStorage : MonoBehaviour
         FoodStorageManager.Instance.Capacity >= FoodStorageManager.MaxCapacity)
         {
             RefreshFoodUpgradeUI();
-            ShowSystemMessage("최대 확장 완료 상태입니다.");
+            ShowSystemMessage(LocalizationManager.Instance.GetString("InteriorBoxMaxExpansion"));
             return;
         }
         if (!FoodStorageManager.Instance.PayFoodStorageUpgrade())  //돈체크
         {
-            ShowSystemMessage("코인이 부족합니다");
+            ShowSystemMessage(LocalizationManager.Instance.GetString("InteriorBoxNotEnoughGold"));
             return;
         }
+        SoundManager.Instance.PlaySFX(_UpgradeSFX);
         FoodStorageManager.Instance.UpgradeFoodStorageindex(); // 실제 데이터(슬롯 배열) 확장
         FoodSlotPool();
         RefreshFoodUpgradeUI();
-        ShowSystemMessage($"창고가 Lv.{FoodStorageManager.Instance.StorageLevel}로 확장되었습니다! (총 {FoodStorageManager.Instance.Capacity}칸)");
+        string message = string.Format(
+        LocalizationManager.Instance.GetString("InteriorBoxUpgradeComplete"),
+        FoodStorageManager.Instance.StorageLevel,
+        FoodStorageManager.Instance.Capacity
+         );
+        ShowSystemMessage(message);
         RefreshAll();
     }
     private void FoodSlotPool()  //UI 슬롯 풀(프리팹 복제)도 데이터 Capacity 만큼 늘려줌
@@ -261,6 +323,14 @@ public class UI_FoodStorage : MonoBehaviour
         if (_storageLevelText != null)
             _storageLevelText.text = $"Lv.{sm.StorageLevel} / Lv.{FoodStorageManager.MaxLevel}";
 
+        if (_upgradeCostText != null)
+        {
+            string message = string.Format(
+             LocalizationManager.Instance.GetString("InteriorBoxUpgradeCostGold"),
+             FoodStorageManager.Instance.FoodGetUpgradeCost().ToString()
+             );
+            _upgradeCostText.text = message;
+        }
         bool isMax = false;     //최대치인지 판단
 
         if (sm.StorageLevel >= FoodStorageManager.MaxLevel || sm.Capacity >= FoodStorageManager.MaxCapacity)
@@ -272,7 +342,11 @@ public class UI_FoodStorage : MonoBehaviour
             _upgradeButton.interactable = !isMax;
 
         if (_upgradeButtonLabel != null)     //최대치면 버튼 글자 변경
-            _upgradeButtonLabel.text = isMax ? "최대 확장 완료" : "확장하기";
+        {
+            string maxText = LocalizationManager.Instance.GetString("Interior_Box_Upgrade_Expand_Text ");
+            string upgradeText = LocalizationManager.Instance.GetString("Interior_Box_MaxExpansion_Text");
+            _upgradeButtonLabel.text = isMax ? maxText : upgradeText;
+        }
     }
     private void ShowSystemMessage(string msg)    //시스템 알림 출력
     {
@@ -294,11 +368,13 @@ public class UI_FoodStorage : MonoBehaviour
 
     public void OpenFoodUpgradeUI()
     {
+        SoundManager.Instance.PlaySFX(_ButtonSFX);
         _UpgradePan.gameObject.SetActive(true);
     }
 
     public void CloseFoodUpgradeUI()
     {
+        SoundManager.Instance.PlaySFX(_CloseButtonSFX);
         _UpgradePan.gameObject.SetActive(false);
     }
 
@@ -331,8 +407,14 @@ public class UI_FoodStorage : MonoBehaviour
         if (_sortDropdown != null)
             _sortDropdown.onValueChanged.RemoveListener(OnSortDropdownChanged);
     }
+    public void ResetSelection()
+    {
+        _selectedRealIndex = -1;
+        ClearDetailFood();
+    }
     public void OnSortDropdownChanged(int value)
     {
+        SoundManager.Instance.PlaySFX(_ButtonSFX);
         _currentSort = (FoodSortMode)value;
         RefreshAll();
     }

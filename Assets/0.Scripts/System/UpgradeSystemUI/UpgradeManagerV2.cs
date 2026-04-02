@@ -12,29 +12,25 @@ public class UpgradeManagerV2 : MonoBehaviour
     public TextMeshProUGUI goldText;
     public TextMeshProUGUI titleText;
 
-    [Header("둥둥스탯 체형 이미지")]
-    public Sprite[] bodySprites; // 예: [0]날씬, [1]보통, [2]뚱뚱
-    public Image characterImage;
-    [Header("체형 구간 기준")]
-    public int[] bodyThresholds = { 200, 400 }; // 예: 0~200 = 0번, 200~400 = 1번, 400~600= 2번
-
     [Header("스탯 정보 표시 (우측 패널)")]
     public Image statIconImage;               // 스탯 아이콘
     public TextMeshProUGUI statNameText;      // 스탯 이름
     public Image levelFillImage;              // 피자 
-    public TextMeshProUGUI levelProgressText; // 1/10 
-                                              //    public TextMeshProUGUI statChangeText;    // 변동스탯 
+    public TextMeshProUGUI levelProgressText; // 1/10                                               //    public TextMeshProUGUI statChangeText;    // 변동스탯 
 
     [Header("변동 스탯 표시 (좌측 패널)")]
     public TextMeshProUGUI statCurrentValueText;  // 첫째줄 현재 MAX
     public TextMeshProUGUI statNextValueText;     // 둘째줄 업글 후 MAX
 
     [Header("스탯별 이미지")]
+    public Image characterImage;
     public Sprite[] statIcons;        // 포만감, 스태미너, 이동속도, 낚시, 휴식
 
     [Header("구매 버튼")]
+    public GameObject enableButton;  
+    public GameObject disableButton; 
     public Button buyButton;
-    public TextMeshProUGUI buyCostText;  // 필요 재화량
+    public TextMeshProUGUI[] buyCostTexts;  // 필요 재화량
 
     [Header("페이지 네비게이션")]
     public Button prevButton;      // < 버튼
@@ -65,7 +61,8 @@ public class UpgradeManagerV2 : MonoBehaviour
 
     void Start()
     {
-       // ResetUpgradeLevels();
+        //ResetDataAll();
+        //ResetUpgradeLevels();
         if (playerController == null)
             playerController = FindObjectOfType<PlayerController>();
         if (playerController != null)
@@ -77,37 +74,33 @@ public class UpgradeManagerV2 : MonoBehaviour
             playerData.OnDoongDoongChanged += OnDoongDoongChanged;
 
         upgradeTable = UpgradeTempData.GetAll();
-  
-        //// Firebase 로드 완료 후 레벨 0 보정
-        //DataManager.Instance.Hub.OnDataLoaded += OnDataLoaded;
-
+ 
         // 페이지 인디케이터 
         buyButton.onClick.AddListener(OnbuyClicked);
         prevButton.onClick.AddListener(OnPrevPage);
         nextButton.onClick.AddListener(OnNextPage);
 
-
         UpdatePage();
     }
-    // Firebase 로드 완료 콜백
-    //void OnDataLoaded()
-    //{
-    //    // 로드 후 playerData 레벨 다시 읽기
-    //    if (playerData != null)
-    //        playerData.SyncCharacterDataLoad();
-
-    //    UpdatePage();
-    //}
-
 
     #region 둥둥스탯 이미지
+    CharacterVisualDataSO GetVisualData(int doongDoongStat)
+    {
+        var visualList = DataManager.Instance.CharacterDatabase.CharacterVisualData.datas;
+        foreach (var visual in visualList)
+        {
+            if (doongDoongStat >= visual.MinIndex && doongDoongStat < visual.MaxIndex)
+                return visual;
+        }
+        // 못 찾으면 마지막 반환
+        return visualList[visualList.Count - 1];
+    }
     void OnDoongDoongChanged(int value)
     {
-        if (characterImage != null && bodySprites.Length > 0)
-        {
-            int bodyIndex = GetBodyIndex(value);
-            characterImage.sprite = bodySprites[bodyIndex];
-        }
+        if (characterImage == null) return;
+        var visual = GetVisualData(value);
+        if (visual != null)
+            characterImage.sprite = visual.CharacterVisualImgPath_Sprite;
     }
 
     void OnDestroy()
@@ -205,6 +198,7 @@ public class UpgradeManagerV2 : MonoBehaviour
             case StatType.BaseFishingSpeed: BuyFishingSpeed(); break;
             case StatType.StaminaHeal: BuyRestSpeed(); break;
         }
+        _ = DataManager.Instance.Hub.UploadAllData();
     }
 
     void BuyHunger()
@@ -223,7 +217,6 @@ public class UpgradeManagerV2 : MonoBehaviour
         playerData.MaxHunger += currentLevelData.Value;
         playerData.SetHunger(playerData.Hunger + currentLevelData.Value);
 
-        playerData.HungerLevel = currentLevel + 1;
         playerData.HungerLevel = currentLevel + 1;
         QuestManager.Instance.SetSimpleProgress(QuestConditionKey.HungerLevel,playerData.HungerLevel);
         UpdatePage();
@@ -246,7 +239,7 @@ public class UpgradeManagerV2 : MonoBehaviour
         playerData.SetStamina(playerData.Stamina + currentLevelData.Value);
 
         playerData.StaminaLevel = currentLevel + 1;
-        QuestManager.Instance.SetSimpleProgress(QuestConditionKey.HungerLevel, playerData.StaminaLevel);
+        QuestManager.Instance.SetSimpleProgress(QuestConditionKey.StaminaLevel, playerData.StaminaLevel);
         UpdatePage();
     }
 
@@ -265,7 +258,7 @@ public class UpgradeManagerV2 : MonoBehaviour
         playerData.SetMoveSpeed(nextLevelData.Value);
 
         playerData.MoveSpeedLevel = currentLevel + 1;
-        QuestManager.Instance.SetSimpleProgress(QuestConditionKey.HungerLevel, playerData.MoveSpeedLevel);
+        QuestManager.Instance.SetSimpleProgress(QuestConditionKey.MoveSpeedLevel, playerData.MoveSpeedLevel);
         UpdatePage();
     }
 
@@ -280,11 +273,12 @@ public class UpgradeManagerV2 : MonoBehaviour
         if (GameManager.Instance.PlayerGold < currentLevelData.Cost) return;
 
         GameManager.Instance.SetGold(-currentLevelData.Cost);
-        // Set 방식 : 다음 레벨 벨류로 덮어씌우기
-        playerData.SetFishingSpeed(nextLevelData.Value);
+        // Add 방식: 벨류만큼 현재치 감소
+        playerData.MaxFishingSpeed -= currentLevelData.Value;   
+        playerData.SetFishingSpeed(playerData.FishingSpeed - currentLevelData.Value); 
 
         playerData.FishingSpeedLevel = currentLevel + 1;
-        QuestManager.Instance.SetSimpleProgress(QuestConditionKey.HungerLevel, playerData.FishingSpeedLevel);
+        QuestManager.Instance.SetSimpleProgress(QuestConditionKey.FishingSpeedLevel, playerData.FishingSpeedLevel);
         UpdatePage();
     }
 
@@ -305,7 +299,8 @@ public class UpgradeManagerV2 : MonoBehaviour
         playerData.SetRestSpeed(nextLevelData.Value);
 
         playerData.RestSpeedLevel = currentLevel + 1;
-        QuestManager.Instance.SetSimpleProgress(QuestConditionKey.HungerLevel, playerData.RestSpeedLevel);
+        // TODO: 휴식속도 관련 쾌스트가 추가되면 주석해제 
+       // QuestManager.Instance.SetSimpleProgress(QuestConditionKey.RestSpeedLevel, playerData.RestSpeedLevel);
         UpdatePage();
     }
 
@@ -341,10 +336,11 @@ public class UpgradeManagerV2 : MonoBehaviour
             statIconImage.sprite = statIcons[currentPageIndex];
 
         // 둥둥스탯 기반 데미지 변경
-        if (characterImage != null && bodySprites.Length > 0)
+        if (characterImage != null)                                    
         {
-            int bodyIndex = GetBodyIndex(playerData.DoongDoongStat);
-            characterImage.sprite = bodySprites[bodyIndex];
+            var visual = GetVisualData(playerData.DoongDoongStat);
+            if (visual != null)
+                characterImage.sprite = visual.CharacterVisualImgPath_Sprite;
         }
 
         UpdateLeftPanelStats();  // 현재 스탯
@@ -392,8 +388,19 @@ public class UpgradeManagerV2 : MonoBehaviour
         if (currentLevelData.applyType == ApplyType.Add)
         {
             float curTotal = GetCurrentAddValue(type);
-            statCurrentValueText.text = curTotal.ToString("F0");       // 첫째줄: 현재 MAX
-            statNextValueText.text = (curTotal + currentLevelData.Value).ToString("F0"); // 셋째줄: 업글 후
+            //  statCurrentValueText.text = curTotal.ToString("F0");       // 첫째줄: 현재 MAX
+            //  statNextValueText.text = (curTotal + currentLevelData.Value).ToString("F0"); // 셋째줄: 업글 후
+
+            // 낚시속도는 소수점 표시
+            if (type == StatType.BaseFishingSpeed)
+                statCurrentValueText.text = curTotal.ToString("F1");
+            else
+                statCurrentValueText.text = curTotal.ToString("F0");
+            // 낚시속도는 감소, 나머지는 증가
+            if (type == StatType.BaseFishingSpeed)
+                statNextValueText.text = (curTotal - currentLevelData.Value).ToString("F1");
+            else
+                statNextValueText.text = (curTotal + currentLevelData.Value).ToString("F0");
         }
         else
         {
@@ -437,6 +444,7 @@ public class UpgradeManagerV2 : MonoBehaviour
         {
             case StatType.BaseHunger: return playerData.MaxHunger;
             case StatType.BaseStamina: return playerData.MaxStamina;
+            case StatType.BaseFishingSpeed: return playerData.MaxFishingSpeed;
             default: return 0;
         }
     }
@@ -446,15 +454,19 @@ public class UpgradeManagerV2 : MonoBehaviour
         UpgradeData currentLevelData = FindCurrentLevelData(type, level);
         if (currentLevelData == null) return;
 
+        string costStr = currentLevelData.IsMax ? "MAX" : currentLevelData.Cost.ToString();
+        foreach (var text in buyCostTexts) text.text = costStr;
+
         if (currentLevelData.IsMax)
         {
-            buyCostText.text = "MAX";
-            buyButton.interactable = false;
+            enableButton.SetActive(false);         
+            disableButton.SetActive(true);         
         }
         else
         {
-            buyCostText.text = currentLevelData.Cost.ToString();
-            buyButton.interactable = (GameManager.Instance.PlayerGold >= currentLevelData.Cost);
+            bool canBuy = GameManager.Instance.PlayerGold >= currentLevelData.Cost;
+            enableButton.SetActive(canBuy);          
+            disableButton.SetActive(!canBuy);        
         }
     }
 
@@ -490,42 +502,42 @@ public class UpgradeManagerV2 : MonoBehaviour
         currentPageIndex = 0;
         UpdatePage();
     }
-    int GetBodyIndex(int doongDoongStat)
+
+    [ContextMenu("테스트용 업그레이드 레벨 리셋")]
+    void ResetUpgradeLevels()
     {
-        for (int i = 0; i < bodyThresholds.Length; i++)
+        // playerData 레벨도 같이 리셋
+        if (playerData != null)
         {
-            if (doongDoongStat < bodyThresholds[i])
-                return i;
+            playerData.HungerLevel = 0;
+            playerData.StaminaLevel = 0;
+            playerData.MoveSpeedLevel = 0;
+            playerData.FishingSpeedLevel = 0;
+            playerData.RestSpeedLevel = 0;
         }
-        return bodySprites.Length - 1;
+
+        var data = DataManager.Instance.Box.Character;
+        if (data == null) return;
+
+        data._hunger.Level = 0;
+
+        data._moveSpeed.Level = 0;
+
+        data._fishingSpeed.Level = 0;
+
+        data._restSpeed.Level = 0;
+
+        DataManager.Instance.SaveAll();
+        DataManager.Instance.Hub.UploadAllData(); // 파베에도 반영
     }
- 
+    [ContextMenu("전체 데이터 초기화")]
+    void ResetDataAll()
+    {
+        // 모든 유저 데이터를 새 걸로 교체
+        DataManager.Instance.Hub._allUserData = new UserAllData();
 
-    //[ContextMenu("테스트용 업그레이드 레벨 리셋")]
-    //void ResetUpgradeLevels()
-    //{
-    //    // playerData 레벨도 같이 리셋
-    //    if (playerData != null)
-    //    {
-    //        playerData.HungerLevel = 0;
-    //        playerData.StaminaLevel = 0;
-    //        playerData.MoveSpeedLevel = 0;
-    //        playerData.FishingSpeedLevel = 0;
-    //        playerData.RestSpeedLevel = 0;
-    //    }
-
-    //    var data = DataManager.Instance.Box.Character;
-    //    if (data == null) return;
-
-    //    data._hunger.Level = 0;
-
-    //    data._moveSpeed.Level = 0;
-
-    //    data._fishingSpeed.Level = 0;
-
-    //    data._restSpeed.Level = 0;
-
-    //    DataManager.Instance.SaveAll();
-    //    DataManager.Instance.Hub.UploadAllData(); // 파베에도 반영
-    //}
+        // Firebase에 빈 데이터 업로드
+        DataManager.Instance.SaveAll();
+        DataManager.Instance.Hub.UploadAllData();
+    }
 }

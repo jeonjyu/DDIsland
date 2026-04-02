@@ -15,6 +15,8 @@ public struct FishingContext
     public bool IsSnow;
     public int GoldAmount;
     public int SeasonChange;
+    public int FishPool;
+    public float FishLengthBonus;
 }
 
 public enum SpecialType
@@ -29,6 +31,7 @@ public enum SpecialType
 }
 public class FishManager : Singleton<FishManager>
 {
+    [SerializeField] PlayerController _playerController;
     Dictionary<int, FishDataSO> _fishById;
     List<FishDataSO> _allFish;
     // 추가한 부분입니다
@@ -163,7 +166,9 @@ public class FishManager : Singleton<FishManager>
         //날씨, 골드도 필요함 일단테스트
         //ctx.GoldAmount = GameManager.Instance.PlayerGold;
         ctx.GoldAmount = 50000;
-        ctx.IsCherryblossom = true;
+        ctx.IsCherryblossom = true; 
+        ctx.FishPool = _playerController.BaitFishPool;
+        ctx.FishLengthBonus = _playerController.BobberLengthBonus;
         return ctx;
     }
 
@@ -205,32 +210,21 @@ public class FishManager : Singleton<FishManager>
             Debug.LogWarning("[FishManager] PickWeighted 실패");
             return;
         }
-
-        int fishId = pickedDrop.RewardItem;  //뽑힌 드랍의 RewardItem을 fishId로 사용
-
-        var fishSO = GetFishSO(fishId);  //뽑힌 드랍의 RewardItem을 fishId로 사용
-        if (fishSO == null)
-        {
-            Debug.LogWarning($"[FishManager] FishDataSO 못찾음 fishId={fishId}");
-            return;
-        }
-        QuestManager.Instance.AddSimpleProgress(QuestConditionKey.FishingCount, 1);
-
-        if (fishId == 10001 || fishId == 10005)
-        {
-            QuestManager.Instance.AddDetailsProgress(QuestConditionKey.FishCatchById,fishId.ToString(),1);
-        }
-        CreateInstance(fishSO);  //길이,가격 계산 후 저장
+        GiveFishingReward(pickedDrop.RewardItem, ctx);
     }
 
-    public void CreateInstance(FishDataSO fish)  
+    public void CreateInstance(FishDataSO fish, FishingContext ctx)  
     {
-        float length = UnityEngine.Random.Range(fish.MinLength, fish.MaxLength);
+        float min = fish.MinLength + ctx.FishLengthBonus;
+        float max = fish.MaxLength + ctx.FishLengthBonus;
+
+        float length = UnityEngine.Random.Range(min, max);
         int price = fish.Price;
 
         Debug.Log($"Name: {fish.FishName_String}, price: {price}, Length: {length}");
 
         FishToStorage(fish, length, price);
+        EmojiController.Instance.ShowFishEmoji(fish);
         OnFishGet?.Invoke(fish.ID, length); // 낚았다 
     }
 
@@ -280,6 +274,8 @@ public class FishManager : Singleton<FishManager>
             //장소 조건
             if (ctx.IsLake && !drop.IsLake) continue;
             if (ctx.IsSea && !drop.IsSea) continue;
+
+            if (ctx.FishPool != 0 && drop.RewardGroup != ctx.FishPool) continue;
 
             int fishId = drop.RewardItem;
             if (!PassSpecialRuleByFishId(fishId, ctx)) continue;
@@ -344,23 +340,15 @@ public class FishManager : Singleton<FishManager>
         {
             return candidates[UnityEngine.Random.Range(0, candidates.Count)];
         }
+        float r = UnityEngine.Random.Range(0f, total);
+        float acc = 0f;
 
-        // 2026.03.19: 재화 획득 확률이 반영되지 않아 명시적으로 추가해줌
-        // 추후 리팩토링 해야함
-
-        // total + 20은 Fish 테이블에 없는 음반 조각 확률 수치를 직접 추가한 것
-        float r = UnityEngine.Random.Range(0, total + 20);
-        float acc = 0;
-
-        // 물고기가 잡혔다면 반복문 안에서 반환될 것
         for (int i = 0; i < candidates.Count; i++)
         {
             acc += GetWeight(candidates[i], ctx);
-            if (r < acc) return candidates[i];
+            if (r < acc)
+                return candidates[i];
         }
-
-        // 물고기 가중치 안에 아무것도 안나옴 → 음반 조각 1개 추가
-        DataManager.Instance.RecordDatabase.LpPieceCount++;
         return null;
     }
     public float GetWeight(FishingDropDataSO drop, FishingContext ctx)
@@ -372,6 +360,47 @@ public class FishManager : Singleton<FishManager>
             weight += drop.UpProbability;
         }
         return weight;
+    }
+    public void GiveFishingReward(int rewardItemId, FishingContext ctx)
+    {
+        if (rewardItemId == 201)  //LP보상
+        {
+            GiveCurrencyReward(rewardItemId);
+            return;
+        }
+        var fishSO = GetFishSO(rewardItemId);  //물고기
+        if (fishSO == null) 
+        {
+            Debug.LogWarning($"[FishManager] FishDataSO 못찾음 rewardItemId={rewardItemId}");
+            return;
+        }
+        QuestManager.Instance.AddSimpleProgress(QuestConditionKey.FishingCount, 1);
+
+        if (rewardItemId == 10001 || rewardItemId == 10005)
+        {
+            QuestManager.Instance.AddDetailsProgress(QuestConditionKey.FishCatchById,rewardItemId.ToString(),1);
+        }
+
+        CreateInstance(fishSO,ctx);
+        
+        if ((int)fishSO.gradeType == 4)
+        {
+            DataManager.Instance.Hub.SaveAllData();
+        }
+    }
+    private void GiveCurrencyReward(int rewardItemId)
+    {
+        switch (rewardItemId)
+        {
+            case 201:
+                DataManager.Instance.RecordDatabase.LpPieceCount++;
+                Debug.Log("[FishManager] LP 조각 1개 획득");
+                break;
+
+            default:
+                Debug.LogWarning($"[FishManager] LP말고 다른 재화 보상나옴 ID={rewardItemId}");
+                break;
+        }
     }
     public void OpenPiraruku(DayilyCycle dayilyCycle)
     {

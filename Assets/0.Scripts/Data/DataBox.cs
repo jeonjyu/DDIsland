@@ -8,22 +8,22 @@ using System.Collections.Generic;
 public class UserAllData
 {
     //환경 및 시간
-    public Environment_Data Environment = new ();
+    public Environment_Data Environment = new();
 
     //재화
-    public Character_Data Character = new ();
+    public Character_Data Character = new();
 
     // 상점 관련
     public Store_Data Store = new();
 
     //배치 상태
-    public Decoration_Data Decoration = new ();
+    public Decoration_Data Decoration = new();
 
     //수집 및 도감
-    public Collection_Data Collection = new ();
+    public Collection_Data Collection = new();
 
-    //진행도
-    public Progress_Data Progress = new ();
+    //퀘스트
+    public Quest_Data Progress = new();
 
     //물고기 보관함
     public Fishstoage_Data fishstoage = new();
@@ -34,7 +34,11 @@ public class UserAllData
     //재화
     public Currency_Data Currency = new();
 
+    //음반
     public Record_Data Record = new();
+
+    //우편
+    public Mail_Data Mail = new();
 }
 
 [Serializable]
@@ -52,11 +56,17 @@ public class Character_Data
     public StatData _restSpeed = new();
 
     public int _doongdoongStat;
+
+    public int _equippedHatId;
+    public int _equippedBodyId;
+    public int _equippedFishingRodId;
+    public int _equippedBaitId;
+    public int _equippedBobberId;
 }
 [Serializable]
 public class Decoration_Data
 {
-    public List<PlacedObjectData> _buildings = new (); // 섬에 배치된 건물들
+    public List<PlacedObjectData> _buildings = new(); // 섬에 배치된 건물들
 
     public List<FixedObjectData> _fixedBuildings = new();
 }
@@ -68,35 +78,40 @@ public class Collection_Data
     public List<int> _unlockedCostumeIds = new(); // 해금된 코스튬 ID
     public List<int> _unlockedInteriorIds = new();// 해금된 인테리어 ID
     public List<int> _unlockedFoodIds = new();    // 해금된 음식 ID
-    public List<int> _unlockedAlbumIds = new ();  // 해금된 음반 ID 
+    public List<int> _unlockedAlbumIds = new();  // 해금된 음반 ID 
     public List<FishRecordData> _fishRecords = new(); // 어종 최고 기록
 }
 
-// 얘는 아직 어떻게 활용해야할지 모르겠음. 필요 없으면 그냥 갖다 버릴 것
+// 얘는 아직 어떻게 활용해야할지 모르겠음. 필요 없으면 그냥 갖다 버릴 것 => 퀘스트 진행 저장용으로 전환
 [Serializable]
-public class Progress_Data
+public class Quest_Data
 {
-    public List<int> activeQuestIds = new ();   // 현재 진행 중인 퀘스트
-    public List<int> shopPurchaseCounts = new (); // 상점 품목별 구매 횟수
+    public List<int> _completedQuests = new();
+
+    public List<SimpleProgressData> _simpleProgressList = new();
+
+    public List<DetailsProgressData> _detailsProgressList = new();
 }
 [Serializable]
 public class Currency_Data
 {
     public int _gold;
-    
+
 }
 [Serializable]
 public class Store_Data
 {
     public List<int> _ownedCostumes = new(); // 소유한 코스튬 ID
     public List<int> _ownedFishings = new(); // 소유한 낚시 장비 ID
+    public List<int> _ownedLakeItems = new(); // 소유한 호수 아이템 ID
+    public List<int> _ownedRecipes = new(); // 소유한 레시피 ID
     public List<LakeInvenSlot> _inventory = new(); // 구매해서 현재 보유한 건물들
     public int _currentCostumeId;  // 현재 착용 중인 ID
 }
 [Serializable]
 public class Fishstoage_Data
 {
-    public int StorageLevel = 1;      
+    public int StorageLevel = 1;
     public long AcquireCounter = 0;   // 획득 순서 카운터
 
     public List<SavedFishSlotData> SlotList = new();
@@ -104,9 +119,9 @@ public class Fishstoage_Data
 [Serializable]
 public class Foodstorage_Data
 {
-    public int StorageLevel;       
-    public long AcquireCounter;  
-    
+    public int StorageLevel;
+    public long AcquireCounter;
+
     public List<SavedFoodSlotData> SavedSlots = new();
 }
 [Serializable]
@@ -121,6 +136,16 @@ public class Record_Data
     // 가장 많이 들은 음반 통계용 데이터
     public List<RecordPlayCount> _playCounts = new();
 }
+
+[Serializable]
+public class Mail_Data
+{
+    public List<string> _readMailIDs = new();
+    public List<string> _claimedMailIDs = new();
+    public List<string> _deletedMailIDs = new();
+}
+
+
 
 #region 변수 저장 클래스
 [Serializable]
@@ -151,7 +176,7 @@ public class SavedFoodSlotData
 {
     public int Index; // 보관함 위치 인덱스
     public int FoodId;
-    public int Count;  
+    public int Count;
     public long LastAcquiredOrder;
 }
 [Serializable]
@@ -159,6 +184,7 @@ public class StatData
 {
     public float Value; // 현재 수치
     public int Level;   // 강화 단계
+    public float MaxValue; // 최대 수치 (add 타입용)
 }
 [Serializable]
 public class FishRecordData
@@ -172,5 +198,18 @@ public class RecordPlayCount
 {
     public int RecordId;
     public int PlayCount;
+}
+[Serializable]
+public class SimpleProgressData
+{
+    public QuestConditionKey Key;
+    public int Value;
+}
+
+[Serializable]
+public class DetailsProgressData
+{
+    public string Id;
+    public int Value;
 }
 #endregion

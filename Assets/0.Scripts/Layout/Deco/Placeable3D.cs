@@ -29,6 +29,11 @@ public class Placeable3D : Placeable
     [SerializeField] int _sizeX;
     [SerializeField] int _sizeY;
 
+    [SerializeField] private AudioClip _placedAudio;
+
+    private bool _isInvalidRotation = false;
+    private int _lastRotated;
+
     #region 레이캐스트
     [SerializeField, ReadOnly] private Vector2Int _cachedIndex;
     //private bool _hasHit;
@@ -63,7 +68,6 @@ public class Placeable3D : Placeable
         }
     }
 
-    // 이곳에 data라는 인테리어SO를 추가시켜야함
     public void Initialize(GridSystem grid, BuildingManager build, InteriorDataSO data)
     {
         _build = build;
@@ -98,6 +102,20 @@ public class Placeable3D : Placeable
             }
             else
             {
+                if (_isInvalidRotation)
+                {
+                    _isRotated = _lastRotated;
+                    _currentYRotation = _isRotated * _rotationStep;
+                    _cachedIndex = _lastPlacedIndex;
+
+                    Vector3 snapPos = _targetGrid.GetWorldPosition(_lastPlacedIndex.x, _lastPlacedIndex.y, _lastPlacedSize.x, _lastPlacedSize.y);
+                    transform.SetPositionAndRotation(snapPos, Quaternion.Euler(0, _currentYRotation, 0));
+
+                    _isInvalidRotation = false;
+                    _targetGrid.PlaceItem(_lastPlacedIndex.x, _lastPlacedIndex.y, _lastPlacedSize.x, _lastPlacedSize.y, this);
+
+                    VisualFeedback();
+                }
                 _targetGrid.ClearGrid();
             }
         }
@@ -106,11 +124,6 @@ public class Placeable3D : Placeable
     public void ObjectRotate()
     {
         if (IsEditable == false) return;
-
-        if (ItemState == ItemState.Placed)
-        {
-            _targetGrid.RemoveItem(_lastPlacedIndex.x, _lastPlacedIndex.y, _lastPlacedSize.x, _lastPlacedSize.y);
-        }
 
         Vector2Int currentPivotCell = _cachedIndex + GetRotatedPivot();
 
@@ -121,39 +134,44 @@ public class Placeable3D : Placeable
         Vector2Int newSize = GetRotatedSize();
         Vector2Int newIndex = currentPivotCell - GetRotatedPivot();
 
-        bool canRotate = _targetGrid.IsCellEmpty(newIndex.x, newIndex.y, newSize.x, newSize.y, this);
-        if (!canRotate)
+        if (ItemState == ItemState.Placed)
         {
-            _isRotated = originalRotated;
-
-            // 원래 있던 자리에 다시 나를 채워넣음
-            if (ItemState == ItemState.Placed)
+            if (!_isInvalidRotation)
             {
-                _targetGrid.PlaceItem(_lastPlacedIndex.x, _lastPlacedIndex.y, _lastPlacedSize.x, _lastPlacedSize.y, this);
+                _targetGrid.RemoveItem(_lastPlacedIndex.x, _lastPlacedIndex.y, _lastPlacedSize.x, _lastPlacedSize.y);
             }
-            Debug.Log("공간 부족! 건물을 들어올립니다.");
-            _build.PickUpBuilding(this);
-            return;
+
+            bool canRotate = _targetGrid.IsCellEmpty(newIndex.x, newIndex.y, newSize.x, newSize.y, this);
+
+            _currentYRotation = _isRotated * _rotationStep;
+            _cachedIndex = newIndex;
+            Vector3 snapPos = _targetGrid.GetWorldPosition(_cachedIndex.x, _cachedIndex.y, newSize.x, newSize.y);
+            transform.SetPositionAndRotation(snapPos, Quaternion.Euler(0, _currentYRotation, 0));
+
+            if (!canRotate)
+            {
+                _isInvalidRotation = true;
+            }
+            else
+            {
+                _isInvalidRotation = false;
+                _lastRotated = _isRotated;
+                _lastPlacedIndex = _cachedIndex;
+                _lastPlacedSize = newSize;
+                _targetGrid.PlaceItem(_cachedIndex.x, _cachedIndex.y, newSize.x, newSize.y, this);
+            }
         }
-
-        _currentYRotation = _isRotated * _rotationStep;
-        _cachedIndex = newIndex;
-
-        if (ItemState == ItemState.Placed)
+        else if (ItemState == ItemState.Preview)
         {
-            _lastPlacedIndex = _cachedIndex;
-            _lastPlacedSize = newSize;
-        }
+            _currentYRotation = _isRotated * _rotationStep;
+            _cachedIndex = newIndex;
 
+            Vector3 snapPos = _targetGrid.GetWorldPosition(_cachedIndex.x, _cachedIndex.y, newSize.x, newSize.y);
+            transform.SetPositionAndRotation(snapPos, Quaternion.Euler(0, _currentYRotation, 0));
 
-        Vector3 snapPos = _targetGrid.GetWorldPosition(_cachedIndex.x, _cachedIndex.y, newSize.x, newSize.y);
-        transform.SetPositionAndRotation(snapPos, Quaternion.Euler(0, _currentYRotation, 0));
-
-        if (ItemState == ItemState.Placed)
-        {
-            _targetGrid.PlaceItem(_cachedIndex.x, _cachedIndex.y, newSize.x, newSize.y, this);
         }
         VisualFeedback();
+
     }
     // 마우스 위치를 그리드 좌표로 변환
     public override Vector2Int ConvertedIndex()
@@ -196,7 +214,7 @@ public class Placeable3D : Placeable
     }
 
     // 아이템을 그리드에 배치
-    public override void Placement()
+    public override void Placement(AudioClip audio)
     {
         if (IsEditable == false && ItemState == ItemState.Placed) return;
         Vector2Int index = _cachedIndex;
@@ -210,6 +228,10 @@ public class Placeable3D : Placeable
             {
                 _targetGrid.RemoveItem(_lastPlacedIndex.x, _lastPlacedIndex.y, _lastPlacedSize.x, _lastPlacedSize.y);
             }
+
+            _isPlaced = true;
+            ItemState = ItemState.Placed;
+
             // 그리드에 아이템 배치
             _targetGrid.PlaceItem(index.x, index.y, size.x, size.y, this);
 
@@ -221,8 +243,8 @@ public class Placeable3D : Placeable
 
             _targetGrid.ClearGrid(); // 셰이더 하이라이트 초기화
 
-            _isPlaced = true;
-            ItemState = ItemState.Placed;
+            SoundManager.Instance.PlaySFX(audio);
+
             _build.CompletePlacement(this);
         }
     }
@@ -246,8 +268,7 @@ public class Placeable3D : Placeable
         }
         else
         {
-            _selectedRenderer.material.color = _originalColor;
-            //_targetGrid.UpdateShaderHover(index, size, false);
+            _selectedRenderer.material.color = _isInvalidRotation ? _fail : _originalColor;
         }
         _targetGrid.UpdateShaderHover(index, size, placeAble);
 
@@ -313,7 +334,7 @@ public class Placeable3D : Placeable
     public void SetBakeData(Vector2Int index, Vector2Int size)
     {
         _cachedIndex = index;
-        _lastPlacedIndex = index; 
+        _lastPlacedIndex = index;
         _lastPlacedSize = size;
         _sizeX = size.x;
         _sizeY = size.y;

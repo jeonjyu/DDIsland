@@ -1,0 +1,1 @@
+public class AMBSlotPool : SinglePoolManager<UI_AMBSlot> { }

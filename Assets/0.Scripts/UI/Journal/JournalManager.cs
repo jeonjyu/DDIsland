@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.InputSystem;
 
 /// <summary>
 /// UI만 담당: 창 열기/닫기, 탭 전환, 카테고리 전환, 필터 적용
@@ -43,8 +44,8 @@ public class JournalManager : MonoBehaviour
     [Header("필터/정렬 드롭다운")]
     [SerializeField] private JournalFilterDropdown filterDropdown; // 전체/등록/미등록
 
-    [Header("카테고리 라벨 설정")]
-    [SerializeField] private string[] journalCategoryNames = { "어종", "코스튬", "인테리어", "음반", "음식" };
+    //[Header("카테고리 라벨 설정")]
+    //[SerializeField] private string[] journalCategoryNames = { "어종", "코스튬", "인테리어", "음반", "음식" };
 
     [Header("카테고리 버튼 색상")]
     [SerializeField] private Image[] categoryBackgrounds;  // 각 버튼의 Background Image
@@ -58,9 +59,9 @@ public class JournalManager : MonoBehaviour
     private readonly Color selectedTabBg = new Color(0.99f, 0.97f, 0.91f, 1f);   // 크림색
     private readonly Color unselectedTabBg = new Color(0.78f, 0.62f, 0.41f, 1f); // 갈색
 
-    // 선택/미선택 색상 (프리팹에서 뽑은 값)
+    // 선택/미선택 색상 
     private readonly Color selectedBg = new Color(0.99f, 0.97f, 0.91f, 1f);      // 크림색
-    private readonly Color unselectedBg = new Color(0.78f, 0.62f, 0.41f, 1f);    // 갈색
+    private readonly Color unselectedBg = new Color(0.83f, 0.71f, 0.60f, 1f); // 베이지색
     private readonly Color selectedOutline = new Color(0.88f, 0.80f, 0.66f, 1f);  // 밝은 테두리
     private readonly Color unselectedOutline = new Color(0.56f, 0.44f, 0.29f, 1f);// 어두운 테두리
 
@@ -96,16 +97,107 @@ public class JournalManager : MonoBehaviour
         if (uiRecord != null && uiRecord.recordUnlock != null) // 음반 이벤트 구독 
             uiRecord.recordUnlock.OnRecordUnlock += OnRecordUnlocked;
     }
+
+    private void Update()
+    {
+        if (Keyboard.current != null
+            && Keyboard.current.escapeKey.wasPressedThisFrame
+            && journalPanel != null
+            && journalPanel.activeSelf)
+        {
+            if (detailPopup != null && detailPopup.gameObject.activeSelf)
+            {
+                detailPopup.Hide();
+                return;
+            }
+
+            CloseJournal();
+        }
+    }
+
+
+    // 외부 연동, 아이템 해금 시 호출 (상점 구매, 낚시 획득, 요리 완성 등)
+    public void OnItemUnlocked(JournalCategory category, int itemId)
+    {
+        // Collection_Data에 ID 추가 (중복 방지)
+        var collection = DataManager.Instance.Box.Collection;
+        bool newUnlocked = false;
+
+        switch (category)
+        {
+            case JournalCategory.Fish:
+                if (!collection._unlockedFishIds.Contains(itemId))
+                {
+                    collection._unlockedFishIds.Add(itemId);
+                    newUnlocked = true;
+                    collection._unlockedFishIds.Add(itemId);
+                    QuestManager.Instance.SetSimpleProgress(QuestConditionKey.FishGuideRegisteredCount, collection._unlockedFishIds.Count);
+                }
+                break;
+            case JournalCategory.Costume:
+                if (!collection._unlockedCostumeIds.Contains(itemId))
+                {
+                    collection._unlockedCostumeIds.Add(itemId);
+                    newUnlocked = true;
+                    collection._unlockedCostumeIds.Add(itemId);
+                    QuestManager.Instance.SetSimpleProgress(QuestConditionKey.CostumeGuideRegisteredCount, collection._unlockedCostumeIds.Count);
+                }
+                break;
+            case JournalCategory.Interior:
+                if (!collection._unlockedInteriorIds.Contains(itemId))
+                {
+                    collection._unlockedInteriorIds.Add(itemId);
+                    newUnlocked = true;
+                    collection._unlockedInteriorIds.Add(itemId);
+                    QuestManager.Instance.SetSimpleProgress(QuestConditionKey.InteriorGuideRegisteredCount, collection._unlockedInteriorIds.Count);
+                }
+                break;
+            case JournalCategory.Album:
+                if (!collection._unlockedAlbumIds.Contains(itemId))
+                {
+                    collection._unlockedAlbumIds.Add(itemId);
+                    newUnlocked = true;
+                }
+                break;
+            case JournalCategory.Food:
+                if (!collection._unlockedFoodIds.Contains(itemId))
+                {
+                    collection._unlockedFoodIds.Add(itemId);
+                    newUnlocked = true;
+                    collection._unlockedFoodIds.Add(itemId); QuestManager.Instance.SetSimpleProgress(QuestConditionKey.FoodGuideRegisteredCount, collection._unlockedFoodIds.Count);
+                }
+                break;
+        }
+
+        //// 현재 보고 있는 카테고리면 슬롯 갱신
+        //if (currentCategory == category && journalPanel.activeSelf)
+        //{
+        //    RefreshSlots();
+        //}
+
+        if (newUnlocked)
+        {
+            DataManager.Instance.Hub.SaveAllData();
+
+            // UI가 켜져있다면 즉시 새로고침
+            if (currentCategory == category && journalPanel.activeSelf)
+            {
+                RefreshSlots();
+            }
+        }
+
+    }
+
     private void OnRecordUnlocked(RecordDataSO record)
     {
         OnItemUnlocked(JournalCategory.Album, record.RecordID);
-    }
+    } // 음반
     private void OnFishGet(int fishId, float length)
     {
         UpdateFishRecord(fishId, length);
         OnItemUnlocked(JournalCategory.Fish, fishId);
-    }
-    private void UpdateFishRecord(int fishId, float length)
+    } // 낚시 
+    private void UpdateFishRecord(int fishId, float length) 
     {
         var records = DataManager.Instance.Box.Collection._fishRecords;
         for (int i = 0; i < records.Count; i++)
@@ -114,16 +206,17 @@ public class JournalManager : MonoBehaviour
             {
                 if (length > records[i].MaxLength)
                     records[i].MaxLength = length;
+
+                DataManager.Instance.Hub.SaveAllData();
                 return;
             }
         }
         records.Add(new FishRecordData { FishId = fishId, MaxLength = length });
-    }
-
+    } 
     private void OnFoodCooked(int foodId)
     {
         OnItemUnlocked(JournalCategory.Food, foodId);
-    }
+    }  // 요리 
 
     // 상점 구매 시 도감 해금 처리
     private void OnStoreItemAdded(IStoreItem item, StoreCat storeCat)
@@ -138,6 +231,8 @@ public class JournalManager : MonoBehaviour
                 break;
         }
     }
+  
+    
     // 버튼들 초기화
     private void SetupButtons()
     {
@@ -206,10 +301,11 @@ public class JournalManager : MonoBehaviour
         //    questTabText.text = JournalLocalize.Tab(MainTab.Quest);
         //if (journalTabText != null)
         //    journalTabText.text = JournalLocalize.Tab(MainTab.Journal);
-        foreach (var t in questTabTexts)
-            if (t != null) t.text = JournalLocalize.Tab(MainTab.Quest);
-        foreach (var t in journalTabTexts)
-            if (t != null) t.text = JournalLocalize.Tab(MainTab.Journal);
+        //foreach (var t in questTabTexts)
+        //    if (t != null) t.text = JournalLocalize.Tab(MainTab.Quest);
+        //foreach (var t in journalTabTexts)
+        //    if (t != null) t.text = JournalLocalize.Tab(MainTab.Journal);
+
         // 도감 영역 통째로 끄기
         if (journalArea != null)
             journalArea.SetActive(tab == MainTab.Journal);
@@ -340,23 +436,28 @@ public class JournalManager : MonoBehaviour
     // 카테고리 라벨 업데이트
     private void UpdateCategoryLabels()
     {
-        if (currentMainTab == MainTab.Journal)
+        //if (currentMainTab == MainTab.Journal)
+        //{
+        //    for (int i = 0; i < categoryTexts.Length; i++)
+        //    { 
+        //        if (categoryTexts[i] != null)
+        //            categoryTexts[i].text = JournalLocalize.Category((JournalCategory)i); 
+        //    }
+        //}
+        //else
+        //{
+        //    // TODO: 퀘스트 카테고리 라벨 (상점, 낚시, 도감, 성장, 완료퀘스트)
+        //    string[] questCategoryNames = { "상점", "낚시", "도감", "성장", "완료" };
+        //    for (int i = 0; i < categoryTexts.Length; i++)
+        //    {
+        //        if (categoryTexts[i] != null && i < questCategoryNames.Length)
+        //            categoryTexts[i].text = questCategoryNames[i];
+        //    }
+        //}
+        for (int i = 0; i < categoryTexts.Length; i++)
         {
-            for (int i = 0; i < categoryTexts.Length; i++)
-            { 
-                if (categoryTexts[i] != null)
-                    categoryTexts[i].text = JournalLocalize.Category((JournalCategory)i); 
-            }
-        }
-        else
-        {
-            // TODO: 퀘스트 카테고리 라벨 (상점, 낚시, 도감, 성장, 완료퀘스트)
-            string[] questCategoryNames = { "상점", "낚시", "도감", "성장", "완료" };
-            for (int i = 0; i < categoryTexts.Length; i++)
-            {
-                if (categoryTexts[i] != null && i < questCategoryNames.Length)
-                    categoryTexts[i].text = questCategoryNames[i];
-            }
+            if (categoryTexts[i] != null)
+                categoryTexts[i].text = JournalLocalize.Category((JournalCategory)i);
         }
     }
 
@@ -368,78 +469,7 @@ public class JournalManager : MonoBehaviour
     }
 
 
-    // 외부 연동, 아이템 해금 시 호출 (상점 구매, 낚시 획득, 요리 완성 등)
-    public void OnItemUnlocked(JournalCategory category, int itemId)
-    {
-        // Collection_Data에 ID 추가 (중복 방지)
-        var collection = DataManager.Instance.Box.Collection;
-        bool newUnlocked = false;
-
-        switch (category) 
-        {
-            case JournalCategory.Fish:
-                if (!collection._unlockedFishIds.Contains(itemId))
-                {
-                    collection._unlockedFishIds.Add(itemId);
-                    newUnlocked = true;
-                    collection._unlockedFishIds.Add(itemId);
-                    QuestManager.Instance.SetSimpleProgress(QuestConditionKey.FishGuideRegisteredCount,collection._unlockedFishIds.Count);
-                }
-                break;
-            case JournalCategory.Costume:
-                if (!collection._unlockedCostumeIds.Contains(itemId))
-                {
-                    collection._unlockedCostumeIds.Add(itemId);
-                    newUnlocked = true;
-                    collection._unlockedCostumeIds.Add(itemId);
-                    QuestManager.Instance.SetSimpleProgress(QuestConditionKey.CostumeGuideRegisteredCount,collection._unlockedCostumeIds.Count);
-                }
-                break;
-            case JournalCategory.Interior:
-                if (!collection._unlockedInteriorIds.Contains(itemId))
-                {
-                    collection._unlockedInteriorIds.Add(itemId);
-                    newUnlocked = true;
-                    collection._unlockedInteriorIds.Add(itemId);
-                    QuestManager.Instance.SetSimpleProgress(QuestConditionKey.InteriorGuideRegisteredCount,collection._unlockedInteriorIds.Count);
-                }
-                break;
-            case JournalCategory.Album:
-                if (!collection._unlockedAlbumIds.Contains(itemId))
-                {
-                    collection._unlockedAlbumIds.Add(itemId);
-                    newUnlocked = true;
-                }
-                break;
-            case JournalCategory.Food:
-                if (!collection._unlockedFoodIds.Contains(itemId))
-                {
-                    collection._unlockedFoodIds.Add(itemId);
-                    newUnlocked = true;
-                    collection._unlockedFoodIds.Add(itemId);QuestManager.Instance.SetSimpleProgress(QuestConditionKey.FoodGuideRegisteredCount,collection._unlockedFoodIds.Count);
-                }
-                break;
-        }
-
-        //// 현재 보고 있는 카테고리면 슬롯 갱신
-        //if (currentCategory == category && journalPanel.activeSelf)
-        //{
-        //    RefreshSlots();
-        //}
-
-        if (newUnlocked)
-        {
-            DataManager.Instance.Hub.SaveAllData();
-
-            // UI가 켜져있다면 즉시 새로고침
-            if (currentCategory == category && journalPanel.activeSelf)
-            {
-                RefreshSlots();
-            }
-        }
-
-    }
-
+    
     private void OnDestroy()
     {
         foreach (var slot in slotUIs)

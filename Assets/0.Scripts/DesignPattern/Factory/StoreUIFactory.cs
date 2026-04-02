@@ -9,7 +9,7 @@ public class StoreUIFactory : MonoBehaviour
     [SerializeField] GameObject storeUI;
     // 아이템 목록 레이아웃 프리팹 리스트
     List<StoreProduct> Products => stores.storeProducts;
-    Dictionary<StoreCat, GameObject> popups = new Dictionary<StoreCat, GameObject>();
+    Dictionary<StoreCat, TradeViewModelBase> popups = new Dictionary<StoreCat, TradeViewModelBase>();
     List<TradeViewModelBase> popupList = new List<TradeViewModelBase>();
 
     void Awake()
@@ -21,7 +21,7 @@ public class StoreUIFactory : MonoBehaviour
         foreach (StoreProduct product in Products)
         {
             TradeViewModelBase pop = popupList.Find(match: x => x.gameObject.ToString() == product.TradePopup.ToString());
-            popups.Add(product.cat, pop.gameObject);
+            popups.Add(product.cat, pop);
         }
     }
 
@@ -44,7 +44,7 @@ public class StoreUIFactory : MonoBehaviour
         return Products.Find((x) => x.cat == storeCat).itemSlot;
     }
 
-    public GameObject GetPopupPanel(StoreCat storeCat) 
+    public TradeViewModelBase GetPopupPanel(StoreCat storeCat) 
     {
         return popups[storeCat];
     }

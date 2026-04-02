@@ -24,13 +24,16 @@ public class BasicSlot : ItemSlotView
     }
     public void UpdateItemCount(int count)
     {
-        _itemCount.text = count.ToString();
+        _itemCount.text = viewModel.Model.ItemCount.ToString();
     }
 
     public override void UpdateSlotUI(int count)
     {
         base.UpdateSlotUI(count);
         UpdateItemCount(count);
+        UpdateSlotColor(modelData.IsGained);
+
+        //Debug.Log(this + " UI 갱신");
 
     }
 }

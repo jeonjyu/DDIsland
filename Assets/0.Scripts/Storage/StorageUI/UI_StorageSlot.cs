@@ -9,13 +9,13 @@ public class UI_StorageSlot : MonoBehaviour
 
     [SerializeField] Image _icon;
     [SerializeField] GameObject _emptyOverlay;
-    [SerializeField] TextMeshProUGUI _countText;
-    [SerializeField] GameObject _textBackground;
 
     // 슬롯 내부 표시용 텍스트
     [SerializeField] private TextMeshProUGUI _itemNameText;
     [SerializeField] private TextMeshProUGUI _itemGradeText;
     [SerializeField] private TextMeshProUGUI _itemPriceText;
+
+    [SerializeField] private AudioClip _ButtonSFX;
 
     int _boundRealIndex = -1;  // 이 UI 슬롯이 대표하는 실제 데이터 슬롯 인덱스
 
@@ -36,7 +36,6 @@ public class UI_StorageSlot : MonoBehaviour
             // if (itemPriceText != null) itemPriceText.gameObject.SetActive(false);
 
             if (_emptyOverlay != null) _emptyOverlay.SetActive(true);
-            if (_countText != null) _countText.gameObject.SetActive(false);
             return;
         }
 
@@ -44,14 +43,6 @@ public class UI_StorageSlot : MonoBehaviour
         if (_emptyOverlay != null) _emptyOverlay.SetActive(false);
 
         int id = data.Value.FishId;
-        int count = data.Value.Count;
-
-        // 수량표시
-        if (_countText != null)
-        {
-            _countText.gameObject.SetActive(true);
-            _countText.text = $"x{count}";
-        }
 
         var def = DataManager.Instance.FishingDatabase.FishData[id];
 
@@ -69,14 +60,12 @@ public class UI_StorageSlot : MonoBehaviour
                 if (_itemGradeText != null) _itemGradeText.gameObject.SetActive(true);
                 // if (itemPriceText != null) itemPriceText.gameObject.SetActive(true);
             }
-
-            if (_countText != null) _countText.gameObject.SetActive(false);
             return;
         }
         Sprite sp = null;
         if (def.FishImgPath_Sprite != null)
         {
-            sp = def.FishImgPath_Sprite;
+            sp = def.BoxSlotImgPath_Sprite;
         }
 
         _icon.enabled = (sp != null);
@@ -98,9 +87,6 @@ public class UI_StorageSlot : MonoBehaviour
             _icon.enabled = false;
         }
 
-        if (_countText != null)
-            _countText.gameObject.SetActive(false);
-
         if (_itemNameText != null)
             _itemNameText.gameObject.SetActive(false);
 
@@ -109,9 +95,6 @@ public class UI_StorageSlot : MonoBehaviour
 
         if (_itemPriceText != null)
             _itemPriceText.gameObject.SetActive(false);
-
-        if (_textBackground != null) 
-            _textBackground.gameObject.SetActive(false);
     }
 
 
@@ -125,7 +108,7 @@ public class UI_StorageSlot : MonoBehaviour
         Debug.Log($"[UI슬롯 클릭됨] boundRealIndex={_boundRealIndex} name={gameObject.name}");
 
         if (_boundRealIndex < 0) return;
-
+        SoundManager.Instance.PlaySFX(_ButtonSFX);
         _parentUI.OnSlotClicked(_boundRealIndex);
     }
 }

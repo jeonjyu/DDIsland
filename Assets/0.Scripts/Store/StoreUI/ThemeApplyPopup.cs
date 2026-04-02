@@ -9,7 +9,7 @@ public class ThemeApplyPopup : MonoBehaviour
 
     public Button ApplyBtn;
 
-    public Action<int> OnApplyTheme;
+    public Action OnApplyTheme;
 
     private void OnEnable()
     {
@@ -24,11 +24,9 @@ public class ThemeApplyPopup : MonoBehaviour
 
     public void ApplyThisTheme()
     {
-        Debug.Log(_item.Filter);
-
         LakeItemManager.Instance.ChangedLakeSlot(_item);
-        Debug.Log("ThemeApplyPopup 테마 적용 완료");
-        
+        OnApplyTheme?.Invoke();
+        //Debug.Log("ThemeApplyPopup 테마 적용 완료");
         this.gameObject.SetActive(false);
     }
 }

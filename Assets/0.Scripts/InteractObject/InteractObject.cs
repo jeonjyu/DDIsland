@@ -13,14 +13,15 @@ public abstract class InteractObject : MonoBehaviour, IInteract
 
     protected void Start()
     {
+        if (outline == null) return;
         outline.enabled = false;
     }
 
     public virtual void OnMouseHoverIn()
     {
         if (!GameManager.Instance.InputManager.InputStateType.HasFlag(InputState.ObjectInteraction)) return;
-
-        if(!outline.enabled)
+        if (outline == null) return;
+        if (!outline.enabled)
             outline.enabled = true;
 
         GameManager.Instance.InputManager.RemoveInputState(InputState.UserInteraction);
@@ -28,6 +29,7 @@ public abstract class InteractObject : MonoBehaviour, IInteract
 
     public virtual void OnMouseHoverOut()
     {
+        if (outline == null) return;
         if (outline.enabled)
             outline.enabled = false;
 

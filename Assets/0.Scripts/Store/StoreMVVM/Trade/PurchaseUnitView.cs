@@ -62,6 +62,7 @@ public class PurchaseUnitView : TradeUnitViewBase
 
     public override ITradeStrategy GetTradeStrategy()
     {
+        if (strategy == null) strategy = GetComponent<PurchaseStrategy>();
         return strategy;
     }
    
@@ -79,7 +80,7 @@ public class PurchaseUnitView : TradeUnitViewBase
         // Tradecount가 0개일 경우 
         if (viewModel.TradeCount == 0)
         {
-            Debug.Log(this + " 구매 유닛 | 개수가 0");
+            //Debug.Log(this + " 구매 유닛 | 개수가 0");
 
             SetBtnInteractable(tradeBtn, false);
             SetBtnInteractable(countDecBtn, false);
@@ -88,7 +89,7 @@ public class PurchaseUnitView : TradeUnitViewBase
 
         if(viewModel.ItemCount >= GetTradeStrategy().GetMaxCount(viewModel.Model))
         {
-            Debug.Log(this + " 구매 유닛 | 현재 보유 개수가 최대");
+            //Debug.Log(this + " 구매 유닛 | 현재 보유 개수가 최대");
 
             SetAllButtonAvailablity(false);
             return;
@@ -96,7 +97,7 @@ public class PurchaseUnitView : TradeUnitViewBase
 
         if(viewModel.TradeCount >= GetTradeStrategy().GetMaxCount(viewModel.Model))
         {
-            Debug.Log(this + " 구매 유닛 | 구매 개수가 최대");
+            //Debug.Log(this + " 구매 유닛 | 구매 개수가 최대");
 
             SetBtnInteractable(countIncBtn, false);
             SetBtnInteractable (countMaxBtn, false);

@@ -5,20 +5,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-//public struct PlayerContext
-//{
-//    public int ID;
-//    public string Name;
-//    public float Hunger;
-//    public float Stamina;
-//    public float MoveSpeed;
-//    public float FishingSpeed;
-//    public float RestSpeed;
-//    public int DoongDoongStat;
-//    public int VisualGroupID;
-//    public int UpgradGroupID;
-//}
-
 public enum Point
 {
     Fish,Kitchen,Rest,Acorn,Table,Sell
@@ -74,24 +60,53 @@ public class PlayerController : MonoBehaviour
     [SerializeField] GameObject _chubbyPrefab;
     [SerializeField] GameObject _roundPrefab;
 
+    [SerializeField] FishingHookEffect _fishingHookEffect;
+
     [SerializeField] private GameObject _fishingRod;
     [SerializeField] private GameObject _fork;
     [SerializeField] private GameObject _pan;
 
-    [SerializeField] private GameObject[] hats;
-    [SerializeField] private GameObject[] bodys;
+    [SerializeField] private GameObject[] _hats;
+    [SerializeField] private GameObject[] _bodys;
+    [SerializeField] private GameObject[] _fishingRods;
     private Dictionary<int, GameObject> _hatById;
     private Dictionary<int, GameObject> _bodyById;
+    private Dictionary<int, GameObject> _fishingRodsById;
+
+    private int _equippedBaitId;  //저장용들임
+    private int _equippedBobberId;
+    private int _equippedHatId;
+    private int _equippedbodyId;
+    private int _equippedfishingRodsId;
+
+    private float _bobberLengthBonus;
+    private int _baitFishPool;
+
+    private EnvironmentModel _environment;
+    private DayilyCycle _currentSeason;
+    private bool _isSummerRain;
 
     private float _hungerTickTimer;
     private float _baseMoveSpeed;
     private bool _slowApplied;
+    private SkinnedMeshRenderer _currentSkinSource; //현재 상태를 저장하기 위한 변수입니다 +추가됨
 
     [SerializeField] private GameObject _acornPrefab;
     private readonly List<GameObject> _acorns = new();
     private int _acornIndex = 0; //도토리 프리팹 인덱스
 
     private Coroutine _recoverRoutine;
+
+    Dictionary<int, float> _fishRodSpeed;
+    private int _currentFishingRodsId;
+    private float _baseFishingSpeed;
+
+    [SerializeField] private AudioClip _fishingSfx;
+    [SerializeField] private AudioClip _sellSfx;
+    [SerializeField] private AudioClip _hungerSfx;
+    [SerializeField] private AudioClip _eatSfx;
+    [SerializeField] private AudioClip _cookSfx;
+    private bool _wasHungry;
 
     public Rigidbody2D Rigid => _rigid;
     public NavMeshAgent Agent => _agent;
@@ -111,6 +126,8 @@ public class PlayerController : MonoBehaviour
     public Transform TablePoint => _tablePoint;
     public Transform SellPoint => _SellPoint;
     public int FishingCount => _fishingCount;
+    public float BobberLengthBonus => _bobberLengthBonus;
+    public int BaitFishPool => _baitFishPool;
 
     private void Awake()
     {
@@ -124,6 +141,8 @@ public class PlayerController : MonoBehaviour
         PlayerDataOld = new PlayerData();
         _hatById = new Dictionary<int, GameObject>();
         _bodyById = new Dictionary<int, GameObject>();
+        _fishingRodsById = new Dictionary<int, GameObject>();
+        _fishRodSpeed = new Dictionary<int, float>();
     }
     private void Start()
     {
@@ -145,11 +164,26 @@ public class PlayerController : MonoBehaviour
         }
 
         _baseMoveSpeed = PlayerDataOld.MoveSpeed;
+        _baseFishingSpeed = PlayerDataOld.FishingSpeed;
         _fishingRod.gameObject.SetActive(false);
         _fork.gameObject.SetActive(false);
         _pan.gameObject.SetActive(false);
-
         BuildCostumeMap();
+
+        if (DataManager.Instance != null && DataManager.Instance.Hub != null)
+        {
+            if (DataManager.Instance.Hub.IsLoaded)
+            {
+                PlayerDataOld.SyncCharacterDataLoad();
+                SyncEquipDataLoad();
+            }
+            else
+            {
+                DataManager.Instance.Hub.OnDataLoaded += PlayerDataOld.SyncCharacterDataLoad;
+                DataManager.Instance.Hub.OnDataLoaded += SyncEquipDataLoad;
+            }
+        }
+
         RefreshCanCook();
     }
     private void Update()
@@ -183,6 +217,17 @@ public class PlayerController : MonoBehaviour
             DataManager.Instance.Hub.OnRequestSave += PlayerDataOld.SyncCharacterDataSave;
         if (PlayerManager.Instance != null)
             PlayerManager.Instance.OnEquipChanged += ChangeCostume;
+        if (EmojiController.Instance != null)
+        {
+            PlayerDataOld.OnHungerChanged += (_) => UpdateEmoji();
+            PlayerDataOld.OnStaminaChanged += (_) => UpdateEmoji();
+        }
+
+        if (DataManager.Instance != null && DataManager.Instance.Hub != null)
+        {
+            DataManager.Instance.Hub.OnRequestSave += PlayerDataOld.SyncCharacterDataSave;
+            DataManager.Instance.Hub.OnRequestSave += SyncEquipDataSave;
+        }
     }
 
     private void OnDisable()
@@ -202,22 +247,24 @@ public class PlayerController : MonoBehaviour
         }
         if (PlayerManager.Instance != null)
             PlayerManager.Instance.OnEquipChanged -= ChangeCostume;
+        if (EmojiController.Instance != null)
+        {
+            PlayerDataOld.OnHungerChanged -= (_) => UpdateEmoji();
+            PlayerDataOld.OnStaminaChanged -= (_) => UpdateEmoji();
+        }
+
+        if (DataManager.Instance != null && DataManager.Instance.Hub != null)
+        {
+            if (!DataManager.Instance.Hub.IsQuite)
+            {
+                DataManager.Instance.Hub.OnRequestSave -= PlayerDataOld.SyncCharacterDataSave;
+                DataManager.Instance.Hub.OnRequestSave -= SyncEquipDataSave;
+            }
+        }
     }
 
     public void ApplyPlayerStats(CharacterDataSO SO)
     {
-        //일단은 남겨둠 혹시모르니까
-        //playerData = new PlayerContext();
-        //playerData.ID = SO.ID;
-        //playerData.Name = SO.Name_String;
-        //playerData.Hunger = SO.BaseHunger;
-        //playerData.Stamina = SO.BaseStamina;
-        //playerData.MoveSpeed = SO.BaseMoveSpeed;
-        //playerData.FishingSpeed = SO.BaseFishingSpeed;
-        //playerData.RestSpeed = SO.BaseRestSpeed;
-        //playerData.DoongDoongStat = SO.BaseDoongDoongStat;
-        //playerData.VisualGroupID = SO.VisualGroupID;
-        //playerData.UpgradGroupID = SO.UpgradGroupID;
         PlayerDataOld.Initialize(SO);
     }
 
@@ -233,54 +280,89 @@ public class PlayerController : MonoBehaviour
         {
             SetBody(objectId);
         }
-        else
+         else if (typeName == "Pole")
+         {
+             SetTool(objectId);
+         }
+        else if (typeName == "Bait")
         {
-            Debug.LogWarning($"지원하지 않는 코스튬 타입: {typeName}");
+            SetBait(objectId);
         }
+        else if (typeName == "Bobber")
+        {
+            SetBobber(objectId);
+        }
+
+        DataManager.Instance.Hub.SaveAllData();
     }
     private void BuildCostumeMap()  //모자,옷을 ID로 빠르게 찾을 수 있게 딕셔너리
     {
         _hatById.Clear();
         _bodyById.Clear();
+        _fishingRodsById.Clear();
 
         var data = DataManager.Instance.DecorationDatabase.CostumeData.datas;
-        if (data == null) return;
+        var fishingItemData = DataManager.Instance.FishingDatabase.FishingItemData.datas;
 
-        int hatIndex = 0;
-        int bodyIndex = 0;
-
-        for (int i = 0; i < data.Count; i++)
+        if (data != null)
         {
-            if (data[i] == null) continue;
+            int hatIndex = 0;
+            int bodyIndex = 0;
 
-            if (data[i].costumeType == CostumeType.Head)
+            for (int i = 0; i < data.Count; i++)
             {
-                if (hatIndex >= hats.Length) continue;
-                if (hats[hatIndex] == null)
+                if (data[i] == null) continue;
+
+                if (data[i].costumeType == CostumeType.Head)
                 {
+                    if (hatIndex >= _hats.Length) continue;
+                    if (_hats[hatIndex] == null)
+                    {
+                        hatIndex++;
+                        continue;
+                    }
+
+                    _hatById[data[i].CostumeID] = _hats[hatIndex];
+                    _hats[hatIndex].SetActive(false);
                     hatIndex++;
-                    continue;
                 }
-
-                _hatById[data[i].CostumeID] = hats[hatIndex];
-                hats[hatIndex].SetActive(false);
-                hatIndex++;
-            }
-            else if (data[i].costumeType == CostumeType.Body)
-            {
-                if (bodyIndex >= bodys.Length) continue;
-                if (bodys[bodyIndex] == null)
+                else if (data[i].costumeType == CostumeType.Body)
                 {
-                    bodyIndex++;
-                    continue;
-                }
+                    if (bodyIndex >= _bodys.Length) continue;
+                    if (_bodys[bodyIndex] == null)
+                    {
+                        bodyIndex++;
+                        continue;
+                    }
 
-                _bodyById[data[i].CostumeID] = bodys[bodyIndex];
-                bodys[bodyIndex].SetActive(false);
-                bodyIndex++;
+                    _bodyById[data[i].CostumeID] = _bodys[bodyIndex];
+                    _bodys[bodyIndex].SetActive(false);
+                    bodyIndex++;
+                }
             }
         }
 
+        if (fishingItemData != null)
+        {
+            int toolIndex = 0;
+
+            for (int i = 0; i < fishingItemData.Count; i++)
+            {
+                if (fishingItemData[i] == null) continue;
+                if (fishingItemData[i].fishingitemType != FishingItemType.Pole) continue;
+                if (toolIndex >= _fishingRods.Length) continue;
+                if (_fishingRods[toolIndex] == null)
+                {
+                    toolIndex++;
+                    continue;
+                }
+
+                _fishingRodsById[fishingItemData[i].ID] = _fishingRods[toolIndex];
+                _fishRodSpeed[fishingItemData[i].ID] = fishingItemData[i].FishingSpeed;
+                _fishingRods[toolIndex].SetActive(false);
+                toolIndex++;
+            }
+        }
         Debug.Log($"Hat:{_hatById.Count}, Body:{_bodyById.Count}");
     }
     public void SetHat(int id)
@@ -295,6 +377,7 @@ public class PlayerController : MonoBehaviour
         if (_hatById.TryGetValue(id, out var hatObj))
         {
             hatObj.SetActive(true);
+            _equippedHatId = id;
             Debug.Log($"모자 장착 성공: {id}");
         }
         else Debug.LogWarning($"모자 ID 없음: {id}");
@@ -311,12 +394,56 @@ public class PlayerController : MonoBehaviour
         if (_bodyById.TryGetValue(id, out var bodyObj))
         {
             bodyObj.SetActive(true);
+            _equippedbodyId = id;
             Debug.Log($"의상 장착 성공: {id}");
         }
         else Debug.LogWarning($"의상 ID 없음: {id}");
     }
+     public void SetTool(int id)  //pole
+     {
+         foreach (var pair in _fishingRodsById)
+         {
+             pair.Value.SetActive(false);
+         }
 
+        if (id == 0)
+        {
+            _currentFishingRodsId = 0;
+            PlayerDataOld.SetFishingSpeed(_baseFishingSpeed);
+            if (_isFishingState) HandOnFishingRod();
+            return;
+        }
 
+        if (_fishingRodsById.TryGetValue(id, out var toolObj))
+         {
+             PlayerDataOld.SetFishingSpeed(_baseFishingSpeed - _fishRodSpeed[id]);
+            _currentFishingRodsId = id;
+            _equippedfishingRodsId = id;
+            if (_isFishingState) HandOnFishingRod();
+
+            Debug.Log($"의상 장착 성공: {id}");
+         }
+         else Debug.LogWarning($"의상 ID 없음: {id}");
+     }
+    public void SetBait(int id)
+    {
+        if (id == 0) id = 40001; // 하급 미끼 기본값
+        _equippedBaitId = id;
+
+        var data = DataManager.Instance.FishingDatabase.FishingItemData[id];
+        _baitFishPool = data != null ? data.FishPool : 0;
+
+        Debug.Log($"미끼 장착 성공: {id}");
+    }
+    public void SetBobber(int id)
+    {
+        if (id == 0) id = 40004; // 기본 낚시찌 기본값
+        _equippedBobberId = id;
+
+        var data = DataManager.Instance.FishingDatabase.FishingItemData[id];
+        _bobberLengthBonus = data != null ? data.FishLength : 0f;
+        Debug.Log($"낚시찌 장착 성공: {id}");
+    }
     public void StartAcornSupply(Vector3 center)  //도토리 떨어지는 함수
     {
         _isAcornFalling = true;
@@ -413,7 +540,7 @@ public class PlayerController : MonoBehaviour
 
         if (_acornPoint == acorn.transform)
             _acornPoint = null;
-
+        SoundManager.Instance.PlaySFX(_eatSfx);
         PlayerDataOld.SetHunger(PlayerDataOld.Hunger + 10);
 
         _acorns.RemoveAt(_acornIndex);
@@ -435,6 +562,8 @@ public class PlayerController : MonoBehaviour
         _agent.isStopped = true;
         _agent.ResetPath();
         _agent.velocity = Vector3.zero;
+
+        PullUpFishingHookEffect();
 
         ExitFishingState();
         _isFishing = false;
@@ -470,6 +599,8 @@ public class PlayerController : MonoBehaviour
     {
         if (!(_currentState is EatState))
             return;
+
+        SoundManager.Instance.PlaySFX(_eatSfx);
 
         int index = FoodStorageManager.Instance.TakeOutRandomFood();
         if (index == -1) return;
@@ -513,6 +644,7 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
+        SoundManager.Instance.PlaySFX(_cookSfx);
         var candidates = CookingManager.Instance.BuildCookCandidates(new CookingContext());
         var pickedFood = CookingManager.Instance.PickRecipe(candidates, new CookingContext());
         if (pickedFood == null)
@@ -522,7 +654,7 @@ public class PlayerController : MonoBehaviour
         }
         PendingFood = pickedFood;
         _isCooking = true;
-        PlayerDataOld.SetStamina(PlayerDataOld.Stamina - 10);
+        ConsumeStamina(10);
         _animator.SetBool("isCook", true);
          CookingManager.Instance.FoodIngredientsRemove(pickedFood);
     }
@@ -608,11 +740,19 @@ public class PlayerController : MonoBehaviour
     public void ApplyHungerTier()  //배고픔 단계에 따른 둥둥 감소 간격 조절
     {
         float interval = 0f;
+
         if (PlayerDataOld.Hunger <= 9) interval = 1f;
         else if (PlayerDataOld.Hunger <= 14) interval = 3f;
         else if (PlayerDataOld.Hunger <= 19) interval = 5f;
         else if (PlayerDataOld.Hunger <= 25) interval = 10f;
+
+        if (_isSummerRain)  interval /= 1.2f;
+
         ApplyHunger(interval);
+    }
+    private void HandleWeatherChanged(Season season, bool isPlaying)
+    {
+        _isSummerRain = (season == Season.Summer && isPlaying);
     }
     public void ApplyHunger(float inter)  //배고픔 단계에 따른 둥둥 감소 간격 조절
     {
@@ -630,8 +770,15 @@ public class PlayerController : MonoBehaviour
     }
     private void UpdateConditionFlags()  //상태 업데이트
     {
+        bool wasHungry = _ishungery;
         _ishungery = PlayerDataOld.Hunger <= 25;
-        
+
+        if (!wasHungry && _ishungery)
+        {
+            SoundManager.Instance.PlaySFX(_hungerSfx);
+        }
+
+
         if (_isAcornFalling) return;
         bool noCookedFood = FoodStorageManager.Instance.FoodEmptyCheck();
         bool hasCookableRecipe = HasCookableRecipe();
@@ -662,7 +809,15 @@ public class PlayerController : MonoBehaviour
         else if (PlayerDataOld.DoongDoongStat >= 500) src = _chubbySource;
         else if (PlayerDataOld.DoongDoongStat >= 300) src = _normalSource;
         else src = _slimSource;
-        ApplySkin(src);
+
+        // 추가된 부분
+        if (_currentSkinSource != src)
+        {
+            _currentSkinSource = src; // 현재 체형 갱신
+            ApplySkin(src);           // 실제 모델링 교체
+
+            DataManager.Instance.Hub.SaveAllData();
+        }
     }
     private void ApplySkin(SkinnedMeshRenderer src)
     {
@@ -677,7 +832,7 @@ public class PlayerController : MonoBehaviour
     {
         _isFishingState = true;
         _cycleRunning = false;
-
+        SoundManager.Instance.PlaySFX(_fishingSfx);
         if (_fishingRoutine != null)
             StopCoroutine(_fishingRoutine);
 
@@ -687,7 +842,7 @@ public class PlayerController : MonoBehaviour
     {
         _isFishingState = false;
         _cycleRunning = false;
-
+        PullUpFishingHookEffect();
         if (_fishingRoutine != null)
         {
             StopCoroutine(_fishingRoutine);
@@ -700,35 +855,32 @@ public class PlayerController : MonoBehaviour
         {
             // 한 사이클 시작
             _cycleRunning = true;
-
-            float waitTime = UnityEngine.Random.Range(5f, 8f);
+            float rodSpeed = 0f;
+            _fishRodSpeed.TryGetValue(_currentFishingRodsId, out rodSpeed);
+            float minTime = Mathf.Max(1f, 5f - rodSpeed);
+            float maxTime = Mathf.Max(minTime, PlayerDataOld.FishingSpeed);
+            float waitTime = UnityEngine.Random.Range(minTime, maxTime);
+            Debug.Log($"낚시속도: {waitTime}");
             yield return new WaitForSeconds(waitTime);
 
             Animator.SetTrigger("FishingHit");
 
             // 사이클이 끝났다는 이벤트가 올 때까지 기다림
             yield return new WaitUntil(() => _cycleRunning == false);
+            PullUpFishingHookEffect();
         }
     }
+
     public void AnimEvent_GiveFishOnce()  //낚시 성공 애니에 넣을 함수
     {
         FishManager.Instance.PickRandomSeasonFish();
-
-        if (FishStorageManager.Instance.FishFullCheck())  //낚시 한마리 낚을떄마다 검사
-        {
-            ExitFishingState();
-            Animator.SetBool("isFish", false);
-            SetState(new IdleState(this));
-        }
     }
     public void AnimEvent_FishingCycleEnd() //낚시 성공 애니에 넣을 함수
     {
-        _fishingCount--; 
+        _fishingCount--;
         Debug.Log("fishingCount: " + _fishingCount);
-        //playerData.Hunger -= 4;
-        //playerData.Stamina -= 5;
         PlayerDataOld.SetHunger(PlayerDataOld.Hunger - 4);
-        PlayerDataOld.SetStamina(PlayerDataOld.Stamina - 5);
+        ConsumeStamina(5);
         _isFishing = false;
         if (_fishingCount <= 0 || PlayerDataOld.Hunger <= 0 || PlayerDataOld.Stamina <= 0)
         {
@@ -739,18 +891,47 @@ public class PlayerController : MonoBehaviour
         }
         _cycleRunning = false;  //다음 사이클로 넘어갈 수 있게 코루틴 대기 해제
     }
-  
+
+    public void AnimEvent_StartFishingHookEffect() //낚시cast에 넣을 함수
+    {
+        if (_fishingHookEffect != null)
+            _fishingHookEffect.PlayerFishingHookEffect();
+    }
+
+    public void PullUpFishingHookEffect()
+    {
+        if (_fishingHookEffect != null)
+            _fishingHookEffect.PullUpHook();
+    }
+
     public void ResetFishingCount()
     {
         _fishingCount = 5;
     }
     public void HandOnFishingRod()
     {
-        _fishingRod.SetActive(true);
+        _fishingRod.SetActive(false);
+
+        // 장착 낚싯대가 있으면 그걸 보여줌
+        if (_currentFishingRodsId != 0 &&
+            _fishingRodsById.TryGetValue(_currentFishingRodsId, out var rodObj))
+        {
+            rodObj.SetActive(true);
+        }
+        else
+        {
+            // 장착 안 했으면 기본 낚싯대 사용
+            _fishingRod.SetActive(true);
+        }
     }
     public void HandOffFishingRod()
     {
         _fishingRod.SetActive(false);
+
+        foreach (var pair in _fishingRodsById)
+        {
+            pair.Value.SetActive(false);
+        }
     }
     public void HandOnFork()
     {
@@ -802,6 +983,9 @@ public class PlayerController : MonoBehaviour
         Agent.velocity = Vector3.zero;
         yield return new WaitForSeconds(2f);
         FishStorageManager.Instance.SellAllFish();
+        SoundManager.Instance.PlaySFX(_sellSfx);
+        PlayerDataOld.SetHunger(PlayerDataOld.Hunger - 4);
+        ConsumeStamina(5);
         SetState(new IdleState(this));
     }
 
@@ -849,6 +1033,48 @@ public class PlayerController : MonoBehaviour
 
         _agent.speed = finalSpeed;
     }
+   
+    private void HandleDailyChanged(DayilyCycle newSeason)
+    {
+        _currentSeason = newSeason;
+    }
+    void ConsumeStamina(float baseCost)
+    {
+        float cost = baseCost;
+        if (IsDailyNight()) cost *= 1.5f;
+        PlayerDataOld.SetStamina(PlayerDataOld.Stamina - cost);
+    }
+    public bool IsDailyNight()
+    {
+        if (_currentSeason == DayilyCycle.Sunset)
+        {
+            return true;
+        }
+        return false;
+    }
+    void UpdateEmoji()
+    {
+        EmojiController.Instance.RefreshStateEmoji(PlayerDataOld, IsResting);
+    }
+    public void SetEnvironment(EnvironmentModel time)
+    {
+        if (_environment != null)
+        {
+            _environment.OnDailyChanged -= HandleDailyChanged;
+            _environment.OnWeatherChanged -= HandleWeatherChanged;
+        }
+
+        _environment = time;
+
+        if (_environment != null)
+        {
+            _environment.OnDailyChanged += HandleDailyChanged;
+            _environment.OnWeatherChanged += HandleWeatherChanged;
+
+            HandleDailyChanged(_environment.CurrentDay);
+            HandleWeatherChanged(_environment.CurrentSeason, _environment.IsWeatherActive);
+        }
+    }
     public void RequestReplan()  //idle에서 자율적으로 다음행동 결정
     {
         RefreshCanCook();
@@ -893,7 +1119,7 @@ public class PlayerController : MonoBehaviour
             _currentPoint = Point.Kitchen;
             return new MoveState(this, _currentPoint);
         }
-        if (FishStorageManager.Instance.FishFullCheck())
+        if (FishStorageManager.Instance.ShouldSellFish())
         {
             _currentPoint = Point.Sell;
             return new MoveState(this, _currentPoint);
@@ -914,5 +1140,29 @@ public class PlayerController : MonoBehaviour
         _currentState?.Exit();
         _currentState = newState;
         _currentState.Enter();
+    }
+
+    private void SyncEquipDataSave()
+    {
+        // 목적지가 Store가 아니라 Character로 변경됨
+        var charBox = DataManager.Instance.Hub._allUserData.Character;
+
+        charBox._equippedHatId = _equippedHatId;
+        charBox._equippedBodyId = _equippedbodyId;
+        charBox._equippedFishingRodId = _equippedfishingRodsId;
+        charBox._equippedBaitId = _equippedBaitId;
+        charBox._equippedBobberId = _equippedBobberId;
+    }
+
+    private void SyncEquipDataLoad()
+    {
+        var charBox = DataManager.Instance.Hub._allUserData.Character;
+
+        // 파이어베이스에서 가져온 ID를 바탕으로 각각 장착 함수 실행
+        SetHat(charBox._equippedHatId);
+        SetBody(charBox._equippedBodyId);
+        SetTool(charBox._equippedFishingRodId);
+        SetBait(charBox._equippedBaitId);
+        SetBobber(charBox._equippedBobberId);
     }
 }

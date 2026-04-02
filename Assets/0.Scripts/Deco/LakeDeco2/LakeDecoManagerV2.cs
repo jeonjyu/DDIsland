@@ -8,7 +8,7 @@ public class LakeDecoManagerV2 : MonoBehaviour
 {
     [Header("호수 배경 장식물 Image")]
     [SerializeField] private Image deco1Image;   
-    [SerializeField] private Image deco2Image;   
+    [SerializeField] private Image deco2Image;
 
     // ID를 스프라이트로 매핑 (테스트 데이터에서 로드)
     private Dictionary<int, Sprite> spriteMap = new Dictionary<int, Sprite>();
@@ -26,11 +26,11 @@ public class LakeDecoManagerV2 : MonoBehaviour
         InitTestButtons();
     }
 
-    // 테스트 데이터로 스프라이트 매핑 초기화
-    // 나중에 실제 데이터 연결하면 이 함수만 교체
+    // 데이터매니저에서 호수인테리어데이터 가져오기
     private void InitFromTestData()
-    {
-        spriteMap = LakeDecoDataV2.GetSpriteMap();
+    { 
+        var interiorDatabase = DataManager.Instance.DecorationDatabase.InteriorData;
+        spriteMap = LakeDecoDataV2.GetSpriteMap(interiorDatabase);
     }
 
     // 핵심 메서드: 상점에서 이걸 호출하면 됨
@@ -53,6 +53,7 @@ public class LakeDecoManagerV2 : MonoBehaviour
         OnImageChanged?.Invoke(slotIndex, itemId);
         return true;
     }
+
     // 상점에서 쉽게 불러오는 메서드 
     public void ResetSlot0() { ResetSlot(0); }
     public void ResetSlot1() { ResetSlot(1); }
@@ -107,7 +108,7 @@ public class LakeDecoManagerV2 : MonoBehaviour
         if (img != null) img.enabled = true;
     }
 
-
+    // TODO: 필요없으면 삭제 
     #region 이하는 테스트용 
     [Header("테스트용 버튼")]
     [SerializeField] private Button[] slot0TestButtons; // 장식물 1번 버튼들
@@ -115,8 +116,9 @@ public class LakeDecoManagerV2 : MonoBehaviour
     [SerializeField] private Button resetButton; // 전체 리셋 
     private void InitTestButtons()
     {
+        var db = DataManager.Instance.DecorationDatabase.InteriorData;
         // 슬롯 0 버튼
-        List<int> slot0Ids = LakeDecoDataV2.GetSlot0Ids();
+        List<int> slot0Ids = LakeDecoDataV2.GetSlot0Ids(db);
         for (int i = 0; i < slot0TestButtons.Length && i < slot0Ids.Count; i++)
         {
             if (slot0TestButtons[i] == null) continue;
@@ -125,7 +127,7 @@ public class LakeDecoManagerV2 : MonoBehaviour
         }
 
         // 슬롯 1 버튼
-        List<int> slot1Ids = LakeDecoDataV2.GetSlot1Ids();
+        List<int> slot1Ids = LakeDecoDataV2.GetSlot1Ids(db);
         for (int i = 0; i < slot1TestButtons.Length && i < slot1Ids.Count; i++)
         {
             if (slot1TestButtons[i] == null) continue;

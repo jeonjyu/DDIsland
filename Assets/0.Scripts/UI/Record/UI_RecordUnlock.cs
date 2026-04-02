@@ -10,6 +10,9 @@ public class UI_RecordUnlock : MonoBehaviour
     [SerializeField] private GameObject successPopup;
     [SerializeField] private GameObject failurePopup;
 
+    [Header("미리 듣기 팝업창")]
+    [SerializeField] private UI_RecordPreview previewPopup;
+
     [Header("BGM 재생 리스트 클래스")]
     [SerializeField] private UI_BGMList bgmList;
 
@@ -29,7 +32,8 @@ public class UI_RecordUnlock : MonoBehaviour
     // 미리 듣기 버튼 클릭
     public void OnClick_PreListening()
     {
-        // todo: 미리 듣기 실행
+        previewPopup.gameObject.SetActive(true);
+        previewPopup.PreviewInit(currentSlot.Record);
     }
 
     // 교환 버튼 클릭
@@ -45,7 +49,17 @@ public class UI_RecordUnlock : MonoBehaviour
 
             DataManager.Instance.RecordDatabase.LpPieceCount -= requireLpPieceCount;
             DataManager.Instance.RecordDatabase.UnlockRecords.Add(currentSlot.Record.RecordID);
+
+            // todo: 임시로 만든 코드, 58번 줄 까지
+            if (!DataManager.Instance.RecordDatabase.DefaultRecords.Contains(currentSlot.Record.RecordID))
+            {
+                DataManager.Instance.RecordDatabase.DefaultRecords.Add(currentSlot.Record.RecordID);
+                DataManager.Instance.RecordDatabase.DefaultRecords.Sort();
+            }
+
             bgmList.PlayBGM(currentSlot);
+
+            _ = DataManager.Instance.Hub.UploadAllData();
         }
         else
         {

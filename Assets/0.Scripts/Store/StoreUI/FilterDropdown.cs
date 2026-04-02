@@ -20,7 +20,7 @@ public class FilterDropdown : StoreDropdownBase
     void Start()
     {
         // 초반 드롭다운 옵션 리스트 전달
-        optionList = DescriptionExtracter.GetEnumList<InteriorFilter>(Enum.GetValues(typeof(InteriorFilter)));
+        //optionList = DescriptionExtracter.GetEnumList<InteriorFilter>(Enum.GetValues(typeof(InteriorFilter)));
         
         SetOptions();
         UpdateFilter(Filter.InteriorFilter);
@@ -32,15 +32,15 @@ public class FilterDropdown : StoreDropdownBase
         switch (filter)
         {
             case Filter.InteriorFilter:
-                optionList = DescriptionExtracter.GetEnumList<InteriorFilter>(Enum.GetValues(typeof(InteriorFilter)));
+                optionList = DescriptionExtracter.GetFilterEnumList<InteriorFilter>(Enum.GetValues(typeof(InteriorFilter)));
                 currentFilter = typeof(InteriorFilter);
                 break;
             case Filter.CostumeFilter:
-                optionList = DescriptionExtracter.GetEnumList<CostumeFilter>(Enum.GetValues(typeof(CostumeFilter))); 
+                optionList = DescriptionExtracter.GetFilterEnumList<CostumeFilter>(Enum.GetValues(typeof(CostumeFilter))); 
                 currentFilter = typeof(CostumeFilter);
                 break;
             case Filter.FishingFilter:
-                optionList = DescriptionExtracter.GetEnumList<FishingFilter>(Enum.GetValues(typeof(FishingFilter))); 
+                optionList = DescriptionExtracter.GetFilterEnumList<FishingFilter>(Enum.GetValues(typeof(FishingFilter))); 
                 currentFilter = typeof(FishingFilter);
                 break;
         }
@@ -68,6 +68,7 @@ public class FilterDropdown : StoreDropdownBase
     {
         base.SetOptions();
         dropdown.value = 0;
+        //Debug.Log("value 0 됨");
         if (optionList.Count > 0) dropdown.captionText.text = optionList[0];
     }
 

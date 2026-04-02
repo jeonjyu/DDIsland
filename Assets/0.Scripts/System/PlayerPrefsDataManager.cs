@@ -11,25 +11,25 @@ public static class PlayerPrefsDataManager
     private const string KEY_LANGUAGE = "Language";                     // 언어 설정 키
     private const string KEY_BGMVOLUME = "BgmVolume";                   // BGM 볼륨 키
     private const string KEY_SFXVOLUME = "SfxVolume";                   // SFX 볼륨 키
-    private const string KEY_BGSVOLUME = "BgsVolume";                   // BGS 볼륨 키
-    private const string KEY_PREVIEWVOLUME = "PreviewVolume";                   // Preview 볼륨 키
+    private const string KEY_AMBVOLUME = "AmbVolume";                   // BGS 볼륨 키
+    private const string KEY_PREVIEWVOLUME = "PreviewVolume";           // Preview 볼륨 키
     private const string KEY_BGMVOLUME_MUTE = "BGMVolumeMute";          // BGM 뮤트 키
     private const string KEY_SFXVOLUME_MUTE = "SFXVolumeMute";          // SFX 뮤트 키
-    private const string KEY_BGSVOLUME_MUTE = "BGSVolumeMute";          // BGS 뮤트 키
-    private const string KEY_GRAPHICQUALITY = "GraphicQuality";         // 그래픽 품질 설정 키
-    private const string KEY_TRANSPARENCY = "Transparency";             // 화면 투명도 설정
-    private const string KEY_RESOLUTIONWIDTH = "ResolutionWidth";       // 가로 해상도 수치 키
-    private const string KEY_RESOLUTIONHEIGHT = "ResolutionHeight";     // 세로 해상도 수치 키
-    private const string KEY_RESOLUTIONWINDOW = "ResolutionWindow";     // 세로 해상도 수치 키
-    private const string KEY_RESOLUTIONHZ = "ResolutionHz";             // 주사율
-    private const string KEY_MouseSensivity = "MouseSensitivity";       // 마우스 감도 키
+    private const string KEY_AMBVOLUME_MUTE = "AMBVolumeMute";          // BGS 뮤트 키
+    private const string KEY_BACKGROUNDPLAY = "BackgroundPlay";       // 백그라운드 소리 재생 여부
+    private const string KEY_PLAYDEFAULTRECORD = "PlayDefaultRecord";   // 기본 음반 자동 재생 여부
+    private const string KEY_TOPMOST = "TopMost";                     // 게임창 최상단 고정 여부
     #endregion
 
     public static event Action OnLanguageChanged;
+    public static event Action<bool> OnPlayDefaultRecord;
 
-    public static int Language   // StringDataSO 타입과 호환
+    public static int Language   // StringDataSO 타입과 호환, (0 = 한국어, 1 = 영어)
     {
-        get { return PlayerPrefs.GetInt(KEY_LANGUAGE, 0); }
+        get
+        {
+            return PlayerPrefs.GetInt(KEY_LANGUAGE, 0);
+        }
 
         set
         {
@@ -42,7 +42,10 @@ public static class PlayerPrefsDataManager
 
     public static float BgmVolume
     {
-        get { return PlayerPrefs.GetFloat(KEY_BGMVOLUME, 1f); }
+        get
+        {
+            return PlayerPrefs.GetFloat(KEY_BGMVOLUME, 1f);
+        }
 
         set
         {
@@ -53,7 +56,10 @@ public static class PlayerPrefsDataManager
 
     public static float SFXVolume
     {
-        get { return PlayerPrefs.GetFloat(KEY_SFXVOLUME, 1f); }
+        get
+        {
+            return PlayerPrefs.GetFloat(KEY_SFXVOLUME, 1f);
+        }
 
         set
         {
@@ -62,19 +68,27 @@ public static class PlayerPrefsDataManager
         }
     }
 
-    public static float BGSVolume
+    public static float AMBVolume
     {
-        get { return PlayerPrefs.GetFloat(KEY_BGSVOLUME, 1f); }
+        get
+        {
+            return PlayerPrefs.GetFloat(KEY_AMBVOLUME, 1f);
+        }
+
         set
         {
             float vol = Mathf.Clamp(value, 0f, 1f);
-            PlayerPrefs.SetFloat(KEY_BGSVOLUME, vol);
+            PlayerPrefs.SetFloat(KEY_AMBVOLUME, vol);
         }
     }
 
     public static float PreviewVolume
     {
-        get { return PlayerPrefs.GetFloat(KEY_PREVIEWVOLUME, 1f); }
+        get
+        {
+            return PlayerPrefs.GetFloat(KEY_PREVIEWVOLUME, 1f);
+        }
+
         set
         {
             float vol = Mathf.Clamp(value, 0f, 1f);
@@ -88,6 +102,7 @@ public static class PlayerPrefsDataManager
         {
             return PlayerPrefs.GetInt(KEY_BGMVOLUME_MUTE, 0) == 1 ? true : false;
         }
+
         set
         {
             PlayerPrefs.SetInt(KEY_BGMVOLUME_MUTE, value == true ? 1 : 0);
@@ -100,98 +115,63 @@ public static class PlayerPrefsDataManager
         {
             return PlayerPrefs.GetInt(KEY_SFXVOLUME_MUTE, 0) == 1 ? true : false;
         }
+
         set
         {
             PlayerPrefs.SetInt(KEY_SFXVOLUME_MUTE, value == true ? 1 : 0);
         }
     }
 
-    public static bool BGSVolumeMute
+    public static bool AMBVolumeMute
     {
         get
         {
-            return PlayerPrefs.GetInt(KEY_BGSVOLUME_MUTE, 0) == 1 ? true : false;
+            return PlayerPrefs.GetInt(KEY_AMBVOLUME_MUTE, 0) == 1 ? true : false;
         }
-        set
-        {
-            PlayerPrefs.SetInt(KEY_BGSVOLUME_MUTE, value == true ? 1 : 0);
-        }
-    }
-
-    public static int GraphicQuality
-    {
-        get { return PlayerPrefs.GetInt(KEY_GRAPHICQUALITY, QualitySettings.GetQualityLevel()); }
 
         set
         {
-            int index = Mathf.Clamp(value, 0, QualitySettings.names.Length - 1);
-            PlayerPrefs.SetInt(KEY_GRAPHICQUALITY, index);
+            PlayerPrefs.SetInt(KEY_AMBVOLUME_MUTE, value == true ? 1 : 0);
         }
     }
 
-    public static float Transparency
-    {
-        get { return PlayerPrefs.GetFloat(KEY_TRANSPARENCY, 0f); }
-        set
-        {
-            PlayerPrefs.SetFloat(KEY_TRANSPARENCY, value);
-        }
-    }
-
-    public static float MouseSensitivity
-    {
-        get { return PlayerPrefs.GetFloat(KEY_MouseSensivity, 50f); }
-
-        set
-        {
-            float sensitive = Mathf.Clamp(value, 0f, 100f);
-            PlayerPrefs.SetFloat(KEY_MouseSensivity, sensitive);
-        }
-    }
-
-    public static int ResolutionWidth
+    public static bool BackgroundPlay
     {
         get
         {
-            return PlayerPrefs.GetInt(KEY_RESOLUTIONWIDTH);
+            return PlayerPrefs.GetInt(KEY_BACKGROUNDPLAY, 1) == 1 ? true : false;
         }
+
         set
         {
-            PlayerPrefs.SetInt(KEY_RESOLUTIONWIDTH, value);
-        }
-    }
-    public static int ResolutionHeight
-    {
-        get
-        {
-            return PlayerPrefs.GetInt(KEY_RESOLUTIONHEIGHT);
-        }
-        set
-        {
-            PlayerPrefs.SetInt(KEY_RESOLUTIONHEIGHT, value);
-        }
-    }
-    public static float ResolutionHz
-    {
-        get
-        {
-            return PlayerPrefs.GetFloat(KEY_RESOLUTIONHZ);
-        }
-        set
-        {
-            PlayerPrefs.SetFloat(KEY_RESOLUTIONHZ, value);
+            PlayerPrefs.SetInt(KEY_BACKGROUNDPLAY, value == true ? 1 : 0);
         }
     }
 
-    public static int ResolutionWindow
+    public static bool PlayDefaultRecord
     {
         get
         {
-            return PlayerPrefs.GetInt(KEY_RESOLUTIONWINDOW);
+            return PlayerPrefs.GetInt(KEY_PLAYDEFAULTRECORD, 1) == 1 ? true : false;
         }
+
         set
         {
-            PlayerPrefs.SetInt(KEY_RESOLUTIONWINDOW, value);
+            PlayerPrefs.SetInt(KEY_PLAYDEFAULTRECORD, value == true ? 1 : 0);
+            OnPlayDefaultRecord?.Invoke(value);
+        }
+    }
+
+    public static bool TopMost
+    {
+        get
+        {
+            return PlayerPrefs.GetInt(KEY_TOPMOST, 1) == 1 ? true : false;
+        }
+
+        set
+        {
+            PlayerPrefs.SetInt(KEY_TOPMOST, value == true ? 1 : 0);
         }
     }
 }

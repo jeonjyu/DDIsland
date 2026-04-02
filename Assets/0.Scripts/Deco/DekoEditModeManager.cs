@@ -12,11 +12,15 @@ public class DecoEditModeManager : MonoBehaviour
     public RectTransform gridPanel;
     public LakeGridManager gridManager;
     public GameObject objectActionPanel; // 회수, 이동, 취소
-    public AquariumMgr aquariumMgr; // 물고기 안보이게 
     public RectTransform lakeBackground; // 호수 이미지 
-    public RectTransform floorPlane; // 바닥재
-   
-    [Header("3D배치템 상호작용 버튼")] 
+    public RectTransform floorPlane; // 바닥재 두트윈용?
+
+    [Header("호수 배경 V2")]
+    public GameObject decoMaskArea; // v2 바닥재+장식물 배경
+    public AquariumMgr aquariumMgr; // 물고기 안보이게 
+    public UI_WaterWindow waterWindow;
+
+    [Header("3D배치템 상호작용 버튼")]
     public Button btnObjRecall;   // 회수
     public Button btnObjMove;     // 이동
     public Button btnObjRotate;   // 회전 (3D 전용)
@@ -32,7 +36,7 @@ public class DecoEditModeManager : MonoBehaviour
     public Button btnReset;     // 초기화 
     public Button btnSave;      // 저장
     public Button btnExit;      // 나가기
- 
+
     [Header("꾸미기 진입 버튼")]
     public Button btnDecoMode;
     public GameObject dropdownPanel;
@@ -46,23 +50,36 @@ public class DecoEditModeManager : MonoBehaviour
     public float gridMoveUp = 240f;   // 그리드 위로 올리는 높이
     public float lakeBgMoveUp = 240f; // 호수 위로 올리는 높이
     [Header("나가기 팝업")]
-    public GameObject exitPopupPanel; 
+    public GameObject exitPopupPanel;
     public Button btnExitSave;        // 저장하고 나가기
     public Button btnExitNoSave;      // 저장하지 않고 나가기
     public Button btnExitCancel;      // 취소 
-
+    [Header("확인 팝업")]
+    public GameObject confirmPopupPanel;
+    public Button btnConfirmYes;      // 확인          
+    public Button btnConfirmClose;    // 취소           
+    public DecoLocalizeTempText decoTempText; // 스크립트 연결   
     [Header("플레이어(투명화)")]
     public GameObject playerObject;
+    [Header("편집모드 들어가면 안보일 날씨 파티클들 부모")]
+    public Transform weatherParticleParent;
+    
+    [Header("편집모드 진입시 비활성화할 UI들")]
+    public GameObject windowEdgeGroup;   // 창 테두리 
+    public GameObject mainMenuBtnGroup;  // 메인 메뉴 
+    public GameObject topMoneyBarUI;          // 재화 UI
+    public GameObject waterLevelButton;  // 호수 올리는 버튼 
+
     // 내부 변수
     bool isEditMode = false;
     DecoMode currentMode = DecoMode.Lake;   // 현재 편집 모드
     Vector2 gridOriginPos;    // 그리드 원래 위치 저장
     Vector2 lakeOriginPos; // 호수 배경 원래 위치 저장
     float dimAlpha = 0.5f;  // 백그라운드 배경 알파값
-  
+
     int holdItemId = -1;   // 들고 있어서 배치 대기 중인 아이템 ID
     BuildingManager buildingMgr;
- 
+
     bool isChanged = false; // 저장 안 한 변경이 있었는지 
     Vector2 placedObjOriginPos; // 배치템 원래 위치 
     Vector2 floorOriginPos; // 바닥재 원래 위치 
@@ -70,7 +87,19 @@ public class DecoEditModeManager : MonoBehaviour
     Vector2 islandDecoBtnOriginPos; // 두트윈 복귀  
     int UnlockCount = 0;
     float UnlockFirstTime;
-    bool isUnlocked = false;     
+    bool isUnlocked = false;
+    System.Action pendingConfirmAction; // 상단 확인 팝업창용
+    private ParticleSystem cachedParticle; // 파티클 상태 복원용, 편집모드 진입 시 재생 중이던 파티클 캐싱
+    bool isClearingAll = false; // 전체회수중일땐 스냅샷 보호 
+
+    // FixGroup별 기본 아이템 ID (교체 시 이전 템 복구용)
+    //static readonly Dictionary<FixGroup, int> DefaultFixItems = new()
+    //{
+    //    { FixGroup.House, 20001 },
+    //    { FixGroup.Box, 20005 },
+    //    { FixGroup.LpPlayer, 20012 },
+    //    { FixGroup.Bed, 20032 },
+    //};
     #endregion
 
     // 버튼들 초기화   
@@ -84,7 +113,7 @@ public class DecoEditModeManager : MonoBehaviour
         // 호수와 바닥재 원래 위치 저장
         if (lakeBackground != null)
             lakeOriginPos = lakeBackground.anchoredPosition;
-        if (floorPlane != null) 
+        if (floorPlane != null)
             floorOriginPos = floorPlane.anchoredPosition;
         if (btnIslandDecoMode != null) // 버튼 
             islandDecoBtnOriginPos = btnIslandDecoMode.GetComponent<RectTransform>().anchoredPosition;
@@ -102,24 +131,25 @@ public class DecoEditModeManager : MonoBehaviour
         if (btnIslandDecoMode != null)
             btnIslandDecoMode.onClick.AddListener(OnIslandDecoClicked);
 
+        // 상단 버튼
         if (btnSave != null)
-            btnSave.onClick.AddListener(OnSave);
+            btnSave.onClick.AddListener(OnSaveClicked);
+        if (btnRecallAll != null)
+            btnRecallAll.onClick.AddListener(OnRecallAllClicked);
+        if (btnReset != null)
+            btnReset.onClick.AddListener(OnResetClicked);
         if (btnExit != null)
             btnExit.onClick.AddListener(OnExit);
-        if (btnRecallAll != null)
-            btnRecallAll.onClick.AddListener(OnRecallAll);
-        if (btnReset != null)
-            btnReset.onClick.AddListener(OnReset);
 
         // 드롭다운 편집모드 진입버튼 
         if (btnDecoMode != null)
             btnDecoMode.onClick.AddListener(ToggleDropdown);
         if (dropdownPanel != null)
             dropdownPanel.SetActive(false); // 초기화
-        if (dropdownBlocker != null)
+        if (dropdownBlocker != null) // 풀스크린 패널
         {
             dropdownBlocker.SetActive(false);
-            dropdownBlocker.GetComponent<Button>().onClick.AddListener(HideDropdown);
+            dropdownBlocker.GetComponent<Button>().onClick.AddListener(OnBlockerClicked);
         }
         if (btnLakeDecoMode != null)
             btnLakeDecoMode.gameObject.SetActive(false);
@@ -135,6 +165,7 @@ public class DecoEditModeManager : MonoBehaviour
             buildingMgr.OnConfirm += OnIslandConfirm;   // 저장      
             buildingMgr.OnRevert += OnIslandRevert;     // 전체회수
             buildingMgr.OnClearAll += OnIslandClearAll; // 초기화
+            buildingMgr.OnFixReverted += OnFixReverted; // 저장 안하고 나가면 배치템 회귀  
         }
 
         // 이벤트 구독 (섬 3d 오브젝트 선택/해제)
@@ -142,7 +173,20 @@ public class DecoEditModeManager : MonoBehaviour
         {
             PlacementMgr.Instance.OnBuildingPick += ShowIslandActionPanel;
             PlacementMgr.Instance.OnBuildingDrop += HideIslandActionPanel;
+            // 고정물 클릭 이벤트 구독 
+            PlacementMgr.Instance.OnFixedBuildingPick += OnFixBuildingClicked;
+
+            // 그리드에 배치된 Fix 아이템 클릭 이벤트 구독 
+            // 집/침대/보관함 등 Placeable3D로 배치된 Fix 아이템용
+            PlacementMgr.Instance.OnGridFixBuildingPick += OnGridFixBuildingClicked;
+
+            // PlacementMgr.Instance.OnEmptyClick += OnEmptySpaceClicked;  
+            // PlacementMgr의 오브젝트 전부 클릭무시 메서드, 자유물은 허용, UI는 무시 따로 처리해야해서 논의 필요 
         }
+        //  Fix 슬롯 선택 이벤트 구독
+        if (itemListManager != null)
+            itemListManager.OnFixSlotPick += OnFixSlotSelected;
+
 
         // 3d 오브젝트 액션 버튼   
         if (btnObjRecall != null)
@@ -164,15 +208,81 @@ public class DecoEditModeManager : MonoBehaviour
             btnExitCancel.onClick.AddListener(OnExitPopupCancel);
         if (exitPopupPanel != null)
             exitPopupPanel.SetActive(false);
-   
+
+        // 확인 팝업 버튼 (공용)
+        if (btnConfirmYes != null)
+            btnConfirmYes.onClick.AddListener(OnConfirmYes);
+        if (btnConfirmClose != null)
+            btnConfirmClose.onClick.AddListener(OnConfirmClose);
+        if (confirmPopupPanel != null)
+            confirmPopupPanel.SetActive(false);
+
+
     }
 
-   
-    #region  섬 전용 
+    // TODO : 블로커 풀스크린 패널 ui를 안쓰고 빈 공간클릭 메서드 이벤트 구독 구조로 변경할거면 
+    //void OnEmptySpaceClicked() 
+    //{
+    //    if (itemListManager != null && itemListManager.IsFixFilterMode)
+    //        itemListManager.ExitFilterMode();
+    //}
+
+    // ESC 키로 나가기 팝업
+    void Update()
+    {
+        if (!isEditMode) return;
+
+        if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
+        {
+            // 확인 팝업이 열려있으면 팝업만 닫기
+            if (confirmPopupPanel != null && confirmPopupPanel.activeSelf)
+            {
+                OnConfirmClose();
+                return;
+            }
+
+            // 나가기 팝업이 열려있으면 팝업만 닫기
+            if (exitPopupPanel != null && exitPopupPanel.activeSelf)
+            {
+                OnExitPopupCancel();
+                return;
+            }
+
+            // 배치템 들고있으면 esc 무시
+            if (buildingMgr != null && buildingMgr.ActivePlaceable != null)
+                return;
+
+            // 그 외에는 나가기 로직
+            OnExit();
+        }
+    }
+    #region 섬 전용 
+    // 핸들러
+    void OnFixReverted(int restoredId, int removedId)
+    {
+        // 원래 템은 인벤에서 차감 (되돌려 끼웠으니까)
+        DecoInventoryManager.Instance.UseItem(restoredId);
+        // 떼어낸 템은 인벤으로 복구
+        DecoInventoryManager.Instance.RestoreItem(removedId);
+    }
     // 섬 전용 오브젝트 액션패널
     void ShowIslandActionPanel(Placeable3D target)
     {
         if (currentMode != DecoMode.Island) return;
+        // Fix 필터 모드 중이면 액션패널 안 띄움
+        if (itemListManager != null && itemListManager.IsFixFilterMode)
+            return;
+
+        // TODO : 옵젝클릭무시 메서드 받아올때 자유물 클릭하면 필터해제 
+        // Fix 필터 모드 중이면 해제하고 메인 인벤 복귀
+        //if (itemListManager != null && itemListManager.IsFixFilterMode)
+        //{
+        //    itemListManager.ExitFilterMode();
+        //    if (dropdownBlocker != null)
+        //        dropdownBlocker.SetActive(false);
+        //}
+
+
         selectedIslandTarget = target;
 
         if (objectActionPanel != null)
@@ -184,13 +294,16 @@ public class DecoEditModeManager : MonoBehaviour
         if (btnObjRotate != null) // 회전 버튼 표시 
             btnObjRotate.gameObject.SetActive(true);
     }
-   
+
     // 3D 오브젝트 선택 해제
     void HideIslandActionPanel()
     {
         selectedIslandTarget = null;
         if (objectActionPanel != null)
             objectActionPanel.SetActive(false);
+
+        if (itemListManager != null && itemListManager.IsFixFilterMode)
+            itemListManager.ExitFilterMode();
     }
 
     // 섬전용 전체회수 
@@ -279,40 +392,115 @@ public class DecoEditModeManager : MonoBehaviour
     void OnIslandConfirm()
     {
         if (currentMode != DecoMode.Island) return;
+        if (isClearingAll) return; // 전체회수의 자동저장엔 스냅샷보호 
         if (itemListManager != null)
             itemListManager.SaveSnapshot();
     }
 
-    // 섬 전체회수 
+    // 섬 초기화 
     void OnIslandRevert()
     {
         if (currentMode != DecoMode.Island) return;
         if (itemListManager != null)
-            itemListManager.LoadSnapshot();
+            itemListManager.LoadSnapshot(); // 스냅샷만 불러오기 
+            //itemListManager.ReturnAllItems(); // 데이터까지 복원하기
     }
 
-    // 섬 초기화 
+    // 섬 전체회수
     void OnIslandClearAll(List<int> destroyedIds)
     {
         if (currentMode != DecoMode.Island) return;
         //if (itemListManager != null)
         //    itemListManager.ReturnAllItems();
 
-        foreach (int itemId in destroyedIds)                   
-        {                                                      
-            DecoInventoryManager.Instance.RestoreItem(itemId); 
-        }                                                      
+        // 회수된 게 없으면 
+        if (destroyedIds == null || destroyedIds.Count == 0)
+            return;
 
-        if (itemListManager != null)                           
-            itemListManager.SetupInventory();                  
+        foreach (int itemId in destroyedIds)
+        {
+            DecoInventoryManager.Instance.RestoreItem(itemId);
+        }
+
+        if (itemListManager != null)
+            itemListManager.SetupInventory();
+
+        isChanged = true;
+    
+    }
+
+    // 고정물(FixedBuilding) 클릭 시 인벤 필터 모드 진입 
+    void OnFixBuildingClicked(FixedBuilding target)
+    {
+        if (currentMode != DecoMode.Island) return;
+        if (target == null) return;
+
+        // 액션패널 닫기 (회수/이동 버튼 안 보이게)
+        HideIslandActionPanel();
+
+        // 해당 고정물의 FixGroup으로 인벤 필터링
+        FixGroup group = target.LocationID;
+
+        if (group == FixGroup.None) return; // None이면 교체 불가
+
+        if (itemListManager != null)
+            itemListManager.SetupFilteredInventory(group, target);
+        if (dropdownBlocker != null)
+            dropdownBlocker.SetActive(true);
+    }
+
+    // 그리드에 배치된 Fix 고정물 배치템(Placeable3D) 클릭 시
+    void OnGridFixBuildingClicked(Placeable3D target)
+    {
+        if (currentMode != DecoMode.Island) return;
+        if (target == null) return;
+
+        var fixBuilding = target.GetComponent<FixedBuilding>();
+        if (fixBuilding == null)
+            fixBuilding = target.GetComponentInChildren<FixedBuilding>();
+        if (fixBuilding == null) return;
+
+        OnFixBuildingClicked(fixBuilding);
+    }
+
+    // Fix 슬롯에서 아이템 선택 시 프리팹 교체 실행
+    void OnFixSlotSelected(int newItemId, FixedBuilding target)
+    {
+        if (target == null || buildingMgr == null) return;
+
+        int oldItemId = target.CurrentItemID;
+
+        // CurrentItemID가 0이면 기본 아이템 ID로 복구
+        //if (oldItemId <= 0 && DefaultFixItems.ContainsKey(target.LocationID))
+        //    oldItemId = DefaultFixItems[target.LocationID];
+
+        DecoInventoryManager.Instance.UseItem(newItemId); // 인벤에서 수량 차감
+
+        if (oldItemId > 0) // 이전 아이템 인벤으로 복구
+            DecoInventoryManager.Instance.RestoreItem(oldItemId);
+
+        buildingMgr.SwapFixBuilding(target, newItemId); // 프리팹 교체
+
+        // 필터 모드 해제 시 일반 인벤으로 복귀
+        if (itemListManager != null)
+            itemListManager.ExitFilterMode();
+
+        // 블로커 비활성화 
+        if (dropdownBlocker != null)
+            dropdownBlocker.SetActive(false);
+
+        // 편집 메뉴 닫기
+        if (PlacementMgr.Instance != null)
+            PlacementMgr.Instance.CloseEditMenu();
+
+        isChanged = true;
     }
 
     #endregion
 
-    void OnIslandDecoClicked() // 섬 
+    public void OnIslandDecoClicked() // 섬 
     {
         EnterEditMode(DecoMode.Island);
-        HideDropdown();
     }
 
     void OnLakeDecoClicked() // 호수
@@ -364,6 +552,8 @@ public class DecoEditModeManager : MonoBehaviour
         isEditMode = true;
         isChanged = false;
 
+        SetMainUIActive(false); // ui들 숨기기 메서드
+
         // 공용 백그라운드 
         if (dimBackground != null)
         {
@@ -376,7 +566,7 @@ public class DecoEditModeManager : MonoBehaviour
         if (currentMode == DecoMode.Lake)
         {
             if (btnObjRotate != null) // 회전버튼 숨기기
-                btnObjRotate.gameObject.SetActive(false); 
+                btnObjRotate.gameObject.SetActive(false);
 
             if (gridPanel != null) // 2d그리드 다시 켜기
                 gridPanel.gameObject.SetActive(true);
@@ -421,6 +611,8 @@ public class DecoEditModeManager : MonoBehaviour
 
             if (lakeBackground != null) // 호수 숨기기
                 lakeBackground.GetComponent<CanvasGroup>().alpha = 0f;
+            if (decoMaskArea != null)  // 호수 배경 숨기기              
+                decoMaskArea.SetActive(false);
 
             // TODO: 섬 전용 로직, 섬 3d그리드 켜기 
             // 3D 그리드 편집모드 진입
@@ -431,13 +623,15 @@ public class DecoEditModeManager : MonoBehaviour
                     PlacementMgr.Instance.ToggleEditMode();
             }
             if (aquariumMgr != null) aquariumMgr.HideFish(); // 물고기 숨기기
-            if (playerObject != null) // 곰 숨기기
+            if (playerObject != null)
             {
                 foreach (var renderer in playerObject.GetComponentsInChildren<Renderer>())
-                    renderer.enabled = false;
+                    renderer.enabled = false;  // 곰 숨기기
+                foreach (var col in playerObject.GetComponentsInChildren<Collider>(true))
+                    col.enabled = false; // 콜라이더 끄기
             }
         }
-
+        HideWeatherParticle();
         // 이하 공용 
         //  인벤 패널 아래에서 위로 슥 올라오기 
         if (bottomPanel != null)
@@ -466,7 +660,7 @@ public class DecoEditModeManager : MonoBehaviour
         {
             gridManager.SaveSnapshot();
         }
-     
+
         // 편집 모드 들어가면 꾸미기 버튼 숨기기
         if (btnLakeDecoMode != null)
             btnLakeDecoMode.gameObject.SetActive(false);
@@ -477,10 +671,17 @@ public class DecoEditModeManager : MonoBehaviour
             btnDecoMode.gameObject.SetActive(false);
     }
 
-    //  편집 모드 나가기
+    // 편집 모드 나가기
     public void ExitEditMode()
     {
         isEditMode = false;
+        // Fix 필터 모드 해제
+        if (itemListManager != null && itemListManager.IsFixFilterMode)
+            itemListManager.ExitFilterMode();
+
+        // 블로커 비활성화 
+        if (dropdownBlocker != null)
+            dropdownBlocker.SetActive(false);
 
         // 백그라운드 
         if (dimBackground != null)
@@ -497,7 +698,7 @@ public class DecoEditModeManager : MonoBehaviour
             if (placeController != null)
                 placeController.ForceCancel();
 
-            if (gridManager != null) 
+            if (gridManager != null)
                 gridManager.HideGrid();
 
             if (gridPanel != null)
@@ -533,6 +734,8 @@ public class DecoEditModeManager : MonoBehaviour
                 gridPanel.gameObject.SetActive(true);
             if (lakeBackground != null) // 호수 다시 보이기
                 lakeBackground.GetComponent<CanvasGroup>().alpha = 1f;
+            if (decoMaskArea != null) // 호수 배경 보이기            
+                decoMaskArea.SetActive(true);
 
             // TODO: 섬 보이는거 비활성화 
             if (PlacementMgr.Instance != null)
@@ -547,13 +750,16 @@ public class DecoEditModeManager : MonoBehaviour
             {
                 foreach (var renderer in playerObject.GetComponentsInChildren<Renderer>())
                     renderer.enabled = true;
+                foreach (var col in playerObject.GetComponentsInChildren<Collider>(true))
+                    col.enabled = true;
             }
             if (UnlockCount == 0 || Time.unscaledTime - UnlockFirstTime > 10f)
             { UnlockCount = 0; UnlockFirstTime = Time.unscaledTime; }
             if (++UnlockCount >= 10 && btnLakeDecoMode != null)
                 isUnlocked = true;
         }
-
+        RestoreWeatherParticle(); // 날씨 파티클 복원
+        SetMainUIActive(true);
         // 인벤 
         if (bottomPanel != null)
         {
@@ -579,7 +785,7 @@ public class DecoEditModeManager : MonoBehaviour
             btnIslandDecoMode.gameObject.SetActive(true);
         if (btnDecoMode != null)
             btnDecoMode.gameObject.SetActive(true);
-        isChanged = false; 
+        isChanged = false;
     }
 
     // 처음 시작시 off 
@@ -608,6 +814,38 @@ public class DecoEditModeManager : MonoBehaviour
     }
 
     #region 상단 버튼 기능
+    void OnSaveClicked() { ShowConfirmPopup(0, () => OnSave()); }
+    void OnRecallAllClicked() { ShowConfirmPopup(1, () => OnRecallAll()); }
+    void OnResetClicked() { ShowConfirmPopup(2, () => OnReset()); }
+    //    {
+    //  //  if (!isChanged) return;
+    //    ShowConfirmPopup(2, () => OnReset());
+    //}
+
+    void ShowConfirmPopup(int type, System.Action onYes)
+    {
+        pendingConfirmAction = onYes;
+        if (decoTempText != null) decoTempText.SetConfirmMsg(type);
+        if (confirmPopupPanel != null)
+        { confirmPopupPanel.SetActive(true); LockTopButtons(false); }
+        else
+            onYes?.Invoke();
+    }
+
+    void OnConfirmYes()
+    {
+        pendingConfirmAction?.Invoke();
+        pendingConfirmAction = null;
+        if (confirmPopupPanel != null) confirmPopupPanel.SetActive(false);
+        LockTopButtons(true);
+    }
+
+    void OnConfirmClose()
+    {
+        pendingConfirmAction = null;
+        if (confirmPopupPanel != null) confirmPopupPanel.SetActive(false);
+        LockTopButtons(true);
+    }
     void OnSave() // 저장
     {
         // TODO: 파베에 저장
@@ -622,20 +860,19 @@ public class DecoEditModeManager : MonoBehaviour
         else if (currentMode == DecoMode.Island)
         {
             PlacementMgr.Instance?.OnClickConfirmSession(); // 모든 변경사항 확정 후 저장
-          
+
             //if (buildingMgr != null)
             //    buildingMgr.ConfirmAll();
 
             if (itemListManager != null)
-                itemListManager.SaveSnapshot(); 
+                itemListManager.SaveSnapshot();
             isChanged = false;
         }
     }
     void OnReset() // 초기화, 저장한 상태로 불러오기
     {
         if (!isChanged) return; // 변경사항 없으면 무시 
-
-        // TODO:  (파베 연결 후에 나중에 구현)
+       
         if (currentMode == DecoMode.Lake) // 호수 모드
         {
             // 인벤을 마지막 저장 시점으로 복구
@@ -648,20 +885,24 @@ public class DecoEditModeManager : MonoBehaviour
         }
         else if (currentMode == DecoMode.Island) // 섬모드 
         {
-            PlacementMgr.Instance?.OnClickCancelSession(); // 모든 변경사항 취소
-          
             if (itemListManager != null)
-                itemListManager.ReturnAllItems();
+                itemListManager.ReturnAllItems(); // 인벤을 스냅샷으로 복원
+            PlacementMgr.Instance?.OnClickCancelSession(); // 모든 변경사항 취소, 건물복원
+
             //if (buildingMgr != null)
             //{
             //    buildingMgr.RevertAll();          // 되돌리기
             //    buildingMgr.CancelCurrentAction(); // 들고있는 거 취소
             //}
-            isChanged = false; 
+            isChanged = false;
         }
-    } 
+    }
     void OnRecallAll()  // 전체회수 : 배치된 거 전부 인벤으로 회수 
     {
+        // Fix 필터 모드 해제 
+        if (itemListManager != null && itemListManager.IsFixFilterMode)
+            itemListManager.ExitFilterMode();
+
         if (currentMode == DecoMode.Lake) // 호수모드 
         {
             // 배치된 모든 오브젝트를 인벤에 복구
@@ -672,13 +913,14 @@ public class DecoEditModeManager : MonoBehaviour
                     itemListManager.RestoreItem(p.itemId);
             }
 
-            gridManager.RecallAll();  // 그리드에서 전부 제거
+            gridManager.RecallAll(); // 그리드에서 전부 제거
             isChanged = true;
         }
         else if (currentMode == DecoMode.Island) // 섬모드 
         {
+            isClearingAll = true;  
             PlacementMgr.Instance?.OnClickAllDelete(); // 전체회수 버튼클릭 
-
+            isClearingAll = false; 
             //if (buildingMgr != null)
             //{
             //    buildingMgr.ClearAll();
@@ -689,7 +931,8 @@ public class DecoEditModeManager : MonoBehaviour
             //{
             //    itemListManager.ReturnAllItems();
             //}
-            isChanged = true;
+
+           // isChanged = true;
         }
     }
     void OnExit() // 나가기
@@ -705,7 +948,7 @@ public class DecoEditModeManager : MonoBehaviour
         }
     }
     #endregion
-   
+
     #region 나가기 팝업
     void ShowExitPopup()
     {
@@ -716,7 +959,7 @@ public class DecoEditModeManager : MonoBehaviour
             LockTopButtons(false);
         }
         else // 임시로 팝업 UI가 없으면 그냥 나가기
-        {  
+        {
             ExitEditMode();
         }
     } // 팝업 패널 
@@ -760,9 +1003,9 @@ public class DecoEditModeManager : MonoBehaviour
         if (exitPopupPanel != null)
             exitPopupPanel.SetActive(false);
         LockTopButtons(true);
-    } 
+    }
     #endregion
-   
+
     public void SetChanged()
     {
         isChanged = true;
@@ -771,24 +1014,37 @@ public class DecoEditModeManager : MonoBehaviour
     void OnDestroy() // 이벤트 해제 
     {
         if (itemListManager != null)
+        {
             itemListManager.OnSlotPick -= OnIslandPick;
-
+            // Fix 슬롯 이벤트 해제 
+            itemListManager.OnFixSlotPick -= OnFixSlotSelected;
+        }
         if (buildingMgr != null)
         {
             buildingMgr.OnPlaceSuccess -= OnIslandPlaceSuccess;
             buildingMgr.OnPlaceCancel -= OnIslandPlaceCancel;
-            buildingMgr.OnConfirm -= OnIslandConfirm;          
-            buildingMgr.OnRevert -= OnIslandRevert;            
-            buildingMgr.OnClearAll -= OnIslandClearAll;        
+            buildingMgr.OnConfirm -= OnIslandConfirm;
+            buildingMgr.OnRevert -= OnIslandRevert;
+            buildingMgr.OnClearAll -= OnIslandClearAll;
+            buildingMgr.OnFixReverted -= OnFixReverted;
         }
 
         if (PlacementMgr.Instance != null)
         {
             PlacementMgr.Instance.OnBuildingPick -= ShowIslandActionPanel;
             PlacementMgr.Instance.OnBuildingDrop -= HideIslandActionPanel;
+            // 고정물 이벤트 해제
+            PlacementMgr.Instance.OnFixedBuildingPick -= OnFixBuildingClicked;
+            // 그리드 Fix 이벤트 해제 
+            PlacementMgr.Instance.OnGridFixBuildingPick -= OnGridFixBuildingClicked;
+
+            // TODO: 나중에 구조변경시 이벤트도 해제 
+            // PlacementMgr.Instance.OnEmptyClick -= OnEmptySpaceClicked;
         }
+
+
     }
- 
+
     //  외부에서 상태 확인용
     public bool IsEditMode()
     {
@@ -799,4 +1055,95 @@ public class DecoEditModeManager : MonoBehaviour
     {
         return currentMode;
     }
+    // 블로커 공용 클릭 핸들러
+    void OnBlockerClicked()
+    {
+        if (dropdownPanel != null && dropdownPanel.activeSelf)
+        {
+            HideDropdown();
+        }
+
+        // 고정물 배치템 필터 모드면 해제
+        else if (itemListManager != null && itemListManager.IsFixFilterMode)
+        {
+            itemListManager.ExitFilterMode();
+            if (dropdownBlocker != null)
+                dropdownBlocker.SetActive(false);
+        }
+    }
+
+    #region 날씨 파티클 숨기기/복원 메서드
+    // 편집모드 진입 시: 현재 재생 중인 파티클을 캐싱하고 정지+비활성화
+    void HideWeatherParticle()
+    {
+        if (weatherParticleParent == null) return;
+
+        var particles = weatherParticleParent.GetComponentsInChildren<ParticleSystem>(true);
+        cachedParticle = null;
+
+        foreach (var ps in particles)
+        {
+            if (ps.isPlaying)
+            {
+                cachedParticle = ps; // 나갈 때 복원하기 위해 기억
+                ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+                ps.gameObject.SetActive(false);
+                break; // 계절은 하나만 끄게 
+            }
+        }
+    }
+
+    /// 편집모드 퇴장 시: 캐싱해둔 파티클 복원
+    void RestoreWeatherParticle()
+    {
+        if (cachedParticle != null)
+        {
+            cachedParticle.gameObject.SetActive(true);
+            cachedParticle.Play();
+            cachedParticle = null;
+        }
+    }
+    #endregion
+
+    #region 호수 높이 0이 되면 배경(비활성화), 물고기(투명화)
+    void OnEnable()
+    {
+        if (waterWindow != null)
+            waterWindow.OnWaterWindowHeightChanged += OnWaterHeightChanged;
+    }
+
+    void OnDisable()
+    {
+        if (waterWindow != null)
+            waterWindow.OnWaterWindowHeightChanged -= OnWaterHeightChanged;
+    }
+
+    void OnWaterHeightChanged(int height)
+    {
+        if (decoMaskArea != null)
+            decoMaskArea.SetActive(height > 0);
+
+        if (aquariumMgr != null)
+        {
+            if (height <= 0)
+                aquariumMgr.HideFish();
+              //  aquariumMgr.PauseFish();
+            else
+                aquariumMgr.ShowFish();
+              //  aquariumMgr.ResumeFish();
+        }
+    }
+    
+    void SetMainUIActive(bool active)
+    {
+        if (windowEdgeGroup != null)
+            windowEdgeGroup.SetActive(active);
+        if (mainMenuBtnGroup != null)
+            mainMenuBtnGroup.SetActive(active);
+        if (topMoneyBarUI != null)
+            topMoneyBarUI.SetActive(active);
+        if (waterLevelButton != null)
+            waterLevelButton.SetActive(active);
+    }
+    #endregion
 }

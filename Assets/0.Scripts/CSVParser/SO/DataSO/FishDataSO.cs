@@ -74,6 +74,9 @@ public class FishDataSO : TableBase<int>
     // 판매 시 금액(원)
     [field: SerializeField] public int Price { get; private set; }
 
+    // 보관함 슬롯 이미지
+    [field: SerializeField] public Sprite BoxSlotImgPath_Sprite { get; private set; }
+
     // 스프라이트 
     [field: SerializeField] public Sprite FishImgPath_Sprite { get; private set; }
 

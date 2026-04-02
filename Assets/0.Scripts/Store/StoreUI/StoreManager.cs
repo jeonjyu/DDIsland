@@ -11,7 +11,7 @@ public class StoreManager : Singleton<StoreManager>, INotifyPropertyChanged
     List<Enum> category = new List<Enum>();
 
     [SerializeField] GameObject storeListPanel;
-    [SerializeField] GameObject buyAndSellPanel;
+    [SerializeField] TradeViewModelBase buyAndSellPanel;
     [SerializeField] public FilterDropdown filterDropdown;
     [SerializeField] public SortDropdown sortDropdown;
 
@@ -26,10 +26,12 @@ public class StoreManager : Singleton<StoreManager>, INotifyPropertyChanged
 
     public event PropertyChangedEventHandler PropertyChanged;
 
+    public TradePopupBase tradePopup;
+
     #endregion
 
     #region properties
-    public GameObject BuyAndSellPanel => buyAndSellPanel;
+    public TradeViewModelBase BuyAndSellPanel => buyAndSellPanel;
     public ItemSlotViewModelBase TradeItemSlot
     {
         get => tradeItemSlot;
@@ -65,8 +67,7 @@ public class StoreManager : Singleton<StoreManager>, INotifyPropertyChanged
             if (tradeModel.ItemCount != value)
             {
                 tradeModel.ItemCount = value;
-                //Debug.Log("[StoreManager] | 아이템 개수 변경 " + TradeItemCount);
-
+                //Debug.Log("[StoreManager] 아이템 개수 변경 " + TradeItemCount);
                 OnTradeModelChanged(nameof(TradeItemCount));
             }
         }
@@ -80,7 +81,7 @@ public class StoreManager : Singleton<StoreManager>, INotifyPropertyChanged
             if(tradeModel.IsGained != value)
             {
                 tradeModel.IsGained = value;
-                //Debug.Log(this.name + " 아이템 보유 여부 변경 " + tradeModel.IsGained);
+                //Debug.Log("[StoreManager] 아이템 보유 여부 변경 " + IsTradeItemGained);
                 OnTradeModelChanged(nameof(IsTradeItemGained));
             }
         }
@@ -90,8 +91,6 @@ public class StoreManager : Singleton<StoreManager>, INotifyPropertyChanged
     protected override void Awake() 
     {
         base.Awake();
-        // 초기 카테고리 설정
-        //currentCat = (StoreCat)0;
     }
 
     /// <summary>
@@ -110,7 +109,7 @@ public class StoreManager : Singleton<StoreManager>, INotifyPropertyChanged
                 {
                     IsTradeItemGained = true;
                     ItemManager.Instance.AddToPlayerItem(TradeModel, currentCat);
-                    Debug.Log($"[Storemanager] 새로운 아이템 추가 | IsGained : {TradeModel.IsGained} / TradeItemCount : {TradeItemCount + inCount}");
+                    //Debug.Log($"[Storemanager] 새로운 아이템 추가 | IsGained : {TradeModel.IsGained} / TradeItemCount : {TradeItemCount + inCount}");
                     //TradeItemSlot.IsGained = IsTradeItemGained;
                 }
             }
@@ -121,14 +120,13 @@ public class StoreManager : Singleton<StoreManager>, INotifyPropertyChanged
                 {
                     IsTradeItemGained = false;
                     ItemManager.Instance.RemoveFromPlayerItem(TradeModel, currentCat);
-                    Debug.Log($"[Storemanager] 아이템 삭제 | IsGained : {TradeModel.IsGained} / TradeItemCount : {TradeItemCount + inCount}");
+                    //Debug.Log($"[Storemanager] 아이템 삭제 | IsGained : {TradeModel.IsGained} / TradeItemCount : {TradeItemCount + inCount}");
                 }
             }
 
+            //Debug.Log("[StoreManager] 아이템 정보 변경됨 ");
             TradeItemCount += inCount;
-            //IsTradeItemGained = true;
-            //Debug.Log("IsTradeItemGained : " + IsTradeItemGained);
-            TradeItemSlot.IsGained = IsTradeItemGained; // TradeModel.IsGained;
+            TradeItemSlot.IsGained = IsTradeItemGained;
             TradeItemSlot.ItemCount = TradeItemCount;
         }
         else
@@ -140,21 +138,45 @@ public class StoreManager : Singleton<StoreManager>, INotifyPropertyChanged
     // 거래 팝업 활성화에 따라 드롭다운 선택 가능 여부 변경
     public void ChangeDropdownAvailability(bool isAvailable)
     {
+        // 첫실행시 필터 드롭다운이 없어 return시킴
+        if (filterDropdown.filterDrop == null)
+            return;
+        
         filterDropdown.filterDrop.interactable = isAvailable;
         sortDropdown.sortDrop.interactable = isAvailable;
     }
 
     public void ChangeLayout()
     {
-        //Debug.Log("레이아웃 변경");
         storeUIFactory.GetLayout(storeListVM.listGirdLayout, currentCat);
         buyAndSellPanel = storeUIFactory.GetPopupPanel(currentCat);
         ItemManager.Instance.itemSlot = storeUIFactory.GetItemSlot(currentCat);
+        ChangeDropdownByCategory();
     }
 
     // TradeUnitViewModelBase에서 구독
     protected virtual void OnTradeModelChanged([CallerMemberName] string propertyName = null)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+
+    public void ChangeDropdownByCategory()
+    {
+        //Debug.Log("카테고리에 따라 드롭다운 사용 가능 여부 변경됨 : " + currentCat);
+        // 카테고리에 따라 드롭다운 사용 가능 여부 변경
+        switch (currentCat)
+        {
+            case StoreCat.interior:
+            case StoreCat.costume:
+            case StoreCat.fishing:
+                ChangeDropdownAvailability(true);
+                break;
+            case StoreCat.recipe:
+                sortDropdown.sortDrop.interactable = true;
+                break;
+            case StoreCat.lake:
+                ChangeDropdownAvailability(false);
+                break;
+        }
     }
 }

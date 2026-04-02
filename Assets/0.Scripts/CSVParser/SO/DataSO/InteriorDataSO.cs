@@ -10,6 +10,7 @@ public enum FixGroup
     Box = 2,              //보관함
     LpPlayer = 3,         //LP플레이어
     Bed = 4,              //침대
+    Tree = 5,             //나무
 }
 
 // 상호작용 종류
@@ -59,7 +60,7 @@ public class InteriorDataSO : TableBase<int>
     // 인테리어 ID
     [field: SerializeField] public int InteriorID { get; private set; }
 
-    //  
+    // 인테리어 이름
     [SerializeField] private string interiorName;
     public string InteriorName_String => LocalizationManager.Instance.GetString(interiorName);
 

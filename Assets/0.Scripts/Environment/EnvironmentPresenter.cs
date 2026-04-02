@@ -6,6 +6,7 @@ public class EnvironmentPresenter : MonoBehaviour
     private EnvironmentModel _model;
     [SerializeField] private EnvironmentView _view;
     [SerializeField] private LakeImage _lakeImage;
+    [SerializeField] private PlayerController _playerController;
 
     //여기서 미리 지정해줍니다
     private DateTime now = DateTime.UtcNow.AddHours(9);
@@ -20,16 +21,14 @@ public class EnvironmentPresenter : MonoBehaviour
         {
             FishManager.Instance.SetEnvironment(_model);
         }
-    }
+        if (_playerController != null)  _playerController.SetEnvironment(_model);
+    }  
 
     private void OnEnable()
     {
         // 켜질 때 구독 (이벤트 연결)
-        _model.OnSeasonChanged += _view.ChangeSeasonSprite;
         _model.OnDailyChanged += _lakeImage.HandleDailyChanged;
 
-        _model.OnDailyChanged += _view.ChangeDayilyBackGround;
-        _model.OnDailyChanged += _view.ChangeDailySprite;
         _model.OnWeatherChanged += _view.PlaySeasonParticle;
 
 
@@ -41,12 +40,10 @@ public class EnvironmentPresenter : MonoBehaviour
     private void OnDisable()
     {
         // 꺼질 때 해제 (중복 구독 및 메모리 누수 방지)
-        _model.OnSeasonChanged -= _view.ChangeSeasonSprite;
         _model.OnDailyChanged -= _lakeImage.HandleDailyChanged;
 
-        _model.OnDailyChanged -= _view.ChangeDayilyBackGround;
-        _model.OnDailyChanged -= _view.ChangeDailySprite;
         _model.OnWeatherChanged -= _view.PlaySeasonParticle;
+        
 
         if (DataManager.Instance != null &&DataManager.Instance.Hub != null)
         {
@@ -123,9 +120,6 @@ public class EnvironmentPresenter : MonoBehaviour
     {
         _model.UpdateTimeSet(now);
 
-        _view.ChangeDayilyBackGround(_model.CurrentDay);
-        _view.ChangeDailySprite(_model.CurrentDay);
-        _view.ChangeSeasonSprite(_model.CurrentSeason);
         _lakeImage.HandleDailyChanged(_model.CurrentDay);
     }
 

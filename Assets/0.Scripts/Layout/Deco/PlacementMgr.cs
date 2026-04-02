@@ -18,6 +18,10 @@ public class PlacementMgr : MonoBehaviour
     private InputAction _rotation;
     private InputAction _cancel;
     private InputAction _scrollAction;
+    private InputAction _cameraWalk;
+
+    [SerializeField] private AudioClip _placedAudio;
+
 
     [Header("Cinemachine Cameras")]
     [SerializeField] private CinemachineCamera _viewCamera;
@@ -34,6 +38,12 @@ public class PlacementMgr : MonoBehaviour
     [SerializeField] private float _minFOV = 20f;   // 가장 가까운 곳
     [SerializeField] private float _maxFOV = 70f;   // 가장 먼 곳
 
+    [SerializeField] private Transform _cameraTarget;
+    [SerializeField] private float _moveSpeed = 20f;     // 이동 속도
+    [SerializeField] private Vector2 _mapLimitMin;       // 섬 최소 범위
+    [SerializeField] private Vector2 _mapLimitMax;       // 섬 최대 범위
+    private Vector3 _targetCameraPos;
+
     #region 프로퍼티
     static public PlacementMgr Instance => _instance;
     public PlacementState CurrentState { get; private set; } = PlacementState.View;
@@ -46,6 +56,7 @@ public class PlacementMgr : MonoBehaviour
         _rotation = InputSystem.actions.FindAction("UI/Rotation");
         _cancel = InputSystem.actions.FindAction("UI/Cancel");
         _scrollAction = InputSystem.actions.FindAction("UI/ScrollWheel");
+        _cameraWalk = InputSystem.actions.FindAction("UI/CameraWalk");
     }
     private void OnEnable()
     {
@@ -74,26 +85,28 @@ public class PlacementMgr : MonoBehaviour
         _rotation.performed -= OnRotate;
         _rotation.Disable();
     }
-
+    #region 섬 카메라 관련
     private void Update()
     {
+        if (CurrentState != PlacementState.Edit) return;
+
         HandleZoom();
+        HandleCameraMovement();
     }
 
     private void HandleZoom()
     {
-        if (CurrentState != PlacementState.Edit) return;
 
         float scrollValue = _scrollAction.ReadValue<Vector2>().y;
         if (Mathf.Abs(scrollValue) < 0.01f) return;
 
         if (_editCamera != null)
         {
-            float currentFOV = _editCamera.Lens.FieldOfView;
+            float currentSize = _editCamera.Lens.OrthographicSize;
 
-            float nextFOV = currentFOV - (scrollValue * _zoomSpeed * Time.deltaTime);
+            float nextSize = currentSize - (scrollValue * _zoomSpeed * Time.deltaTime);
 
-            _editCamera.Lens.FieldOfView = Mathf.Clamp(nextFOV, _minFOV, _maxFOV);
+            _editCamera.Lens.OrthographicSize = Mathf.Clamp(nextSize, _minFOV, _maxFOV);
         }
     }
 
@@ -105,10 +118,10 @@ public class PlacementMgr : MonoBehaviour
 
         _buildingManager.GridSystem.SetGridActive(isEditMode);
 
-        Debug.Log($"현재 모드: {CurrentState}");
-
         if (isEditMode)
         {
+            _targetCameraPos = _cameraTarget.position;
+
             _editCamera.Priority = 100;
             _viewCamera.Priority = 10;
         }
@@ -121,9 +134,30 @@ public class PlacementMgr : MonoBehaviour
             CloseEditMenu();
         }
     }
+
+    private void HandleCameraMovement()
+    {
+        if (_editCamera == null || _cameraWalk == null) return;
+
+        Vector2 input = _cameraWalk.ReadValue<Vector2>();
+        if (input.sqrMagnitude > 0.01f)
+        {
+            Vector3 forward = _editCamera.transform.forward; forward.y = 0; forward.Normalize();
+            Vector3 right = _editCamera.transform.right; right.y = 0; right.Normalize();
+
+            Vector3 moveDir = (forward * input.y + right * input.x).normalized;
+            _targetCameraPos += moveDir * _moveSpeed * Time.deltaTime;
+
+            // 이동 제한 (Clamp)
+            _targetCameraPos.x = Mathf.Clamp(_targetCameraPos.x, _mapLimitMin.x, _mapLimitMax.x);
+            _targetCameraPos.z = Mathf.Clamp(_targetCameraPos.z, _mapLimitMin.y, _mapLimitMax.y);
+        }
+
+        _cameraTarget.position = _targetCameraPos;
+    }
+    #endregion
     private void OnRotate(InputAction.CallbackContext ctx)
     {
-        Debug.Log($"입력 감지됨: {ctx}");
         OnClickRotate();
     }
     private void OnCancelInput(InputAction.CallbackContext ctx)
@@ -143,7 +177,7 @@ public class PlacementMgr : MonoBehaviour
 
         if (_buildingManager.ActivePlaceable != null)
         {
-            _buildingManager.ActivePlaceable.Placement(); // 건물의 Placement 실행
+            _buildingManager.ActivePlaceable.Placement(_placedAudio); // 건물의 Placement 실행
             return;
         }
 
@@ -180,10 +214,8 @@ public class PlacementMgr : MonoBehaviour
             else if (fixTarget != null)
             {
                 CloseEditMenu(); 
-
                 OnFixedBuildingPick?.Invoke(fixTarget);
             }
-            
             else
             {
                 // 빈 땅을 클릭하면 메뉴 닫기
@@ -271,7 +303,6 @@ public class PlacementMgr : MonoBehaviour
         CloseEditMenu();
         _buildingManager.ClearAll();
 
-        Debug.Log("전체 회수 버튼 클릭: 모든 건물을 삭제했습니다.");
     }
     public void OnClickConfirmSession()
     {
@@ -283,8 +314,6 @@ public class PlacementMgr : MonoBehaviour
         {
             DataManager.Instance.Hub.SaveAllData();
         }
-
-        Debug.Log("모든 변경 사항이 확정되어 저장되었습니다.");
     }
     public void OnClickCancelSession()
     {
@@ -293,8 +322,6 @@ public class PlacementMgr : MonoBehaviour
         _buildingManager.CancelCurrentAction();
 
         CloseEditMenu();
-
-        Debug.Log("모든 변경 사항이 취소되고 편집 전으로 되돌아갔습니다.");
     }
 
     public void OnClickConstructionButton(int itemId)
@@ -302,7 +329,6 @@ public class PlacementMgr : MonoBehaviour
         // 편집 모드일 때만 건설 시작 가능
         if (CurrentState != PlacementState.Edit)
         {
-            Debug.LogWarning("편집 모드에서만 건물을 배치할 수 있습니다.");
             return;
         }
 

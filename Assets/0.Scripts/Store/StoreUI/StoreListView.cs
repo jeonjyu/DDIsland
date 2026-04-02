@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Reflection;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,48 +10,52 @@ using UnityEngine.UI;
 public class StoreListView : MonoBehaviour
 {
     [SerializeField] GameObject storeListPanel;
-    [SerializeField] Button StoreButton;
+    //[SerializeField] Button StoreButton;
 
-    List<Button> stores = new List<Button>();
+    List<CategoryButton> stores = new List<CategoryButton>();
 
     StoreListViewModel viewModel;
-    Color selectedColor; 
-    Color normalColor; 
-    public List<Button> Stores => stores;
+    
+    Color normalColor = new Color(0.831f, 0.706f, 0.600f, 1f);
+    Color selectedColor = new Color(0.992f, 0.969f, 0.906f, 1f);
+
+    public List<CategoryButton> Stores => stores;
 
     void Awake()
     {
         viewModel = GetComponent<StoreListViewModel>();
         viewModel.PropertyChanged += OnStoreListViewModelChanged;
-        normalColor = StoreButton.colors.normalColor;
-        selectedColor = StoreButton.colors.pressedColor;
 
-        foreach (Button button in storeListPanel.transform.GetComponentsInChildren<Button>())
+        foreach (CategoryButton button in storeListPanel.transform.GetComponentsInChildren<CategoryButton>())
+        {
             stores.Add(button);
+        }
 
         SetStoreCat();
     }
 
     private void OnDisable()
     {
-        foreach(Button button in stores)
+        foreach(CategoryButton button in stores)
         {
-            SetSelectedCatBtnColor(button, false);
+            SetSelectedCatBtnColor(button.CatBtn, false);
         }
     }
 
     // 스토어 버튼 설정
     void SetStoreCat()
     {
-        List<string> catList = DescriptionExtracter.GetEnumList<StoreCat>(Enum.GetValues(typeof(StoreCat)));
-        foreach (string item in catList)
+        List<string> catUiStr = DescriptionExtracter.GetEnumList<StoreCat>(Enum.GetValues(typeof(StoreCat)));
+        foreach (string item in catUiStr)
         {
-            int idx = catList.IndexOf(item);
-    // 이름 변경
-            stores[idx].GetComponentInChildren<TMP_Text>().text = item;
-    // 버튼 이벤트 추가
+            int idx = catUiStr.IndexOf(item);
+
+            // 이름 변경
+            //stores[idx].CatUiString.TextId = item;
+
+            // 버튼 이벤트 추가
             // 버튼에 모델을 현재 상점 카테고리로 설정하도록 하는 로직 추가
-            stores[idx].GetComponent<Button>().onClick.AddListener(() =>
+            stores[idx].CatBtn.onClick.AddListener(() =>
             {
                 viewModel.UpdateCurrentCat(idx);
             });
@@ -64,33 +69,27 @@ public class StoreListView : MonoBehaviour
 
         if (isSelected)
         {
-            //Debug.Log("선택된 색");
+            //Debug.Log(button.name + "선택된 색");
             colorBlock.normalColor = selectedColor;
             colorBlock.selectedColor = selectedColor;
         }
         else
         {
-            //Debug.Log("기본 색");
+            //Debug.Log(button.name + "기본 색");
             colorBlock.normalColor = normalColor;
             colorBlock.selectedColor = normalColor;
         }
 
 
         button.colors = colorBlock;
-
-        //Debug.Log(colorBlock.normalColor.GetHashCode());
     }
 
     private void OnStoreListViewModelChanged(object sender, PropertyChangedEventArgs e)
     {
-        if(viewModel.CurrentCat != StoreCat.recipe)
-        {
-            viewModel.Filter.filterDrop.interactable = true;
-            viewModel.Filter.UpdateFilter((Filter)viewModel.CurrentCat);
-        }
-        else
-            viewModel.Filter.filterDrop.interactable = false;
-
+        viewModel.Filter.filterDrop.value = 0;
+        viewModel.Filter.filterDrop.interactable = viewModel.CurrentCat != StoreCat.recipe ? true : false;
+        viewModel.Filter.UpdateFilter((Filter)viewModel.CurrentCat);
+        
         switch (e.PropertyName)
         {
             case null:

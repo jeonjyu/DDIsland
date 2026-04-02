@@ -32,8 +32,8 @@ public class JournalPopup : MonoBehaviour
             nameText.text = data.ItemName;
         if (descText != null)
             descText.text = data.Description;
-        if (itemImage != null && data.ItemSprite != null)
-            itemImage.sprite = data.ItemSprite;
+        if (itemImage != null && data.SlotSprite != null)
+            itemImage.sprite = data.SlotSprite;
         if (infoText != null)
             infoText.text = BuildSpecialInfoText(data);
     }
@@ -79,7 +79,7 @@ public class JournalPopup : MonoBehaviour
             case JournalCategory.Album:
                 AppendInfo(sb, data, "테마");
                 AppendInfo(sb, data, "아티스트");
-                AppendInfo(sb, data, "재생 길이");
+               
                 break;
         }
 

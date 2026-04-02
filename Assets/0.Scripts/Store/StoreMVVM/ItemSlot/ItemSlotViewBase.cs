@@ -4,29 +4,33 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class ItemSlotViewBase : MonoBehaviour, IStoreItemView, IPointerClickHandler
+public class ItemSlotViewBase<T> : MonoBehaviour, IStoreItemView, IPointerClickHandler where T : ItemSlotViewModelBase
 {
 //field
-    protected ItemSlotViewModelBase viewModel;
+    protected T viewModel;
     protected IStoreItem modelData;
-    protected Image slotImage;
 
+    protected Color gainedColor = new Color(0.93f, 0.87f, 0.75f, 1f);
+    protected Color ungainedColor = new Color(0.99f, 0.97f, 0.91f, 1f);
 
     [SerializeField] protected Image _slotBackground;
     [SerializeField] protected Image _itemImage;
 
+
     protected EventTrigger eventTrigger;
 
-// property
-    public ItemSlotViewModelBase ViewModel => viewModel;
+
+    // property
+    public T ViewModel => viewModel;
     public IStoreItem ModelData => modelData;
     public Image SlotBackground => _slotBackground;
     public Image ItemImage => _itemImage;
 
     protected virtual void Awake()
     {
-        viewModel = GetComponent<ItemSlotViewModelBase>();
-        Init();
+        viewModel = GetComponent<T>();
+        eventTrigger = GetComponent<EventTrigger>();
+        //Init();
     }
 
     void OnEnable()
@@ -44,13 +48,13 @@ public class ItemSlotViewBase : MonoBehaviour, IStoreItemView, IPointerClickHand
     // 뷰 초기화 및 업데이트 메서드
     public virtual void Init()
     {
-        //Debug.Log("[ItemSlotView] Init");
+        //Debug.Log("[ItemSlotViewBase] Init");
         modelData = viewModel.Model;
         int itemID = viewModel.ItemId;
 
         if (modelData is null)
         {
-            //Debug.Log("model이 없음");
+            Debug.Log("model이 없음");
             ResetSlot();
             return;
         }
@@ -66,10 +70,7 @@ public class ItemSlotViewBase : MonoBehaviour, IStoreItemView, IPointerClickHand
 
     public void UpdateSlotColor(bool isGained)
     {
-        if (!isGained)
-            _slotBackground.color = Color.grey;
-        else
-            _slotBackground.color = Color.white;
+        _slotBackground.color = isGained ? gainedColor : ungainedColor;
     }
 
     // 버튼 팝업 띄우고
@@ -79,7 +80,7 @@ public class ItemSlotViewBase : MonoBehaviour, IStoreItemView, IPointerClickHand
         viewModel.SetPopupModel();
         StoreManager.Instance.TradeItemSlot = this.viewModel;
         if (StoreManager.Instance.BuyAndSellPanel != null)
-            StoreManager.Instance.BuyAndSellPanel.SetActive(true);
+            StoreManager.Instance.BuyAndSellPanel.gameObject.SetActive(true);
         else
             Debug.LogError("패널이없어요");
         StoreManager.Instance.ChangeDropdownAvailability(false);
@@ -87,27 +88,25 @@ public class ItemSlotViewBase : MonoBehaviour, IStoreItemView, IPointerClickHand
 
     public virtual void UpdateSlotUI(int count){}
 
-    private void OnViewModelPropChanged(object sender, PropertyChangedEventArgs e)
+    protected virtual void OnViewModelPropChanged(object sender, PropertyChangedEventArgs e)
     {
-        if (string.IsNullOrEmpty(e.PropertyName))
-        {
-            //Debug.Log("[ItemSlotView] OnViewModelPropChanged | 모델 변경");
-            Init();
-            return;
-        }
-        //else
-        //    Debug.Log(this.name + " 변경됨 " + e.PropertyName + " " + sender);
-        
         switch (e.PropertyName)
         {
-            //case null:
-            //case "":
-            //    Init();
-            //    break;
+            case null:
+            case "":
+                //Debug.Log("[ItemSlotViewBase] 모델 변경됨");
+                Init();
+                break;
             case "IsGained":
-            case "ItemCount":
+                //Debug.Log("[ItemSlotViewBase] 보유 여부 변경됨");
                 UpdateSlotUI(modelData.ItemCount);
                 UpdateSlotColor(modelData.IsGained);
+                StoreManager.Instance.sortDropdown.ApplySortPriority();
+                StoreManager.Instance.StoreListVM.LoadSlotList();
+                break;
+            case "ItemCount":
+                //Debug.Log("[ItemSlotViewBase] 아이템 개수 변경됨");
+                UpdateSlotUI(modelData.ItemCount);
                 StoreManager.Instance.sortDropdown.ApplySortPriority();
                 StoreManager.Instance.StoreListVM.LoadSlotList();
                 break;

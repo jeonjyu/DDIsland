@@ -8,6 +8,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 818323957332339129, guid: ee3cb6636df60164b854f0df52804f8f, type: 3}
+      propertyPath: purchaseSfx
+      value: 
+      objectReference: {fileID: 8300000, guid: 61b90cb0a7e79d941b2272a4f96cb7de, type: 3}
     - target: {fileID: 860288825371286887, guid: ee3cb6636df60164b854f0df52804f8f, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -100,6 +104,10 @@ PrefabInstance:
       propertyPath: view
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 1628195049058973061, guid: ee3cb6636df60164b854f0df52804f8f, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 600
+      objectReference: {fileID: 0}
     - target: {fileID: 1922359553625175345, guid: ee3cb6636df60164b854f0df52804f8f, type: 3}
       propertyPath: itemDesc
       value: 
@@ -108,6 +116,22 @@ PrefabInstance:
       propertyPath: itemName
       value: 
       objectReference: {fileID: 8690159381348080692}
+    - target: {fileID: 4477523806758330652, guid: ee3cb6636df60164b854f0df52804f8f, type: 3}
+      propertyPath: sellSfx
+      value: 
+      objectReference: {fileID: 8300000, guid: f4dd9917ed8c78d45bb8ef83a4d5666e, type: 3}
+    - target: {fileID: 4677417005375632330, guid: ee3cb6636df60164b854f0df52804f8f, type: 3}
+      propertyPath: textId
+      value: Shop_Button_Purchase_Text
+      objectReference: {fileID: 0}
+    - target: {fileID: 5982131815106769182, guid: ee3cb6636df60164b854f0df52804f8f, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 600
+      objectReference: {fileID: 0}
+    - target: {fileID: 8025033785948553028, guid: ee3cb6636df60164b854f0df52804f8f, type: 3}
+      propertyPath: textId
+      value: Shop_Button_Sell_Text
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 9086050232554904237, guid: ee3cb6636df60164b854f0df52804f8f, type: 3}
     - {fileID: 5015139877481430810, guid: ee3cb6636df60164b854f0df52804f8f, type: 3}
@@ -125,6 +149,9 @@ PrefabInstance:
     - {fileID: 6583321530561766982, guid: ee3cb6636df60164b854f0df52804f8f, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 953949292096940274, guid: ee3cb6636df60164b854f0df52804f8f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7657953490192510364}
     - targetCorrespondingSourceObject: {fileID: 3806774567852589423, guid: ee3cb6636df60164b854f0df52804f8f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6155525082706525560}
@@ -137,7 +164,28 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1973492541364489697, guid: ee3cb6636df60164b854f0df52804f8f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5456284367211890942}
+    - targetCorrespondingSourceObject: {fileID: 1230736883177274444, guid: ee3cb6636df60164b854f0df52804f8f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4093460825440814718}
   m_SourcePrefab: {fileID: 100100000, guid: ee3cb6636df60164b854f0df52804f8f, type: 3}
+--- !u!1 &4710402965703232305 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1230736883177274444, guid: ee3cb6636df60164b854f0df52804f8f, type: 3}
+  m_PrefabInstance: {fileID: 5785650143842842493}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &4093460825440814718
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4710402965703232305}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2134d9cf1904084596ca987dae836c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI_BaseLocalizedText
+  textId: Shop_Button_Equip_Text
 --- !u!114 &4892602612142729058 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1417725693023408159, guid: ee3cb6636df60164b854f0df52804f8f, type: 3}
@@ -154,7 +202,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1922359553625175345, guid: ee3cb6636df60164b854f0df52804f8f, type: 3}
   m_PrefabInstance: {fileID: 5785650143842842493}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 6735091415176241039}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 00587a40926800647ab928de042e0a80, type: 3}
@@ -180,6 +228,7 @@ MonoBehaviour:
   tradeBtn: {fileID: 4892602612142729058}
   priceTxt: {fileID: 6534072919412046389}
   _equipTradeView: {fileID: 5397377179620770380}
+  tradeViewModel: {fileID: 0}
 --- !u!114 &5456284367211890942
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -192,6 +241,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3514018d84fb9394ea5c9d50afcd41e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SingleItemUnitViewModel
+  tradeVM: {fileID: 0}
   TradeConfirmPanel: {fileID: 0}
 --- !u!114 &6262015726260672438 stripped
 MonoBehaviour:
@@ -215,6 +265,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+--- !u!1 &6735091415176241039 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 953949292096940274, guid: ee3cb6636df60164b854f0df52804f8f, type: 3}
+  m_PrefabInstance: {fileID: 5785650143842842493}
+  m_PrefabAsset: {fileID: 0}
+--- !u!225 &7657953490192510364
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6735091415176241039}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &7250412126088001042 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3806774567852589423, guid: ee3cb6636df60164b854f0df52804f8f, type: 3}
@@ -235,6 +302,7 @@ MonoBehaviour:
   tradeBtn: {fileID: 7805059662966680556}
   priceTxt: {fileID: 8438216271425468091}
   _equipTradeView: {fileID: 5397377179620770380}
+  tradeViewModel: {fileID: 0}
 --- !u!114 &4403895494046260300
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -247,6 +315,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3514018d84fb9394ea5c9d50afcd41e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SingleItemUnitViewModel
+  tradeVM: {fileID: 0}
   TradeConfirmPanel: {fileID: 0}
 --- !u!114 &7805059662966680556 stripped
 MonoBehaviour:

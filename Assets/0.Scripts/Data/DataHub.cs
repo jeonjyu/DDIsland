@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Threading.Tasks;
 using UnityEngine;
 /// <summary>
 /// 데이터를 저장하고 저장한 데이터를 다시 받아오는 매니저 클래스
@@ -10,7 +11,7 @@ public class DataHub : MonoBehaviour
     public event Action OnRequestSave;
     public event Action OnDataLoaded;
 
-    public bool IsQuite {get; set;}
+    public bool IsQuite { get; set; }
 
     [Header("자동 동기화 설정")]
     [SerializeField] private float _syncInterval = 300f;
@@ -28,27 +29,30 @@ public class DataHub : MonoBehaviour
         StartCoroutine(InitLoadingSequence());
         StartCoroutine(AutoDataBoxSyncRoutine());
     }
-    private void OnApplicationQuit()
-    {
-        UploadAllData();
-        IsQuite = true;
-        Debug.Log("게임 종료. 서버에 데이터 업로드");
-    }
+
     private IEnumerator InitLoadingSequence()
     {
         yield return null;
-
+        Debug.Log("로드 시작");
 
         LoadAllData();
     }
 
     private IEnumerator AutoDataBoxSyncRoutine()
     {
-        while (true)
+        if (IsLoaded == true)
         {
-            yield return wait;
+            yield return new WaitUntil(() => IsLoaded);
 
-            UploadAllData();
+            while (true)
+            {
+                yield return wait;
+
+                if (FirebaseMgr.Instance != null && FirebaseMgr.Instance.IsInitailized)
+                {
+                    _ = UploadAllData();
+                }
+            }
         }
     }
 
@@ -64,14 +68,14 @@ public class DataHub : MonoBehaviour
 
     [ContextMenu("DB")]
     //얘를 인스펙터에서 누르시면 실제로 DB에 값이 전송됩니다
-    public void UploadAllData()
+    public async Task UploadAllData()
     {
-        OnRequestSave?.Invoke();
+        SaveAllData();
 
+        OnRequestSave?.Invoke();
         string finalJson = JsonUtility.ToJson(_allUserData);
-        
-        FirebaseMgr.Instance.FirebaseDataTransfer(finalJson, "");
-        
+
+        await FirebaseMgr.Instance.FirebaseDataTransfer(finalJson, "");
     }
 
     [ContextMenu("DBLoad")]
@@ -92,26 +96,26 @@ public class DataHub : MonoBehaviour
             IsLoaded = true;
             OnDataLoaded?.Invoke();
         }
-        else
-        {
-            SetNewUserData();
+        //else
+        //{
+        //    SetNewUserData();
 
-            UploadAllData();
+        //    await UploadAllData();
 
-            //if (_allUserData.Decoration != null)
-            //{
-            //    _allUserData.Decoration._buildings ??= new List<PlacedObject>();
-            //}
-            IsLoaded = true;
-            OnDataLoaded?.Invoke();
-        }
+        //    //if (_allUserData.Decoration != null)
+        //    //{
+        //    //    _allUserData.Decoration._buildings ??= new List<PlacedObject>();
+        //    //}
+        //    IsLoaded = true;
+        //    OnDataLoaded?.Invoke();
+        //}
     }
     //새 유저를 위한 데이터입니다. 아직 뭘 넣어야할지 몰라 일단 환경 데이터만 넣었습니다
     private void SetNewUserData()
     {
         _allUserData = new UserAllData();
 
-        EnvironmentModel env = new ();
+        EnvironmentModel env = new();
         DateTime now = DateTime.UtcNow;
         env.UpdateTimeSet(now); // 계절 및 시간대 계산 실행
         _allUserData.Environment = env.SaveData();

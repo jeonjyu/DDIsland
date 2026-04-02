@@ -7,12 +7,11 @@ public class UI_FoodStorageSlot : MonoBehaviour
 
     [SerializeField] Image _icon;
     [SerializeField] GameObject _emptyOverlay;
-    [SerializeField] TextMeshProUGUI _countText;
-    [SerializeField] GameObject _textBackground;
 
     [SerializeField] private TextMeshProUGUI _itemNameText;
     [SerializeField] private TextMeshProUGUI _itemGradeText;
     [SerializeField] private TextMeshProUGUI _itemPriceText;
+    [SerializeField] private AudioClip _ButtonSFX;
     int _boundRealIndex = -1;
 
     public void Init(UI_FoodStorage parent) // 이 UI 슬롯이 대표하는 실제 데이터 슬롯 인덱스
@@ -31,7 +30,6 @@ public class UI_FoodStorageSlot : MonoBehaviour
             if (_itemGradeText != null) _itemGradeText.gameObject.SetActive(false);
 
             if (_emptyOverlay != null) _emptyOverlay.SetActive(true);
-            if (_countText != null) _countText.gameObject.SetActive(false);
             return;
         }
 
@@ -39,15 +37,6 @@ public class UI_FoodStorageSlot : MonoBehaviour
         if (_emptyOverlay != null) _emptyOverlay.SetActive(false);
 
         int id = data.Value.FoodId;
-        int count = data.Value.Count;
-
-        // 수량표시
-        if (_countText != null)
-        {
-            _countText.gameObject.SetActive(true);
-            _countText.text = $"x{count}";
-        }
-
         var def = DataManager.Instance.FoodDatabase.FoodInfoData[id];
 
         if (def == null)
@@ -64,8 +53,6 @@ public class UI_FoodStorageSlot : MonoBehaviour
                 if (_itemGradeText != null) _itemGradeText.gameObject.SetActive(true);
                 // if (itemPriceText != null) itemPriceText.gameObject.SetActive(true);
             }
-
-            if (_countText != null) _countText.gameObject.SetActive(false);
             return;
         }
         Sprite sp = null;
@@ -90,10 +77,6 @@ public class UI_FoodStorageSlot : MonoBehaviour
             _icon.sprite = null;
             _icon.enabled = false;
         }
-
-        if (_countText != null)
-            _countText.gameObject.SetActive(false);
-
         if (_itemNameText != null)
             _itemNameText.gameObject.SetActive(false);
 
@@ -102,9 +85,6 @@ public class UI_FoodStorageSlot : MonoBehaviour
 
         if (_itemPriceText != null)
             _itemPriceText.gameObject.SetActive(false);
-
-        if (_textBackground != null)
-            _textBackground.gameObject.SetActive(false);
     }
 
     public void BindRealIndex(int realIndex)
@@ -117,6 +97,7 @@ public class UI_FoodStorageSlot : MonoBehaviour
 
         if (_boundRealIndex < 0) return;
 
+        SoundManager.Instance.PlaySFX(_ButtonSFX);
         _parentUI.OnSlotClicked(_boundRealIndex);
     }
 }

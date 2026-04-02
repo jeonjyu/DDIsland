@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,6 +12,7 @@ public struct ThemeResource
     public Sprite background;   // 배경 이미지
     public string buttonText;   // 버튼에 표시될 텍스트
     public RuntimeAnimatorController themeAnimator; // 테마에 따른 애니메이터
+    public Sprite Icon;         // 버튼 아이콘
 }
 
 /// <summary>
@@ -27,6 +29,7 @@ public class AquariumMgr : MonoBehaviour
     [SerializeField] private ThemeResource[] _themes; // 테마 데이터 배열
     [SerializeField] private Image _backgroundImage;
     [SerializeField] private TMP_Text _themeButtonText;
+    [SerializeField] private Image switchThemeBtnImg;
     private Dictionary<FishType, ThemeResource> _themeDict = new();
 
     [Header("물고기 관련 설정")]
@@ -103,9 +106,9 @@ public class AquariumMgr : MonoBehaviour
         if (_lastScreenSize.x != Screen.width || _lastScreenSize.y != Screen.height)
         {
             AquariumBounds();
-             SyncMaskToWindow();
         }
 
+         SyncMaskToWindow();
     }
 
     IEnumerator LateStart()
@@ -150,7 +153,7 @@ public class AquariumMgr : MonoBehaviour
         _currentThemeIndex = (_currentThemeIndex + 1) % _themes.Length;
 
         FishType nextType = _themes[_currentThemeIndex].type;
-
+        switchThemeBtnImg.sprite = _themes[_currentThemeIndex].Icon;
         StartCoroutine(ChangeTheme(nextType));
     }
 
@@ -200,7 +203,6 @@ public class AquariumMgr : MonoBehaviour
             }
 
             _currentType = newType; 
-            Debug.Log($"테마 변경 완료: {res.type}");
         }
 
         backGroundTime = 0;
@@ -244,19 +246,9 @@ public class AquariumMgr : MonoBehaviour
 
         if (flockCandidates == null || flockCandidates.Count == 0)
         {
-            Debug.LogError($"{_currentType}에 해당하는 군집 물고기 데이터가 없습니다");
             yield break;
         }
-
-        Debug.Log($" 후보 물고기 수: {flockCandidates.Count}");
-
-        foreach (var f in flockCandidates)
-        {
-            Debug.Log($" 후보 명단: {f.FishName_String}");
-        }
-
         FishDataSO selectedFishData = flockCandidates[Random.Range(0, flockCandidates.Count)];
-
 
         int flockID = Random.Range(0, 1000);
         bool isRight = (Random.value > 0.5f);
@@ -287,7 +279,6 @@ public class AquariumMgr : MonoBehaviour
 
         if (singleCandidates == null || singleCandidates.Count == 0)
         {
-            Debug.LogError($"{_currentType}에 해당하는 일반 물고기 데이터가 없습니다");
             yield break;
         }
 
@@ -308,6 +299,8 @@ public class AquariumMgr : MonoBehaviour
     }
     public void SpawnFish(Vector2 spawnPosition, FishDataSO data, int fishID = -1, bool isRight = true, IMovement movement = null)
     {
+        if (_spawnArea == null || !_spawnArea.gameObject.activeInHierarchy) return;  
+
         if (_fishQueue.Count > 0)
         {
             BackGroundFish fish = _fishQueue.Dequeue();
@@ -326,7 +319,7 @@ public class AquariumMgr : MonoBehaviour
             if (_currentActiveGroups < _maxTotalGroups)
             {
                 // 50% 확률로 군집 또는 일반 물고기 결정
-                if (Random.value > 0.5f)
+                if (Random.value > 0.7f)
                 {
                     StartCoroutine(SpawnFlock()); // 군집 소환
                 }
@@ -336,8 +329,17 @@ public class AquariumMgr : MonoBehaviour
                 }
                 _currentActiveGroups++; // 그룹 카운트 증가
             }
-            // 다음 무리 생성 대기시간
-            yield return new WaitForSeconds(_spawnInterval);
+
+            if(_currentActiveGroups > _maxTotalGroups / 2)
+            {
+                // 다음 무리 생성 대기시간
+                yield return new WaitForSeconds(_spawnInterval);
+            }
+            else
+            {
+                yield return new WaitForSeconds(_spawnInterval/4);
+            }
+
         }
     }
     public void ReturnFish(BackGroundFish fish)
@@ -411,7 +413,6 @@ public class AquariumMgr : MonoBehaviour
     // 물고기 숨기기 
     public void HideFish() 
     {
-
         if (_spawnCoroutine != null) StopCoroutine(_spawnCoroutine);
         // 투명도 0 보이지 않게 
         var cg = _spawnArea.GetComponent<CanvasGroup>();
@@ -424,6 +425,24 @@ public class AquariumMgr : MonoBehaviour
         // 물고기 투명도 1 (보이는 상태로)
         var cg = _spawnArea.GetComponent<CanvasGroup>();
         if (cg != null) cg.alpha = 1f;
-        StartCoroutine(RepeatSpawnFish());
+        _spawnCoroutine ??= StartCoroutine(RepeatSpawnFish());
+    }
+
+    // 물고기 일시정지
+    public void PauseFish()
+    {
+        StopAllCoroutines();
+        _spawnCoroutine = null;
+        if (_spawnArea != null)
+            _spawnArea.gameObject.SetActive(false);
+    }
+
+    // 물고기 농가 살리기 
+    public void ResumeFish()
+    {
+        if (_spawnArea != null)
+            _spawnArea.gameObject.SetActive(true);
+        if (_spawnCoroutine == null)
+            _spawnCoroutine = StartCoroutine(RepeatSpawnFish());
     }
 }

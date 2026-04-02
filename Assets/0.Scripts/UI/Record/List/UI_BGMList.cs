@@ -1,13 +1,36 @@
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class UI_BGMList : UI_RecordList<UI_BGMSlot>
 {
+    private readonly TitleComparer titleComparer = new TitleComparer();         // 제목 기준 정렬 클래스
+    private readonly ArtistComparer artistComparer = new ArtistComparer();      // 아티스트 기준 정렬 클래스
+
     [Header("해금 팝업 창")]
     [SerializeField] private UI_RecordUnlock unlockPopup;
 
     [Header("현재 재생중인 음반 정보창")]
     [SerializeField] private UI_PlayRecordInfo playRecordInfo;
+
+    [Header("정렬 / 필터 드랍다운")]
+    [SerializeField] private TMP_Dropdown sortDropdown;
+    [SerializeField] private TMP_Dropdown filterDropdown;
+
+    private List<RecordDataSO> recordList = new List<RecordDataSO>();
+
+    protected override void Start()
+    {
+        base.Start();
+
+        foreach(var slot in recordSlotList)
+        {
+            if(slot.Record != null)
+                recordList.Add(slot.Record);
+        }
+
+        PlayBGM(recordSlotList[0]);
+    }
 
     /// <summary>
     /// 배경음 재생 메서드
@@ -15,9 +38,9 @@ public class UI_BGMList : UI_RecordList<UI_BGMSlot>
     /// <param name="slot"> 재생할 배경음의 슬롯 </param>
     public void PlayBGM(UI_BGMSlot slot)
     {
-        ShowRecordInfo(slot.Record);
+        CurrentSlot = slot;
 
-        SoundManager.Instance.PlayBGM(slot.Record.RecordSoundPath_AudioClip);
+        SoundManager.Instance.PlayBGM(slot.Record.RecordSoundPath_AudioClip, ShowRecordInfo, slot.Record);
         DataManager.Instance.RecordDatabase.CurrentRecord = slot.Record;
 
         if (!DataManager.Instance.RecordDatabase.CurrentPlayList.Contains(slot.Record.RecordID))
@@ -25,14 +48,11 @@ public class UI_BGMList : UI_RecordList<UI_BGMSlot>
             DataManager.Instance.RecordDatabase.CurrentPlayList.Add(slot.Record.RecordID);
         }
 
-        CurrentSlot = slot;
     }
 
     public void PlayBGM(RecordDataSO record)
     {
-        ShowRecordInfo(record);
-
-        SoundManager.Instance.PlayBGM(record.RecordSoundPath_AudioClip);
+        SoundManager.Instance.PlayBGM(record.RecordSoundPath_AudioClip, ShowRecordInfo, record);
         DataManager.Instance.RecordDatabase.CurrentRecord = record;
 
         if (!DataManager.Instance.RecordDatabase.CurrentPlayList.Contains(record.RecordID))
@@ -70,24 +90,28 @@ public class UI_BGMList : UI_RecordList<UI_BGMSlot>
     // 곡이 끝나면 자동으로 다음 곡 재생
     public void PlayNextRecord()
     {
-        List<int> playList;
-
-        if (DataManager.Instance.RecordDatabase.CurrentPlayList.Count == 0)
-            playList = DataManager.Instance.RecordDatabase.DefaultRecords;
-        else
-            playList = DataManager.Instance.RecordDatabase.CurrentPlayList;
+        List<int> playList = DataManager.Instance.RecordDatabase.CurrentPlayList;
 
         if (playList.Count == 0 || !playList.Contains(DataManager.Instance.RecordDatabase.CurrentRecord.RecordID))
         {
             return;
         }
 
-        int nextIndex = (playList.IndexOf(DataManager.Instance.RecordDatabase.CurrentRecord.RecordID) + 1) % playList.Count;
+        RecordDataSO playRecord = new RecordDataSO();
 
-        RecordDataSO playRecord = DataManager.Instance.RecordDatabase.RecordInfoData[playList[nextIndex]];
+        if(PlayerPrefsDataManager.PlayDefaultRecord)
+        {
+            int nextIndex = (playList.IndexOf(DataManager.Instance.RecordDatabase.CurrentRecord.RecordID) + 1) % playList.Count;
 
-        SoundManager.Instance.PlayBGM(playRecord.RecordSoundPath_AudioClip);
-        ShowRecordInfo(playRecord);
+            playRecord = DataManager.Instance.RecordDatabase.RecordInfoData[playList[nextIndex]];
+        }
+        else
+        {
+            playRecord = CurrentSlot.Record;
+        }
+
+        CurrentSlot = recordSlotList[recordSlotList.FindIndex(x => x.Record == playRecord)];
+        SoundManager.Instance.PlayBGM(playRecord.RecordSoundPath_AudioClip, ShowRecordInfo, playRecord);
         DataManager.Instance.RecordDatabase.CurrentRecord = playRecord;
     }
 
@@ -107,6 +131,68 @@ public class UI_BGMList : UI_RecordList<UI_BGMSlot>
                 ShowRecordInfo(record.Record);
                 return;
             }    
+        }
+    }
+
+    // 정렬 드랍다운의 값을 변경했을 때 호출
+    public void OnValueChanged_SortDropdown()
+    {
+        switch(sortDropdown.value)
+        {
+            case 0:     // RecordId 기준 정렬
+                recordList.Sort((x, y) => x.RecordID.CompareTo(y.RecordID));
+                break;
+            case 1:     // 제목 기준 정렬
+                recordList.Sort(titleComparer);
+                break;
+            case 2:     // 아티스트 기준 정렬
+                recordList.Sort(artistComparer);
+                break;
+            default:
+                recordList.Sort((x, y) => x.RecordID.CompareTo(y.RecordID));
+                break;
+        }
+
+        for(int i = 0; i < recordSlotList.Count; i++)
+        {
+            if (recordList[i] != null)
+                recordSlotList[i].InitData(recordList[i], this);
+        }
+
+        OnValueChanged_FilterDropdown();
+    }
+
+    public void OnValueChanged_FilterDropdown()
+    {
+        foreach (var slot in recordSlotList)
+        {
+            switch (filterDropdown.value)
+            {
+                case 0:     // 전체
+                    slot.gameObject.SetActive(true);
+                    break;
+                case 1:     // 즐겨찾기
+                    slot.gameObject.SetActive(slot.IsFavorite);
+                    break;
+                case 2:     // 일반
+                    slot.gameObject.SetActive(slot.Record.bgthemeType == BgTheme.General);
+                    break;
+                case 3:     // 봄
+                    slot.gameObject.SetActive(slot.Record.bgthemeType == BgTheme.Spring);
+                    break;
+                case 4:     // 여름
+                    slot.gameObject.SetActive(slot.Record.bgthemeType == BgTheme.Summer);
+                    break;
+                case 5:     // 가을
+                    slot.gameObject.SetActive(slot.Record.bgthemeType == BgTheme.Autumn);
+                    break;
+                case 6:     // 겨울
+                    slot.gameObject.SetActive(slot.Record.bgthemeType == BgTheme.Winter);
+                    break;
+                case 7:     // 콜라보
+                    slot.gameObject.SetActive(slot.Record.bgthemeType == BgTheme.Collaboration);
+                    break;
+            }
         }
     }
 

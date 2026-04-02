@@ -15,6 +15,7 @@ public class EquipPurchaseUnitView : TradeUnitViewBase
 
     public override ITradeStrategy GetTradeStrategy()
     {
+        if( strategy == null ) strategy = GetComponent<PurchaseStrategy>();
         return strategy;
     }
 

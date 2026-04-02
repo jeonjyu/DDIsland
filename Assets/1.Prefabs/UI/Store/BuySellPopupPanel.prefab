@@ -8,6 +8,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 818323957332339129, guid: ee3cb6636df60164b854f0df52804f8f, type: 3}
+      propertyPath: purchaseSfx
+      value: 
+      objectReference: {fileID: 8300000, guid: 61b90cb0a7e79d941b2272a4f96cb7de, type: 3}
     - target: {fileID: 860288825371286887, guid: ee3cb6636df60164b854f0df52804f8f, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -96,6 +100,26 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1628195049058973061, guid: ee3cb6636df60164b854f0df52804f8f, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 600
+      objectReference: {fileID: 0}
+    - target: {fileID: 4477523806758330652, guid: ee3cb6636df60164b854f0df52804f8f, type: 3}
+      propertyPath: sellSfx
+      value: 
+      objectReference: {fileID: 8300000, guid: f4dd9917ed8c78d45bb8ef83a4d5666e, type: 3}
+    - target: {fileID: 4677417005375632330, guid: ee3cb6636df60164b854f0df52804f8f, type: 3}
+      propertyPath: textId
+      value: Shop_Button_Purchase_Text
+      objectReference: {fileID: 0}
+    - target: {fileID: 5982131815106769182, guid: ee3cb6636df60164b854f0df52804f8f, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 600
+      objectReference: {fileID: 0}
+    - target: {fileID: 8025033785948553028, guid: ee3cb6636df60164b854f0df52804f8f, type: 3}
+      propertyPath: textId
+      value: Shop_Button_Sell_Text
+      objectReference: {fileID: 0}
     - target: {fileID: 9086050232554904237, guid: ee3cb6636df60164b854f0df52804f8f, type: 3}
       propertyPath: _equipTradeView
       value: 
@@ -105,5 +129,25 @@ PrefabInstance:
     m_RemovedGameObjects:
     - {fileID: 2634622952912209095, guid: ee3cb6636df60164b854f0df52804f8f, type: 3}
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 953949292096940274, guid: ee3cb6636df60164b854f0df52804f8f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7254331166451250766}
   m_SourcePrefab: {fileID: 100100000, guid: ee3cb6636df60164b854f0df52804f8f, type: 3}
+--- !u!1 &7056272074956882726 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 953949292096940274, guid: ee3cb6636df60164b854f0df52804f8f, type: 3}
+  m_PrefabInstance: {fileID: 7841314244765952980}
+  m_PrefabAsset: {fileID: 0}
+--- !u!225 &7254331166451250766
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7056272074956882726}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0

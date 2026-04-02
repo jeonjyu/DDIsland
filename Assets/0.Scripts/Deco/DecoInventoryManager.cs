@@ -27,7 +27,8 @@ public class DecoInventoryManager : Singleton<DecoInventoryManager>
 
         foreach (var item in playerItems)
         {
-            if (item.IsGained && item.ItemCount > 0)
+          //if (item.IsGained && item.ItemCount > 0)
+            if (item.IsGained)
             {
                 invenList.Add(new LakeInvenSlot
                 {
@@ -53,8 +54,8 @@ public class DecoInventoryManager : Singleton<DecoInventoryManager>
         if (playerItem == null) return;
 
         playerItem.ItemCount--;
-        if (playerItem.ItemCount <= 0)
-            playerItem.IsGained = false;
+        //if (playerItem.ItemCount <= 0)
+        //    playerItem.IsGained = false;
 
         var slot = FindSlot(itemId);
         if (slot != null)
@@ -67,8 +68,7 @@ public class DecoInventoryManager : Singleton<DecoInventoryManager>
         var playerItem = FindPlayerItem(itemId);
         if (playerItem == null)
         {
-            var originalItem = ItemManager.Instance.storeDatas[StoreCat.interior].Items.FirstOrDefault(x => x.ID == itemId);
-
+            var originalItem = ItemManager.Instance.storeDatas[StoreCat.interior].Items.FirstOrDefault(x => x.ObjectId == itemId); // ObjectId로 찾기
             if (originalItem != null)
             {
                 originalItem.ItemCount = 1;
@@ -76,17 +76,21 @@ public class DecoInventoryManager : Singleton<DecoInventoryManager>
                 ItemManager.Instance.AddToPlayerItem(originalItem, StoreCat.interior);
 
                 invenList.Add(new LakeInvenSlot { itemId = itemId, quantity = 1 });
-
-                Debug.Log($"<color=cyan> 아이템 복구 </color>");
             }
-            else
-            {
-                Debug.LogError($"해당 아이템 코드({itemId})를 찾을 수 없습니다!");
-            }
-
-
             return;
         }
+
+
+        // 고정물(Fix)은 최대 1개까지만 보유
+        try
+        {
+            var interiorData = DataManager.Instance.DecorationDatabase.InteriorData[itemId];
+            if (interiorData != null && interiorData.interior_itemType == Interior_ItemType.Fix)
+            {
+                if (playerItem.ItemCount >= 1) return; // 이미 1개면 증가 안 함
+            }
+        }
+        catch { }
 
         playerItem.ItemCount++;
         if (!playerItem.IsGained)
@@ -103,7 +107,10 @@ public class DecoInventoryManager : Singleton<DecoInventoryManager>
         if (playerItem == null) return;
 
         playerItem.ItemCount = count;
-        playerItem.IsGained = count > 0;
+        playerItem.IsGained = count > 0; // 수량이 0이면 미소유 처리 or 
+                                         // TODO: 나중에 파베/도감/상점 등에서 터진다면 아이템 데이터는 남게 아래 주석으로 교체
+                                         // if (count > 0) playerItem.IsGained = true; 
+
 
         var slot = FindSlot(itemId);
         if (slot != null)

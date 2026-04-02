@@ -47,6 +47,7 @@ public class PlayerData
 
         MaxHunger = SO.BaseHunger;
         MaxStamina = SO.BaseStamina;
+        MaxFishingSpeed = SO.BaseFishingSpeed;
 
         CharID = SO.ID;
         NameKey = SO.CharacterName_String;
@@ -109,15 +110,18 @@ public class PlayerData
         var data = DataManager.Instance.Box.Character;
 
         data._hunger.Value = Hunger;
+        data._hunger.MaxValue = MaxHunger;     
         data._hunger.Level = HungerLevel;
 
         data._stamina.Value = Stamina;
+        data._stamina.MaxValue = MaxStamina;   
         data._stamina.Level = StaminaLevel;
 
         data._moveSpeed.Value = MoveSpeed;
         data._moveSpeed.Level = MoveSpeedLevel;
 
         data._fishingSpeed.Value = FishingSpeed;
+        data._fishingSpeed.MaxValue = MaxFishingSpeed;
         data._fishingSpeed.Level = FishingSpeedLevel;
 
         data._restSpeed.Value = RestSpeed;
@@ -139,11 +143,38 @@ public class PlayerData
         FishingSpeedLevel = data._fishingSpeed.Level;
         RestSpeedLevel = data._restSpeed.Level;
 
-        SetHunger(data._hunger.Value);
-        SetStamina(data._stamina.Value);
-        SetMoveSpeed(data._moveSpeed.Value);
-        SetFishingSpeed(data._fishingSpeed.Value);
-        SetRestSpeed(data._restSpeed.Value);
+        //SetHunger(data._hunger.Value);
+        //SetStamina(data._stamina.Value);
+        //SetMoveSpeed(data._moveSpeed.Value);
+        //SetFishingSpeed(data._fishingSpeed.Value);
+        //SetRestSpeed(data._restSpeed.Value);
+    
+        // 처음 입장하면 초기레벨은 스킵해서 베이스스탯으로 유지 
+        if (HungerLevel > 0)
+        {
+            MaxHunger = data._hunger.MaxValue;
+            SetHunger(data._hunger.Value);
+        }
+
+        if (StaminaLevel > 0)
+        {
+            MaxStamina = data._stamina.MaxValue;
+            SetStamina(data._stamina.Value);
+        }
+
+        if (MoveSpeedLevel > 0)
+            SetMoveSpeed(data._moveSpeed.Value);
+
+        if (FishingSpeedLevel > 0)
+        {
+            MaxFishingSpeed = data._fishingSpeed.MaxValue;
+            SetFishingSpeed(data._fishingSpeed.Value);
+        }
+
+        if (RestSpeedLevel > 0)
+            SetRestSpeed(data._restSpeed.Value);
+
         SetDoongDoongStat(data._doongdoongStat);
+
     }
 }

@@ -14,10 +14,19 @@ public class JournalFilterDropdown : MonoBehaviour
     [SerializeField] private Button btnAll;      // 전체
     [SerializeField] private Button btnOwned;    // 해금 (등록)
     [SerializeField] private Button btnNotOwned; // 미해금 (미등록)
-    [Header("버튼 텍스트")]
-    [SerializeField] private TextMeshProUGUI textAll;
-    [SerializeField] private TextMeshProUGUI textOwned;
-    [SerializeField] private TextMeshProUGUI textNotOwned;
+    
+    //[Header("버튼 텍스트")]
+    //[SerializeField] private TextMeshProUGUI textAll;
+    //[SerializeField] private TextMeshProUGUI textOwned;
+    //[SerializeField] private TextMeshProUGUI textNotOwned;                                       
+
+    // StringUI 테이블 키
+    //private readonly string[] filterStringKeys =
+    //{
+    //    "Journal_Dropdown_All_Text",       // 전체/All
+    //    "Journal_Dropdown_Unlocked_Text",  // 등록/Unlocked
+    //    "Journal_Dropdown_Locked_Text"     // 미등록/Locked
+    //};
 
     [Header("버튼 배경 이미지 (색상 전환용)")]
     [SerializeField] private Image bgAll;      // 전체 버튼 배경
@@ -50,10 +59,11 @@ public class JournalFilterDropdown : MonoBehaviour
 
         if (dropdownPanel != null)
             dropdownPanel.SetActive(false);
+
         // 드롭다운 버튼 텍스트 
-        if (textAll != null) textAll.text = JournalLocalize.Filter(CollectionFilter.All);         
-        if (textOwned != null) textOwned.text = JournalLocalize.Filter(CollectionFilter.Owned);    
-        if (textNotOwned != null) textNotOwned.text = JournalLocalize.Filter(CollectionFilter.NotOwned); 
+        //if (textAll != null) textAll.text = JournalLocalize.Filter(CollectionFilter.All);         
+        //if (textOwned != null) textOwned.text = JournalLocalize.Filter(CollectionFilter.Owned);    
+        //if (textNotOwned != null) textNotOwned.text = JournalLocalize.Filter(CollectionFilter.NotOwned); 
 
         ApplySelection(CollectionFilter.All);
     }
@@ -63,7 +73,16 @@ public class JournalFilterDropdown : MonoBehaviour
     private void ToggleDropdown()
     {
         if (dropdownPanel == null) return;
-        dropdownPanel.SetActive(!dropdownPanel.activeSelf);
+        bool open = !dropdownPanel.activeSelf;
+        dropdownPanel.SetActive(open);
+
+        // 드롭다운 열릴 때 한/영 텍스트 갱신
+        //if (open)
+        //{
+        //    if (textAll != null) textAll.text = JournalLocalize.Filter(CollectionFilter.All);
+        //    if (textOwned != null) textOwned.text = JournalLocalize.Filter(CollectionFilter.Owned);
+        //    if (textNotOwned != null) textNotOwned.text = JournalLocalize.Filter(CollectionFilter.NotOwned);
+        //}
     }
 
     // 드롭다운 패널 닫기
@@ -93,11 +112,24 @@ public class JournalFilterDropdown : MonoBehaviour
         if (bgNotOwned != null)
             bgNotOwned.color = (filter == CollectionFilter.NotOwned) ? selectedColor : unselectedColor;
 
-        // 라벨 텍스트 갱신
         if (labelText != null)
             labelText.text = JournalLocalize.Filter(filter);
-        //labelText.text = filterNames[(int)filter];
     }
+
+    //// StringUI 테이블에서 로컬라이징 텍스트 가져오기
+    //private string GetLocalizedFilterName(int index)
+    //{
+    //    try
+    //    {
+    //        return DataManager.Instance.StringUIDatabase.StringUIInfoData[filterStringKeys[index]].ID_String;
+    //    }
+    //    catch
+    //    {
+    //        // 테이블 로드 전이거나 키가 없을 때 폴백
+    //        string[] fallback = { "전체", "등록", "미등록" };
+    //        return fallback[index];
+    //    }
+    //}
 
     // 외부에서 필터 초기화할 때 호출 (카테고리 전환 시)
     public void ResetFilter()
@@ -105,6 +137,11 @@ public class JournalFilterDropdown : MonoBehaviour
         currentFilter = CollectionFilter.All;
         ApplySelection(CollectionFilter.All);
         HideDropdown();
+        
+        // 리셋 시 버튼 텍스트 갱신
+        //if (textAll != null) textAll.text = JournalLocalize.Filter(CollectionFilter.All);
+        //if (textOwned != null) textOwned.text = JournalLocalize.Filter(CollectionFilter.Owned);
+        //if (textNotOwned != null) textNotOwned.text = JournalLocalize.Filter(CollectionFilter.NotOwned);
     }
 
     public CollectionFilter GetCurrentFilter()

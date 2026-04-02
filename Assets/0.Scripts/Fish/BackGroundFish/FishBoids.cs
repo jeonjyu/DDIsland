@@ -32,7 +32,7 @@ public class FishBoids : IMovement
             boundForce = Vector2.up * forceStrength;
         }
 
-        float wanderNoise = Mathf.PerlinNoise(Time.deltaTime * 0.5f, fish.gameObject.GetInstanceID());
+        float wanderNoise = Mathf.PerlinNoise(Time.time * 0.5f, fish.gameObject.GetInstanceID());
         float wanderAngle = wanderNoise * Mathf.PI * 4f;
         Vector2 wanderForce = new (Mathf.Cos(wanderAngle), Mathf.Sin(wanderAngle));
 
@@ -44,7 +44,7 @@ public class FishBoids : IMovement
             float sqrDist = diff.sqrMagnitude;
 
             // 너무 가깝다면
-            if (sqrDist < sqrNeighborDist && sqrDist > 0)
+            if (sqrDist < sqrNeighborDist && sqrDist > 0.1f)
             {
                 // 물고기의 속도를 더해서 평균 속도 계산에 사용 (쫒아 갈 때 사용)
                 alignmentForce += other.CurrentVelocity;
@@ -56,7 +56,9 @@ public class FishBoids : IMovement
                 if (sqrDist < sqrSeparationDist)
                 {
                     // 가까울수록 더 강하게 밀어냄
-                    separationForce += diff.normalized / Mathf.Max(0.1f, Mathf.Sqrt(sqrDist));
+                    float dist = Mathf.Sqrt(sqrDist);
+                    float pushStrength = 1f - (dist / fish.SeparationDistance);
+                    separationForce += diff.normalized * pushStrength;
                 }
             }
         }
@@ -76,11 +78,11 @@ public class FishBoids : IMovement
 
             // 가중치 조절
             desiredVelocity =
-                (separationForce.normalized * 0.9f) + // 겹치지 않게
+                (separationForce * 1.5f) + // 겹치지 않게
                 (alignmentForce.normalized * 1.0f) +  // 같은 방향으로
-                (cohesionForce.normalized * 1.3f) +   // 뭉치도록
+                (cohesionForce.normalized * 1.0f) +   // 뭉치도록
                 (attendantsDir * 1.5f) +              // 오른쪽 또는 왼쪽으로 이동
-                (wanderForce*0.3f);                // 경계에서 멀어지도록
+                (wanderForce*0.2f);                // 경계에서 멀어지도록
             desiredVelocity += boundForce * 1.5f;
         }
         // 만약 주변에 아무도 없을수 도 있으니까...

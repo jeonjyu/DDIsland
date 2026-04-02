@@ -393,10 +393,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PurchaseUnitView
   tradeBtn: {fileID: 2211435277369400280}
+  priceTxt: {fileID: 575102030116898447}
   countIncBtn: {fileID: 695970180413073332}
   countDecBtn: {fileID: 278097968368148132}
   countMaxBtn: {fileID: 5068223213197029106}
-  priceTxt: {fileID: 575102030116898447}
   countTxt: {fileID: 7735916789449962019}
 --- !u!114 &4871410022983282890
 MonoBehaviour:
@@ -410,9 +410,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5127006a1d2044c4fb3f662b1b17a15f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TradeUnitViewModelBase
-  model: {fileID: 11400000, guid: a180df7ade62d384e882d3cb94f7e1a3, type: 2}
+  tradeVM: {fileID: 0}
   TradeConfirmPanel: {fileID: 1760805943819548908}
-  GoldWarningPanel: {fileID: 8768328823198090760}
 --- !u!114 &2211435277369400280 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4331308697510435985, guid: ee3cb6636df60164b854f0df52804f8f, type: 3}
@@ -480,6 +479,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TradeViewModelBase
   view: {fileID: 0}
+  isGained: 0
+  canvasGroup: {fileID: 0}
 --- !u!114 &5645121394289872468
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -535,10 +536,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SellUnitView
   tradeBtn: {fileID: 3532995727480280918}
+  priceTxt: {fileID: 2903709541642848769}
   countIncBtn: {fileID: 2747113856260680506}
   countDecBtn: {fileID: 3200688169962361386}
   countMaxBtn: {fileID: 7629892057180332668}
-  priceTxt: {fileID: 2903709541642848769}
   countTxt: {fileID: 4966449058938142381}
 --- !u!114 &1260228509867934068
 MonoBehaviour:
@@ -552,9 +553,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5127006a1d2044c4fb3f662b1b17a15f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TradeUnitViewModelBase
-  model: {fileID: 11400000, guid: a180df7ade62d384e882d3cb94f7e1a3, type: 2}
+  tradeVM: {fileID: 0}
   TradeConfirmPanel: {fileID: 1760805943819548908}
-  GoldWarningPanel: {fileID: 8768328823198090760}
 --- !u!114 &4966449058938142381 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7369896698373552612, guid: ee3cb6636df60164b854f0df52804f8f, type: 3}
@@ -709,11 +709,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 8327903621382551952, guid: 87d3e79761c63b44fb8585bd2c581497, type: 3}
   m_PrefabInstance: {fileID: 2805626067667748778}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &8768328823198090760 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6863708554141041058, guid: 87d3e79761c63b44fb8585bd2c581497, type: 3}
-  m_PrefabInstance: {fileID: 2805626067667748778}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &4405759256433041842
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -758,10 +753,6 @@ PrefabInstance:
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 634601204930470179, guid: 56cb3ac481bf6964fbbfedba41d8d7e3, type: 3}
-      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 3885173662105387153}
     - target: {fileID: 634601204930470179, guid: 56cb3ac481bf6964fbbfedba41d8d7e3, type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
@@ -843,10 +834,6 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1997847010460959914, guid: 56cb3ac481bf6964fbbfedba41d8d7e3, type: 3}
-      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 2782558223449629976}
-    - target: {fileID: 1997847010460959914, guid: 56cb3ac481bf6964fbbfedba41d8d7e3, type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
       objectReference: {fileID: 0}
@@ -889,6 +876,10 @@ PrefabInstance:
     - target: {fileID: 2149208081202529331, guid: 56cb3ac481bf6964fbbfedba41d8d7e3, type: 3}
       propertyPath: m_text
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 2224079387606345204, guid: 56cb3ac481bf6964fbbfedba41d8d7e3, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2224079387606345204, guid: 56cb3ac481bf6964fbbfedba41d8d7e3, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -1396,12 +1387,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1599342480710765375, guid: 56cb3ac481bf6964fbbfedba41d8d7e3, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3151386791829631382}
-    - targetCorrespondingSourceObject: {fileID: 4808228493871937241, guid: 56cb3ac481bf6964fbbfedba41d8d7e3, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 6504084130365346527}
-    - targetCorrespondingSourceObject: {fileID: 5894380120136061776, guid: 56cb3ac481bf6964fbbfedba41d8d7e3, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 4803432107978157808}
   m_SourcePrefab: {fileID: 100100000, guid: 56cb3ac481bf6964fbbfedba41d8d7e3, type: 3}
 --- !u!224 &891256104288534686 stripped
 RectTransform:
@@ -1413,17 +1398,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 3398753188189965011, guid: 56cb3ac481bf6964fbbfedba41d8d7e3, type: 3}
   m_PrefabInstance: {fileID: 4405759256433041842}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &2782558223449629976 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1997847010460959914, guid: 56cb3ac481bf6964fbbfedba41d8d7e3, type: 3}
-  m_PrefabInstance: {fileID: 4405759256433041842}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7847924558177841890}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7b743370ac3e4ec2a1668f5455a8ef8a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TMP_Dropdown
 --- !u!1 &3104782450071546509 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1599342480710765375, guid: 56cb3ac481bf6964fbbfedba41d8d7e3, type: 3}
@@ -1441,7 +1415,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 03b7dcf68818fcf42997c2611d4716ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StoreListView
-  storeListPanel: {fileID: 6096234877319291599}
+  storeListPanel: {fileID: 0}
+  StoreButton: {fileID: 0}
 --- !u!114 &3151386791829631382
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1455,62 +1430,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemListViewModel
   itemContents: {fileID: 1301165045729635169}
-  filterDropdown: {fileID: 6504084130365346527}
-  sortDropdown: {fileID: 4803432107978157808}
---- !u!114 &3885173662105387153 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 634601204930470179, guid: 56cb3ac481bf6964fbbfedba41d8d7e3, type: 3}
-  m_PrefabInstance: {fileID: 4405759256433041842}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9195828052514396011}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7b743370ac3e4ec2a1668f5455a8ef8a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TMP_Dropdown
---- !u!1 &6096234877319291599 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7619611050041803645, guid: 56cb3ac481bf6964fbbfedba41d8d7e3, type: 3}
-  m_PrefabInstance: {fileID: 4405759256433041842}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &7847924558177841890 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5894380120136061776, guid: 56cb3ac481bf6964fbbfedba41d8d7e3, type: 3}
-  m_PrefabInstance: {fileID: 4405759256433041842}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &4803432107978157808
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7847924558177841890}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d6ecaf544000293469e7378278b36839, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SortDropdown
-  dropdown: {fileID: 2782558223449629976}
-  storeListViewModel: {fileID: 3151386791829631382}
---- !u!1 &9195828052514396011 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4808228493871937241, guid: 56cb3ac481bf6964fbbfedba41d8d7e3, type: 3}
-  m_PrefabInstance: {fileID: 4405759256433041842}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &6504084130365346527
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9195828052514396011}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2f571966bfd19ca4aa33f13ad6ece956, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::FilterDropdown
-  dropdown: {fileID: 3885173662105387153}
-  storeListViewModel: {fileID: 3151386791829631382}
+  itemSlot: {fileID: 0}
+  srcollRect: {fileID: 0}
+  listGirdLayout: {fileID: 0}
 --- !u!1001 &5129434214476921166
 PrefabInstance:
   m_ObjectHideFlags: 0

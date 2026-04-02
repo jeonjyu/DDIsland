@@ -14,7 +14,8 @@ public class JournalDataLoader : MonoBehaviour
         public int JournalId;           // 도감 ID
         public int ItemId;              // 아이템 ID
         public bool IsUnlocked;         // 해금 여부
-        public Sprite ItemSprite;       // 스프라이트 경로
+        public Sprite SlotSprite;       // 도감 메인 슬롯용 스프라이트 
+        public Sprite ItemSprite;       // 상세 팝업창용 스프라이트 경로
         public string ItemName;         // 아이템 이름 (미해금이면 "???")
         public string Description;      // 설명 텍스트
         public JournalCategory Category;// 카테고리
@@ -87,7 +88,8 @@ public class JournalDataLoader : MonoBehaviour
                 JournalId = journal.JournalFishID,
                 ItemId = journal.FishID,
                 IsUnlocked = isUnlocked,
-                ItemSprite = journal.FishImgPath_Sprite,
+                SlotSprite = journal.FishSlotImgPath_Sprite,
+                ItemSprite = journal.FishSlotImgPath_Sprite,
                 Category = JournalCategory.Fish,
                 SpecialInfo = new Dictionary<string, string>()
             };
@@ -143,6 +145,7 @@ public class JournalDataLoader : MonoBehaviour
                 JournalId = journal.JournalCostumeID,
                 ItemId = journal.CostumeID,
                 IsUnlocked = isUnlocked,
+                SlotSprite = journal.CostumeImgPath_Sprite,
                 ItemSprite = journal.CostumeImgPath_Sprite,
                 Category = JournalCategory.Costume,
                 SpecialInfo = new Dictionary<string, string>()
@@ -184,7 +187,8 @@ public class JournalDataLoader : MonoBehaviour
             {
                 JournalId = journal.JournalInteriorID,
                 ItemId = journal.InteriorID,
-                IsUnlocked = isUnlocked, 
+                IsUnlocked = isUnlocked,
+                SlotSprite = journal.InteriorImgPath_Sprite,
                 ItemSprite = journal.InteriorImgPath_Sprite,
                 Category = JournalCategory.Interior,
                 SpecialInfo = new Dictionary<string, string>()
@@ -227,6 +231,7 @@ public class JournalDataLoader : MonoBehaviour
                 JournalId = journal.JournalFoodID,
                 ItemId = journal.FoodID,
                 IsUnlocked = isUnlocked,
+                SlotSprite = journal.FoodImgPath_Sprite,
                 ItemSprite = journal.FoodImgPath_Sprite,
                 Category = JournalCategory.Food,
                 SpecialInfo = new Dictionary<string, string>()
@@ -267,7 +272,8 @@ public class JournalDataLoader : MonoBehaviour
             {
                 JournalId = journal.JournalRecordID,
                 ItemId = journal.JournalID,                                      
-                IsUnlocked = isUnlocked,                                         
+                IsUnlocked = isUnlocked,
+                SlotSprite = journal.RecordImgPath_Sprite,
                 ItemSprite = journal.RecordImgPath_Sprite,
                 Category = JournalCategory.Album,
                 SpecialInfo = new Dictionary<string, string>()
@@ -279,13 +285,6 @@ public class JournalDataLoader : MonoBehaviour
                 item.Description = isUnlocked ? recordSO.RecordDesc_String : "";
                 item.SpecialInfo["테마"] = JournalLocalize.Enum(recordSO.bgthemeType);
                 item.SpecialInfo["아티스트"] = recordSO.RecordArtist_String;
-                // item.SpecialInfo["재생 길이"] = ""; 
-
-                // TODO: 재생길이가 데이터테이블에 추가되면 아래 삭제, 일단 임시로 AudioClip 길이로 계산 
-                item.SpecialInfo["재생 길이"] = recordSO.RecordSoundPath_AudioClip != null
-                     ? Mathf.FloorToInt(recordSO.RecordSoundPath_AudioClip.length / 60) + ":"
-                       + Mathf.FloorToInt(recordSO.RecordSoundPath_AudioClip.length % 60).ToString("D2")
-                     : "null"; //(JournalLocalize.IsKr ? "알 수 없음" : "Unknown"); 
             }
             items.Add(item);
         }

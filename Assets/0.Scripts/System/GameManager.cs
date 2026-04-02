@@ -22,6 +22,7 @@ public class GameManager : Singleton<GameManager>
     {
         base.Awake();
     }
+
     private void OnEnable()
     {
         if (DataManager.Instance != null && DataManager.Instance.Hub != null)

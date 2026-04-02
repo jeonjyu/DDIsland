@@ -83,8 +83,7 @@ public class TradeUnitViewModelBase : MonoBehaviour, INotifyPropertyChanged
         sellStrategy = GetComponent<SellStrategy>();
         tradeVM = GetComponent<TradeViewModelBase>();
 
-        TradeConfirmPanel = StoreManager.Instance.BuyAndSellPanel;
-        //GoldWarningPanel = gameObject.GetComponent<TradePopupBase>().gameObject; ;
+        //TradeConfirmPanel = gameObject.GetComponent<TradePopupBase>().gameObject;
 
         // StoreManager의 TradeModel,TradeItemCount이 변경되면 갱신되도록 알림 받도록
         StoreManager.Instance.PropertyChanged += UpdateTradeModel;
@@ -110,11 +109,13 @@ public class TradeUnitViewModelBase : MonoBehaviour, INotifyPropertyChanged
             case "":
                 _tradeCount = 1;
                 InitUnit();
+                OnPropertyChanged();
                 break;
             // 보유중인 아이템 개수 변경
             case nameof(StoreManager.Instance.TradeItemCount):
                 //Debug.Log("UpdateTradeModel |" + nameof(StoreManager.Instance.TradeItemCount));
                 _tradeCount = 1;
+                InitUnit();
                 OnPropertyChanged(nameof(StoreManager.Instance.TradeItemCount));
                 break;
         }
@@ -144,7 +145,13 @@ public class TradeUnitViewModelBase : MonoBehaviour, INotifyPropertyChanged
     public void ExcuteTrade(ITradeStrategy tradeStrategy)
     {
         if (tradeStrategy.Trade(TradeCount, TotalPrice))
+        {
+            StoreManager.Instance.BuyAndSellPanel.gameObject.SetActive(true);
             TradeConfirmPanel.SetActive(true);
+            tradeStrategy.PlayTradeSFX();
+        }
+
+        _ = DataManager.Instance.Hub.UploadAllData();
     }
 
     // 아이템 갯수 변경
@@ -153,7 +160,7 @@ public class TradeUnitViewModelBase : MonoBehaviour, INotifyPropertyChanged
     {
         if(TradeCount >= view.GetTradeStrategy().GetMaxCount(Model))
         {
-            Debug.LogWarning("[TradeUnitViewModelBase] 아이템 최대 범위 초과");
+            //Debug.LogWarning("[TradeUnitViewModelBase] 아이템 최대 범위 초과");
             return;
         }
         else
@@ -168,7 +175,7 @@ public class TradeUnitViewModelBase : MonoBehaviour, INotifyPropertyChanged
         // 0보다 낮을 때
         if(TradeCount <= 0)
         {
-            Debug.LogWarning("[TradeUnitViewModelBase] 거래 개수가 0보다 작아질 수 없음");
+            //Debug.LogWarning("[TradeUnitViewModelBase] 거래 개수가 0보다 작아질 수 없음");
             //TradeCount = 1;
             return;
         }
@@ -185,19 +192,34 @@ public class TradeUnitViewModelBase : MonoBehaviour, INotifyPropertyChanged
         {
             TradeCount = Math.Min(GameManager.Instance.PlayerGold / Model.PurchasePrice, Model.MaxCount - Model.ItemCount);
         }
-        else
+        else // 판매할 때
         {
-            TradeCount = Model.ItemCount;
+            if (Model.IsGained && !Model.IsDefault)
+            {
+                // 섬 인테리어가 아닌 경우 
+                if (StoreManager.Instance.currentCat != StoreCat.interior)
+                {
+                    TradeCount = 1;
+                }
+                TradeCount = Model.ItemCount;
+            }
+            else
+            {
+                TradeCount = 0;
+
+            }
         }
     }
 
     public virtual void SetTotalPrice()
     {
         if (TradeCount <= 0)
+        {
             view.SetTotalPriceText(0);
+            Debug.Log("SetTotalPrice 거래 가격이 0" );
+        }
         else
         {
-            //view.SetTotalPriceText(TradeCount * view.GetTradeStrategy().GetPrice(Model));
             _totalPrice = TradeCount * view.GetTradeStrategy().GetPrice(Model);
             view.SetTotalPriceText(_totalPrice);
         }
