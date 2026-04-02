@@ -38,9 +38,9 @@ public class UI_BGMList : UI_RecordList<UI_BGMSlot>
     /// <param name="slot"> 재생할 배경음의 슬롯 </param>
     public void PlayBGM(UI_BGMSlot slot)
     {
-        ShowRecordInfo(slot.Record);
+        CurrentSlot = slot;
 
-        SoundManager.Instance.PlayBGM(slot.Record.RecordSoundPath_AudioClip);
+        SoundManager.Instance.PlayBGM(slot.Record.RecordSoundPath_AudioClip, ShowRecordInfo, slot.Record);
         DataManager.Instance.RecordDatabase.CurrentRecord = slot.Record;
 
         if (!DataManager.Instance.RecordDatabase.CurrentPlayList.Contains(slot.Record.RecordID))
@@ -48,14 +48,11 @@ public class UI_BGMList : UI_RecordList<UI_BGMSlot>
             DataManager.Instance.RecordDatabase.CurrentPlayList.Add(slot.Record.RecordID);
         }
 
-        CurrentSlot = slot;
     }
 
     public void PlayBGM(RecordDataSO record)
     {
-        ShowRecordInfo(record);
-
-        SoundManager.Instance.PlayBGM(record.RecordSoundPath_AudioClip);
+        SoundManager.Instance.PlayBGM(record.RecordSoundPath_AudioClip, ShowRecordInfo, record);
         DataManager.Instance.RecordDatabase.CurrentRecord = record;
 
         if (!DataManager.Instance.RecordDatabase.CurrentPlayList.Contains(record.RecordID))
@@ -114,8 +111,7 @@ public class UI_BGMList : UI_RecordList<UI_BGMSlot>
         }
 
         CurrentSlot = recordSlotList[recordSlotList.FindIndex(x => x.Record == playRecord)];
-        SoundManager.Instance.PlayBGM(playRecord.RecordSoundPath_AudioClip);
-        ShowRecordInfo(playRecord);
+        SoundManager.Instance.PlayBGM(playRecord.RecordSoundPath_AudioClip, ShowRecordInfo, playRecord);
         DataManager.Instance.RecordDatabase.CurrentRecord = playRecord;
     }
 
