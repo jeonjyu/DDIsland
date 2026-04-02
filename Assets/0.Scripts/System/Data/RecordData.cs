@@ -112,8 +112,6 @@ public class RecordData : MonoBehaviour
 
         //추가한 부분
         OnRecordsUpdated?.Invoke();
-
-        Debug.Log(UnlockRecords == null);
     }
 
     private void Awake()
