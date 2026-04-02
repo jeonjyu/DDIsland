@@ -208,6 +208,20 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &102687714
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
+  m_Name: Cheat/ChangeSeason
+  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
+  m_Asset: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  m_ActionId: ef236315-af95-4a51-b423-74acc616b8ed
 --- !u!114 &109933960 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8511567440625557574, guid: 176da03993ea90d48a925d62d01fecd1, type: 3}
@@ -5162,6 +5176,20 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 3800150960678985288, guid: 846220ee5306cf247baba951fc994cf3, type: 3}
   m_PrefabInstance: {fileID: 986866591}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1058880783
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
+  m_Name: Cheat/ChangeParticle
+  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
+  m_Asset: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  m_ActionId: af237ec3-b953-46dd-86cd-07f45b3b27af
 --- !u!114 &1062667418 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6028752928646668979, guid: 5e542d22207e8da49871dab373ff5b3b, type: 3}
@@ -5578,7 +5606,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 19836374, guid: 9aec11397cfe86749ba1f78e631a6b68, type: 3}
       propertyPath: CollisionModule.enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 19836374, guid: 9aec11397cfe86749ba1f78e631a6b68, type: 3}
       propertyPath: CollisionModule.quality
@@ -8559,6 +8587,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
+--- !u!114 &1651443921
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
+  m_Name: Cheat/ChangeTime
+  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
+  m_Asset: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  m_ActionId: 62546d76-d1a7-4348-a57a-0c2ed2dde261
+--- !u!114 &1659061013
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
+  m_Name: Cheat/ToggleCheat
+  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
+  m_Asset: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  m_ActionId: 80312ea0-fb06-4cbf-89e1-19a4772696a7
 --- !u!1 &1660927748 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4593125907712414920, guid: c6d7adbd4a9d5f64391724d9cb0beaeb, type: 3}
@@ -12986,10 +13042,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnvironmentCheat
   _presenter: {fileID: 390024293}
-  _toggleCheat: {fileID: 0}
-  _changeSeason: {fileID: 0}
-  _changeTime: {fileID: 0}
-  _toggleParticle: {fileID: 0}
+  _toggleCheat: {fileID: 1659061013}
+  _changeSeason: {fileID: 102687714}
+  _changeTime: {fileID: 1651443921}
+  _toggleParticle: {fileID: 1058880783}
 --- !u!114 &2114154812 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5093136457413671686, guid: e6cc0efe13b35704b8d830c2a5abb970, type: 3}
