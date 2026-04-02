@@ -65,7 +65,7 @@ public class UI_StorageSlot : MonoBehaviour
         Sprite sp = null;
         if (def.FishImgPath_Sprite != null)
         {
-            sp = def.FishImgPath_Sprite;
+            sp = def.BoxSlotImgPath_Sprite;
         }
 
         _icon.enabled = (sp != null);
