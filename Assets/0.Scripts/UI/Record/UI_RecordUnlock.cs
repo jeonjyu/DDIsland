@@ -49,6 +49,14 @@ public class UI_RecordUnlock : MonoBehaviour
 
             DataManager.Instance.RecordDatabase.LpPieceCount -= requireLpPieceCount;
             DataManager.Instance.RecordDatabase.UnlockRecords.Add(currentSlot.Record.RecordID);
+
+            // todo: 임시로 만든 코드, 58번 줄 까지
+            if (!DataManager.Instance.RecordDatabase.DefaultRecords.Contains(currentSlot.Record.RecordID))
+            {
+                DataManager.Instance.RecordDatabase.DefaultRecords.Add(currentSlot.Record.RecordID);
+                DataManager.Instance.RecordDatabase.DefaultRecords.Sort();
+            }
+
             bgmList.PlayBGM(currentSlot);
 
             _ = DataManager.Instance.Hub.UploadAllData();

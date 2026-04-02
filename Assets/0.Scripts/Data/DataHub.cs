@@ -33,7 +33,7 @@ public class DataHub : MonoBehaviour
     private IEnumerator InitLoadingSequence()
     {
         yield return null;
-
+        Debug.Log("로드 시작");
 
         LoadAllData();
     }
