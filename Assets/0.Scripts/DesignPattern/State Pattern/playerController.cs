@@ -633,30 +633,36 @@ public class PlayerController : MonoBehaviour
         SetState(new IdleState(this));
     }
 
-    public void TryCooking()
+    public bool TryCooking()
     {
         RefreshCanCook();
-        if (!_canCook) return;
-        if (_isCooking) return;
+
+        if (!_canCook) return false;
+        if (_isCooking) return false;
         if (PlayerDataOld.Stamina < 10)
         {
             _canCook = false;
-            return;
+            return false;
         }
 
         SoundManager.Instance.PlaySFX(_cookSfx);
+
         var candidates = CookingManager.Instance.BuildCookCandidates(new CookingContext());
         var pickedFood = CookingManager.Instance.PickRecipe(candidates, new CookingContext());
+
         if (pickedFood == null)
         {
             _canCook = false;
-            return;
+            return false;
         }
+
         PendingFood = pickedFood;
         _isCooking = true;
         ConsumeStamina(10);
         _animator.SetBool("isCook", true);
-         CookingManager.Instance.FoodIngredientsRemove(pickedFood);
+        CookingManager.Instance.FoodIngredientsRemove(pickedFood);
+
+        return true;
     }
     public void AnimEvent_CookingEnd()  //이함수를 Cook_FryingPan_Mix@loop 애니의 끝부분에 넣기
     {
