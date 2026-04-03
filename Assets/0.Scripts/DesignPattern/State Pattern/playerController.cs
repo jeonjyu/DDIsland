@@ -1014,13 +1014,13 @@ public class PlayerController : MonoBehaviour
     {
         while (true)
         {
-            float next = PlayerDataOld.Stamina + (100f * 0.02f);
+            float next = PlayerDataOld.Stamina + (PlayerDataOld.MaxStamina * PlayerDataOld.RestSpeed);
             //playerData.Stamina = next;
             PlayerDataOld.SetStamina(next);
-            if (PlayerDataOld.Stamina >= 100f)
+            if (PlayerDataOld.Stamina >= PlayerDataOld.MaxStamina)
             {
                 //playerData.Stamina = 100f;
-                PlayerDataOld.SetStamina(100f);
+                PlayerDataOld.SetStamina(PlayerDataOld.MaxStamina);
                 _recoverRoutine = null;
                 _isResting = false;
                 SetState(new IdleState(this));
