@@ -98,7 +98,6 @@ public class PlayerController : MonoBehaviour
     private Coroutine _recoverRoutine;
 
     Dictionary<int, float> _fishRodSpeed;
-    private int _currentFishingRodsId;
     private float _baseFishingSpeed;
 
     [SerializeField] private AudioClip _fishingSfx;
@@ -405,24 +404,20 @@ public class PlayerController : MonoBehaviour
          {
              pair.Value.SetActive(false);
          }
-
+        _equippedfishingRodsId = id;
         if (id == 0)
         {
-            _currentFishingRodsId = 0;
             PlayerDataOld.SetFishingSpeed(_baseFishingSpeed);
             if (_isFishingState) HandOnFishingRod();
             return;
         }
 
-        if (_fishingRodsById.TryGetValue(id, out var toolObj))
-         {
-             PlayerDataOld.SetFishingSpeed(_baseFishingSpeed - _fishRodSpeed[id]);
-            _currentFishingRodsId = id;
-            _equippedfishingRodsId = id;
+        if (_fishingRodsById.ContainsKey(id))
+        {
+            PlayerDataOld.SetFishingSpeed(_baseFishingSpeed - _fishRodSpeed[id]);
             if (_isFishingState) HandOnFishingRod();
-
             Debug.Log($"의상 장착 성공: {id}");
-         }
+        }
          else Debug.LogWarning($"의상 ID 없음: {id}");
      }
     public void SetBait(int id)
@@ -862,7 +857,7 @@ public class PlayerController : MonoBehaviour
             // 한 사이클 시작
             _cycleRunning = true;
             float rodSpeed = 0f;
-            _fishRodSpeed.TryGetValue(_currentFishingRodsId, out rodSpeed);
+            _fishRodSpeed.TryGetValue(_equippedfishingRodsId, out rodSpeed);
             float minTime = Mathf.Max(1f, 5f - rodSpeed);
             float maxTime = Mathf.Max(minTime, PlayerDataOld.FishingSpeed);
             float waitTime = UnityEngine.Random.Range(minTime, maxTime);
@@ -919,8 +914,8 @@ public class PlayerController : MonoBehaviour
         _fishingRod.SetActive(false);
 
         // 장착 낚싯대가 있으면 그걸 보여줌
-        if (_currentFishingRodsId != 0 &&
-            _fishingRodsById.TryGetValue(_currentFishingRodsId, out var rodObj))
+        if (_equippedfishingRodsId != 0 &&
+            _fishingRodsById.TryGetValue(_equippedfishingRodsId, out var rodObj))
         {
             rodObj.SetActive(true);
         }
