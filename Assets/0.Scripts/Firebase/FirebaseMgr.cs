@@ -143,7 +143,6 @@ public class FirebaseMgr : MonoBehaviour
         return null; // 데이터가 없으면 null 반환
     }
 
-    /// </summary>
     public void FirebaseDataDelete(string path = "")
     {
         if (!_isInitialized || _database == null)
