@@ -19,6 +19,7 @@ public class DataManager : Singleton<DataManager>
     [field: SerializeField] public RecordData RecordDatabase { get; private set; }
     [field: SerializeField] public StringUIData StringUIDatabase { get; private set; }
     [field: SerializeField] public HelpData HelpDatabase { get; private set; }
+    [field: SerializeField] public BoxData BoxDatabase { get; private set; }
 
     protected override void Awake()
     {
