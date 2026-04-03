@@ -23,6 +23,8 @@ public class FishStorageManager : Singleton<FishStorageManager>
 
     int _storageCapacity = 7;  //인벤크기
     int _storagelevel = 1;
+    Dictionary<int,int> _storageDatalevelCost;
+    Dictionary<int, int> _storageDatalevelCap;
     long _acquireCounter = 0;
     public const int MaxLevel = 5;
     public const int MaxCapacity = 27;
@@ -36,10 +38,13 @@ public class FishStorageManager : Singleton<FishStorageManager>
     {
         base.Awake();
         FishSlots = new FishStackSlot?[_storageCapacity];
+        _storageDatalevelCost = new Dictionary<int, int>();
+        _storageDatalevelCap = new Dictionary<int, int>();
     }
     private void Start()
     {
         StartCoroutine(Frame());
+        GetUpgradeData();
     }
 
     IEnumerator Frame()
@@ -177,10 +182,10 @@ public class FishStorageManager : Singleton<FishStorageManager>
     {
         int newCap = _storageCapacity; //현재 용량 기준으로 새 용량 계산
 
-        if (_storagelevel <= 1) newCap = 7;
-        else if (_storagelevel == 2) newCap = 12;
-        else if (_storagelevel == 3) newCap = 17;
-        else if (_storagelevel == 4) newCap = 22;
+        if (_storagelevel <= 1) newCap = _storageDatalevelCap[_storagelevel];
+        else if (_storagelevel == 2) newCap = _storageDatalevelCap[_storagelevel];
+        else if (_storagelevel == 3) newCap = _storageDatalevelCap[_storagelevel];
+        else if (_storagelevel == 4) newCap = _storageDatalevelCap[_storagelevel];
         else newCap = 27;
         if (_storageCapacity == newCap) return;
 
@@ -230,13 +235,25 @@ public class FishStorageManager : Singleton<FishStorageManager>
             OnSlotChanged?.Invoke(i);
         }
     }
+    public void GetUpgradeData()
+    {
+        var boxData = DataManager.Instance.BoxDatabase.BoxInfoData;
+        foreach (var box in boxData.datas)
+        {
+            if (box.BoxID >= 80001 && box.BoxID <= 80005) //창고 업그레이드 박스 ID
+            {
+                _storageDatalevelCost.Add(box.BoxLevel, box.ExpansionCost);
+                _storageDatalevelCap.Add(box.BoxLevel, box.SlotCount);
+            }
+        }
+    }
     public int GetUpgradeCost()  //비용 계산
     {
-        if (_storagelevel <= 1) return 0;
-        if (_storagelevel == 2) return 1500;
-        if (_storagelevel == 3) return 3000;
-        if (_storagelevel == 4) return 4500;
-        return 6000;
+        if (_storagelevel <= 1) return _storageDatalevelCost[_storagelevel];
+        if (_storagelevel == 2) return _storageDatalevelCost[_storagelevel];
+        if (_storagelevel == 3) return _storageDatalevelCost[_storagelevel];
+        if (_storagelevel == 4) return _storageDatalevelCost[_storagelevel];
+        return _storageDatalevelCost[_storagelevel];
     }
 
     private void SyncFishStorageSaveData()
