@@ -16,7 +16,8 @@ public class UpgradeManagerV2 : MonoBehaviour
     public Image statIconImage;               // 스탯 아이콘
     public TextMeshProUGUI statNameText;      // 스탯 이름
     public Image levelFillImage;              // 피자 
-    public TextMeshProUGUI levelProgressText; // 1/10                                               //    public TextMeshProUGUI statChangeText;    // 변동스탯 
+    public TextMeshProUGUI levelProgressText; // 1/10  
+  //public TextMeshProUGUI statChangeText;    // 변동스탯 
 
     [Header("변동 스탯 표시 (좌측 패널)")]
     public TextMeshProUGUI statCurrentValueText;  // 첫째줄 현재 MAX

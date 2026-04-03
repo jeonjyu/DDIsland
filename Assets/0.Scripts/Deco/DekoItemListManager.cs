@@ -97,7 +97,7 @@ public class DecoItemListManager : MonoBehaviour
                 {
                     var data = database.InteriorData[slot.itemId];
                     // FixGroup이 None이 아닌 Fix 아이템은 제외
-                    return data == null || data.fixgroupType == FixGroup.None;
+                    return data == null || (data.fixgroupType == FixGroup.None && !data.IsDefault);
                 }
                 catch { return true; }
             });
