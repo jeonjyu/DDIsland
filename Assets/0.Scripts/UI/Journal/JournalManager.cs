@@ -17,7 +17,7 @@ public class JournalManager : MonoBehaviour
     [Header("도감 창")]
     [SerializeField] private GameObject journalPanel;   // 도감 전체 패널
     [SerializeField] private Button closeButton;        // 닫기 버튼
-
+    [SerializeField] private CanvasGroup btnTrayGroup; // 메인 버튼UI들 비활성화용
     [Header("대분류 탭")]
     [SerializeField] private Button questTabButton;     // 퀘스트 탭
     [SerializeField] private Button journalTabButton;   // 도감 탭
@@ -266,9 +266,10 @@ public class JournalManager : MonoBehaviour
     {
         if (journalPanel != null)
             journalPanel.SetActive(true);
-      
+
         // 열 때 현재 상태 갱신
         //RefreshSlots();
+        if (btnTrayGroup != null) btnTrayGroup.interactable = false;
 
         // 열 때 데이터 로드
         if (DataManager.Instance != null && DataManager.Instance.JournalDatabase != null)
@@ -281,7 +282,7 @@ public class JournalManager : MonoBehaviour
     {
         if (journalPanel != null)
             journalPanel.SetActive(false);
-
+        if (btnTrayGroup != null) btnTrayGroup.interactable = true;
         if (detailPopup != null)
             detailPopup.Hide();
     }
