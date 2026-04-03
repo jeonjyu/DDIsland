@@ -3359,6 +3359,69 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 503949720}
   m_CullTransparentMesh: 1
+--- !u!1 &511948100
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 511948103}
+  - component: {fileID: 511948102}
+  - component: {fileID: 511948101}
+  m_Layer: 0
+  m_Name: GameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &511948101
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 511948100}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c98c69f507910b4cad9de05a7ab347c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameManager
+  <InputManager>k__BackingField: {fileID: 511948102}
+  <StageController>k__BackingField: {fileID: 134295931}
+  <IslandWindow>k__BackingField: {fileID: 2040964793}
+  <WaterWindow>k__BackingField: {fileID: 1688737385}
+  playerGold: 0
+--- !u!114 &511948102
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 511948100}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d3feb84a98f849488bd3caaee5b6b11, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InputHandler
+  <InputStateType>k__BackingField: 0
+--- !u!4 &511948103
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 511948100}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &520837765
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -14561,6 +14624,8 @@ SceneRoots:
   m_Roots:
   - {fileID: 2041530610}
   - {fileID: 1233411483}
+  - {fileID: 1884852022}
+  - {fileID: 511948103}
   - {fileID: 1190252054}
   - {fileID: 134295932}
   - {fileID: 1623503060}
@@ -14589,5 +14654,4 @@ SceneRoots:
   - {fileID: 1052663446}
   - {fileID: 1577938521}
   - {fileID: 1007121635}
-  - {fileID: 1884852022}
   - {fileID: 1331569968}
