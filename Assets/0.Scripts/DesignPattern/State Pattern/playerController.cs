@@ -47,6 +47,12 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Transform _restAreaPoint;
     [SerializeField] private Transform _tablePoint;
     [SerializeField] private Transform _SellPoint;
+
+    [SerializeField] private Transform _food3dModelPoint; //3D음식모델 위치
+    private GameObject _currentFood3dPrefab;
+    private GameObject _currentFood3dInstance;
+    private int _pendingEatFoodIndex = -1;
+    private FoodDataSO _pendingEatFoodData;
     private Transform _acornPoint;
 
     [SerializeField] private SkinnedMeshRenderer _targetSMR;
@@ -415,11 +421,17 @@ public class PlayerController : MonoBehaviour
         if (_fishingRodsById.ContainsKey(id))
         {
             PlayerDataOld.SetFishingSpeed(_baseFishingSpeed - _fishRodSpeed[id]);
+
             if (_isFishingState) HandOnFishingRod();
-            Debug.Log($"의상 장착 성공: {id}");
+            else HandOffFishingRod();
+
+            Debug.Log($"낚싯대 장착 성공: {id}");
         }
-         else Debug.LogWarning($"의상 ID 없음: {id}");
-     }
+        else
+        {
+            Debug.LogWarning($"낚싯대 ID 없음: {id}");
+        }
+    }
     public void SetBait(int id)
     {
         if (id == 0) id = 40001; // 하급 미끼 기본값
@@ -572,7 +584,7 @@ public class PlayerController : MonoBehaviour
 
         _animator.ResetTrigger("isEat");
         _animator.ResetTrigger("Yawn");
-
+        HideFood3DModel();
         if (_yawnRoutine != null)
         {
             StopCoroutine(_yawnRoutine);
@@ -592,42 +604,73 @@ public class PlayerController : MonoBehaviour
     }
     public void AnimEvent_TryConsumeFood()  //먹기 애니에 넣기
     {
-        if (!(_currentState is EatState))
-            return;
+        if (!(_currentState is EatState)) return;
+        if (_pendingEatFoodData == null) return;
 
         SoundManager.Instance.PlaySFX(_eatSfx);
 
-        int index = FoodStorageManager.Instance.TakeOutRandomFood();
-        if (index == -1) return;
-        var slot = FoodStorageManager.Instance.GetFoodSlot(index);
-        if (!slot.HasValue) return;
-        int foodId = slot.Value.FoodId;
-        var food = DataManager.Instance.FoodDatabase.FoodInfoData[foodId];
-        if (food == null) return;
-        if (food.foodeffectType == FoodEffectType.None) return;
-        float afterHunger = PlayerDataOld.Hunger + food.HungerBuffRate;
+        float afterHunger = PlayerDataOld.Hunger + _pendingEatFoodData.HungerBuffRate;
         if (afterHunger > PlayerDataOld.MaxHunger)
         {
-
-            PlayerDataOld.SetDoongDoongStat(PlayerDataOld.DoongDoongStat + Mathf.FloorToInt(afterHunger - PlayerDataOld.MaxHunger));
+            PlayerDataOld.SetDoongDoongStat(
+                PlayerDataOld.DoongDoongStat + Mathf.FloorToInt(afterHunger - PlayerDataOld.MaxHunger)
+            );
         }
 
-        PlayerDataOld.SetHunger(PlayerDataOld.Hunger + food.HungerBuffRate);
-        
+        PlayerDataOld.SetHunger(PlayerDataOld.Hunger + _pendingEatFoodData.HungerBuffRate);
+        PlayerDataOld.SetDoongDoongStat(PlayerDataOld.DoongDoongStat + _pendingEatFoodData.DoongDoongBuffRate);
 
-        PlayerDataOld.SetDoongDoongStat(PlayerDataOld.DoongDoongStat + food.DoongDoongBuffRate);
+        FoodStorageManager.Instance.TryFoodRemoveAt(_pendingEatFoodIndex);
 
-        FoodStorageManager.Instance.TryFoodRemoveAt(index);
-        //만약 추후 음식버프 효과가 주가되면 버프는 중첩안되게 하기
+        _pendingEatFoodIndex = -1;
+        _pendingEatFoodData = null;
     }
 
     public void AnimEvent_EatEnd()  //애니재생 끝나는 타이밍을 맞추기 위한거
     {
         if (!(_currentState is EatState))
             return;
+        HideFood3DModel();
+        _currentFood3dPrefab = null;
         SetState(new IdleState(this));
     }
+    public bool PrepareEatFood()
+    {
+        _pendingEatFoodIndex = FoodStorageManager.Instance.TakeOutRandomFood();
+        if (_pendingEatFoodIndex == -1) return false;
 
+        var slot = FoodStorageManager.Instance.GetFoodSlot(_pendingEatFoodIndex);
+        if (!slot.HasValue) return false;
+
+        int foodId = slot.Value.FoodId;
+        _pendingEatFoodData = DataManager.Instance.FoodDatabase.FoodInfoData[foodId];
+        if (_pendingEatFoodData == null) return false;
+
+        _currentFood3dPrefab = _pendingEatFoodData.FoodIconPath_GameObject;
+        ShowFood3DModel();
+        return true;
+    }
+    public void ShowFood3DModel()
+    {
+        if (_currentFood3dPrefab == null || _food3dModelPoint == null) return;
+
+        HideFood3DModel();
+
+        _currentFood3dInstance = Instantiate(
+            _currentFood3dPrefab,
+            _food3dModelPoint.position,
+            Quaternion.identity,
+            _food3dModelPoint
+        );
+    }
+    public void HideFood3DModel()
+    {
+        if (_currentFood3dInstance != null)
+        {
+            Destroy(_currentFood3dInstance);
+            _currentFood3dInstance = null;
+        }
+    }
     public bool TryCooking()
     {
         RefreshCanCook();
