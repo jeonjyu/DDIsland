@@ -17,6 +17,10 @@ public class UpgradeClickHandler : MonoBehaviour
 
     private float pressStartTime = -1f; //  마우스 누른 시점
     private bool isPressing = false;    //  누르고 있는 중인지
+
+    [Header("활성화되면 업글창이 안열릴 UI패널들")]
+    public GameObject[] blockingPanels; // 퀘스트, 설정, 도감, 상점 등
+
     /// <summary>
     /// 실제 렌더링 중인 카메라를 찾는다.
     /// Camera.main이 없거나 엉뚱한 카메라일수 있으므로
@@ -36,6 +40,17 @@ public class UpgradeClickHandler : MonoBehaviour
             }
         }
         return best;
+    }
+
+    // 열려있는 패널이 있는지 체크
+    bool IsBlockingPanelOpen()
+    {
+        if (blockingPanels == null) return false;
+        foreach (var panel in blockingPanels)
+        {
+            if (panel != null && panel.activeInHierarchy) return true;
+        }
+        return false;
     }
 
     void Update()
@@ -63,6 +78,10 @@ public class UpgradeClickHandler : MonoBehaviour
         {
             isPressing = false;
             float clickDuration = Time.time - pressStartTime;
+            
+            // 다른 UI 패널이 열려있으면 업글창이 열리지 않도록 리턴
+            if (IsBlockingPanelOpen()) return;
+
             // ui 클릭 방지
             if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject()) return;
 
