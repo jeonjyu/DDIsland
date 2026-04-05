@@ -102,6 +102,7 @@ public class UI_QuestSlot : MonoBehaviour
 
     public void OnClickReward()
     {
+        Debug.Log("퀘스트 버튼 클릭됨");
         bool success = QuestManager.Instance.GiveQuestReward(_questId);
         if (success)
         {
