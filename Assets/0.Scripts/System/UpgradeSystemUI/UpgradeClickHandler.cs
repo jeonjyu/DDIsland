@@ -64,7 +64,7 @@ public class UpgradeClickHandler : MonoBehaviour
             isPressing = false;
             float clickDuration = Time.time - pressStartTime;
             // ui 클릭 방지
-            // if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject()) return;
+            if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject()) return;
 
             // 너무 오래 눌렀으면 무시 
             if (clickDuration > maxClickDuration) return;
@@ -78,7 +78,6 @@ public class UpgradeClickHandler : MonoBehaviour
             RaycastHit hit;
             if (Physics.Raycast(ray, out hit, rayDistance) == false) return;
 
-            // pc인가 
             if (IsPlayerCharacter(hit.collider.gameObject) == false) return;
 
             popupWindow.Show();
