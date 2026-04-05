@@ -32,10 +32,11 @@ public class JournalManager : MonoBehaviour
     [SerializeField] private Button[] categoryButtons;  // 5개 카테고리 버튼
     [SerializeField] private TextMeshProUGUI[] categoryTexts; // 카테고리 버튼 텍스트
 
-    [Header("슬롯 동적 생성")]                                  
-    [SerializeField] private GameObject slotTemplate;             //  슬롯 프리팹 (비활성화 상태)
-    [SerializeField] private RectTransform slotContent;           //  슬롯들의 부모
-    private List<GameObject> slotObjects = new List<GameObject>(); //  생성된 슬롯 오브젝트
+    [Header("슬롯 동적 생성")]
+    //[SerializeField] private GameObject slotTemplate; //  슬롯 프리팹 (비활성화 상태)
+    [SerializeField] private JournalSlotPool slotPool;  // 슬롯 오브젝트풀
+    [SerializeField] private RectTransform slotContent; // 슬롯들의 부모
+    //private List<GameObject> slotObjects = new List<GameObject>(); //  생성된 슬롯 오브젝트
     private List<JournalSlot> slotUIs = new List<JournalSlot>();  //  슬롯 UI 컴포넌트
  
     [Header("스크롤")]
@@ -76,9 +77,10 @@ public class JournalManager : MonoBehaviour
         SetupButtons();
         SetupDropdown();
         //  SetupSlotEvents();
+
         // 템플릿 비활성화 (복제용으로만 사용)
-        if (slotTemplate != null)
-            slotTemplate.SetActive(false);
+        //if (slotTemplate != null)
+        //    slotTemplate.SetActive(false);
     }
 
     private void Start()
@@ -379,12 +381,23 @@ public class JournalManager : MonoBehaviour
 
     // 기존 슬롯 전부 삭제 
     private void ClearSlots() // 모든 슬롯 비우기 
-    {  
-        for (int i = 0; i < slotObjects.Count; i++) 
+    {
+        for (int i = 0; i < slotUIs.Count; i++)
         {
-            Destroy(slotObjects[i]); 
+            if (slotUIs[i] == null) continue;
+
+            // 이벤트 구독 해제 (중복 구독 방지)
+            slotUIs[i].OnSlotClicked -= OnSlotClicked;
+
+            // 풀에 반납
+            slotPool.Release(slotUIs[i]);
         }
-        slotObjects.Clear();
+
+        //for (int i = 0; i < slotObjects.Count; i++) 
+        //{
+        //    Destroy(slotObjects[i]); 
+        //}
+        //slotObjects.Clear();
         slotUIs.Clear();
     }
 
@@ -393,20 +406,27 @@ public class JournalManager : MonoBehaviour
     {
         for (int i = 0; i < items.Count; i++)
         {
+            // 풀에서 슬롯 가져오기
+            JournalSlot slotUI = slotPool.Get();
+            // 부모를 slotContent로 설정
+            slotUI.transform.SetParent(slotContent, false);
+            slotUI.transform.SetSiblingIndex(i); // 순서대로 정렬
+            slotUI.gameObject.name = "JournalSlot" + i;
+
             // 템플릿 복제
-            GameObject slotObj = Instantiate(slotTemplate, slotContent);
-            slotObj.SetActive(true);
-            slotObj.name = "JournalSlot" + i;
+            //GameObject slotObj = Instantiate(slotTemplate, slotContent);
+            //slotObj.SetActive(true);
+            //slotObj.name = "JournalSlot" + i;
 
             // JournalSlot 컴포넌트에서 데이터 세팅
-            JournalSlot slotUI = slotObj.GetComponent<JournalSlot>();
+            //  JournalSlot slotUI = slotObj.GetComponent<JournalSlot>();
             if (slotUI != null)
             {
                 slotUI.Setup(items[i]);
                 slotUI.OnSlotClicked += OnSlotClicked;
             }
 
-            slotObjects.Add(slotObj);
+           // slotObjects.Add(slotObj);
             slotUIs.Add(slotUI);
         }
     }
