@@ -146,7 +146,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5172186266781185487}
-  - component: {fileID: 6413716786489820500}
   - component: {fileID: 2777673354683225401}
   - component: {fileID: 6158928927918127762}
   m_Layer: 5
@@ -175,22 +174,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: -160, y: 16}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &6413716786489820500
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1945762212782406340}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ff3df09efcb2cc745abae8d4730d5fe7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UI_AmbSourceText
-  textId: Record_Source_Weather_Text
-  keys:
-  - Record_Source_Nature_Text
-  - Record_Source_Life_Text
 --- !u!222 &2777673354683225401
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -496,6 +479,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8036123869747594c921128742dbc3c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI_PlaylistSlot
+  iconImg: {fileID: 7693903158643522245}
+  nameText: {fileID: 4554896003460721831}
+  recordLengthText: {fileID: 6158928927918127762}
+  playmodeImg: {fileID: 848570306077027073}
+  playSprite: {fileID: 21300000, guid: dda636bfe28b642808c7b32b1b02f011, type: 3}
+  pauseSprite: {fileID: 21300000, guid: d7331cb688f29a5498843ca5d84c316f, type: 3}
 --- !u!222 &3925274640685460679
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -578,9 +567,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: UI_AMBSlot, Assembly-CSharp
-        m_MethodName: OnClick_Slot
+      - m_Target: {fileID: 587854749615830030}
+        m_TargetAssemblyTypeName: UI_PlaylistSlot, Assembly-CSharp
+        m_MethodName: OnClick_SelectPlaylist
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -600,7 +589,7 @@ GameObject:
   m_Component:
   - component: {fileID: 609409371089195435}
   m_Layer: 5
-  m_Name: Toggle_PlayPlaylistControl
+  m_Name: Button_PlayPlaylistControl
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

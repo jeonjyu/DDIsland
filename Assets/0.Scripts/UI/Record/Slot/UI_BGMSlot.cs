@@ -80,12 +80,6 @@ public class UI_BGMSlot : UI_RecordSlot
             IsLocked = false;
         else
             IsLocked = true;
-
-        // todo: 임시로 만든 코드, 58번 줄 까지
-        if (!IsLocked && !DataManager.Instance.RecordDatabase.DefaultRecords.Contains(Record.RecordID))
-        {
-            DataManager.Instance.RecordDatabase.DefaultRecords.Add(Record.RecordID);
-        }
     }
 
     public void OnValueChanged_FavoriteToggle()
@@ -110,6 +104,11 @@ public class UI_BGMSlot : UI_RecordSlot
                 bookmarks.Remove(Record.RecordID);
             }
         }
+    }
+
+    public void OnClick_AddPlaylist()
+    {
+        bgmList.AddPlaylist(Record);
     }
 
     public override void OnClick_Slot()

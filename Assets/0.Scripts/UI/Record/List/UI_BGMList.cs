@@ -12,24 +12,36 @@ public class UI_BGMList : UI_RecordList<UI_BGMSlot>
 
     [Header("현재 재생중인 음반 정보창")]
     [SerializeField] private UI_PlayRecordInfo playRecordInfo;
+    [SerializeField] private UI_AlbumDetail albumDetail;
 
     [Header("정렬 / 필터 드랍다운")]
     [SerializeField] private TMP_Dropdown sortDropdown;
     [SerializeField] private TMP_Dropdown filterDropdown;
 
+    [Header("플레이리스트 추가 팝업")]
+    [SerializeField] private UI_AddPlaylist addPlaylist;
+    [SerializeField] private UI_CurrentPlaylist currentPlaylist;
+
+    [SerializeField] private EnvironmentPresenter environment;
+
     private List<RecordDataSO> recordList = new List<RecordDataSO>();
+
+    public bool IsPlayRepeat { get; private set; }        // 한 곡 반복 재생
+    public bool IsPlayShuffle { get; private set; }       // 셔플 재생
 
     protected override void Start()
     {
         base.Start();
 
-        foreach(var slot in recordSlotList)
+        AddDefaultRecords(Season.Spring);
+
+        foreach (var slot in recordSlotList)
         {
             if(slot.Record != null)
                 recordList.Add(slot.Record);
         }
 
-        PlayBGM(recordSlotList[0]);
+        PlayBGM(DataManager.Instance.RecordDatabase.RecordInfoData[DataManager.Instance.RecordDatabase.DefaultRecords[0]]);
     }
 
     /// <summary>
@@ -42,23 +54,14 @@ public class UI_BGMList : UI_RecordList<UI_BGMSlot>
 
         SoundManager.Instance.PlayBGM(slot.Record.RecordSoundPath_AudioClip, ShowRecordInfo, slot.Record);
         DataManager.Instance.RecordDatabase.CurrentRecord = slot.Record;
-
-        if (!DataManager.Instance.RecordDatabase.CurrentPlayList.Contains(slot.Record.RecordID))
-        {
-            DataManager.Instance.RecordDatabase.CurrentPlayList.Add(slot.Record.RecordID);
-        }
-
     }
 
     public void PlayBGM(RecordDataSO record)
     {
+        CurrentSlot = recordSlotList[recordSlotList.FindIndex(x => x.Record == record)];
+
         SoundManager.Instance.PlayBGM(record.RecordSoundPath_AudioClip, ShowRecordInfo, record);
         DataManager.Instance.RecordDatabase.CurrentRecord = record;
-
-        if (!DataManager.Instance.RecordDatabase.CurrentPlayList.Contains(record.RecordID))
-        {
-            DataManager.Instance.RecordDatabase.CurrentPlayList.Add(record.RecordID);
-        }
     }
 
     // 재생중인 음원 정보 설정
@@ -68,6 +71,60 @@ public class UI_BGMList : UI_RecordList<UI_BGMSlot>
             playRecordInfo.gameObject.SetActive(true);
 
         playRecordInfo.SetRecordData(record);
+
+        if(albumDetail != null)
+        {
+            albumDetail.SetRecordData(record);
+        }
+
+        if (currentPlaylist != null)
+        {
+            currentPlaylist.SetRecordData(record);
+        }
+    }
+
+    public void UpdateFavoriteRecord(RecordDataSO data)
+    {
+        foreach(var slot in recordSlotList)
+        {
+            if(slot.Record.RecordID == data.RecordID)
+            {
+                slot.InitData(data, this);
+            }
+        }
+    }
+
+    public void AddDefaultRecords(Season season)
+    {
+        List<int> list = new List<int>();
+
+        foreach (var record in DataManager.Instance.RecordDatabase.RecordInfoData.datas)
+        {
+            bool isSeason = false;
+
+            switch(record.bgthemeType)
+            {
+                case BgTheme.Spring:
+                    isSeason = season == Season.Spring;
+                    break;
+                case BgTheme.Summer:
+                    isSeason = season == Season.Summer;
+                    break;
+                case BgTheme.Autumn:
+                    isSeason = season == Season.Autumn;
+                    break;
+                case BgTheme.Winter:
+                    isSeason = season == Season.Winter;
+                    break;
+            }
+
+            if(isSeason && record.IsDefaultRecord)
+            {
+                list.Add(record.RecordID);
+            }
+        }
+
+        DataManager.Instance.RecordDatabase.DefaultRecords = list;
     }
 
     // 해금창 팝업
@@ -81,33 +138,45 @@ public class UI_BGMList : UI_RecordList<UI_BGMSlot>
     {
         type = Mathf.Clamp(type, -1, 1);
 
-        List<int> playList = DataManager.Instance.RecordDatabase.CurrentPlayList;
-        int index = (playList.IndexOf(DataManager.Instance.RecordDatabase.CurrentRecord.RecordID) + type + playList.Count) % playList.Count;
-        RecordDataSO playRecord = DataManager.Instance.RecordDatabase.RecordInfoData[playList[index]];
-        PlayBGM(playRecord);
-    }
+        List<int> playList = new List<int>();
 
-    // 곡이 끝나면 자동으로 다음 곡 재생
-    public void PlayNextRecord()
-    {
-        List<int> playList = DataManager.Instance.RecordDatabase.CurrentPlayList;
+        if (PlayerPrefsDataManager.PlayDefaultRecord)
+        {
+            playList = DataManager.Instance.RecordDatabase.DefaultRecords;
+        }
+        else
+        {
+            playList = DataManager.Instance.RecordDatabase.CurrentPlayList;
+        }
 
-        if (playList.Count == 0 || !playList.Contains(DataManager.Instance.RecordDatabase.CurrentRecord.RecordID))
+        if (playList.Count == 0)
         {
             return;
         }
 
         RecordDataSO playRecord = new RecordDataSO();
 
-        if(PlayerPrefsDataManager.PlayDefaultRecord)
+        if (IsPlayRepeat)
         {
-            int nextIndex = (playList.IndexOf(DataManager.Instance.RecordDatabase.CurrentRecord.RecordID) + 1) % playList.Count;
-
-            playRecord = DataManager.Instance.RecordDatabase.RecordInfoData[playList[nextIndex]];
+            playRecord = CurrentSlot.Record;
         }
         else
         {
-            playRecord = CurrentSlot.Record;
+            if (IsPlayShuffle)
+            {
+                playRecord = CurrentSlot.Record;
+
+                while (playRecord == CurrentSlot.Record)
+                {
+                    int nextIndex = Random.Range(0, playList.Count);
+                    playRecord = DataManager.Instance.RecordDatabase.RecordInfoData[playList[nextIndex]];
+                }
+            }
+            else
+            {
+                int nextIndex = (playList.IndexOf(DataManager.Instance.RecordDatabase.CurrentRecord.RecordID) + type + playList.Count) % playList.Count;
+                playRecord = DataManager.Instance.RecordDatabase.RecordInfoData[playList[nextIndex]];
+            }
         }
 
         CurrentSlot = recordSlotList[recordSlotList.FindIndex(x => x.Record == playRecord)];
@@ -115,23 +184,69 @@ public class UI_BGMList : UI_RecordList<UI_BGMSlot>
         DataManager.Instance.RecordDatabase.CurrentRecord = playRecord;
     }
 
-    // 재생 목록이 없을 때 우선순위를 통해 재생시키는 메서드
-    public void AutoPlayRecord()
+    // 곡이 끝나면 자동으로 다음 곡 재생
+    public void PlayNextRecord()
     {
-        if (recordSlotList == null || recordSlotList.Count == 0) return;
+        List<int> playList = new List<int>();
 
-        // 현재 계절에 맞는 노래 재생
-        // todo: 추후에 우선순위 조건에 맞게 변경, 지금은 임시로 기본 노래 재생시켜둠
-        foreach(var record in recordSlotList)
+        if(PlayerPrefsDataManager.PlayDefaultRecord)
         {
-            if (record.IsLocked) continue;
-
-            if(record.Record.IsDefaultRecord)
-            {
-                ShowRecordInfo(record.Record);
-                return;
-            }    
+            playList = DataManager.Instance.RecordDatabase.DefaultRecords;
         }
+        else
+        {
+            playList = DataManager.Instance.RecordDatabase.CurrentPlayList;
+        }
+
+        if (playList.Count == 0)
+        {
+            return;
+        }
+
+        RecordDataSO playRecord = new RecordDataSO();
+
+        if(IsPlayRepeat)
+        {
+            playRecord = CurrentSlot.Record;
+        }
+        else
+        {
+            if(IsPlayShuffle)
+            {
+                playRecord = CurrentSlot.Record;
+
+                while(playRecord == CurrentSlot.Record)
+                {
+                    int nextIndex = Random.Range(0, playList.Count);
+                    playRecord = DataManager.Instance.RecordDatabase.RecordInfoData[playList[nextIndex]];
+                }
+            }
+            else
+            {
+                int nextIndex = (playList.IndexOf(DataManager.Instance.RecordDatabase.CurrentRecord.RecordID) + 1) % playList.Count;
+                playRecord = DataManager.Instance.RecordDatabase.RecordInfoData[playList[nextIndex]];
+            }
+        }
+
+        CurrentSlot = recordSlotList[recordSlotList.FindIndex(x => x.Record == playRecord)];
+        SoundManager.Instance.PlayBGM(playRecord.RecordSoundPath_AudioClip, ShowRecordInfo, playRecord);
+        DataManager.Instance.RecordDatabase.CurrentRecord = playRecord;
+    }
+
+    public void OnClick_PlayRepeat()
+    {
+        IsPlayRepeat = !IsPlayRepeat;
+    }
+
+    public void OnValueChange_PlayShuffle()
+    {
+        IsPlayShuffle = !IsPlayShuffle;
+    }
+
+    public void AddPlaylist(RecordDataSO record)
+    {
+        addPlaylist.gameObject.SetActive(true);
+        addPlaylist.CreatePlaylistSlot(record);
     }
 
     // 정렬 드랍다운의 값을 변경했을 때 호출
