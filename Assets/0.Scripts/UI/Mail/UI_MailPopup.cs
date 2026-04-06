@@ -9,12 +9,14 @@ public class UI_MailPopup : MonoBehaviour
     [SerializeField] private TMP_Text _titleText;
     [SerializeField] private TMP_Text _contentText;
     [SerializeField] private TMP_Text _expireDateText;
-    [SerializeField] private Image _rewardImage;
-    [SerializeField] private TMP_Text _rewardCountText;
 
     [Header("UI 버튼 연결")]
     [SerializeField] private Button _actionButton;         // 하단 중앙 버튼 (받기 or 닫기)
     [SerializeField] private TMP_Text _actionButtonText;
+
+    [Header("보상 프리팹 연결")]
+    [SerializeField] private GameObject _rewardPrefab;
+    [SerializeField] private Transform _rewardContent;
 
     private MailData _currentData;
 
@@ -62,17 +64,28 @@ public class UI_MailPopup : MonoBehaviour
 
         MailManager.Instance.MarkAsRead(_currentData._mailID);
 
-        if (_currentData._rewardItemID > 0)
+        foreach (Transform child in _rewardContent)
         {
-            _rewardImage.gameObject.SetActive(true);
-            _rewardImage.sprite = DataManager.Instance.CurrencyDatabase.CurrencyInfoData[_currentData._rewardItemID].CurrencyImgPath_Sprite;
-            _rewardCountText.text = $"{_currentData._rewardCount}";
-            
+            Destroy(child.gameObject);
         }
-        else
+
+        // 팝업 다중 보상 아이콘 생성
+        if (!string.IsNullOrEmpty(_currentData._rewardItemID))
         {
-            _rewardImage.gameObject.SetActive(false);
-            _rewardCountText.text = "";
+            string[] itemIDs = _currentData._rewardItemID.Split(',');
+            string[] counts = _currentData._rewardCount.Split(',');
+
+            for (int i = 0; i < itemIDs.Length; i++)
+            {
+                if (int.TryParse(itemIDs[i].Trim(), out int itemID) && i < counts.Length && int.TryParse(counts[i].Trim(), out int count))
+                {
+                    GameObject obj = Instantiate(_rewardPrefab, _rewardContent);
+                    if (obj.TryGetComponent<UI_Reward>(out var rewardIcon))
+                    {
+                        rewardIcon.Setup(itemID, count);
+                    }
+                }
+            }
         }
 
         UpdateButtonState();
@@ -85,7 +98,7 @@ public class UI_MailPopup : MonoBehaviour
         bool isClaimed = MailManager.Instance.IsMailClaimed(_currentData._mailID);
 
         // 보상이 있고, 아직 수령하지 않았다면 -> '받기'
-        if (_currentData._rewardItemID > 0 && !isClaimed)
+        if (!string.IsNullOrEmpty(_currentData._rewardItemID) && !isClaimed)
         {
             _actionButtonText.text = LocalizationManager.Instance.GetString("InteriorPostBoxClaimBtn");
             _actionButton.onClick.AddListener(OnClickClaim);

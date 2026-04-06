@@ -49,7 +49,7 @@ public class MailManager : Singleton<MailManager>
         DataManager.Instance.Hub.OnRequestSave += SyncMailDataSave;
         LoadGlobalMails();
 
-        foreach(var a in _deletedMailIDs)
+        foreach (var a in _deletedMailIDs)
         {
             Debug.Log(a);
         }
@@ -74,40 +74,42 @@ public class MailManager : Singleton<MailManager>
             _readMailIDs.Add(mailID);
             OnMailUpdated?.Invoke();
 
-             _ = DataManager.Instance.Hub.UploadAllData();
+            _ = DataManager.Instance.Hub.UploadAllData();
         }
     }
 
     public void ClaimReward(MailData mail)
     {
-        if (_claimedMailIDs.Contains(mail._mailID) || mail._rewardItemID == 0) return;
+        if (_claimedMailIDs.Contains(mail._mailID) || string.IsNullOrEmpty(mail._rewardItemID)) return;
 
-        var currentData = DataManager.Instance.CurrencyDatabase.CurrencyInfoData[mail._rewardItemID];
+        string[] itemIDs = mail._rewardItemID.Split(',');
+        string[] counts = mail._rewardCount.Split(',');
 
-        if (currentData)
+        for (int i = 0; i < itemIDs.Length; i++)
         {
-            if (currentData.ID == 202)
+            if (int.TryParse(itemIDs[i].Trim(), out int itemID) && int.TryParse(counts[i].Trim(), out int count))
             {
-                GameManager.Instance.SetGold(mail._rewardCount);
-                RewardEffect.Instance.PlayQuestGoldEffect();
+                var currentData = DataManager.Instance.CurrencyDatabase.CurrencyInfoData[itemID];
+                if (currentData)
+                {
+                    if (currentData.ID == 202)
+                    {
+                        GameManager.Instance.SetGold(count);
+                        RewardEffect.Instance.PlayQuestGoldEffect();
+                    }
+                    else if (currentData.ID == 201)
+                    {
+                        DataManager.Instance.RecordDatabase.LpPieceCount += count;
+                        RewardEffect.Instance.PlayQuestLpEffect();
+                    }
+                }
             }
-            else if (currentData.ID == 201)
-            {
-                DataManager.Instance.RecordDatabase.LpPieceCount += mail._rewardCount;
-                RewardEffect.Instance.PlayQuestLpEffect();
-            }
-        }
-        else
-        {
-            // 기타 아이템
         }
 
         _claimedMailIDs.Add(mail._mailID);
         _readMailIDs.Add(mail._mailID);
-
         OnMailUpdated?.Invoke();
-
-         _ = DataManager.Instance.Hub.UploadAllData();
+        _ = DataManager.Instance.Hub.UploadAllData();
     }
 
     public void ClaimAllRewards()
@@ -117,21 +119,30 @@ public class MailManager : Singleton<MailManager>
         foreach (var mail in _serverMails)
         {
             // 우편함에 내용물이 존재하고, 받지 않았으며, 지워지지 않은 물품 들 중
-            if (mail._rewardItemID != 0 && !_claimedMailIDs.Contains(mail._mailID) && !_deletedMailIDs.Contains(mail._mailID))
+            if (!string.IsNullOrEmpty(mail._rewardItemID) && !_claimedMailIDs.Contains(mail._mailID) && !_deletedMailIDs.Contains(mail._mailID))
             {
-                var currentData = DataManager.Instance.CurrencyDatabase.CurrencyInfoData[mail._rewardItemID];
-                //재화만 획득 처리
-                if (currentData)
+                string[] itemIDs = mail._rewardItemID.Split(',');
+                string[] counts = mail._rewardCount.Split(',');
+
+                // 재화 획득 처리
+                for (int i = 0; i < itemIDs.Length; i++)
                 {
-                    if (currentData.ID == 202)
+                    if (int.TryParse(itemIDs[i].Trim(), out int itemID) && i < counts.Length && int.TryParse(counts[i].Trim(), out int count))
                     {
-                        GameManager.Instance.SetGold(mail._rewardCount);
-                        RewardEffect.Instance.PlayQuestGoldEffect();
-                    }
-                    else if (currentData.ID == 201)
-                    {
-                        DataManager.Instance.RecordDatabase.LpPieceCount += mail._rewardCount;
-                        RewardEffect.Instance.PlayQuestLpEffect();
+                        var currentData = DataManager.Instance.CurrencyDatabase.CurrencyInfoData[itemID];
+                        if (currentData)
+                        {
+                            if (currentData.ID == 202)
+                            {
+                                GameManager.Instance.SetGold(count);
+                                RewardEffect.Instance.PlayQuestGoldEffect();
+                            }
+                            else if (currentData.ID == 201)
+                            {
+                                DataManager.Instance.RecordDatabase.LpPieceCount += count;
+                                RewardEffect.Instance.PlayQuestLpEffect();
+                            }
+                        }
                     }
                 }
 
@@ -158,8 +169,8 @@ public class MailManager : Singleton<MailManager>
             if (_deletedMailIDs.Contains(mail._mailID)) continue;
 
             //만약 아이템이 없거나 단순 공지용이 읽은 상태일 경우
-            if ((mail._rewardItemID == 0 && _readMailIDs.Contains(mail._mailID)) ||
-                _claimedMailIDs.Contains(mail._mailID))
+            if ((string.IsNullOrEmpty(mail._rewardItemID) && _readMailIDs.Contains(mail._mailID)) ||
+    _claimedMailIDs.Contains(mail._mailID))
             {
                 _deletedMailIDs.Add(mail._mailID);
                 hasDeleted = true;
@@ -179,7 +190,7 @@ public class MailManager : Singleton<MailManager>
 
         globalMailRef.KeepSynced(true);
 
-        globalMailRef.GetValueAsync().ContinueWith(task => 
+        globalMailRef.GetValueAsync().ContinueWith(task =>
         {
             if (task.IsFaulted)
             {
@@ -198,7 +209,7 @@ public class MailManager : Singleton<MailManager>
                 _serverMails.Add(mail);
             }
 
-            ThreadDispatcher.Instance.Enqueue(() => 
+            ThreadDispatcher.Instance.Enqueue(() =>
             {
                 EnforceMail();
                 OnMailUpdated?.Invoke();

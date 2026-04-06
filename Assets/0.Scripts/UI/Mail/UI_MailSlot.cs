@@ -9,9 +9,10 @@ public class UI_MailSlot : MonoBehaviour
     [SerializeField] private TMP_Text _titleText;
     [SerializeField] private TMP_Text _contentText;
     [SerializeField] private TMP_Text _expireDateText;
-    [SerializeField] private Image _rewardImage;
-    [SerializeField] private TMP_Text _rewardCount;
     [SerializeField] private Button _slotButton;
+    [Header("보상 프리팹 연결")]
+    [SerializeField] private GameObject _rewardPrefab;
+    [SerializeField] private Transform _rewardContent;
 
     private MailData _data;
     private UI_MailPopup _popup;
@@ -70,20 +71,30 @@ public class UI_MailSlot : MonoBehaviour
             _expireDateText.text = isKorean ? "기한 없음" : "No Expiration";
         }
 
+        foreach (Transform child in _rewardContent)
+        {
+            Destroy(child.gameObject);
+        }
+
         //만약 아이템이 있으면 아이템을 보여주는 아이콘을 활성화하고
-        if (_data._rewardItemID > 0)
+        if (!string.IsNullOrEmpty(_data._rewardItemID))
         {
-            _rewardImage.gameObject.SetActive(true);
-            _rewardCount.text = $"{_data._rewardCount}";
-            
-            _rewardImage.sprite = DataManager.Instance.CurrencyDatabase.CurrencyInfoData[_data._rewardItemID].CurrencyImgPath_Sprite;
+            string[] itemIDs = _data._rewardItemID.Split(',');
+            string[] counts = _data._rewardCount.Split(',');
+
+            for (int i = 0; i < itemIDs.Length; i++)
+            {
+                if (int.TryParse(itemIDs[i].Trim(), out int itemID) && i < counts.Length && int.TryParse(counts[i].Trim(), out int count))
+                {
+                    GameObject obj = Instantiate(_rewardPrefab, _rewardContent);
+                    if (obj.TryGetComponent<UI_Reward>(out var rewardIcon))
+                    {
+                        rewardIcon.Setup(itemID, count);
+                    }
+                }
+            }
         }
-        //아니면 비활성화
-        else
-        {
-            _rewardImage.gameObject.SetActive(false);
-            _rewardCount.text = $"";
-        }
+
         _slotButton.onClick.RemoveAllListeners();
         _slotButton.onClick.AddListener(OnClickSlot);
 
@@ -91,7 +102,7 @@ public class UI_MailSlot : MonoBehaviour
         {
             if (MailManager.Instance.IsMailRead(_data._mailID))
             {
-                if (_data._rewardItemID > 0 && !MailManager.Instance.IsMailClaimed(_data._mailID))
+                if (!string.IsNullOrEmpty(_data._rewardItemID) && !MailManager.Instance.IsMailClaimed(_data._mailID))
                 {
                     _group.alpha = 1f;
                 }
