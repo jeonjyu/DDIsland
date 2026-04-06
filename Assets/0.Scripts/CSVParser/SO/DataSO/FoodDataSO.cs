@@ -39,6 +39,9 @@ public class FoodDataSO : TableBase<int>
     // 레시피 구매 가격
     [field: SerializeField] public int PurchasePrice { get; private set; }
 
+    // 기본 제공 여부
+    [field: SerializeField] public bool IsDefault { get; private set; }
+
     // 음식 등급
     [field: SerializeField] public FoodRateType foodrateType { get; private set; }
 
