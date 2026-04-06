@@ -1,9 +1,11 @@
 using System.Collections;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEngine.InputSystem.LowLevel.InputStateHistory;
 
-public class UI_PlayRecordInfo : MonoBehaviour
+public class UI_AlbumDetail : MonoBehaviour
 {
     [Header("음반 정보")]
     [SerializeField] private Image recordImage;             // 음반 이미지
@@ -11,6 +13,7 @@ public class UI_PlayRecordInfo : MonoBehaviour
     [SerializeField] private TMP_Text artistText;           // 음반 아티스트 텍스트
     [SerializeField] private TMP_Text currentTimeText;      // 현재 재생 지점
     [SerializeField] private TMP_Text endTimeText;          // 총 재생 길이
+    [SerializeField] private Toggle favoriteToggle;         // 즐겨찾기 토글
 
     [Header("재생바 슬라이더")]
     [SerializeField] private UI_CurrentPlaySlider currentPlaySlider;    // 재생바
@@ -21,11 +24,14 @@ public class UI_PlayRecordInfo : MonoBehaviour
     [SerializeField] private Sprite playSprite;
     [SerializeField] private Sprite pauseSprite;
 
+    [SerializeField] private Image repeatImg;
+    [SerializeField] private Sprite repeatOneSprite;
+    [SerializeField] private Sprite RepeatAllSprite;
+
+    [SerializeField] private Toggle shuffleToggle;
+
     [Header("BGM 재생 리스트 클래스")]
     [SerializeField] private UI_BGMList bgmList;
-
-    [Header("상세 앨범 UI")]
-    [SerializeField] private UI_AlbumDetail albumDetail;
 
     private RecordDataSO record;
 
@@ -33,6 +39,8 @@ public class UI_PlayRecordInfo : MonoBehaviour
     private WaitForSeconds playRecordWs = new WaitForSeconds(0.1f);
 
     private bool isDragging;
+
+    public bool IsFavorite { get; private set; }    // 즐겨찾기 여부
 
     private void Start()
     {
@@ -57,6 +65,7 @@ public class UI_PlayRecordInfo : MonoBehaviour
         currentPlaySlider.PlaySlider.value = 0f;
         currentTimeText.text = SoundManager.Instance.BgmSource.GetSourceLength();
         endTimeText.text = record.RecordSoundPath_AudioClip.GetClipLength();
+        favoriteToggle.isOn = DataManager.Instance.RecordDatabase.BookmarkRecords.Contains(record.RecordID);
 
         CheckPlayTime();
     }
@@ -86,7 +95,7 @@ public class UI_PlayRecordInfo : MonoBehaviour
     /// <returns></returns>
     private IEnumerator Co_CheckPlayTime()
     {
-        while(true)
+        while (true)
         {
             float currentTime = SoundManager.Instance.BgmSource.time;
             float totalTime = record.RecordSoundPath_AudioClip.length;
@@ -102,6 +111,30 @@ public class UI_PlayRecordInfo : MonoBehaviour
 
             yield return playRecordWs;
         }
+    }
+
+    public void OnValueChanged_FavoriteToggle()
+    {
+        IsFavorite = favoriteToggle.isOn;
+
+        HashSet<int> bookmarks = DataManager.Instance.RecordDatabase.BookmarkRecords;
+
+        if (favoriteToggle.isOn)
+        {
+            if (!bookmarks.Contains(record.RecordID))
+            {
+                bookmarks.Add(record.RecordID);
+            }
+        }
+        else
+        {
+            if (bookmarks.Contains(record.RecordID))
+            {
+                bookmarks.Remove(record.RecordID);
+            }
+        }
+
+        bgmList.UpdateFavoriteRecord(record);
     }
 
     private void StartDrag()
@@ -132,16 +165,22 @@ public class UI_PlayRecordInfo : MonoBehaviour
 
         playModeImg.sprite = SoundManager.Instance.BgmSource.isPlaying ? pauseSprite : playSprite;
     }
+
+    public void OnClick_RepeatButton()
+    {
+        repeatImg.sprite = bgmList.IsPlayRepeat ? repeatOneSprite : RepeatAllSprite;
+    }
     #endregion
 
-    public void OnClick_ActiveAlbumDetail()
+    public void OnClick_AddPlaylist()
     {
-        albumDetail.SetRecordData(record);
+        bgmList.AddPlaylist(record);
     }
+
 
     private void OnEnable()
     {
-        if(record != null)
+        if (record != null)
             CheckPlayTime();
 
         PlayerPrefsDataManager.OnLanguageChanged += LocalizeRecordInfo;
@@ -151,6 +190,7 @@ public class UI_PlayRecordInfo : MonoBehaviour
             LocalizeRecordInfo();
         }
 
+        shuffleToggle.isOn = bgmList.IsPlayShuffle;
     }
 
     private void OnDisable()

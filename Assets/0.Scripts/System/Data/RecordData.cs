@@ -12,7 +12,7 @@ public class RecordData : MonoBehaviour
     private RecordServerData recordServerData = new RecordServerData();
 
     public RecordDataSO CurrentRecord;
-    public List<int> DefaultRecords { get; private set; } = new List<int>();    // todo: 임시 기본 재생 목록
+    public List<int> DefaultRecords { get; set; } = new List<int>();
     public event Action<int> OnLPPieceChanged;
     //추가한 부분
     public event Action OnRecordsUpdated;
@@ -75,25 +75,27 @@ public class RecordData : MonoBehaviour
     {
         get
         {
-            if (recordServerData.CurrentRecordData.CurrentPlayList.Count == 0)
+            if (recordServerData.CurrentRecordData.CurrentPlaylistId == 0)
                 return DefaultRecords;
             else
-                return recordServerData.CurrentRecordData.CurrentPlayList;
+                return recordServerData.Playlists[recordServerData.Playlists.FindIndex(x => x.Id == recordServerData.CurrentRecordData.CurrentPlaylistId)].RecordLists;
         }
-        set { recordServerData.CurrentRecordData.CurrentPlayList = value; }
     }
 
-    // 마지막으로 재생했던 음반의 재생 시점
-    public float PlaybackPoint
+    public int CurrentPlaylistId
     {
-        get { return recordServerData.CurrentRecordData.PlaybackPoint; }
-        set
-        {
-            float time = Mathf.Round(value * 100) / 100f;
-            recordServerData.CurrentRecordData.PlaybackPoint = time;
-        }
+        get { return recordServerData.CurrentRecordData.CurrentPlaylistId; }
+        set { recordServerData.CurrentRecordData.CurrentPlaylistId = value; }
+    }
+
+    // 플레이리스트 목록
+    public List<PlaylistData> PlaylistDatas
+    {
+        get { return recordServerData.Playlists; }
+        set { recordServerData.Playlists = value; }
     }
     #endregion
+
     private void SyncRecordSaveData()
     {
         var data = DataManager.Instance.Box.Record;
@@ -112,14 +114,5 @@ public class RecordData : MonoBehaviour
 
         //추가한 부분
         OnRecordsUpdated?.Invoke();
-    }
-
-    private void Awake()
-    {
-        foreach (RecordDataSO record in RecordInfoData.datas)
-        {
-            if (record.recordType == RecordType.Background && record.IsDefaultRecord)
-                DefaultRecords.Add(record.RecordID);
-        }
     }
 }
