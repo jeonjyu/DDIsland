@@ -81,13 +81,17 @@ public class UI_Storage : MonoBehaviour
 
     private void OnEnable()
     {
+        Debug.Log("UI_Storage OnEnable 호출됨");
         if (FishStorageManager.Instance != null)
         {
             FishStorageManager.Instance.OnSlotChanged += UpdateSlot; // Storage 데이터가 바뀔 때마다 UI를 갱신하기 위해 이벤트 구독
-            RefreshAll();
-            RefreshUpgradeUI();
         }
-        ResetToDefaultStorage();
+        if (_sortDropdown != null)
+        {
+            _currentSort = (SortMode)_sortDropdown.value;
+        }
+        RefreshAll();
+        RefreshUpgradeUI();
     }
 
     private void OnDisable()
@@ -450,6 +454,10 @@ public class UI_Storage : MonoBehaviour
     public void OpenStorageUI()
     {
         gameObject.SetActive(true);
+        ResetToDefaultStorage();
+        RefreshAll();
+        RefreshUpgradeUI();
+
     }
     public void OpenFishStorage() 
     {
@@ -459,9 +467,11 @@ public class UI_Storage : MonoBehaviour
         _UI_FoodStorage.ResetSelection();
         _fishStorageUI.SetActive(true);
         _foodStorageUI.SetActive(false);
-        
+
         _ofFishFishButton.interactable = false;
         _ofFishFoodButton.interactable = true;
+        _ofFoodFishButton.interactable = false;
+        _ofFoodFoodButton.interactable = false;
     }
     public void OpenFoodStorage()
     {
@@ -471,9 +481,11 @@ public class UI_Storage : MonoBehaviour
         _UI_FoodStorage.ResetSelection();
         _fishStorageUI.SetActive(false);
         _foodStorageUI.SetActive(true);
-
         _ofFoodFishButton.interactable = true;
         _ofFoodFoodButton.interactable = false;
+        _ofFishFishButton.interactable = false;
+        _ofFishFoodButton.interactable = false;
+
     }
     private void ResetToDefaultStorage()
     {
