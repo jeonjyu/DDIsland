@@ -31,6 +31,10 @@ public class EnvironmentPresenter : MonoBehaviour
 
         _model.OnWeatherChanged += _view.PlaySeasonParticle;
 
+        _model.OnSeasonChanged += _view.ChangeSeasonImage;
+
+        _model.OnDailyChanged += _view.ChangeDailyImage;
+
 
         if (DataManager.Instance != null && DataManager.Instance.Hub != null)
         {
@@ -43,7 +47,11 @@ public class EnvironmentPresenter : MonoBehaviour
         _model.OnDailyChanged -= _lakeImage.HandleDailyChanged;
 
         _model.OnWeatherChanged -= _view.PlaySeasonParticle;
-        
+
+        _model.OnSeasonChanged -= _view.ChangeSeasonImage;
+
+        _model.OnDailyChanged -= _view.ChangeDailyImage;
+
 
         if (DataManager.Instance != null &&DataManager.Instance.Hub != null)
         {
@@ -121,6 +129,9 @@ public class EnvironmentPresenter : MonoBehaviour
         _model.UpdateTimeSet(now);
 
         _lakeImage.HandleDailyChanged(_model.CurrentDay);
+
+        _view.ChangeSeasonImage(_model.CurrentSeason);
+        _view.ChangeDailyImage(_model.CurrentDay);
     }
 
 }

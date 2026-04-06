@@ -309,11 +309,6 @@ public class PlacementMgr : MonoBehaviour
         _buildingManager.ConfirmAll();
 
         CloseEditMenu();
-
-        if (DataManager.Instance != null && DataManager.Instance.Hub != null)
-        {
-            DataManager.Instance.Hub.SaveAllData();
-        }
     }
     public void OnClickCancelSession()
     {
