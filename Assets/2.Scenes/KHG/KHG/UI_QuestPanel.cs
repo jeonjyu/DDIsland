@@ -51,11 +51,7 @@ public class UI_QuestPanel : MonoBehaviour
     {
         _rewardUIPanel.SetActive(false);
     }
-
-    private void Start()
-    {
-        QuestManager.Instance.SetSimpleProgress(QuestConditionKey.StaminaLevel, 100);
-    }
+    
     public void RefreshCategory(QuestType category)
     {
         _currentCategory = category;

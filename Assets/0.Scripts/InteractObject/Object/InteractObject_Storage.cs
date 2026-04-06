@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class InteractObject_Storage : InteractObject, IInterchangeableInteract
 {
@@ -21,6 +22,8 @@ public class InteractObject_Storage : InteractObject, IInterchangeableInteract
 
     public override void OnInteract()
     {
+        if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject()) return;  // UI 위에서 상호작용 방지(추가한거)
+
         if (PlacementMgr.Instance != null && PlacementMgr.Instance.CurrentState == PlacementState.Edit)
             return;
 
