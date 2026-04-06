@@ -69,9 +69,13 @@ public class UI_FoodStorage : MonoBehaviour
         if (FoodStorageManager.Instance != null)
         {
             FoodStorageManager.Instance.OnSlotChanged += UpdateFoodSlot; // Storage 데이터가 바뀔 때마다 UI를 갱신하기 위해 이벤트 구독
-            RefreshAll();
-            RefreshFoodUpgradeUI();
         }
+        if (_sortDropdown != null)
+        {
+            _currentSort = (FoodSortMode)_sortDropdown.value;
+        }
+        RefreshAll();
+        RefreshFoodUpgradeUI();
     }
 
     private void OnDisable()
