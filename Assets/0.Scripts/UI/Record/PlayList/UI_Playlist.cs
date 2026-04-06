@@ -1,6 +1,8 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class UI_Playlist : MonoBehaviour
@@ -9,7 +11,8 @@ public class UI_Playlist : MonoBehaviour
     private const string NamePattern = @"^[a-zA-Z0-9가-힣]*$";
 
     [Header("플레이리스트 제목 인풋필드")]
-    [SerializeField] private TMP_InputField titleInputField;
+    [SerializeField] private TMP_InputField titleInputField;    // 플레이리스트 생성 인풋필드
+    [SerializeField] private TMP_InputField titleChangeInputField;    // 플레이리스트 이름 변경 인풋필드
 
     [Header("플레이리스트 생성 불가 안내 오브젝트")]
     [SerializeField] private GameObject failureObj;
@@ -20,11 +23,14 @@ public class UI_Playlist : MonoBehaviour
     [SerializeField] private UI_AddPlaylist addPlaylist;
 
     [SerializeField] private UI_CurrentPlaylist currentPlaylist;
+    [SerializeField] private UI_EditPlaylist editPlaylist;
 
     public List<UI_PlaylistSlot> slotList = new List<UI_PlaylistSlot>();
 
-    private void Start()
+    private IEnumerator Start()
     {
+        yield return new WaitForSeconds(1f);
+
         List<PlaylistData> datas = DataManager.Instance.RecordDatabase.PlaylistDatas;
 
         if(datas.Count > 0)
@@ -77,5 +83,27 @@ public class UI_Playlist : MonoBehaviour
     {
         currentPlaylist.gameObject.SetActive(true);
         currentPlaylist.ShowCurrentPlaylist(data);
+    }
+
+    public void ChangePlaylistName(PlaylistData data)
+    {
+        if(IsValidPlaylistName(titleChangeInputField.text))
+        {
+            slotList[slotList.FindIndex(x => x.Playlist == data)].PlaylistSlotInit(titleChangeInputField.text, this);
+            data.Name = titleChangeInputField.text;
+            editPlaylist.SetEditInit(data);
+        }
+        else
+        {
+            failureObj.SetActive(true);
+        }
+
+        titleChangeInputField.text = string.Empty;
+    }
+
+    public void OnClick_EditPlaylist(PlaylistData data)
+    {
+        editPlaylist.SetEditInit(data);
+        editPlaylist.gameObject.SetActive(true);
     }
 }

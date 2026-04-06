@@ -14,6 +14,8 @@ public class UI_CurrentPlaylist : MonoBehaviour
 
     [SerializeField] private TMP_Text playlistTitleText;
 
+    [SerializeField] private UI_Playlist ui_Playlist;
+
     [Header("재생바 슬라이더")]
     [SerializeField] private UI_CurrentPlaySlider currentPlaySlider;    // 재생바
 
@@ -71,7 +73,7 @@ public class UI_CurrentPlaylist : MonoBehaviour
             slots.Add(currentSlot);
         }
 
-        if(DataManager.Instance.RecordDatabase.CurrentPlaylistId != playlist.Id)
+        if(DataManager.Instance.RecordDatabase.CurrentPlaylistId != playlist.Id && playlist.RecordLists.Count > 0)
         {
             DataManager.Instance.RecordDatabase.CurrentPlaylistId = playlist.Id;
             bgmList.PlayBGM(DataManager.Instance.RecordDatabase.RecordInfoData[DataManager.Instance.RecordDatabase.CurrentPlayList[0]]);
@@ -165,6 +167,8 @@ public class UI_CurrentPlaylist : MonoBehaviour
                 slots.Remove(slots[i]);
             }
         }
+
+        ui_Playlist.slotList[ui_Playlist.slotList.FindIndex(x => x.Playlist == playlist)].PlaylistSlotInit(playlist, ui_Playlist);
     }
 
     public void OnClick_RepeatButton()
