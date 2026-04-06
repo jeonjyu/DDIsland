@@ -496,6 +496,8 @@ public class UI_Storage : MonoBehaviour
         _selectedRealIndex = -1;
         ClearDetailFish();
         _UI_FoodStorage.ResetSelection();
+        CloseUpgradeUI();         
+        _UI_FoodStorage.CloseFoodUpgradeUI();
         _fishStorageUI.SetActive(false);
         _foodStorageUI.SetActive(false);
     }
