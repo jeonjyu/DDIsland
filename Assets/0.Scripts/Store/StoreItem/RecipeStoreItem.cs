@@ -13,7 +13,7 @@ public class RecipeStoreItem : StoreItem<FoodDataSO>
     public override bool IsGained { get => _isGained; set => _isGained = value; }
 
     public override bool IsSaleable => false;
-    public override bool IsDefault => false;
+    public override bool IsDefault => _data.IsDefault;
 
     public override int MaxCount => 1;
 
