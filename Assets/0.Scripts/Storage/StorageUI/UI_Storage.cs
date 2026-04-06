@@ -87,6 +87,7 @@ public class UI_Storage : MonoBehaviour
             RefreshAll();
             RefreshUpgradeUI();
         }
+        ResetToDefaultStorage();
     }
 
     private void OnDisable()
@@ -473,6 +474,21 @@ public class UI_Storage : MonoBehaviour
 
         _ofFoodFishButton.interactable = true;
         _ofFoodFoodButton.interactable = false;
+    }
+    private void ResetToDefaultStorage()
+    {
+        _selectedRealIndex = -1;
+        ClearDetailFish();
+        _UI_FoodStorage.ResetSelection();
+
+        _fishStorageUI.SetActive(true);
+        _foodStorageUI.SetActive(false);
+
+        _ofFishFishButton.interactable = false;
+        _ofFishFoodButton.interactable = true;
+
+        _ofFoodFishButton.interactable = false;
+        _ofFoodFoodButton.interactable = true;
     }
     public void CloseAllStorage()  //임시
     {
