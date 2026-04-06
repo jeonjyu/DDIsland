@@ -453,7 +453,6 @@ public class UI_Storage : MonoBehaviour
     }
     public void OpenStorageUI()
     {
-        Debug.Log("OpenStorageUI 호출됨");
         gameObject.SetActive(true);
         ResetToDefaultStorage();
         RefreshAll();
