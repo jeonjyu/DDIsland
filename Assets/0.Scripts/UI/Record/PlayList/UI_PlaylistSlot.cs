@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -37,6 +38,7 @@ public class UI_PlaylistSlot : MonoBehaviour
             playlistId = DataManager.Instance.RecordDatabase.PlaylistDatas.Count + 1;
             Playlist.Id = playlistId;
             Playlist.Name = playlistName;
+            Playlist.CreateDate = DateTime.Now.ToString("yyyy-MM-dd");
             Playlist.RecordLists = new List<int>();
             DataManager.Instance.RecordDatabase.PlaylistDatas.Add(Playlist);
         }
@@ -65,11 +67,21 @@ public class UI_PlaylistSlot : MonoBehaviour
         recordLengthText.text = string.Format("{0:D2}:{1:D2}", Mathf.RoundToInt(totalTime) / 60, Mathf.RoundToInt(totalTime) % 60);
 
         playlistId = data.Id;
+
+        if(data.RecordLists.Count > 0)
+        {
+            iconImg.sprite = DataManager.Instance.RecordDatabase.RecordInfoData[data.RecordLists[0]].RecordImgPath_Sprite;
+        }
     }
 
     public void OnClick_SelectPlaylist()
     {
         ui_Playlist.ShowCurrentPlaylist(Playlist);
         DataManager.Instance.RecordDatabase.CurrentPlaylistId = Playlist.Id;
+    }
+
+    public void OnClick_EditPlaylist()
+    {
+        ui_Playlist.OnClick_EditPlaylist(Playlist);
     }
 }

@@ -40,7 +40,7 @@ public class UI_AddPlaylistSlot : MonoBehaviour
             }
         }
 
-        if(playlist.RecordLists.Contains(selectRecord.RecordID))
+        if (playlist.RecordLists.Contains(selectRecord.RecordID))
         {
             addImg.sprite = checkSprite;
             isAlreadyAdd = true;
@@ -51,19 +51,24 @@ public class UI_AddPlaylistSlot : MonoBehaviour
             isAlreadyAdd = false;
         }
 
-            nameText.text = data.Name;
+        nameText.text = data.Name;
         timeText.text = string.Format("{0:D2}:{1:D2}", Mathf.RoundToInt(totalTime) / 60, Mathf.RoundToInt(totalTime) % 60);
+
+        if(records.Count > 0)
+        {
+            iconImg.sprite = records[0].RecordImgPath_Sprite;
+        }
     }
 
     public void OnClick_AddPlaylist()
     {
         if (selectRecord == null) return;
 
-        if(playlist.RecordLists.Contains(selectRecord.RecordID))
+        if (playlist.RecordLists.Contains(selectRecord.RecordID))
         {
             addImg.sprite = addSprite;
             isAlreadyAdd = false;
-            playlist.RecordLists.RemoveAt(playlist.RecordLists.FindIndex(x => x ==  selectRecord.RecordID));
+            playlist.RecordLists.RemoveAt(playlist.RecordLists.FindIndex(x => x == selectRecord.RecordID));
             records.Remove(selectRecord);
         }
         else

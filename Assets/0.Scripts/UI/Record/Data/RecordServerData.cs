@@ -41,5 +41,6 @@ public class PlaylistData
 {
     public string Name;
     public int Id;
+    public string CreateDate;
     public List<int> RecordLists = new List<int>();
 }

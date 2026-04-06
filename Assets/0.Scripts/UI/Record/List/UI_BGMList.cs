@@ -33,15 +33,13 @@ public class UI_BGMList : UI_RecordList<UI_BGMSlot>
     {
         base.Start();
 
-        AddDefaultRecords(Season.Spring);
+        AddDefaultRecords(environment.Model.CurrentSeason);
 
         foreach (var slot in recordSlotList)
         {
             if(slot.Record != null)
                 recordList.Add(slot.Record);
         }
-
-        PlayBGM(DataManager.Instance.RecordDatabase.RecordInfoData[DataManager.Instance.RecordDatabase.DefaultRecords[0]]);
     }
 
     /// <summary>
@@ -233,6 +231,45 @@ public class UI_BGMList : UI_RecordList<UI_BGMSlot>
         DataManager.Instance.RecordDatabase.CurrentRecord = playRecord;
     }
 
+    public void PlayPlaylist(PlaylistData data)
+    {
+        SetPlaylist(data);
+
+        if(data.RecordLists.Contains(CurrentSlot.Record.RecordID))
+            PlayBGM(CurrentSlot.Record);
+        else
+            PlayBGM(DataManager.Instance.RecordDatabase.RecordInfoData[DataManager.Instance.RecordDatabase.CurrentPlayList[0]]);
+    }
+
+    public void ShufflePlaylist(PlaylistData data)
+    {
+        SetPlaylist(data);
+
+        List<int> playList = DataManager.Instance.RecordDatabase.CurrentPlayList;
+
+        RecordDataSO playRecord = new RecordDataSO();
+
+        playRecord = CurrentSlot.Record;
+
+        while (playRecord == CurrentSlot.Record)
+        {
+            int nextIndex = Random.Range(0, playList.Count);
+            playRecord = DataManager.Instance.RecordDatabase.RecordInfoData[playList[nextIndex]];
+        }
+
+        CurrentSlot = recordSlotList[recordSlotList.FindIndex(x => x.Record == playRecord)];
+        SoundManager.Instance.PlayBGM(playRecord.RecordSoundPath_AudioClip, ShowRecordInfo, playRecord);
+        DataManager.Instance.RecordDatabase.CurrentRecord = playRecord;
+    }
+
+    private void SetPlaylist(PlaylistData data)
+    {
+        if(DataManager.Instance.RecordDatabase.CurrentPlaylistId != data.Id)
+        {
+            DataManager.Instance.RecordDatabase.CurrentPlaylistId = data.Id;
+        }
+    }
+
     public void OnClick_PlayRepeat()
     {
         IsPlayRepeat = !IsPlayRepeat;
@@ -315,11 +352,15 @@ public class UI_BGMList : UI_RecordList<UI_BGMSlot>
     {
         if (SoundManager.Instance != null)
             SoundManager.Instance.OnBGMPlayDone += PlayNextRecord;
+
+        environment.Model.OnSeasonChanged += AddDefaultRecords;
     }
 
     private void OnDisable()
     {
         if (SoundManager.Instance != null)
             SoundManager.Instance.OnBGMPlayDone -= PlayNextRecord;
+
+        environment.Model.OnSeasonChanged -= AddDefaultRecords;
     }
 }

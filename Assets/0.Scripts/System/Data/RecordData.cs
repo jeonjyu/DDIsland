@@ -102,6 +102,8 @@ public class RecordData : MonoBehaviour
 
         data._lpPieceCount = recordServerData.LpPieceCount;
         data._unlockRecords = recordServerData.UnlockRecords.ToList();
+        data.Playlists = recordServerData.Playlists;
+        data.CurrentPlaylistId = CurrentPlaylistId;
     }
 
     private void SyncRecordLoadData()
@@ -111,6 +113,9 @@ public class RecordData : MonoBehaviour
         LpPieceCount = data._lpPieceCount;
 
         UnlockRecords = new HashSet<int>(data._unlockRecords ?? new List<int>());
+
+        recordServerData.Playlists = data.Playlists;
+        CurrentPlaylistId = data.CurrentPlaylistId;
 
         //추가한 부분
         OnRecordsUpdated?.Invoke();
