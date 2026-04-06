@@ -1426,7 +1426,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
   m_AnchoredPosition: {x: 0, y: -17.63}
-  m_SizeDelta: {x: 176, y: 60}
+  m_SizeDelta: {x: 176, y: 50}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &3798020880567079002
 MonoBehaviour:
@@ -2039,7 +2039,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 3.7999878}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5940848303493185347
@@ -2435,9 +2435,12 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 5849120860453087118, guid: 99a0d8ab5a33ee34289099d61ad574e1, type: 3}
       insertIndex: 2
-      addedObject: {fileID: 7309728336345183272}
+      addedObject: {fileID: 1981102540280941141}
     - targetCorrespondingSourceObject: {fileID: 5849120860453087118, guid: 99a0d8ab5a33ee34289099d61ad574e1, type: 3}
       insertIndex: 3
+      addedObject: {fileID: 7309728336345183272}
+    - targetCorrespondingSourceObject: {fileID: 5849120860453087118, guid: 99a0d8ab5a33ee34289099d61ad574e1, type: 3}
+      insertIndex: 4
       addedObject: {fileID: 1850755654052630475}
   m_SourcePrefab: {fileID: 100100000, guid: 99a0d8ab5a33ee34289099d61ad574e1, type: 3}
 --- !u!224 &6450801753745853340 stripped
@@ -2450,6 +2453,19 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 5849120860453087118, guid: 99a0d8ab5a33ee34289099d61ad574e1, type: 3}
   m_PrefabInstance: {fileID: 849376047001364905}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1981102540280941141
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6549878096326020647}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2134d9cf1904084596ca987dae836c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI_BaseLocalizedText
+  textId: Interior_Box_Upgrade_Btn_Text
 --- !u!114 &7309728336345183272
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2743,6 +2759,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 9057602221843568946, guid: 5aa20327058049840bec9fae9ad79196, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4153603078233615406}
+    - targetCorrespondingSourceObject: {fileID: 9057602221843568946, guid: 5aa20327058049840bec9fae9ad79196, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3893589196072647788}
   m_SourcePrefab: {fileID: 100100000, guid: 5aa20327058049840bec9fae9ad79196, type: 3}
 --- !u!224 &1902975713117493547 stripped
 RectTransform:
@@ -2768,6 +2787,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::HelpButton
   myLocation: 5
 --- !u!114 &4153603078233615406
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7526791150839596015}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b5621f26af96ca4785f8685c0dae83e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HelpButton
+  myLocation: 5
+--- !u!114 &3893589196072647788
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -3408,7 +3440,8 @@ PrefabInstance:
       value: 1.2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 6101329401275571328, guid: 52034b166bf0e2b459e26e987a9b0aea, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 52034b166bf0e2b459e26e987a9b0aea, type: 3}

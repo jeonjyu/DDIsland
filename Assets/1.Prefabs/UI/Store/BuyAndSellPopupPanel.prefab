@@ -97,8 +97,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e92c1615c300eb343afe38b4580974e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TradeViewModelBase
-  view: {fileID: 9086050232554904237}
   isGained: 0
+  canvasGroup: {fileID: 0}
+  myCanvasGroup: {fileID: 0}
 --- !u!114 &9086050232554904237
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -113,7 +114,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TradeViewBase
   itemName: {fileID: 2941809110774410057}
   itemDesc: {fileID: 481291453643743435}
-  _equipTradeView: {fileID: 1922359553625175345}
 --- !u!114 &1922359553625175345
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -126,6 +126,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00587a40926800647ab928de042e0a80, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EquipTradeView
+  itemName: {fileID: 0}
+  itemDesc: {fileID: 0}
   _equipBtn: {fileID: 7971252504226082480}
 --- !u!1 &1764168134734154074
 GameObject:
@@ -641,15 +643,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5167479199266886309, guid: f472d2a28db35b94890e15fd70bf5a33, type: 3}
       propertyPath: m_Color.b
-      value: 0.7529412
+      value: 0.90588236
       objectReference: {fileID: 0}
     - target: {fileID: 5167479199266886309, guid: f472d2a28db35b94890e15fd70bf5a33, type: 3}
       propertyPath: m_Color.g
-      value: 0.8666667
+      value: 0.96862745
       objectReference: {fileID: 0}
     - target: {fileID: 5167479199266886309, guid: f472d2a28db35b94890e15fd70bf5a33, type: 3}
       propertyPath: m_Color.r
-      value: 0.9254902
+      value: 0.99215686
       objectReference: {fileID: 0}
     - target: {fileID: 8328133476319863050, guid: f472d2a28db35b94890e15fd70bf5a33, type: 3}
       propertyPath: m_Color.b
@@ -1044,6 +1046,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cdcfe39fc47f3fe429faab6d82848e89, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SellStrategy
+  sellSfx: {fileID: 0}
 --- !u!114 &7855357521009521700
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1057,10 +1060,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SellUnitView
   tradeBtn: {fileID: 1417725693023408159}
+  priceTxt: {fileID: 785722646162394440}
   countIncBtn: {fileID: 339119741611093107}
   countDecBtn: {fileID: 1062952910705612131}
   countMaxBtn: {fileID: 5425056901802714421}
-  priceTxt: {fileID: 785722646162394440}
   countTxt: {fileID: 7369896698373552612}
 --- !u!114 &1986604012982132796
 MonoBehaviour:
@@ -1074,8 +1077,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5127006a1d2044c4fb3f662b1b17a15f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TradeUnitViewModelBase
+  tradeVM: {fileID: 0}
   TradeConfirmPanel: {fileID: 0}
-  GoldWarningPanel: {fileID: 0}
 --- !u!114 &5425056901802714421 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 638675441585107106, guid: 28648b4cb16583b4dba81c054605ecf1, type: 3}
@@ -1455,6 +1458,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f03b6695034a7444b96231055d696999, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PurchaseStrategy
+  purchaseSfx: {fileID: 0}
 --- !u!114 &5015139877481430810
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1468,10 +1472,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PurchaseUnitView
   tradeBtn: {fileID: 4331308697510435985}
+  priceTxt: {fileID: 2688740079002501574}
   countIncBtn: {fileID: 3099580272668877053}
   countDecBtn: {fileID: 2411534956433168877}
   countMaxBtn: {fileID: 7277408855813450171}
-  priceTxt: {fileID: 2688740079002501574}
   countTxt: {fileID: 5327760221984044394}
 --- !u!114 &7029403782545697110
 MonoBehaviour:
@@ -1485,8 +1489,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5127006a1d2044c4fb3f662b1b17a15f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TradeUnitViewModelBase
+  tradeVM: {fileID: 0}
   TradeConfirmPanel: {fileID: 0}
-  GoldWarningPanel: {fileID: 0}
 --- !u!114 &4331308697510435985 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5780490440034977160, guid: 28648b4cb16583b4dba81c054605ecf1, type: 3}
