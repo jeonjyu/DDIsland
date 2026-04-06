@@ -35,6 +35,7 @@ public class FoodStorageManager : Singleton<FoodStorageManager>
         foodSlots = new FoodStackSlot?[_storageCapacity];
         _storageDatalevelCost = new Dictionary<int, int>();
         _storageDatalevelCap = new Dictionary<int, int>();
+        GetFoodUpgradeData();
     }
 
     private void OnEnable()
@@ -61,7 +62,6 @@ public class FoodStorageManager : Singleton<FoodStorageManager>
                 DataManager.Instance.Hub.OnDataLoaded += SyncFoodStorageLoadData;
             }
         }
-        GetFoodUpgradeData();
     }
 
     public bool TryAddToFoodStorage(FoodInstance food)

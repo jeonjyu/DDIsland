@@ -40,11 +40,11 @@ public class FishStorageManager : Singleton<FishStorageManager>
         FishSlots = new FishStackSlot?[_storageCapacity];
         _storageDatalevelCost = new Dictionary<int, int>();
         _storageDatalevelCap = new Dictionary<int, int>();
+        GetUpgradeData();
     }
     private void Start()
     {
         StartCoroutine(Frame());
-        GetUpgradeData();
     }
 
     IEnumerator Frame()

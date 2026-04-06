@@ -344,7 +344,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -97}
+  m_AnchoredPosition: {x: 0, y: -106}
   m_SizeDelta: {x: 0, y: -423.984}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5968696767538880919
@@ -514,7 +514,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2092102828648237238}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
@@ -606,7 +606,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 41.2, y: 0.000024795532}
+  m_AnchoredPosition: {x: 41.2, y: 0.000084601386}
   m_SizeDelta: {x: -66.9951, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &9095515128098988157
@@ -624,7 +624,7 @@ MonoBehaviour:
   m_Padding:
     m_Left: 25
     m_Right: 30
-    m_Top: 30
+    m_Top: 10
     m_Bottom: 30
   m_ChildAlignment: 0
   m_StartCorner: 0
@@ -1674,7 +1674,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -42, y: -18.94}
+  m_AnchoredPosition: {x: -42, y: -10}
   m_SizeDelta: {x: 20, y: 32}
   m_Pivot: {x: 1, y: 1}
 --- !u!222 &5106200208222498714
@@ -1758,8 +1758,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1711670128552573409}
   m_HandleRect: {fileID: 3920835779220124571}
   m_Direction: 2
-  m_Value: 1
-  m_Size: 0.9594823
+  m_Value: 0
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -2359,6 +2359,9 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 5849120860453087118, guid: 99a0d8ab5a33ee34289099d61ad574e1, type: 3}
       insertIndex: 2
+      addedObject: {fileID: 7309728336345183272}
+    - targetCorrespondingSourceObject: {fileID: 5849120860453087118, guid: 99a0d8ab5a33ee34289099d61ad574e1, type: 3}
+      insertIndex: 3
       addedObject: {fileID: 1850755654052630475}
   m_SourcePrefab: {fileID: 100100000, guid: 99a0d8ab5a33ee34289099d61ad574e1, type: 3}
 --- !u!224 &6450801753745853340 stripped
@@ -2371,6 +2374,19 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 5849120860453087118, guid: 99a0d8ab5a33ee34289099d61ad574e1, type: 3}
   m_PrefabInstance: {fileID: 849376047001364905}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &7309728336345183272
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6549878096326020647}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2134d9cf1904084596ca987dae836c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI_BaseLocalizedText
+  textId: Interior_Box_Upgrade_Btn_Text
 --- !u!114 &1850755654052630475
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2648,6 +2664,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 9057602221843568946, guid: 5aa20327058049840bec9fae9ad79196, type: 3}
       insertIndex: -1
       addedObject: {fileID: 30063468878580294}
+    - targetCorrespondingSourceObject: {fileID: 9057602221843568946, guid: 5aa20327058049840bec9fae9ad79196, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4153603078233615406}
   m_SourcePrefab: {fileID: 100100000, guid: 5aa20327058049840bec9fae9ad79196, type: 3}
 --- !u!224 &1902975713117493547 stripped
 RectTransform:
@@ -2660,6 +2679,19 @@ GameObject:
   m_PrefabInstance: {fileID: 1569391869142457053}
   m_PrefabAsset: {fileID: 0}
 --- !u!114 &30063468878580294
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7526791150839596015}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b5621f26af96ca4785f8685c0dae83e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HelpButton
+  myLocation: 5
+--- !u!114 &4153603078233615406
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -3471,7 +3503,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4195024526879132071, guid: 4b936cf7c7ee1c94090e39d186fe5ab7, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -17
+      value: -15
       objectReference: {fileID: 0}
     - target: {fileID: 4195024526879132071, guid: 4b936cf7c7ee1c94090e39d186fe5ab7, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -3691,6 +3723,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.x
       value: -0.49047852
       objectReference: {fileID: 0}
+    - target: {fileID: 4924101884289438826, guid: 4075f3bb4bc0ed24f8c92875260daf26, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 6898190215989891961, guid: 4075f3bb4bc0ed24f8c92875260daf26, type: 3}
       propertyPath: m_Name
       value: StorageUpgradePopupPanel
@@ -3703,6 +3739,30 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 7363024923684656183}
+    - target: {fileID: 7645706385203116255, guid: 4075f3bb4bc0ed24f8c92875260daf26, type: 3}
+      propertyPath: m_Pivot.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7645706385203116255, guid: 4075f3bb4bc0ed24f8c92875260daf26, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7645706385203116255, guid: 4075f3bb4bc0ed24f8c92875260daf26, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7645706385203116255, guid: 4075f3bb4bc0ed24f8c92875260daf26, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 30.643494
+      objectReference: {fileID: 0}
+    - target: {fileID: 7645706385203116255, guid: 4075f3bb4bc0ed24f8c92875260daf26, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 151.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7645706385203116255, guid: 4075f3bb4bc0ed24f8c92875260daf26, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -0.00000047683716
+      objectReference: {fileID: 0}
     - target: {fileID: 8192892577398675523, guid: 4075f3bb4bc0ed24f8c92875260daf26, type: 3}
       propertyPath: m_IsActive
       value: 0
