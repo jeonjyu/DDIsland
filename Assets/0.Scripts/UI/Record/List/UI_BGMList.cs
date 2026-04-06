@@ -33,6 +33,8 @@ public class UI_BGMList : UI_RecordList<UI_BGMSlot>
     {
         base.Start();
 
+        environment.Model.OnSeasonChanged += AddDefaultRecords;
+
         AddDefaultRecords(environment.Model.CurrentSeason);
 
         foreach (var slot in recordSlotList)
@@ -352,15 +354,16 @@ public class UI_BGMList : UI_RecordList<UI_BGMSlot>
     {
         if (SoundManager.Instance != null)
             SoundManager.Instance.OnBGMPlayDone += PlayNextRecord;
-
-        environment.Model.OnSeasonChanged += AddDefaultRecords;
     }
 
     private void OnDisable()
     {
         if (SoundManager.Instance != null)
             SoundManager.Instance.OnBGMPlayDone -= PlayNextRecord;
+    }
 
+    private void OnDestroy()
+    {
         environment.Model.OnSeasonChanged -= AddDefaultRecords;
     }
 }
