@@ -37,8 +37,6 @@ public class ItemManager : Singleton<ItemManager>
 
     private void Start()
     {
-        CreateDatabase();
-
         if (DataManager.Instance != null && DataManager.Instance.Hub != null)
         {
             if (DataManager.Instance.Hub.IsLoaded)
@@ -50,6 +48,8 @@ public class ItemManager : Singleton<ItemManager>
                 DataManager.Instance.Hub.OnDataLoaded += SyncInventoryDataLoad;
             }
         }
+
+        CreateDatabase();
     }
     private void OnEnable()
     {
