@@ -41,6 +41,10 @@ public class FishManager : Singleton<FishManager>
     private EnvironmentModel _environment;
 
     private ArriveSeason _currentSeason;
+    private bool _isRain;
+    private bool _isCherryblossom;
+    private bool _isMaple;
+    private bool _isSnow;
 
     public ArriveSeason CurrentSeason => _currentSeason;
 
@@ -63,7 +67,7 @@ public class FishManager : Singleton<FishManager>
         {
             _fishById[fish.ID] = fish;
         }
-       
+
         // 추가한 부분입니다
         _fishData = new();
         ArriveSeason[] seasons = { ArriveSeason.Spring, ArriveSeason.Summer, ArriveSeason.Autumn, ArriveSeason.Winter };
@@ -111,7 +115,8 @@ public class FishManager : Singleton<FishManager>
         if (_environment != null)
         {
             _environment.OnSeasonChanged += HandleSeasonChanged;
-            _environment.OnDailyChanged += OpenPiraruku;
+            _environment.OnDailyChanged += OpenPiraruku; 
+            _environment.OnWeatherChanged += HandleWeatherChanged;
         }
     }
     private void OnDisable()
@@ -120,13 +125,15 @@ public class FishManager : Singleton<FishManager>
         {
             _environment.OnSeasonChanged -= HandleSeasonChanged;
             _environment.OnDailyChanged -= OpenPiraruku;
+            _environment.OnWeatherChanged -= HandleWeatherChanged;
         }
     }
     public void SetEnvironment(EnvironmentModel time)
     {
         _environment = time;
-       
+
         _currentSeason = ConvertSeason(_environment.CurrentSeason);
+        HandleWeatherChanged(_environment.CurrentSeason, _environment.IsWeatherActive);
     }
 
 
@@ -148,12 +155,36 @@ public class FishManager : Singleton<FishManager>
         _seasonChangeCount++;
         _canCoelacanth = (_seasonChangeCount >= 24);
         Debug.Log($"[FishManager] Season Converted => {_currentSeason}");
-    }
-
+    }      
     public void PickRandomSeasonFish()
     {
         FishingContext ctx = BuildContextFromCurrentState();
         PickRandomSeasonFish(ctx);
+    }
+
+    private void HandleWeatherChanged(Season season, bool isPlaying)
+    {
+        _isRain = false;
+        _isCherryblossom = false;
+        _isMaple = false;
+        _isSnow = false;
+
+        if (!isPlaying) return;
+        switch (season)
+        {
+            case Season.Spring:
+                _isCherryblossom = isPlaying;
+                break;
+            case Season.Summer:
+                _isRain = isPlaying;
+                break;
+            case Season.Autumn:
+                _isMaple = isPlaying;
+                break;
+            case Season.Winter:
+                _isSnow = isPlaying;
+                break;
+        }
     }
 
     //ctx.Season에 현재 계절 넣어줌
@@ -171,9 +202,12 @@ public class FishManager : Singleton<FishManager>
         //날씨, 골드도 필요함 일단테스트
         //ctx.GoldAmount = GameManager.Instance.PlayerGold;
         ctx.GoldAmount = 50000;
-        ctx.IsCherryblossom = true; 
         ctx.FishPool = _playerController.BaitFishPool;
         ctx.FishLengthBonus = _playerController.BobberLengthBonus;
+        ctx.IsCherryblossom = _isCherryblossom;
+        ctx.IsRain = _isRain;
+        ctx.IsMaple = _isMaple;
+        ctx.IsSnow = _isSnow;
         return ctx;
     }
 
