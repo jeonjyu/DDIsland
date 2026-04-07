@@ -110,15 +110,6 @@ public class FishManager : Singleton<FishManager>
             }
         }
     }
-    private void OnEnable()
-    {
-        if (_environment != null)
-        {
-            _environment.OnSeasonChanged += HandleSeasonChanged;
-            _environment.OnDailyChanged += OpenPiraruku; 
-            _environment.OnWeatherChanged += HandleWeatherChanged;
-        }
-    }
     private void OnDisable()
     {
         if (_environment != null)
@@ -130,10 +121,24 @@ public class FishManager : Singleton<FishManager>
     }
     public void SetEnvironment(EnvironmentModel time)
     {
+        if (_environment != null)
+        {
+            _environment.OnSeasonChanged -= HandleSeasonChanged;
+            _environment.OnDailyChanged -= OpenPiraruku;
+            _environment.OnWeatherChanged -= HandleWeatherChanged;
+        }
+
         _environment = time;
 
-        _currentSeason = ConvertSeason(_environment.CurrentSeason);
-        HandleWeatherChanged(_environment.CurrentSeason, _environment.IsWeatherActive);
+        if (_environment != null)
+        {
+            _environment.OnSeasonChanged += HandleSeasonChanged;
+            _environment.OnDailyChanged += OpenPiraruku;
+            _environment.OnWeatherChanged += HandleWeatherChanged;
+
+            _currentSeason = ConvertSeason(_environment.CurrentSeason);
+            HandleWeatherChanged(_environment.CurrentSeason, _environment.IsWeatherActive);
+        }
     }
 
 
