@@ -16,8 +16,10 @@ public class DecoItemListManager : MonoBehaviour
     public Button btnArrowLeft;       // 좌측 화살표
     public Button btnArrowRight;      // 우측 화살표
 
-    [Header("슬롯 템플릿")]
-    public GameObject slotTemplate;   // 슬롯 하나 복사하여 생성
+    //[Header("슬롯 템플릿")]
+    //public GameObject slotTemplate;   // 슬롯 하나 복사하여 생성
+    [Header("슬롯 오브젝트풀")]
+    public DecoSlotPool slotPool;  
 
     [Header("페이지 카운트")]
     public RectTransform pageCountParent;   // 점들의 부모 오브젝트
@@ -36,7 +38,7 @@ public class DecoItemListManager : MonoBehaviour
 
     // 내부 변수
     List<LakeInvenSlot> invenData; // invenData는 DecoInventoryManager의 리스트를 참조
-    List<GameObject> slotObjects = new List<GameObject>();
+   // List<GameObject> slotObjects = new List<GameObject>();
     List<DecoSlotUI> slotUIs = new List<DecoSlotUI>();
     List<int> slotDataIndex = new List<int>(); // slotObjects[i]가 invenData[몇번]인지 매핑 (수량0 스킵 시 인덱스 삐끗 방지)
     List<GameObject> pageCountDots = new List<GameObject>();
@@ -71,8 +73,8 @@ public class DecoItemListManager : MonoBehaviour
             btnArrowRight.onClick.AddListener(GoToNextPage);
 
         // 템플릿 더미 슬롯 비활성화 (복제용으로만 사용)
-        if (slotTemplate != null)
-            slotTemplate.SetActive(false);
+        //if (slotTemplate != null)
+        //    slotTemplate.SetActive(false);
     }
 
     // 인벤토리 데이터 넣고 슬롯 생성 (편집 모드 진입 시 호출)
@@ -97,7 +99,7 @@ public class DecoItemListManager : MonoBehaviour
                 {
                     var data = database.InteriorData[slot.itemId];
                     // FixGroup이 None이 아닌 Fix 아이템은 제외
-                    return data == null || data.fixgroupType == FixGroup.None;
+                    return data == null || (data.fixgroupType == FixGroup.None && !data.IsDefault);
                 }
                 catch { return true; }
             });
@@ -181,11 +183,21 @@ public class DecoItemListManager : MonoBehaviour
     // 기존 슬롯 전부 삭제
     void ClearSlots()
     {
-        for (int i = 0; i < slotObjects.Count; i++)
+        for (int i = 0; i < slotUIs.Count; i++)
         {
-            Destroy(slotObjects[i]);
+            if (slotUIs[i] == null) continue;
+            // 버튼 리스너 제거 (람다 클로저 중복 방지)
+            if (slotUIs[i].itemButton != null)
+                slotUIs[i].itemButton.onClick.RemoveAllListeners();
+            // 풀에 반납
+            slotPool.Release(slotUIs[i]);
         }
-        slotObjects.Clear();
+
+        //for (int i = 0; i < slotObjects.Count; i++)
+        //{
+        //    Destroy(slotObjects[i]);
+        //}
+        //slotObjects.Clear();
         slotUIs.Clear();
         slotDataIndex.Clear(); 
     }
@@ -200,19 +212,24 @@ public class DecoItemListManager : MonoBehaviour
             // 수량 0이면 슬롯 생성 안함
             if (slotData.quantity <= 0) continue;
 
-            // 템플릿 복제
-            GameObject slotObj = Instantiate(slotTemplate, itemContent);
-            slotObj.SetActive(false); // 페이지 전환에서 켜줌
-            slotObj.name = "ItemSlot_" + i;
+            DecoSlotUI slotUI = slotPool.Get();
+            slotUI.transform.SetParent(itemContent, false);
+            slotUI.transform.SetSiblingIndex(slotUIs.Count); // 순서 보장
+            slotUI.gameObject.name = "ItemSlot_" + i;
+            slotUI.gameObject.SetActive(false); // 페이지 전환에서 켜줌
 
-            // DecoSlotUI 컴포넌트에서 내용 참조 
-            DecoSlotUI slotUI = slotObj.GetComponent<DecoSlotUI>();
+            // 템플릿 복제
+            //GameObject slotObj = Instantiate(slotTemplate, itemContent);
+            //slotObj.SetActive(false); // 페이지 전환에서 켜줌
+            //slotObj.name = "ItemSlot_" + i;
+
+            //// DecoSlotUI 컴포넌트에서 내용 참조 
+            //DecoSlotUI slotUI = slotObj.GetComponent<DecoSlotUI>();
             // 슬롯 내용 채우기
             SetupSlotUI(slotUI, slotData);
-           
-            SetSlotClick(slotUI, slotObj);
+            SetSlotClick(slotUI);//, slotObj);
         
-            slotObjects.Add(slotObj);
+          //slotObjects.Add(slotObj);
             slotUIs.Add(slotUI);
             slotDataIndex.Add(i); 
         }
@@ -286,8 +303,8 @@ public class DecoItemListManager : MonoBehaviour
         int endIndex = startIndex + slotsPerPage;
 
         // 슬롯 표시/숨기기
-        for (int i = 0; i < slotObjects.Count; i++)
-            slotObjects[i].SetActive(i >= startIndex && i < endIndex);
+        for (int i = 0; i < slotUIs.Count; i++)
+            slotUIs[i].gameObject.SetActive(i >= startIndex && i < endIndex);
 
         // 화살표 활성/비활성 (1페이지뿐이면 둘 다 비활성)
         //if (btnArrowLeft != null)
@@ -409,9 +426,9 @@ public class DecoItemListManager : MonoBehaviour
     // 슬롯 선택 하이라이트 표시
     void SetSlotHighlight(int index, bool highlighted)
     {
-        if (index < 0 || index >= slotObjects.Count) return;
+        if (index < 0 || index >= slotUIs.Count) return;
 
-        Image bg = slotObjects[index].GetComponent<Image>();
+        Image bg = slotUIs[index].GetComponent<Image>();
         if (bg == null) return;
 
         if (highlighted)
@@ -557,11 +574,15 @@ public class DecoItemListManager : MonoBehaviour
     // 슬롯 제거 (수량 0 됐을 때)
     void RemoveSlot(int slotIdx) 
     {
-        if (slotIdx < 0 || slotIdx >= slotObjects.Count) return;
+        if (slotIdx < 0 || slotIdx >= slotUIs.Count) return;
+
+        if (slotUIs[slotIdx].itemButton != null)
+            slotUIs[slotIdx].itemButton.onClick.RemoveAllListeners();
+        slotPool.Release(slotUIs[slotIdx]);
 
         // 리스트 동기화 
-        Destroy(slotObjects[slotIdx]); // 인덱스로 제거 
-        slotObjects.RemoveAt(slotIdx); // 슬롯
+        // Destroy(slotObjects[slotIdx]); // 인덱스로 제거 
+        // slotObjects.RemoveAt(slotIdx); // 슬롯
         slotUIs.RemoveAt(slotIdx);      // UI
         slotDataIndex.RemoveAt(slotIdx); // 매핑 제거 
 
@@ -575,16 +596,22 @@ public class DecoItemListManager : MonoBehaviour
     // 슬롯 추가 (수량 0에서 1 이상으로 복구됐을 때)
     void AddSlot(LakeInvenSlot slotData, int dataIndex)
     {
-        GameObject slotObj = Instantiate(slotTemplate, itemContent);
-        slotObj.SetActive(false);
-        slotObj.name = "ItemSlot_" + dataIndex;
+        DecoSlotUI slotUI = slotPool.Get();
+        slotUI.transform.SetParent(itemContent, false);
+        slotUI.transform.SetSiblingIndex(slotUIs.Count);
+        slotUI.gameObject.name = "ItemSlot_" + dataIndex;
+        slotUI.gameObject.SetActive(false);
 
-        DecoSlotUI slotUI = slotObj.GetComponent<DecoSlotUI>();
+        //GameObject slotObj = Instantiate(slotTemplate, itemContent);
+        //slotObj.SetActive(false);
+        //slotObj.name = "ItemSlot_" + dataIndex;
+
+        //DecoSlotUI slotUI = slotObj.GetComponent<DecoSlotUI>();
+
         SetupSlotUI(slotUI, slotData);
+        SetSlotClick(slotUI);//, slotObj);    
 
-        SetSlotClick(slotUI, slotObj);    
-
-        slotObjects.Add(slotObj);
+       // slotObjects.Add(slotObj);
         slotUIs.Add(slotUI);
         slotDataIndex.Add(dataIndex); // 매핑 등록
 
@@ -593,13 +620,15 @@ public class DecoItemListManager : MonoBehaviour
     }
 
     // 슬롯 버튼 클릭 시 현재 인덱스 찾기 
-    void SetSlotClick(DecoSlotUI slotUI, GameObject slotObj) 
+    void SetSlotClick(DecoSlotUI slotUI)//, GameObject slotObj) 
     {
         if (slotUI == null || slotUI.itemButton == null) return;
-       
+
+        slotUI.itemButton.onClick.RemoveAllListeners();
+
         slotUI.itemButton.onClick.AddListener(() =>
         {
-            int idx = slotObjects.IndexOf(slotObj); 
+            int idx = slotUIs.IndexOf(slotUI); 
             if (idx >= 0) OnSlotClicked(idx);
         });
     }
@@ -607,7 +636,7 @@ public class DecoItemListManager : MonoBehaviour
     // 슬롯 수에 맞게 페이지 수 재계산
     void RecalcPages()
     {
-        totalPages = Mathf.CeilToInt((float)slotObjects.Count / slotsPerPage);
+        totalPages = Mathf.CeilToInt((float)slotUIs.Count / slotsPerPage);
         totalPages = Mathf.Clamp(totalPages, 1, maxPages);
 
         if (currentPage >= totalPages)

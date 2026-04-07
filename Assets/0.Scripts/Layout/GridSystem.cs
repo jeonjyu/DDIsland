@@ -5,8 +5,8 @@ using UnityEngine;
 /// </summary>
 public class GridSystem : MonoBehaviour
 {
-    [SerializeField] private int _width = 12; //실제로 가지는 셀의 수 
-    [SerializeField] private int _height = 12;
+    [SerializeField] private int _width; //실제로 가지는 셀의 수 
+    [SerializeField] private int _height;
 
     [Header("Visual Settings")]
     [SerializeField] private Transform _cell; //셀의 크기를 결정하는 Transform, 이 크기에 맞춰 셀의 실제 크기를 계산
@@ -20,7 +20,7 @@ public class GridSystem : MonoBehaviour
     private float _cellSize; //셀의 실제 크기
     private bool _rotation = false;
 
-    Bounds bounds;
+    private Bounds _bounds;
 
     #region 프로퍼티
     public int Width => _width;   
@@ -34,8 +34,9 @@ public class GridSystem : MonoBehaviour
         _grid = new Placeable[_width, _height];
 
         //Plane에서 기준점을 잡기위한 용도
-        bounds = _gridRenderer.GetComponent<MeshFilter>().sharedMesh.bounds;
+        _bounds = _gridRenderer.GetComponent<MeshFilter>().sharedMesh.bounds;
     }
+
     private void Start()
     {
         // 그리드의 데이터를 저장하는 텍스처, 셰이더에 셀의 상태를 전달하기 위함
@@ -46,6 +47,7 @@ public class GridSystem : MonoBehaviour
         };
         ApplyGridToShader();
     }
+
     public void SetGridActive(bool isActive)
     {
         if (_gridObject != null)
@@ -53,6 +55,7 @@ public class GridSystem : MonoBehaviour
             _gridObject.SetActive(isActive);
         }
     }
+
     // 그리드 정보를 셰이더에 전달하는 메서드
     public void ApplyGridToShader()
     {
@@ -61,6 +64,7 @@ public class GridSystem : MonoBehaviour
             _gridRenderer.material.SetVector("_Gridsize", new Vector2(_width, _height));
         }
     }
+
     // 해당 오브젝트가 그리드에 배치 될 수 있는지 확인하는 메서드
     public bool IsCellEmpty(int startX, int startY, int itemWidth, int itemHeight, Placeable self)
     {
@@ -75,7 +79,7 @@ public class GridSystem : MonoBehaviour
             Debug.LogError("그리드 범위를 벗어났습니다");
             return false;
         }
-       
+
         for (int i = minX; i < maxX; i++)
         {
             for (int j = minY; j < maxY; j++)
@@ -88,6 +92,7 @@ public class GridSystem : MonoBehaviour
         }
         return true;
     }
+
     // 그리드에 오브젝트를 배치하는 메서드
     public void PlaceItem(int startX, int startY, int itemWidth, int itemHeight, Placeable item)
     {
@@ -139,22 +144,23 @@ public class GridSystem : MonoBehaviour
         }
         UpdateGridTexture();
     }
+
     // 월드 좌표를 셀 좌표로 번역
     public Vector2Int GetGridIndex(Vector3 worldPosition)
     {
 
-        if (bounds.size == Vector3.zero && _gridRenderer != null)
+        if (_bounds.size == Vector3.zero && _gridRenderer != null)
         {
             if (_gridRenderer.TryGetComponent<MeshFilter>(out var filter))
             {
-                bounds = filter.sharedMesh.bounds;
+                _bounds = filter.sharedMesh.bounds;
             }
         }
         //바닥에 있는 월드 좌표를 로컬 좌표로 가져옴
         Vector3 localPos = _gridRenderer.transform.InverseTransformPoint(worldPosition);
 
-        float xPos = (localPos.x - bounds.min.x) / bounds.size.x;
-        float zPos = (localPos.z - bounds.min.z) / bounds.size.z;
+        float xPos = (localPos.x - _bounds.min.x) / _bounds.size.x;
+        float zPos = (localPos.z - _bounds.min.z) / _bounds.size.z;
 
         int x = Mathf.FloorToInt(xPos * _width);
         int y = Mathf.FloorToInt(zPos * _height);
@@ -168,8 +174,8 @@ public class GridSystem : MonoBehaviour
         float xPos = (x + sizeX * 0.5f) / _width;
         float ZPos = (y + sizeY * 0.5f) / _height;
 
-        float localX = bounds.min.x + (xPos * bounds.size.x);
-        float localZ = bounds.min.z + (ZPos * bounds.size.z);
+        float localX = _bounds.min.x + (xPos * _bounds.size.x);
+        float localZ = _bounds.min.z + (ZPos * _bounds.size.z);
 
         Vector3 localPos = new (localX, 0, localZ);
 

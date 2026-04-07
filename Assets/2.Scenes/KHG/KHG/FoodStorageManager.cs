@@ -20,6 +20,8 @@ public class FoodStorageManager : Singleton<FoodStorageManager>
     int _storageCapacity = 5;  //인벤크기
     int _storagelevel = 1;
     long _acquireCounter = 0;
+    Dictionary<int, int> _storageDatalevelCost;
+    Dictionary<int, int> _storageDatalevelCap;
     public const int MaxLevel = 5;
     public const int MaxCapacity = 25;
 
@@ -31,7 +33,11 @@ public class FoodStorageManager : Singleton<FoodStorageManager>
     {
         base.Awake();
         foodSlots = new FoodStackSlot?[_storageCapacity];
+        _storageDatalevelCost = new Dictionary<int, int>();
+        _storageDatalevelCap = new Dictionary<int, int>();
+        GetFoodUpgradeData();
     }
+
     private void OnEnable()
     {
         if (DataManager.Instance != null && DataManager.Instance.Hub != null)
@@ -121,11 +127,11 @@ public class FoodStorageManager : Singleton<FoodStorageManager>
     {
         int newCap = _storageCapacity; //현재 용량 기준으로 새 용량 계산
 
-        if (_storagelevel <= 1) newCap = 5;
-        else if (_storagelevel == 2) newCap = 10;
-        else if (_storagelevel == 3) newCap = 15;
-        else if (_storagelevel == 4) newCap = 20;
-        else newCap = 25;
+        if (_storagelevel <= 1) newCap = _storageDatalevelCap[_storagelevel];
+        else if (_storagelevel == 2) newCap = _storageDatalevelCap[_storagelevel];
+        else if (_storagelevel == 3) newCap = _storageDatalevelCap[_storagelevel];
+        else if (_storagelevel == 4) newCap = _storageDatalevelCap[_storagelevel];
+        else newCap = _storageDatalevelCap[_storagelevel];
         if (_storageCapacity == newCap) return;
 
         if (foodSlots == null) foodSlots = new FoodStackSlot?[newCap];   //실제 슬롯 배열 크기 변경(기존 데이터 유지)
@@ -145,15 +151,26 @@ public class FoodStorageManager : Singleton<FoodStorageManager>
         GameManager.Instance.SetGold(-cost);
         return true;
     }
-
+    public void GetFoodUpgradeData()
+    {
+        var boxData = DataManager.Instance.BoxDatabase.BoxInfoData;
+        foreach (var box in boxData.datas)
+        {
+            if (box.BoxID >= 80006 && box.BoxID <= 80010) //창고 업그레이드 박스 ID
+            {
+                _storageDatalevelCost.Add(box.BoxLevel, box.ExpansionCost);
+                _storageDatalevelCap.Add(box.BoxLevel, box.SlotCount);
+            }
+        }
+    }
     public int FoodGetUpgradeCost()  //비용 계산
     {
 
-        if (_storagelevel <= 1) return 0;
-        if (_storagelevel == 2) return 1500;
-        if (_storagelevel == 3) return 3000;
-        if (_storagelevel == 4) return 4500;
-        return 6000;
+        if (_storagelevel <= 1) return _storageDatalevelCost[_storagelevel];
+        if (_storagelevel == 2) return _storageDatalevelCost[_storagelevel];
+        if (_storagelevel == 3) return _storageDatalevelCost[_storagelevel];
+        if (_storagelevel == 4) return _storageDatalevelCost[_storagelevel];
+        return _storageDatalevelCost[_storagelevel];
     }
     public bool TryFoodRemoveAt(int slotIndex)
     {

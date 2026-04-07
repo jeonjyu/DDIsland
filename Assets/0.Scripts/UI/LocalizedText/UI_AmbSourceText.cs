@@ -17,6 +17,7 @@ public class UI_AmbSourceText : UI_BaseLocalizedText
     {
         base.Start();
     }
+
     protected override void SetText()
     {
         if (ambSlot == null || ambSlot.Record == null) return;

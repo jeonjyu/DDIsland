@@ -70,6 +70,9 @@ public class DecoEditModeManager : MonoBehaviour
     public GameObject topMoneyBarUI;          // 재화 UI
     public GameObject waterLevelButton;  // 호수 올리는 버튼 
 
+    public EmojiController emojiController; // 말풍선
+    public GameObject goldEffect;   // 골드 
+
     // 내부 변수
     bool isEditMode = false;
     DecoMode currentMode = DecoMode.Lake;   // 현재 편집 모드
@@ -625,7 +628,7 @@ public class DecoEditModeManager : MonoBehaviour
             if (aquariumMgr != null) aquariumMgr.HideFish(); // 물고기 숨기기
             if (playerObject != null)
             {
-                foreach (var renderer in playerObject.GetComponentsInChildren<Renderer>())
+                foreach (var renderer in playerObject.GetComponentsInChildren<Renderer>(true))
                     renderer.enabled = false;  // 곰 숨기기
                 foreach (var col in playerObject.GetComponentsInChildren<Collider>(true))
                     col.enabled = false; // 콜라이더 끄기
@@ -748,7 +751,7 @@ public class DecoEditModeManager : MonoBehaviour
             if (aquariumMgr != null) aquariumMgr.ShowFish(); // 물고기 다시 보이기
             if (playerObject != null) // 곰 다시 보이기
             {
-                foreach (var renderer in playerObject.GetComponentsInChildren<Renderer>())
+                foreach (var renderer in playerObject.GetComponentsInChildren<Renderer>(true))
                     renderer.enabled = true;
                 foreach (var col in playerObject.GetComponentsInChildren<Collider>(true))
                     col.enabled = true;
@@ -1144,6 +1147,16 @@ public class DecoEditModeManager : MonoBehaviour
             topMoneyBarUI.SetActive(active);
         if (waterLevelButton != null)
             waterLevelButton.SetActive(active);
+
+        if (emojiController != null)
+        {
+            emojiController.isEditMode = !active;
+            emojiController.enabled = active; // LateUpdate 멈추기
+            if (!active) emojiController.HideEmoji();
+        }
+
+        if (goldEffect != null)
+            goldEffect.SetActive(active);
     }
     #endregion
 }

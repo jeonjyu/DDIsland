@@ -1,32 +1,64 @@
+using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class Test : MonoBehaviour
 {
     [SerializeField] private GameObject obj2;
-    [SerializeField] private GameObject obj3;
-    [SerializeField] private GameObject obj4;
-    [SerializeField] private GameObject obj5;
 
     [SerializeField] private GameObject debugUI;
 
+    [SerializeField] private TMP_Text timeText;
+
+    private float timeMultiplier = 60f;  // 시간 배율
+
+    private const string TIMEKEY = "TimeKey";
+
+    private float playTimer = 0f;
+
+    public float TotalPlayTime
+    {
+        get
+        {
+            return PlayerPrefs.GetFloat(TIMEKEY, 0f);
+        }
+
+        set
+        {
+            PlayerPrefs.SetFloat(TIMEKEY, value);
+        }
+    }
+
+    public void OnClick_NormalMulti() => Time.timeScale = 1f;
+    public void OnClick_FastMulti() => Time.timeScale = timeMultiplier;
+    public void OnClick_TimeReset()
+    {
+        playTimer = 0f;
+        TotalPlayTime = 0f;
+    }
+
 #if TESTMODE
+    private void Awake()
+    {
+        playTimer = TotalPlayTime;
+    }
+
     private void Update()
     {
+        playTimer += Time.deltaTime;
+
+        TimeSpan span = TimeSpan.FromSeconds(playTimer);
+        timeText.text = string.Format("{0}일 {1:D2}시간 {2:D2}분 {3:D2}초", span.Days, span.Hours, span.Minutes, span.Seconds);
+
         if (Keyboard.current.f3Key.wasPressedThisFrame)
         {
             obj2.SetActive(true);
-            obj3.SetActive(true);
-            obj4.SetActive(true);
-            obj5.SetActive(true);
         }
 
         if (Keyboard.current.f4Key.wasPressedThisFrame)
         {
             obj2.SetActive(false);
-            obj3.SetActive(false);
-            obj4.SetActive(false);
-            obj5.SetActive(false);
         }
 
         // F5키 누를 시 골드 증가
@@ -80,4 +112,8 @@ public class Test : MonoBehaviour
         DataManager.Instance.Hub.LoadAllData();
     }
 
+    private void OnApplicationQuit()
+    {
+        TotalPlayTime = playTimer;
+    }
 }

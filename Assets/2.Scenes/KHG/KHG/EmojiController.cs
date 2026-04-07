@@ -31,6 +31,7 @@ public class EmojiController : Singleton<EmojiController>
 
     private EmojiType _currentPersistentType = EmojiType.None;
     private bool _isShowingTempEmoji = false;
+    public bool isEditMode = false;
 
     private void Awake()
     {
@@ -130,6 +131,8 @@ public class EmojiController : Singleton<EmojiController>
 
     private void ShowEmoji(Sprite sprite)
     {
+        if (isEditMode) return;
+
         _rootUI.gameObject.SetActive(true);
         _iconImage.sprite = sprite;
 

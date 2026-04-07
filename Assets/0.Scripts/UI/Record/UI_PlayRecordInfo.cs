@@ -24,6 +24,9 @@ public class UI_PlayRecordInfo : MonoBehaviour
     [Header("BGM 재생 리스트 클래스")]
     [SerializeField] private UI_BGMList bgmList;
 
+    [Header("상세 앨범 UI")]
+    [SerializeField] private UI_AlbumDetail albumDetail;
+
     private RecordDataSO record;
 
     private Coroutine playRecordCoroutine;
@@ -130,6 +133,11 @@ public class UI_PlayRecordInfo : MonoBehaviour
         playModeImg.sprite = SoundManager.Instance.BgmSource.isPlaying ? pauseSprite : playSprite;
     }
     #endregion
+
+    public void OnClick_ActiveAlbumDetail()
+    {
+        albumDetail.SetRecordData(record);
+    }
 
     private void OnEnable()
     {

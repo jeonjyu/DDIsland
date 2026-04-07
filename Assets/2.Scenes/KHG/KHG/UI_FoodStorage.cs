@@ -69,9 +69,13 @@ public class UI_FoodStorage : MonoBehaviour
         if (FoodStorageManager.Instance != null)
         {
             FoodStorageManager.Instance.OnSlotChanged += UpdateFoodSlot; // Storage 데이터가 바뀔 때마다 UI를 갱신하기 위해 이벤트 구독
-            RefreshAll();
-            RefreshFoodUpgradeUI();
         }
+        if (_sortDropdown != null)
+        {
+            _currentSort = (FoodSortMode)_sortDropdown.value;
+        }
+        RefreshAll();
+        RefreshFoodUpgradeUI();
     }
 
     private void OnDisable()
@@ -343,8 +347,8 @@ public class UI_FoodStorage : MonoBehaviour
 
         if (_upgradeButtonLabel != null)     //최대치면 버튼 글자 변경
         {
-            string maxText = LocalizationManager.Instance.GetString("Interior_Box_Upgrade_Expand_Text ");
-            string upgradeText = LocalizationManager.Instance.GetString("Interior_Box_MaxExpansion_Text");
+            string maxText = LocalizationManager.Instance.GetString("InteriorBoxMaxExpansion ");
+            string upgradeText = LocalizationManager.Instance.GetString("InteriorBoxUpgradeExpand");
             _upgradeButtonLabel.text = isMax ? maxText : upgradeText;
         }
     }

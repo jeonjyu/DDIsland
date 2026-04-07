@@ -10,8 +10,8 @@ public class MailSender : EditorWindow
     private string _content_kr = "";
     private string _title_en = "";
     private string _content_en = "";
-    private int _rewardItemID;
-    private int _rewardCount;
+    private string _rewardItemIDs = "";
+    private string _rewardCounts = "";
     private string _expireDate = "";
     private int _mailID;
 
@@ -60,8 +60,8 @@ public class MailSender : EditorWindow
         GUILayout.Label("영어 우편", EditorStyles.boldLabel);
         _title_en = EditorGUILayout.TextField("제목 (영)", _title_en);
         _content_en = EditorGUILayout.TextArea(_content_en, GUILayout.Height(60));
-        _rewardItemID = EditorGUILayout.IntField("보상 아이템 ID", _rewardItemID);
-        _rewardCount = EditorGUILayout.IntField("보상 수량", _rewardCount);
+        _rewardItemIDs = EditorGUILayout.TextField("보상 아이템 ID", _rewardItemIDs);
+        _rewardCounts = EditorGUILayout.TextField("보상 수량", _rewardCounts);
         _expireDate = EditorGUILayout.TextField("만료일", _expireDate);
 
         EditorGUILayout.Space();
@@ -135,8 +135,8 @@ public class MailSender : EditorWindow
             _title_en = _title_en,
             _content_kr = _content_kr,
             _content_en = _content_en,
-            _rewardItemID = _rewardItemID,
-            _rewardCount = _rewardCount,
+            _rewardItemID = _rewardItemIDs,
+            _rewardCount = _rewardCounts,
             _expireDate = _expireDate,
             adminKey = _adminKey
         };
@@ -167,8 +167,8 @@ public class MailSender : EditorWindow
         public string _title_en;  
         public string _content_kr; 
         public string _content_en; 
-        public int _rewardItemID;
-        public int _rewardCount;
+        public string _rewardItemID;
+        public string _rewardCount;
         public string _expireDate;
         public string adminKey;
     }

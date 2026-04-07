@@ -9,6 +9,9 @@ public class EnvironmentView : MonoBehaviour
     private ParticleSystem _currentParticle;
     private Color targetColor;
 
+    [Header("UI 이미지 연결")]
+    [SerializeField] private Image _seasonImageUI;
+    [SerializeField] private Image _dailyImageUI;
     [SerializeField] List<Sprite> _seasonSprite;
     [SerializeField] List<Sprite> _dayliySprite;
 
@@ -45,5 +48,23 @@ public class EnvironmentView : MonoBehaviour
             _currentParticle = null;
         }
     }
-   
+
+    public void ChangeSeasonImage(Season season)
+    {
+        int index = (int)season;
+        if (index >= 0 && index < _seasonSprite.Count)
+        {
+            _seasonImageUI.sprite = _seasonSprite[index];
+        }
+    }
+
+    public void ChangeDailyImage(DayilyCycle daily)
+    {
+        int index = (int)daily;
+        if (index >= 0 && index < _dayliySprite.Count)
+        {
+            _dailyImageUI.sprite = _dayliySprite[index];
+        }
+    }
+
 }

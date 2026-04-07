@@ -16,7 +16,7 @@ public class RecordServerData
     // 즐겨찾기 음반 목록
     public HashSet<int> BookmarkList = new HashSet<int>();
 
-    // todo: 플레이리스트 목록 정보 추가
+    public List<PlaylistData> Playlists = new List<PlaylistData>();
 
     public CurrentRecordData CurrentRecordData = new CurrentRecordData();
 }
@@ -31,10 +31,16 @@ public class CurrentRecordData
     public int RecordId;
 
     // 마지막으로 재생했던 현재 재생 목록
-    public List<int> CurrentPlayList = new List<int>();
+    public int CurrentPlaylistId;
 
     // todo: 플레이 모드 정보 추가
+}
 
-    // 마지막으로 재생했던 음반의 재생 시점
-    public float PlaybackPoint;
+[Serializable]
+public class PlaylistData
+{
+    public string Name;
+    public int Id;
+    public string CreateDate;
+    public List<int> RecordLists = new List<int>();
 }

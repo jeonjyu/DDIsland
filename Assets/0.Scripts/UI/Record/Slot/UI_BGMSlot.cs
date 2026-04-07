@@ -20,6 +20,8 @@ public class UI_BGMSlot : UI_RecordSlot
     [Header("플레이리스트 추가 버튼")]
     [SerializeField] private Button playListAddBtn;
 
+    [SerializeField] private AudioClip sfxClip;
+
     public bool IsFavorite { get; private set; }    // 즐겨찾기 여부
 
     private UI_BGMList bgmList;
@@ -80,36 +82,35 @@ public class UI_BGMSlot : UI_RecordSlot
             IsLocked = false;
         else
             IsLocked = true;
-
-        // todo: 임시로 만든 코드, 58번 줄 까지
-        if (!IsLocked && !DataManager.Instance.RecordDatabase.DefaultRecords.Contains(Record.RecordID))
-        {
-            DataManager.Instance.RecordDatabase.DefaultRecords.Add(Record.RecordID);
-        }
     }
 
     public void OnValueChanged_FavoriteToggle()
     {
         if (isInitialize) return;
 
-        IsFavorite = favoriteToggle.isOn;
+        SoundManager.Instance.PlaySFX(sfxClip);
 
-        HashSet<int> bookmarks = DataManager.Instance.RecordDatabase.BookmarkRecords;
+        IsFavorite = favoriteToggle.isOn;
 
         if (favoriteToggle.isOn)
         {
-            if (!bookmarks.Contains(Record.RecordID))
+            if (!DataManager.Instance.RecordDatabase.BookmarkRecords.Contains(Record.RecordID))
             {
-                bookmarks.Add(Record.RecordID);
+                DataManager.Instance.RecordDatabase.BookmarkRecords.Add(Record.RecordID);
             }
         }
         else
         {
-            if (bookmarks.Contains(Record.RecordID))
+            if (DataManager.Instance.RecordDatabase.BookmarkRecords.Contains(Record.RecordID))
             {
-                bookmarks.Remove(Record.RecordID);
+                DataManager.Instance.RecordDatabase.BookmarkRecords.Remove(Record.RecordID);
             }
         }
+    }
+
+    public void OnClick_AddPlaylist()
+    {
+        bgmList.AddPlaylist(Record);
     }
 
     public override void OnClick_Slot()

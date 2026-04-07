@@ -18,7 +18,13 @@ public class CookState : IState
         _player.transform.SetPositionAndRotation(_player.KitchenPoint.position, _player.KitchenPoint.rotation);
 
         Debug.Log("요리진입");
-        _player.TryCooking();
+        bool started = _player.TryCooking();
+        if (!started)
+        {
+            Debug.LogWarning("요리 시작 실패 => Idle 복귀");
+            _player.SetState(new IdleState(_player));
+            return;
+        }
 
     }
 

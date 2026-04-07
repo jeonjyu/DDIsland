@@ -105,12 +105,6 @@ public class BackGroundFish : MonoBehaviour
         float sqrMag = _velocity.sqrMagnitude;
         if (sqrMag > 0.01f)
         {
-            float xDirection = (_velocity.x < 0) ? -_fishScale : _fishScale;
-            if (!Mathf.Approximately(_rectTransform.localScale.x, xDirection))
-            {
-                _rectTransform.localScale = new Vector3(xDirection, _fishScale, 1f);
-            }
-
             float targetAngle = Mathf.Atan2(_velocity.y, _velocity.x) * Mathf.Rad2Deg;
             float xRotation = (_velocity.x < 0) ? 180f : 0f;
             Quaternion targetRot = Quaternion.Euler(0, 0, targetAngle);
@@ -163,7 +157,9 @@ public class BackGroundFish : MonoBehaviour
             {
                 _animator.runtimeAnimatorController = data.FishAnimPath_AnimatorOverrideController;
                 _animator.enabled = true;
-                _animator.Rebind(); 
+                _animator.Rebind();
+
+                _animator.Update(0f);
             }
             else
             {
