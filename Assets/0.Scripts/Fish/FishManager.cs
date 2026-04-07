@@ -32,6 +32,7 @@ public enum SpecialType
 public class FishManager : Singleton<FishManager>
 {
     [SerializeField] PlayerController _playerController;
+    [SerializeField] AquariumMgr _aquariumMgr;
     Dictionary<int, FishDataSO> _fishById;
     List<FishDataSO> _allFish;
     // 추가한 부분입니다
@@ -163,6 +164,10 @@ public class FishManager : Singleton<FishManager>
         ctx.IsMorning = _environment.CurrentDay == DayilyCycle.Day;
         ctx.IsAfternoon = _environment.CurrentDay == DayilyCycle.Sunset;
         ctx.IsNight = _environment.CurrentDay == DayilyCycle.Night;
+
+        ctx.IsLake = _aquariumMgr.CurrentType == FishType.Lake;
+        ctx.IsSea = _aquariumMgr.CurrentType == FishType.Sea;
+
         //날씨, 골드도 필요함 일단테스트
         //ctx.GoldAmount = GameManager.Instance.PlayerGold;
         ctx.GoldAmount = 50000;

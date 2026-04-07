@@ -6843,7 +6843,10 @@ PrefabInstance:
     - {fileID: 9055652703080624811, guid: 5e542d22207e8da49871dab373ff5b3b, type: 3}
     - {fileID: 7757017205160291849, guid: 5e542d22207e8da49871dab373ff5b3b, type: 3}
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7172455962822225158, guid: 5e542d22207e8da49871dab373ff5b3b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1164267763}
   m_SourcePrefab: {fileID: 100100000, guid: 5e542d22207e8da49871dab373ff5b3b, type: 3}
 --- !u!224 &1164267760 stripped
 RectTransform:
@@ -6855,6 +6858,24 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 2402409754901868828, guid: 5e542d22207e8da49871dab373ff5b3b, type: 3}
   m_PrefabInstance: {fileID: 1164267759}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1164267762 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7172455962822225158, guid: 5e542d22207e8da49871dab373ff5b3b, type: 3}
+  m_PrefabInstance: {fileID: 1164267759}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1164267763
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1164267762}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b5621f26af96ca4785f8685c0dae83e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HelpButton
+  myLocation: 4
 --- !u!1001 &1194214673
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7113,6 +7134,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FishManager
   _playerController: {fileID: 673764088}
+  _aquariumMgr: {fileID: 0}
 --- !u!4 &1249782052
 Transform:
   m_ObjectHideFlags: 0

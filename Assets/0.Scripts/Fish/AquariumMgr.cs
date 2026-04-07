@@ -67,6 +67,7 @@ public class AquariumMgr : MonoBehaviour
     private Vector2 _lastScreenSize;
     public float ScreenLimit { get; private set; }
     public float HighLimit => (_spawnArea.rect.height / 2f);
+    public FishType CurrentType =>  _currentType;
 
     public RectTransform SpawnArea => _spawnArea;
 
