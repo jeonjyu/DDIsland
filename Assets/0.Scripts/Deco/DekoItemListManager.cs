@@ -35,6 +35,8 @@ public class DecoItemListManager : MonoBehaviour
 
     public DecoMode currentMode = DecoMode.Lake; // 현재 편집 모드, 디폴트는 호수 
 
+    static readonly Color SlotDefaultColor = new Color(0.992f, 0.969f, 0.906f, 0.878f); // 원래 색상
+    static readonly Color SlotHighlightColor = new Color(0.3f, 0.8f, 0.4f, 0.9f); // 초록 하이라이트 
 
     // 내부 변수
     List<LakeInvenSlot> invenData; // invenData는 DecoInventoryManager의 리스트를 참조
@@ -189,6 +191,10 @@ public class DecoItemListManager : MonoBehaviour
             // 버튼 리스너 제거 (람다 클로저 중복 방지)
             if (slotUIs[i].itemButton != null)
                 slotUIs[i].itemButton.onClick.RemoveAllListeners();
+
+            // 하이라이트 색상 리셋
+            ResetSlotColor(slotUIs[i]);
+
             // 풀에 반납
             slotPool.Release(slotUIs[i]);
         }
@@ -239,6 +245,9 @@ public class DecoItemListManager : MonoBehaviour
     void SetupSlotUI(DecoSlotUI slotUI, LakeInvenSlot slotData)
     {
         if (slotUI == null) return;
+
+        ResetSlotColor(slotUI);
+
         // 수량 텍스트
         if (slotUI.quantityText != null)
             slotUI.quantityText.text = "x" + slotData.quantity;
@@ -431,10 +440,15 @@ public class DecoItemListManager : MonoBehaviour
         Image bg = slotUIs[index].GetComponent<Image>();
         if (bg == null) return;
 
-        if (highlighted)
-            bg.color = new Color(0.3f, 0.8f, 0.4f, 0.9f); // 초록 하이라이트
-        else
-            bg.color = new Color(0.992f, 0.969f, 0.906f, 0.878f); // 원래 색상으로 
+        bg.color = highlighted ? SlotHighlightColor : SlotDefaultColor;
+    }
+
+    // 슬롯 배경색 기본값 복원하는 헬퍼
+    void ResetSlotColor(DecoSlotUI slotUI)
+    {
+        if (slotUI == null) return;
+        Image bg = slotUI.GetComponent<Image>();
+        if (bg != null) bg.color = SlotDefaultColor;
     }
 
     //  invenData 인덱스로 슬롯(slotObjects) 위치 찾기
@@ -578,6 +592,9 @@ public class DecoItemListManager : MonoBehaviour
 
         if (slotUIs[slotIdx].itemButton != null)
             slotUIs[slotIdx].itemButton.onClick.RemoveAllListeners();
+
+        ResetSlotColor(slotUIs[slotIdx]);
+
         slotPool.Release(slotUIs[slotIdx]);
 
         // 리스트 동기화 
