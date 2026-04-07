@@ -20,6 +20,8 @@ public class UI_BGMSlot : UI_RecordSlot
     [Header("플레이리스트 추가 버튼")]
     [SerializeField] private Button playListAddBtn;
 
+    [SerializeField] private AudioClip sfxClip;
+
     public bool IsFavorite { get; private set; }    // 즐겨찾기 여부
 
     private UI_BGMList bgmList;
@@ -85,6 +87,8 @@ public class UI_BGMSlot : UI_RecordSlot
     public void OnValueChanged_FavoriteToggle()
     {
         if (isInitialize) return;
+
+        SoundManager.Instance.PlaySFX(sfxClip);
 
         IsFavorite = favoriteToggle.isOn;
 
