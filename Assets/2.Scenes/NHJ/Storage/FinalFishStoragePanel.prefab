@@ -704,6 +704,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6752150525406537910}
+  - component: {fileID: 6965282267721411721}
   m_Layer: 0
   m_Name: Content
   m_TagString: Untagged
@@ -729,8 +730,34 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 175.8617, y: 172.0449}
+  m_SizeDelta: {x: 175.8617, y: 237.43}
   m_Pivot: {x: 0.5, y: 1}
+--- !u!114 &6965282267721411721
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2756819643048127270}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59f8146938fff824cb5fd77236b75775, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.VerticalLayoutGroup
+  m_Padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 2
+    m_Bottom: 0
+  m_ChildAlignment: 1
+  m_Spacing: 10
+  m_ChildForceExpandWidth: 1
+  m_ChildForceExpandHeight: 0
+  m_ChildControlWidth: 0
+  m_ChildControlHeight: 0
+  m_ChildScaleWidth: 0
+  m_ChildScaleHeight: 0
+  m_ReverseArrangement: 0
 --- !u!1 &3062362325858695300
 GameObject:
   m_ObjectHideFlags: 0
@@ -1161,9 +1188,9 @@ RectTransform:
   - {fileID: 6048223751836438328}
   m_Father: {fileID: 6752150525406537910}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 1}
-  m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -17.63}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 176, y: 50}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &2857572607009161602
@@ -1413,8 +1440,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -4.399994, y: 15.2170105}
-  m_SizeDelta: {x: 4.4, y: 15.217}
+  m_AnchoredPosition: {x: -4.399994, y: 0.000030517578}
+  m_SizeDelta: {x: 4.4, y: -23.506}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &4628144820815780765
 MonoBehaviour:
@@ -2671,7 +2698,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8654416408300219844, guid: 51de7a49bd9aa8f43bd99ed236b859f0, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8654416408300219844, guid: 51de7a49bd9aa8f43bd99ed236b859f0, type: 3}
       propertyPath: m_AnchorMin.x
@@ -2679,15 +2706,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8654416408300219844, guid: 51de7a49bd9aa8f43bd99ed236b859f0, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8654416408300219844, guid: 51de7a49bd9aa8f43bd99ed236b859f0, type: 3}
       propertyPath: m_SizeDelta.x
-      value: -10
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8654416408300219844, guid: 51de7a49bd9aa8f43bd99ed236b859f0, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 50
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8654416408300219844, guid: 51de7a49bd9aa8f43bd99ed236b859f0, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2723,7 +2750,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8654416408300219844, guid: 51de7a49bd9aa8f43bd99ed236b859f0, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 3.8
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8654416408300219844, guid: 51de7a49bd9aa8f43bd99ed236b859f0, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -3833,7 +3860,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6898190215989891961, guid: 4075f3bb4bc0ed24f8c92875260daf26, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7246894303021912550, guid: 4075f3bb4bc0ed24f8c92875260daf26, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
