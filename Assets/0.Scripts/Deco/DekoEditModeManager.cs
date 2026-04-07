@@ -65,7 +65,7 @@ public class DecoEditModeManager : MonoBehaviour
     public Transform weatherParticleParent;
     
     [Header("편집모드 진입시 비활성화할 UI들")]
-    public GameObject windowEdgeGroup;   // 창 테두리 
+    //public GameObject windowEdgeGroup;   // 창 테두리 
     public GameObject mainMenuBtnGroup;  // 메인 메뉴 
     public GameObject topMoneyBarUI;          // 재화 UI
     public GameObject waterLevelButton;  // 호수 올리는 버튼 
@@ -305,8 +305,8 @@ public class DecoEditModeManager : MonoBehaviour
         if (objectActionPanel != null)
             objectActionPanel.SetActive(false);
 
-        if (itemListManager != null && itemListManager.IsFixFilterMode)
-            itemListManager.ExitFilterMode();
+        //if (itemListManager != null && itemListManager.IsFixFilterMode)
+        //    itemListManager.ExitFilterMode();
     }
 
     // 섬전용 전체회수 
@@ -448,7 +448,15 @@ public class DecoEditModeManager : MonoBehaviour
 
         if (itemListManager != null)
             itemListManager.SetupFilteredInventory(group, target);
-        if (dropdownBlocker != null)
+
+        //if (dropdownBlocker != null) dropdownBlocker.SetActive(true);
+        StartCoroutine(EnableBlockerNextFrame());
+    }
+    System.Collections.IEnumerator EnableBlockerNextFrame()
+    {
+        yield return null; 
+        yield return new WaitForEndOfFrame();
+        if (dropdownBlocker != null && itemListManager != null && itemListManager.IsFixFilterMode)
             dropdownBlocker.SetActive(true);
     }
 
@@ -1139,8 +1147,8 @@ public class DecoEditModeManager : MonoBehaviour
     
     void SetMainUIActive(bool active)
     {
-        if (windowEdgeGroup != null)
-            windowEdgeGroup.SetActive(active);
+        //if (windowEdgeGroup != null)
+        //    windowEdgeGroup.SetActive(active);
         if (mainMenuBtnGroup != null)
             mainMenuBtnGroup.SetActive(active);
         if (topMoneyBarUI != null)
