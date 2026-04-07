@@ -37,7 +37,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: -50, y: -50}
-  m_SizeDelta: {x: 50, y: 100}
+  m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &801290567047149497
 MonoBehaviour:
@@ -55,7 +55,7 @@ MonoBehaviour:
   ui_IslandWindow: {fileID: 1816787634115528906}
   direction: 3
   cursorTexture: {fileID: 2800000, guid: 8388ddcfc49e7654ea86f59c534f6525, type: 3}
-  cursorHotspot: {x: 0, y: 0}
+  cursorHotspot: {x: 250, y: 250}
   edgeCollider: {fileID: 6578430529356024770}
 --- !u!222 &3214801007733728881
 CanvasRenderer:
@@ -121,7 +121,6 @@ GameObject:
   - component: {fileID: 4831553860279114299}
   - component: {fileID: 4659681163480923625}
   - component: {fileID: 3024691657070428495}
-  - component: {fileID: 4385322637102170823}
   m_Layer: 7
   m_Name: Collider_Right
   m_TagString: Untagged
@@ -200,18 +199,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &4385322637102170823
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 374102241014850876}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9d30abd3707e32d4f95160aec9b2d5ca, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UI_HoverOnly
 --- !u!1 &430186880253428977
 GameObject:
   m_ObjectHideFlags: 0
@@ -677,7 +664,7 @@ MonoBehaviour:
   ui_IslandWindow: {fileID: 1816787634115528906}
   direction: 4
   cursorTexture: {fileID: 2800000, guid: 6cb1931213c3f474bb48ba8c72538532, type: 3}
-  cursorHotspot: {x: 0, y: 0}
+  cursorHotspot: {x: 250, y: 250}
   edgeCollider: {fileID: 6578430529356024770}
 --- !u!222 &820976605864378543
 CanvasRenderer:
@@ -798,7 +785,6 @@ GameObject:
   - component: {fileID: 8782163238299753262}
   - component: {fileID: 4907246690958253368}
   - component: {fileID: 7119350803045884937}
-  - component: {fileID: 8359039256845155170}
   m_Layer: 7
   m_Name: Collider_Top
   m_TagString: Untagged
@@ -877,18 +863,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &8359039256845155170
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3723304761887702153}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9d30abd3707e32d4f95160aec9b2d5ca, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UI_HoverOnly
 --- !u!1 &3800150960678985288
 GameObject:
   m_ObjectHideFlags: 0
@@ -1036,7 +1010,7 @@ MonoBehaviour:
   ui_IslandWindow: {fileID: 1816787634115528906}
   direction: 1
   cursorTexture: {fileID: 2800000, guid: 6cb1931213c3f474bb48ba8c72538532, type: 3}
-  cursorHotspot: {x: 0, y: 0}
+  cursorHotspot: {x: 250, y: 250}
   edgeCollider: {fileID: 6578430529356024770}
 --- !u!222 &1495454342202131669
 CanvasRenderer:
@@ -1177,7 +1151,6 @@ GameObject:
   - component: {fileID: 3953964960958847254}
   - component: {fileID: 8604568558017668873}
   - component: {fileID: 8557367459009713210}
-  - component: {fileID: 6339691304542888504}
   m_Layer: 7
   m_Name: Collider_Bottom
   m_TagString: Untagged
@@ -1256,18 +1229,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &6339691304542888504
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5379991657320053592}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9d30abd3707e32d4f95160aec9b2d5ca, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UI_HoverOnly
 --- !u!1 &5556517151787354989
 GameObject:
   m_ObjectHideFlags: 0
@@ -1280,7 +1241,6 @@ GameObject:
   - component: {fileID: 6745384591029792433}
   - component: {fileID: 8232336677921444545}
   - component: {fileID: 4617199637832512718}
-  - component: {fileID: 4539254108529589970}
   m_Layer: 7
   m_Name: Collider_Left
   m_TagString: Untagged
@@ -1359,18 +1319,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &4539254108529589970
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5556517151787354989}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9d30abd3707e32d4f95160aec9b2d5ca, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UI_HoverOnly
 --- !u!1 &5634660119736094777
 GameObject:
   m_ObjectHideFlags: 0
@@ -1408,7 +1356,7 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 50, y: 50}
-  m_SizeDelta: {x: 100, y: 50}
+  m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &2502462472227077098
 MonoBehaviour:
@@ -1426,7 +1374,7 @@ MonoBehaviour:
   ui_IslandWindow: {fileID: 1816787634115528906}
   direction: 2
   cursorTexture: {fileID: 2800000, guid: 8388ddcfc49e7654ea86f59c534f6525, type: 3}
-  cursorHotspot: {x: 0, y: 0}
+  cursorHotspot: {x: 250, y: 250}
   edgeCollider: {fileID: 6578430529356024770}
 --- !u!222 &2768064894699624346
 CanvasRenderer:
