@@ -84,4 +84,9 @@ public class UI_PlaylistSlot : MonoBehaviour
     {
         ui_Playlist.OnClick_EditPlaylist(Playlist);
     }
+
+    public void PlayRecordSfx(AudioClip clip)
+    {
+        SoundManager.Instance.PlaySFX(clip);
+    }
 }

@@ -33,12 +33,16 @@ public class UI_AlbumDetail : MonoBehaviour
     [Header("BGM 재생 리스트 클래스")]
     [SerializeField] private UI_BGMList bgmList;
 
+    [SerializeField] private AudioClip sfxClip;
+
     private RecordDataSO record;
 
     private Coroutine playRecordCoroutine;
     private WaitForSeconds playRecordWs = new WaitForSeconds(0.1f);
 
     private bool isDragging;
+
+    private bool isInitialize;
 
     public bool IsFavorite { get; private set; }    // 즐겨찾기 여부
 
@@ -56,6 +60,8 @@ public class UI_AlbumDetail : MonoBehaviour
     {
         if (record == null) return;
 
+        isInitialize = true;
+
         this.record = record;
 
         recordImage.sprite = record.RecordImgPath_Sprite;
@@ -68,6 +74,8 @@ public class UI_AlbumDetail : MonoBehaviour
         favoriteToggle.isOn = DataManager.Instance.RecordDatabase.BookmarkRecords.Contains(record.RecordID);
 
         CheckPlayTime();
+
+        isInitialize = false;
     }
 
     private void LocalizeRecordInfo()
@@ -115,22 +123,23 @@ public class UI_AlbumDetail : MonoBehaviour
 
     public void OnValueChanged_FavoriteToggle()
     {
-        IsFavorite = favoriteToggle.isOn;
+        if (!isInitialize)
+            SoundManager.Instance.PlaySFX(sfxClip);
 
-        HashSet<int> bookmarks = DataManager.Instance.RecordDatabase.BookmarkRecords;
+        IsFavorite = favoriteToggle.isOn;
 
         if (favoriteToggle.isOn)
         {
-            if (!bookmarks.Contains(record.RecordID))
+            if (!DataManager.Instance.RecordDatabase.BookmarkRecords.Contains(record.RecordID))
             {
-                bookmarks.Add(record.RecordID);
+                DataManager.Instance.RecordDatabase.BookmarkRecords.Add(record.RecordID);
             }
         }
         else
         {
-            if (bookmarks.Contains(record.RecordID))
+            if (DataManager.Instance.RecordDatabase.BookmarkRecords.Contains(record.RecordID))
             {
-                bookmarks.Remove(record.RecordID);
+                DataManager.Instance.RecordDatabase.BookmarkRecords.Remove(record.RecordID);
             }
         }
 
