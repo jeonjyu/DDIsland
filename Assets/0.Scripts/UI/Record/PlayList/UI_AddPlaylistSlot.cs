@@ -81,4 +81,9 @@ public class UI_AddPlaylistSlot : MonoBehaviour
 
         ui_Playlist.slotList[ui_Playlist.slotList.FindIndex(x => x.Playlist == playlist)].PlaylistSlotInit(playlist, ui_Playlist);
     }
+
+    public void PlayRecordSfx(AudioClip clip)
+    {
+        SoundManager.Instance.PlaySFX(clip);
+    }
 }

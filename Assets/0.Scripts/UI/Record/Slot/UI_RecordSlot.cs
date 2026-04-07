@@ -30,7 +30,12 @@ public abstract class UI_RecordSlot : MonoBehaviour
 
     public abstract void OnClick_Slot();        // 음반 슬롯 클릭 메서드
 
-    
+    public void PlayRecordSfx(AudioClip clip)
+    {
+        SoundManager.Instance.PlaySFX(clip);
+    }
+
+
     protected virtual void OnEnable()
     {
         PlayerPrefsDataManager.OnLanguageChanged += InitTextData;

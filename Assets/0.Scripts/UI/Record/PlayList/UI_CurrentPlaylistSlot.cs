@@ -34,4 +34,9 @@ public class UI_CurrentPlaylistSlot : MonoBehaviour
     {
         IsDeleteCheck = toggle.isOn;
     }
+
+    public void PlayRecordSfx(AudioClip clip)
+    {
+        SoundManager.Instance.PlaySFX(clip);
+    }
 }

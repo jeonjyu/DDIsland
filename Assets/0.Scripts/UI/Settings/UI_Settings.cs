@@ -215,6 +215,13 @@ public class UI_Settings : MonoBehaviour
         isInitializing = false;
     }
 
+    public void PlayRecordSfx(AudioClip clip)
+    {
+        if (isInitializing) return;
+
+        SoundManager.Instance.PlaySFX(clip);
+    }
+
     private void OnDestroy()
     {
         PlayerPrefsDataManager.OnPlayDefaultRecord -= OnDefaultRecordChanged;

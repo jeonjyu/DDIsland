@@ -55,11 +55,16 @@ public class UI_MailPopup : MonoBehaviour
                     $"{(int)timeLeft.TotalHours}시간 남음" :
                     $"{(int)timeLeft.TotalHours}h left";
             }
+           
             else
             {
                 _expireDateText.text = isKorean ? "만료됨" : "Expired";
             }
 
+        }
+        else
+        {
+            _expireDateText.text = isKorean ? "무기한" : "No Expiration";
         }
 
         MailManager.Instance.MarkAsRead(_currentData._mailID);

@@ -49,4 +49,9 @@ public class UI_MainMenu : MonoBehaviour
         rectTransform.anchoredPosition = fromPos;
         rectTransform.DOAnchorPos(toPos, moveDuration).SetEase(Ease.OutQuart);
     }
+
+    public void PlayRecordSfx(AudioClip clip)
+    {
+        SoundManager.Instance.PlaySFX(clip);
+    }
 }

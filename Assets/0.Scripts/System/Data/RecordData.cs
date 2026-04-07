@@ -104,6 +104,7 @@ public class RecordData : MonoBehaviour
         data._unlockRecords = recordServerData.UnlockRecords.ToList();
         data.Playlists = recordServerData.Playlists;
         data.CurrentPlaylistId = CurrentPlaylistId;
+        data.Bookmarks = BookmarkRecords.ToList();
     }
 
     private void SyncRecordLoadData()
@@ -116,6 +117,8 @@ public class RecordData : MonoBehaviour
 
         recordServerData.Playlists = data.Playlists;
         CurrentPlaylistId = data.CurrentPlaylistId;
+
+        BookmarkRecords = new HashSet<int>(data.Bookmarks ?? new List<int>());
 
         //추가한 부분
         OnRecordsUpdated?.Invoke();
