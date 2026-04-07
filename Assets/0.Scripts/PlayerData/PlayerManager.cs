@@ -39,13 +39,13 @@ public class PlayerManager : Singleton<PlayerManager>
     public Dictionary<string, int> PlayerEquip = new Dictionary<string, int>();
 
     public Action<Enum, int> OnEquipChanged; // 장착중인 아이템 변경시 알림 
-#endregion 
+    #endregion
 
     protected override void Awake()
     {
         base.Awake();
-        if(_SocketCostumeHat == null) _SocketCostumeHat = _player.transform.Find("Socket_CoustumeHat");
-        if(_SocketCostumeTie == null) _SocketCostumeTie = _player.transform.Find("Socket_CoustumeTie");
+        if (_SocketCostumeHat == null) _SocketCostumeHat = _player.transform.Find("Socket_CoustumeHat");
+        if (_SocketCostumeTie == null) _SocketCostumeTie = _player.transform.Find("Socket_CoustumeTie");
 
         playerEquip.Clear();
         playerEquip.Add(CostumeType.Head.ToString(), 0);
@@ -58,12 +58,17 @@ public class PlayerManager : Singleton<PlayerManager>
     // 현재 활성화상태인 코스튬 아이템의 아이디를 받아옴
     void Start()
     {
-        // todo : 플레이어 정보에 저장된 코스튬 아이디를 받아와 저장하도록 수정
-        //playerEquip[CostumeType.Head.ToString()] = 0;
-        //playerEquip[CostumeType.Body.ToString()] = 0;
-        //playerEquip[FishingItemType.Pole.ToString()] = 0;
-        //playerEquip[FishingItemType.Bait.ToString()] = 0;
-        //playerEquip[FishingItemType.Bobber.ToString()] = 0;
+        if (DataManager.Instance != null && DataManager.Instance.Hub != null)
+        {
+            if (DataManager.Instance.Hub.IsLoaded)
+            {
+                SyncPlayerEquipDataLoad();
+            }
+            else
+            {
+                DataManager.Instance.Hub.OnDataLoaded += SyncPlayerEquipDataLoad;
+            }
+        }
     }
 
     // 코스튬 ID 변경
@@ -92,5 +97,16 @@ public class PlayerManager : Singleton<PlayerManager>
     public bool CompareID(IStoreItem item)
     {
         return playerEquip[item.Filter.ToString()] == item.ObjectId;
+    }
+
+    private void SyncPlayerEquipDataLoad()
+    {
+        var charBox = DataManager.Instance.Hub._allUserData.Character;
+
+        playerEquip[CostumeType.Head.ToString()] = charBox._equippedHatId;
+        playerEquip[CostumeType.Body.ToString()] = charBox._equippedBodyId;
+        playerEquip[FishingItemType.Pole.ToString()] = charBox._equippedFishingRodId;
+        playerEquip[FishingItemType.Bait.ToString()] = charBox._equippedBaitId;
+        playerEquip[FishingItemType.Bobber.ToString()] = charBox._equippedBobberId;
     }
 }

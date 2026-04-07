@@ -13,6 +13,8 @@ public class EquipButton : MonoBehaviour
     public Button EquipBtn => _equipButton;
     public TMP_Text EquipText => _text;
 
+    [SerializeField] UI_ReplacingButtonText uiReplacing;
+
     public bool IsEquipped => _isEquipped;
 
     protected virtual void Awake()
@@ -52,14 +54,15 @@ public class EquipButton : MonoBehaviour
 
         if (isGained)
         {
-            _text.text = PlayerManager.Instance.CompareID(item) ? "해제": "장착" ;
+            bool isEquipped = PlayerManager.Instance.CompareID(item);
+            uiReplacing.SetTextRuntime(isEquipped);
             _equipButton.interactable = true;
             //Debug.Log("isGained 변수 : " + isGained + " 현재 거래 모델 보유 여부 : " + StoreManager.Instance.TradeModel.IsGained + " 텍스트 : " + _text.text);
         }
         else
         {
             _equipButton.interactable = false;
-            _text.text = "장착";
+            uiReplacing.SetTextRuntime(isGained);
             //Debug.Log("isGained 변수 : " + isGained + " 현재 거래 모델 보유 여부 : " + StoreManager.Instance.TradeModel.IsGained + " 텍스트 : " + _text.text);
         }
     }

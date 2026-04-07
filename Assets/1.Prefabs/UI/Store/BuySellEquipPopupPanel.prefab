@@ -164,6 +164,10 @@ PrefabInstance:
       propertyPath: m_SizeDelta.x
       value: 600
       objectReference: {fileID: 0}
+    - target: {fileID: 7971252504226082480, guid: ee3cb6636df60164b854f0df52804f8f, type: 3}
+      propertyPath: uiReplacing
+      value: 
+      objectReference: {fileID: 4669368824323491205}
     - target: {fileID: 8025033785948553028, guid: ee3cb6636df60164b854f0df52804f8f, type: 3}
       propertyPath: textId
       value: Shop_Button_Sell_Text
@@ -222,14 +226,14 @@ PrefabInstance:
       addedObject: {fileID: 5456284367211890942}
     - targetCorrespondingSourceObject: {fileID: 1230736883177274444, guid: ee3cb6636df60164b854f0df52804f8f, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 4093460825440814718}
+      addedObject: {fileID: 4669368824323491205}
   m_SourcePrefab: {fileID: 100100000, guid: ee3cb6636df60164b854f0df52804f8f, type: 3}
 --- !u!1 &4710402965703232305 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1230736883177274444, guid: ee3cb6636df60164b854f0df52804f8f, type: 3}
   m_PrefabInstance: {fileID: 5785650143842842493}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &4093460825440814718
+--- !u!114 &4669368824323491205
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -238,10 +242,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 4710402965703232305}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c2134d9cf1904084596ca987dae836c4, type: 3}
+  m_Script: {fileID: 11500000, guid: 5759458024fe97e4ca9a2b09045aed86, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UI_BaseLocalizedText
+  m_EditorClassIdentifier: Assembly-CSharp::UI_ReplacingButtonText
   textId: Shop_Button_Equip_Text
+  replaceTextId: Shop_Button_Unequip_Text
 --- !u!114 &4892602612142729058 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1417725693023408159, guid: ee3cb6636df60164b854f0df52804f8f, type: 3}
