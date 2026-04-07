@@ -347,8 +347,8 @@ public class UI_FoodStorage : MonoBehaviour
 
         if (_upgradeButtonLabel != null)     //최대치면 버튼 글자 변경
         {
-            string maxText = LocalizationManager.Instance.GetString("Interior_Box_Upgrade_Expand_Text ");
-            string upgradeText = LocalizationManager.Instance.GetString("Interior_Box_MaxExpansion_Text");
+            string maxText = LocalizationManager.Instance.GetString("InteriorBoxMaxExpansion ");
+            string upgradeText = LocalizationManager.Instance.GetString("InteriorBoxUpgradeExpand");
             _upgradeButtonLabel.text = isMax ? maxText : upgradeText;
         }
     }
