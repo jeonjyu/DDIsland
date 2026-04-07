@@ -5112,11 +5112,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ItemManager
   itemSlotPool: {fileID: 1007267945}
   itemSlot: {fileID: 0}
-  InteriorDatabase: {fileID: 0}
-  LakeDatabase: {fileID: 0}
-  CostumeDatabase: {fileID: 0}
-  FishingDatabase: {fileID: 0}
-  FoodDatabase: {fileID: 0}
+  InteriorDatabase: {fileID: 11400000, guid: 6c4ba374f8851564596f727ef02aed32, type: 2}
+  LakeDatabase: {fileID: 11400000, guid: ba1fd86a2153abe47b0db61c0498d6ac, type: 2}
+  CostumeDatabase: {fileID: 11400000, guid: 14e4ec0ac8526924d99d25cac5e882ff, type: 2}
+  FishingDatabase: {fileID: 11400000, guid: d4e4dd8e66f63e948bcb1038f3379dc8, type: 2}
+  FoodDatabase: {fileID: 11400000, guid: dd06417ba2079ba46b4cdd23096438ea, type: 2}
 --- !u!4 &1007267944
 Transform:
   m_ObjectHideFlags: 0
@@ -6984,7 +6984,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc3c8cbb1331cf342b0bb008cbe6e94b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlacementMgr
-  _placedAudio: {fileID: 0}
+  _placedAudio: {fileID: 8300000, guid: d3ef395006d3e944cb3a184759ec9082, type: 3}
   _viewCamera: {fileID: 1470008535}
   _editCamera: {fileID: 171470127}
   _buildingManager: {fileID: 2124093049}
@@ -11771,7 +11771,19 @@ PrefabInstance:
     - target: {fileID: 8885772400149919465, guid: d889fb38af9ecf649aadad7812e01f21, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
+      objectReference: {fileID: 1942977355}
+    - target: {fileID: 8885772400149919465, guid: d889fb38af9ecf649aadad7812e01f21, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Target
+      value: 
       objectReference: {fileID: 1062667418}
+    - target: {fileID: 8885772400149919465, guid: d889fb38af9ecf649aadad7812e01f21, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: PlayRecordSfx
+      objectReference: {fileID: 0}
+    - target: {fileID: 8885772400149919465, guid: d889fb38af9ecf649aadad7812e01f21, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_MethodName
+      value: OnIslandDecoClicked
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -12676,6 +12688,17 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 4241321109664936275, guid: d889fb38af9ecf649aadad7812e01f21, type: 3}
   m_PrefabInstance: {fileID: 1823093777}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1942977355 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2216222108303809505, guid: d889fb38af9ecf649aadad7812e01f21, type: 3}
+  m_PrefabInstance: {fileID: 1823093777}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1942977354}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4ecb85f3b6817e4a942de2967e44fcf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI_MainMenu
 --- !u!1 &1945439923
 GameObject:
   m_ObjectHideFlags: 0
@@ -15975,6 +15998,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -43
       objectReference: {fileID: 0}
+    - target: {fileID: 5824194917922383647, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6358017813731887572, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
       propertyPath: m_SizeDelta.x
       value: -8.676331
@@ -16105,7 +16132,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8545110848365683900, guid: eda0b349d15b6fb48997a88f921386b5, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
