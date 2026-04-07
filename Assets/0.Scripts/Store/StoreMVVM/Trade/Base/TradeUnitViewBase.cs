@@ -66,7 +66,7 @@ public abstract class TradeUnitViewBase : MonoBehaviour
     /// </summary>
     public virtual void SetButton()
     {
-        //SetAllButtonAvailablity(false);
+        SetAllButtonAvailablity(true);
     }
     
     public virtual void SetAllButtonAvailablity(bool isAvailable)

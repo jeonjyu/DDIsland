@@ -853,7 +853,31 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 4155749089319273133}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 8046812426373374293}
+        m_TargetAssemblyTypeName: UI_BGMSlot, Assembly-CSharp
+        m_MethodName: OnClick_AddPlaylist
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 8046812426373374293}
+        m_TargetAssemblyTypeName: UI_BGMSlot, Assembly-CSharp
+        m_MethodName: PlayRecordSfx
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 8300000, guid: 4626f0c98fc69a447a0ade6325f8920b, type: 3}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.AudioClip, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &6660494148859579686
 GameObject:
   m_ObjectHideFlags: 0
@@ -919,6 +943,7 @@ MonoBehaviour:
   playTimeText: {fileID: 2859201926948430008}
   favoriteToggle: {fileID: 8044488603457922762}
   playListAddBtn: {fileID: 4454371738395266637}
+  sfxClip: {fileID: 8300000, guid: 4626f0c98fc69a447a0ade6325f8920b, type: 3}
 --- !u!222 &2232188711403605282
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -940,7 +965,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0.88235295, g: 0.8039216, b: 0.65882355, a: 1}
+  m_Color: {r: 0.99215686, g: 0.96862745, b: 0.90588236, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1008,6 +1033,18 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 8046812426373374293}
+        m_TargetAssemblyTypeName: UI_BGMSlot, Assembly-CSharp
+        m_MethodName: PlayRecordSfx
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 8300000, guid: 4626f0c98fc69a447a0ade6325f8920b, type: 3}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.AudioClip, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 

@@ -130,8 +130,10 @@ public class Record_Data
     public int _lpPieceCount;
     public List<int> _unlockRecords = new();
     public int _currentRecordId = -1;
-    public List<int> _currentPlayList = new();
     public float _playbackPoint;
+    public int CurrentPlaylistId;
+    public List<PlaylistData> Playlists = new List<PlaylistData>();
+    public List<int> Bookmarks = new List<int>();
 
     // 가장 많이 들은 음반 통계용 데이터
     public List<RecordPlayCount> _playCounts = new();

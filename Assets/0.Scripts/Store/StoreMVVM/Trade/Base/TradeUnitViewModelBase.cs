@@ -86,15 +86,22 @@ public class TradeUnitViewModelBase : MonoBehaviour, INotifyPropertyChanged
         //TradeConfirmPanel = gameObject.GetComponent<TradePopupBase>().gameObject;
 
         // StoreManager의 TradeModel,TradeItemCount이 변경되면 갱신되도록 알림 받도록
-        StoreManager.Instance.PropertyChanged += UpdateTradeModel;
+        //StoreManager.Instance.PropertyChanged += UpdateTradeModel;
     }
 
     void OnEnable()
     {
+        StoreManager.Instance.PropertyChanged += UpdateTradeModel;
+
         //Debug.Log("UI 초기화");
         SetTotalPrice();
         view.SetTradeCountText(TradeCount);
         view.SetButton();
+    }
+
+    void OnDisable()
+    {
+        StoreManager.Instance.PropertyChanged -= UpdateTradeModel;
     }
 
     // Trademodel이 갱신될 때 실행시켜 줄 메서드

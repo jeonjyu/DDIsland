@@ -21,6 +21,11 @@ public class EatState : IState
         else if (_desPoint == Point.Table)
         {
             _player.transform.SetPositionAndRotation(_player.TablePoint.position, _player.TablePoint.rotation);
+            if (!_player.PrepareEatFood())
+            {
+                _player.SetState(new IdleState(_player));
+                return;
+            }
             _player.Animator.SetTrigger("isEat");
         }
         
@@ -39,6 +44,7 @@ public class EatState : IState
     public void Exit()
     {
         _player.HandOffFork();
+        _player.HideFood3DModel();
     }
 
     public void FixedExecute()

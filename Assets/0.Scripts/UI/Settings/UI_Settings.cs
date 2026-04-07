@@ -89,6 +89,8 @@ public class UI_Settings : MonoBehaviour
         }
 
         isInitializing = false;
+
+        PlayerPrefsDataManager.OnPlayDefaultRecord += OnDefaultRecordChanged;
     }
 
 
@@ -170,6 +172,8 @@ public class UI_Settings : MonoBehaviour
 
     public void OnValueChanged_PlayDefaultRecord()
     {
+        if (isInitializing) return;
+
         PlayerPrefsDataManager.PlayDefaultRecord = playDefaultRecordToggle.isOn;
     }
     #endregion
@@ -201,4 +205,25 @@ public class UI_Settings : MonoBehaviour
         Application.Quit();
     }
     #endregion
+
+    private void OnDefaultRecordChanged(bool isOn)
+    {
+        isInitializing = true;
+
+        playDefaultRecordToggle.isOn = isOn;
+
+        isInitializing = false;
+    }
+
+    public void PlayRecordSfx(AudioClip clip)
+    {
+        if (isInitializing) return;
+
+        SoundManager.Instance.PlaySFX(clip);
+    }
+
+    private void OnDestroy()
+    {
+        PlayerPrefsDataManager.OnPlayDefaultRecord -= OnDefaultRecordChanged;
+    }
 }

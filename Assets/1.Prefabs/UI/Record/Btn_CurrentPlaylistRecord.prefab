@@ -433,6 +433,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8519818483172803053}
+  - component: {fileID: 8748805962909153905}
   - component: {fileID: 3925274640685460679}
   - component: {fileID: 2437665206822628460}
   - component: {fileID: 5705500657753739693}
@@ -469,6 +470,23 @@ RectTransform:
   m_AnchoredPosition: {x: 191.5, y: -45}
   m_SizeDelta: {x: 373, y: 80}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &8748805962909153905
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5990140387732823646}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ddb744556a291a43b8a024db67c0b02, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI_CurrentPlaylistSlot
+  iconImg: {fileID: 7693903158643522245}
+  titleText: {fileID: 3942911210825418679}
+  artistText: {fileID: 8297535851949043090}
+  timeText: {fileID: 1705009715229273532}
+  Record: {fileID: 0}
 --- !u!222 &3925274640685460679
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -490,7 +508,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0.88235295, g: 0.8039216, b: 0.65882355, a: 1}
+  m_Color: {r: 0.99215686, g: 0.96862745, b: 0.90588236, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -551,13 +569,25 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: UI_AMBSlot, Assembly-CSharp
-        m_MethodName: OnClick_Slot
+      - m_Target: {fileID: 8748805962909153905}
+        m_TargetAssemblyTypeName: UI_CurrentPlaylistSlot, Assembly-CSharp
+        m_MethodName: Onclick_Play
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 8748805962909153905}
+        m_TargetAssemblyTypeName: UI_CurrentPlaylistSlot, Assembly-CSharp
+        m_MethodName: PlayRecordSfx
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 8300000, guid: 4626f0c98fc69a447a0ade6325f8920b, type: 3}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.AudioClip, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -655,7 +685,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &820151953116368607
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1009,5 +1039,29 @@ MonoBehaviour:
   m_Group: {fileID: 0}
   onValueChanged:
     m_PersistentCalls:
-      m_Calls: []
-  m_IsOn: 1
+      m_Calls:
+      - m_Target: {fileID: 8748805962909153905}
+        m_TargetAssemblyTypeName: UI_CurrentPlaylistSlot, Assembly-CSharp
+        m_MethodName: SetDeleteCehck
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 5348869679214761986}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.UI.Toggle, UnityEngine.UI
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 8748805962909153905}
+        m_TargetAssemblyTypeName: UI_CurrentPlaylistSlot, Assembly-CSharp
+        m_MethodName: PlayRecordSfx
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 8300000, guid: 4626f0c98fc69a447a0ade6325f8920b, type: 3}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.AudioClip, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  m_IsOn: 0

@@ -109,8 +109,9 @@ MonoBehaviour:
       _lpPieceCount: 0
       _unlockRecords: 
       _currentRecordId: -1
-      _currentPlayList: 
       _playbackPoint: 0
+      CurrentPlaylistId: 0
+      Playlists: []
       _playCounts: []
     Mail:
       _readMailIDs: []
@@ -138,6 +139,7 @@ GameObject:
   - component: {fileID: -5235198117822851481}
   - component: {fileID: -5939273068440672368}
   - component: {fileID: 712724947879968661}
+  - component: {fileID: 4852974878046605598}
   m_Layer: 0
   m_Name: DataManager
   m_TagString: Untagged
@@ -185,6 +187,7 @@ MonoBehaviour:
   <RecordDatabase>k__BackingField: {fileID: -5235198117822851481}
   <StringUIDatabase>k__BackingField: {fileID: -5939273068440672368}
   <HelpDatabase>k__BackingField: {fileID: 712724947879968661}
+  <BoxDatabase>k__BackingField: {fileID: 4852974878046605598}
 --- !u!114 &1652024204880346904
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -341,3 +344,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HelpData
   <HelpInfoData>k__BackingField: {fileID: 11400000, guid: 5455b34175feb9c48bc733adc7976a2a, type: 2}
+--- !u!114 &4852974878046605598
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4924133292910811244}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02a8545552a40284faacc3d2fddb59ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BoxData
+  <BoxInfoData>k__BackingField: {fileID: 11400000, guid: 61d7819462a100f4d818e90a22db5162, type: 2}

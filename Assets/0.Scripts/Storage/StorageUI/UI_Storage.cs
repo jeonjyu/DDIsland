@@ -81,12 +81,17 @@ public class UI_Storage : MonoBehaviour
 
     private void OnEnable()
     {
+        Debug.Log("UI_Storage OnEnable 호출됨");
         if (FishStorageManager.Instance != null)
         {
             FishStorageManager.Instance.OnSlotChanged += UpdateSlot; // Storage 데이터가 바뀔 때마다 UI를 갱신하기 위해 이벤트 구독
-            RefreshAll();
-            RefreshUpgradeUI();
         }
+        if (_sortDropdown != null)
+        {
+            _currentSort = (SortMode)_sortDropdown.value;
+        }
+        RefreshAll();
+        RefreshUpgradeUI();
     }
 
     private void OnDisable()
@@ -232,7 +237,7 @@ public class UI_Storage : MonoBehaviour
             return;
         }
 
-        var sp = def.FishImgPath_Sprite;
+        var sp = def.BoxSlotImgPath_Sprite;
 
         if (_detailIcon != null)
         {
@@ -372,8 +377,8 @@ public class UI_Storage : MonoBehaviour
 
         if (_upgradeButtonLabel != null)     //최대치면 버튼 글자 변경
         {
-            string maxText = LocalizationManager.Instance.GetString("Interior_Box_Upgrade_Expand_Text ");
-            string upgradeText = LocalizationManager.Instance.GetString("Interior_Box_MaxExpansion_Text");
+            string maxText = LocalizationManager.Instance.GetString("InteriorBoxMaxExpansion");
+            string upgradeText = LocalizationManager.Instance.GetString("InteriorBoxUpgradeExpand");
             _upgradeButtonLabel.text = isMax ? maxText : upgradeText;
         }
     }
@@ -449,6 +454,10 @@ public class UI_Storage : MonoBehaviour
     public void OpenStorageUI()
     {
         gameObject.SetActive(true);
+        ResetToDefaultStorage();
+        RefreshAll();
+        RefreshUpgradeUI();
+
     }
     public void OpenFishStorage() 
     {
@@ -458,9 +467,11 @@ public class UI_Storage : MonoBehaviour
         _UI_FoodStorage.ResetSelection();
         _fishStorageUI.SetActive(true);
         _foodStorageUI.SetActive(false);
-        
+
         _ofFishFishButton.interactable = false;
         _ofFishFoodButton.interactable = true;
+        _ofFoodFishButton.interactable = false;
+        _ofFoodFoodButton.interactable = false;
     }
     public void OpenFoodStorage()
     {
@@ -470,9 +481,26 @@ public class UI_Storage : MonoBehaviour
         _UI_FoodStorage.ResetSelection();
         _fishStorageUI.SetActive(false);
         _foodStorageUI.SetActive(true);
-
         _ofFoodFishButton.interactable = true;
         _ofFoodFoodButton.interactable = false;
+        _ofFishFishButton.interactable = false;
+        _ofFishFoodButton.interactable = false;
+
+    }
+    private void ResetToDefaultStorage()
+    {
+        _selectedRealIndex = -1;
+        ClearDetailFish();
+        _UI_FoodStorage.ResetSelection();
+
+        _fishStorageUI.SetActive(true);
+        _foodStorageUI.SetActive(false);
+
+        _ofFishFishButton.interactable = false;
+        _ofFishFoodButton.interactable = true;
+
+        _ofFoodFishButton.interactable = false;
+        _ofFoodFoodButton.interactable = true;
     }
     public void CloseAllStorage()  //임시
     {
@@ -480,6 +508,8 @@ public class UI_Storage : MonoBehaviour
         _selectedRealIndex = -1;
         ClearDetailFish();
         _UI_FoodStorage.ResetSelection();
+        CloseUpgradeUI();         
+        _UI_FoodStorage.CloseFoodUpgradeUI();
         _fishStorageUI.SetActive(false);
         _foodStorageUI.SetActive(false);
     }
