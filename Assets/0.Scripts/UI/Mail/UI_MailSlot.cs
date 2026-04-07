@@ -68,7 +68,7 @@ public class UI_MailSlot : MonoBehaviour
         }
         else
         {
-            _expireDateText.text = isKorean ? "기한 없음" : "No Expiration";
+            _expireDateText.text = isKorean ? "무기한" : "No Expiration";
         }
 
         foreach (Transform child in _rewardContent)
