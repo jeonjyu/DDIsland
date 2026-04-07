@@ -1,5 +1,7 @@
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class UI_BGMList : UI_RecordList<UI_BGMSlot>
@@ -29,9 +31,9 @@ public class UI_BGMList : UI_RecordList<UI_BGMSlot>
     public bool IsPlayRepeat { get; private set; }        // 한 곡 반복 재생
     public bool IsPlayShuffle { get; private set; }       // 셔플 재생
 
-    protected override void Start()
+    protected override IEnumerator Start()
     {
-        base.Start();
+        yield return base.Start();
 
         environment.Model.OnSeasonChanged += AddDefaultRecords;
 
@@ -39,7 +41,7 @@ public class UI_BGMList : UI_RecordList<UI_BGMSlot>
 
         foreach (var slot in recordSlotList)
         {
-            if(slot.Record != null)
+            if (slot.Record != null)
                 recordList.Add(slot.Record);
         }
     }

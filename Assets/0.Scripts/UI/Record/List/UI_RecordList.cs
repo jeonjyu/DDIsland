@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -18,8 +19,10 @@ public class UI_RecordList<T> : MonoBehaviour where T : UI_RecordSlot
     public List<T> recordSlotList = new List<T>();
     public T CurrentSlot { get; protected set; }
 
-    protected virtual void Start()
+    protected virtual IEnumerator Start()
     {
+        yield return new WaitForSeconds(0.5f);
+
         foreach(var record in DataManager.Instance.RecordDatabase.RecordInfoData.datas)
         {
             // 현재 리스트에서 취급할 음반이라면

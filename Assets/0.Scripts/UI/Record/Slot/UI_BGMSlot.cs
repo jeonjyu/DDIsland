@@ -88,20 +88,18 @@ public class UI_BGMSlot : UI_RecordSlot
 
         IsFavorite = favoriteToggle.isOn;
 
-        HashSet<int> bookmarks = DataManager.Instance.RecordDatabase.BookmarkRecords;
-
         if (favoriteToggle.isOn)
         {
-            if (!bookmarks.Contains(Record.RecordID))
+            if (!DataManager.Instance.RecordDatabase.BookmarkRecords.Contains(Record.RecordID))
             {
-                bookmarks.Add(Record.RecordID);
+                DataManager.Instance.RecordDatabase.BookmarkRecords.Add(Record.RecordID);
             }
         }
         else
         {
-            if (bookmarks.Contains(Record.RecordID))
+            if (DataManager.Instance.RecordDatabase.BookmarkRecords.Contains(Record.RecordID))
             {
-                bookmarks.Remove(Record.RecordID);
+                DataManager.Instance.RecordDatabase.BookmarkRecords.Remove(Record.RecordID);
             }
         }
     }

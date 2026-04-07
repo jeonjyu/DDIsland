@@ -14,4 +14,9 @@ public class UI_Record : MonoBehaviour
 
         bgmList.PlayBGM(DataManager.Instance.RecordDatabase.RecordInfoData[DataManager.Instance.RecordDatabase.CurrentPlayList[0]]);
     }
+
+    public void PlayRecordSfx(AudioClip clip)
+    {
+        SoundManager.Instance.PlaySFX(clip);
+    }
 }
