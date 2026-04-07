@@ -237,7 +237,7 @@ public class UI_Storage : MonoBehaviour
             return;
         }
 
-        var sp = def.FishImgPath_Sprite;
+        var sp = def.BoxSlotImgPath_Sprite;
 
         if (_detailIcon != null)
         {
