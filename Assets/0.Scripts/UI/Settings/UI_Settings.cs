@@ -206,6 +206,7 @@ public class UI_Settings : MonoBehaviour
 
     public void OnClick_GameExit()
     {
+        _ = DataManager.Instance.Hub.UploadAllData();
         Application.Quit();
     }
     #endregion

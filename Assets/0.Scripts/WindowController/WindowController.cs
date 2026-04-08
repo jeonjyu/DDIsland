@@ -31,7 +31,7 @@ public class WindowController : Singleton<WindowController>
 
     private PointerEventData pointerEventData;      // 레이캐스트에서 사용할 마우스 이벤트 정보
     private int hitLayerMask;                       // 레이캐스트에서 사용할 레이어 정보
-    [SerializeField] private float hitTick = 0.1f;  // 마우스 클릭 통과 여부 판단 주기
+    [SerializeField] private float hitTick = 0.05f;  // 마우스 클릭 통과 여부 판단 주기
     private WaitForSecondsRealtime hitTime;
 
 
