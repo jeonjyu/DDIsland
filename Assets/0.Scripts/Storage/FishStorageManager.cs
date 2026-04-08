@@ -259,19 +259,19 @@ public class FishStorageManager : Singleton<FishStorageManager>
     private void SyncFishStorageSaveData()
     {
         var userData = DataManager.Instance.Hub._allUserData;
-        if (userData == null || userData.fishstoage == null) return;
+        if (userData == null || userData.FishStorage == null) return;
 
-        userData.fishstoage.StorageLevel = _storagelevel;
-        userData.fishstoage.AcquireCounter = _acquireCounter;
+        userData.FishStorage.StorageLevel = _storagelevel;
+        userData.FishStorage.AcquireCounter = _acquireCounter;
 
-        userData.fishstoage.SlotList.Clear();
+        userData.FishStorage.SlotList.Clear();
 
         for (int i = 0; i < FishSlots.Length; i++)
         {
             if (FishSlots[i].HasValue)
             {
                 var slot = FishSlots[i].Value;
-                userData.fishstoage.SlotList.Add(new SavedFishSlotData
+                userData.FishStorage.SlotList.Add(new SavedFishSlotData
                 {
                     Index = i,
                     FishId = slot.FishId,
@@ -286,7 +286,7 @@ public class FishStorageManager : Singleton<FishStorageManager>
     {
         DataManager.Instance.Hub.OnDataLoaded -= SyncFishStorageLoadData;
 
-        var userData = DataManager.Instance.Hub._allUserData.fishstoage;
+        var userData = DataManager.Instance.Hub._allUserData.FishStorage;
 
         Debug.Log(userData.AcquireCounter);
         Debug.Log(DataManager.Instance.Hub._allUserData.Currency._gold);

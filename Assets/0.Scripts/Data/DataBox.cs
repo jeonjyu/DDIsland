@@ -26,10 +26,10 @@ public class UserAllData
     public Quest_Data Progress = new();
 
     //물고기 보관함
-    public Fishstoage_Data fishstoage = new();
+    public FishStorage_Data FishStorage = new();
 
     //음식 보관함
-    public Foodstorage_Data Foodstorage = new();
+    public Foodstorage_Data FoodStorage = new();
 
     //재화
     public Currency_Data Currency = new();
@@ -110,7 +110,7 @@ public class Store_Data
     public int _currentLakeThemeId;
 }
 [Serializable]
-public class Fishstoage_Data
+public class FishStorage_Data
 {
     public int StorageLevel = 1;
     public long AcquireCounter = 0;   // 획득 순서 카운터

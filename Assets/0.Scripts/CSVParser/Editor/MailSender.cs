@@ -41,12 +41,20 @@ public class MailSender : EditorWindow
         if (GUI.changed) EditorPrefs.SetString("Perpetual", _adminKey);
 
         EditorGUILayout.Space();
-        GUILayout.BeginHorizontal();
         _mailKey = EditorGUILayout.TextField("우편 폴더명 (Key)", _mailKey);
+
+        GUILayout.BeginHorizontal();
+
+        if (GUILayout.Button("불러오기", GUILayout.Width(80)))
+        {
+            LoadMailData();
+        }
+
         if (GUILayout.Button("서버에서 다음 순서 찾기", GUILayout.Width(150)))
         {
             FindNextMailSequence();
         }
+
         GUILayout.EndHorizontal();
 
         EditorGUILayout.Space();
@@ -156,6 +164,48 @@ public class MailSender : EditorWindow
         {
             Debug.LogError($"발송 실패: {e.Message}");
             EditorUtility.DisplayDialog("실패", "보안규칙 확인", "확인");
+        }
+    }
+
+    private async void LoadMailData()
+    {
+        if (string.IsNullOrEmpty(_mailKey))
+        {
+            EditorUtility.DisplayDialog("알림", "불러올 우편의 Key를 입력해주세요.", "확인");
+            return;
+        }
+
+        try
+        {
+            DataSnapshot snapshot = await FirebaseDatabase.DefaultInstance.GetReference("GlobalMails").Child(_mailKey).GetValueAsync();
+
+            if (snapshot.Exists)
+            {
+                string json = snapshot.GetRawJsonValue();
+                MailUploadData loadedData = JsonUtility.FromJson<MailUploadData>(json);
+
+                _mailID = loadedData._mailID;
+                _title_kr = loadedData._title_kr;
+                _title_en = loadedData._title_en;
+                _content_kr = loadedData._content_kr;
+                _content_en = loadedData._content_en;
+                _rewardItemIDs = loadedData._rewardItemID;
+                _rewardCounts = loadedData._rewardCount;
+                _expireDate = loadedData._expireDate;
+
+                // 에디터 UI 새로고침 (이걸 해줘야 화면에 텍스트가 뜹니다)
+                Repaint();
+
+                EditorUtility.DisplayDialog("성공", "데이터를 성공적으로 불러왔습니다!\n수정 후 [발송] 버튼을 누르면 덮어쓰기 됩니다.", "확인");
+            }
+            else
+            {
+                EditorUtility.DisplayDialog("실패", "서버에 해당 Key를 가진 우편이 존재하지 않습니다.", "확인");
+            }
+        }
+        catch (Exception e)
+        {
+            EditorUtility.DisplayDialog("에러", "데이터를 불러오는 중 문제가 발생했습니다.", "확인");
         }
     }
 
