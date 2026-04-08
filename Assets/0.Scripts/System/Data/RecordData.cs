@@ -28,6 +28,14 @@ public class RecordData : MonoBehaviour
             DataManager.Instance.Hub.OnRequestSave -= SyncRecordSaveData;
     }
 
+    private void Awake()
+    {
+        if(CurrentPlaylistId != 0 && PlayerPrefsDataManager.PlayDefaultRecord)
+        {
+            PlayerPrefsDataManager.PlayDefaultRecord = false;
+        }
+    }
+
     private void Start()
     {
         if (DataManager.Instance != null && DataManager.Instance.Hub != null)
