@@ -1,8 +1,7 @@
 using System;
-using System.Collections;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
+[DefaultExecutionOrder(-40)]
 public class UI_IslandWindow : MonoBehaviour
 {
     /// <summary>
@@ -77,11 +76,7 @@ public class UI_IslandWindow : MonoBehaviour
 
     private void Awake()
     {
-        if (GameManager.Instance != null)
-        {
-            GameManager.Instance.IslandWindow = this;
-        }
-
+        GameManager.Instance.IslandWindow = this;
         islandWindowRect.sizeDelta = new Vector2(Screen.width, Screen.height);
 
         maxFitRatio = maxRatio;
