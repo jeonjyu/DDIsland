@@ -94,9 +94,9 @@ public class TradeUnitViewModelBase : MonoBehaviour, INotifyPropertyChanged
         StoreManager.Instance.PropertyChanged += UpdateTradeModel;
 
         //Debug.Log("UI 초기화");
-        SetTotalPrice();
-        view.SetTradeCountText(TradeCount);
-        view.SetButton();
+        _tradeCount = 1;
+
+        InitUnit();
     }
 
     void OnDisable()
@@ -114,14 +114,12 @@ public class TradeUnitViewModelBase : MonoBehaviour, INotifyPropertyChanged
             // 모델 변경
             case null:
             case "":
-                _tradeCount = 1;
                 InitUnit();
                 OnPropertyChanged();
                 break;
             // 보유중인 아이템 개수 변경
             case nameof(StoreManager.Instance.TradeItemCount):
                 //Debug.Log("UpdateTradeModel |" + nameof(StoreManager.Instance.TradeItemCount));
-                _tradeCount = 1;
                 InitUnit();
                 OnPropertyChanged(nameof(StoreManager.Instance.TradeItemCount));
                 break;
@@ -223,7 +221,7 @@ public class TradeUnitViewModelBase : MonoBehaviour, INotifyPropertyChanged
         if (TradeCount <= 0)
         {
             view.SetTotalPriceText(0);
-            Debug.Log("SetTotalPrice 거래 가격이 0" );
+            //Debug.Log("SetTotalPrice 거래 가격이 0" );
         }
         else
         {

@@ -38,16 +38,22 @@ public class EquipSellUnitView : TradeUnitViewBase
 
     public override void SetButton()
     {
-
         base.SetButton();
+
+        bool isTradeable = false;
+        bool isEquiped = tradeViewModel.IsEquipped;
+        bool isGained = tradeViewModel.IsGained;
 
         // 거래 불가능한 아이템일 경우 판매 유닛 버튼 클릭 불가능
         if (viewModel.Model.IsSaleable == false)
         {
             Debug.Log(this + " 판매 유닛 | 판매 불가능");
-            SetBtnInteractable(tradeBtn, false);
+            //SetBtnInteractable(tradeBtn, false);
         }
         else
-            SetBtnInteractable(tradeBtn, !tradeViewModel.IsEquipped && tradeViewModel.IsGained);
+            isTradeable = !isEquiped && isGained;
+            //SetBtnInteractable(tradeBtn, !tradeViewModel.IsEquipped && tradeViewModel.IsGained);
+
+        SetBtnInteractable(tradeBtn, isTradeable);
     }
 }
