@@ -6,15 +6,28 @@ public class DecoInventoryManager : Singleton<DecoInventoryManager>
 {
     [SerializeField] List<LakeInvenSlot> invenList = new List<LakeInvenSlot>();
 
+    private BuildingManager _buildingMgr;
+
     protected override void Awake()
     {
         base.Awake(); 
     }
-    //void Start()
-    //{
-    //    ItemManager.Instance.OnPlayerItemAdded += OnItemAdd;
-    //    ItemManager.Instance.OnPlayerItemRemoved += OnItemRemove;
-    //}
+
+    // 섬에 배치된 개수 조회
+    private int GetPlacedCount(int itemId)
+    {
+        if (_buildingMgr == null)
+            _buildingMgr = Object.FindFirstObjectByType<BuildingManager>();
+        return _buildingMgr != null ? _buildingMgr.GetPlacedCount(itemId) : 0;
+    }
+
+    // 인벤 보유 개수 = ItemCount - 배치템 개수
+    public int GetInvenCount(int itemId)
+    {
+        var playerItem = FindPlayerItem(itemId);
+        if (playerItem == null) return 0;
+        return playerItem.ItemCount - GetPlacedCount(itemId);
+    }
 
     public List<LakeInvenSlot> GetInven()
     {
@@ -30,10 +43,11 @@ public class DecoInventoryManager : Singleton<DecoInventoryManager>
           //if (item.IsGained && item.ItemCount > 0)
             if (item.IsGained)
             {
+                int invenCount = item.ItemCount - GetPlacedCount(item.ObjectId);
                 invenList.Add(new LakeInvenSlot
                 {
                     itemId = item.ObjectId,
-                    quantity = item.ItemCount
+                    quantity = invenCount //item.ItemCount
                 });
             }
         }
@@ -53,7 +67,7 @@ public class DecoInventoryManager : Singleton<DecoInventoryManager>
         var playerItem = FindPlayerItem(itemId);
         if (playerItem == null) return;
 
-        playerItem.ItemCount--;
+        //playerItem.ItemCount--; 
         //if (playerItem.ItemCount <= 0)
         //    playerItem.IsGained = false;
 
@@ -92,9 +106,9 @@ public class DecoInventoryManager : Singleton<DecoInventoryManager>
         }
         catch { }
 
-        playerItem.ItemCount++;
-        if (!playerItem.IsGained)
-            playerItem.IsGained = true;
+        //playerItem.ItemCount++;
+        //if (!playerItem.IsGained)
+        //    playerItem.IsGained = true;
 
         var slot = FindSlot(itemId);
         if (slot != null)
@@ -103,13 +117,13 @@ public class DecoInventoryManager : Singleton<DecoInventoryManager>
     // 전체회수/스냅샷 복원용
     public void SetItemCount(int itemId, int count)
     {
-        var playerItem = FindPlayerItem(itemId);
-        if (playerItem == null) return;
+        //var playerItem = FindPlayerItem(itemId);
+        //if (playerItem == null) return;
 
-        playerItem.ItemCount = count;
-        //playerItem.IsGained = count > 0; // 수량이 0이면 미소유 처리 or 
-        // TODO: 나중에 파베/도감/상점 등에서 터진다면 아이템 데이터는 남게 아래 주석으로 교체
-        if (count > 0) playerItem.IsGained = true;                              
+        //playerItem.ItemCount = count;
+        ////playerItem.IsGained = count > 0; // 수량이 0이면 미소유 처리 or 
+        //// TODO: 나중에 파베/도감/상점 등에서 터진다면 아이템 데이터는 남게 아래 주석으로 교체
+        //if (count > 0) playerItem.IsGained = true;                              
 
 
         var slot = FindSlot(itemId);
@@ -139,40 +153,5 @@ public class DecoInventoryManager : Singleton<DecoInventoryManager>
         }
         return null;
     }
-    //public void OnItemAdd(IStoreItem item, StoreCat cat)
-    //{
-    //    if (cat != StoreCat.interior) return;
 
-    //    for (int i = 0; i < invenList.Count; i++)
-    //    {
-    //        if (invenList[i].itemId == item.ObjectId)
-    //        {
-    //            invenList[i].quantity = item.ItemCount;
-    //            return;
-    //        }
-    //    }
-
-    //    invenList.Add(new LakeInvenSlot
-    //    {
-    //        itemId = item.ObjectId,
-    //        quantity = item.ItemCount
-    //    });
-    //}
-
-    //public void OnItemRemove(IStoreItem item, StoreCat cat)
-    //{
-    //    if (cat != StoreCat.interior) return;
-
-    //    for (int i = 0; i < invenList.Count; i++)
-    //    {
-    //        if (invenList[i].itemId == item.ObjectId)
-    //        {
-    //            if (item.ItemCount <= 0)
-    //                invenList.RemoveAt(i);
-    //            else
-    //                invenList[i].quantity = item.ItemCount;
-    //            return;
-    //        }
-    //    }
-    //}
 }
