@@ -10,7 +10,7 @@ public class GameManager : Singleton<GameManager>
     [Header("StageControl 클래스")]
     [field: SerializeField] public StageControl StageController { get; set; }
 
-    [field: SerializeField] public UI_IslandWindow IslandWindow{ get; set; }        // 섬 창(Window) 조절 클래스
+    public UI_IslandWindow IslandWindow{ get; set; }        // 섬 창(Window) 조절 클래스
     [field: SerializeField] public UI_WaterWindow WaterWindow { get; set; }         // 호수 창(Window) 조절 클래스
 
     public event Action<int> OnGoldChanged;
@@ -56,7 +56,6 @@ public class GameManager : Singleton<GameManager>
     {
         if(gold < 0 && playerGold < gold)
         {
-            Debug.LogWarning("[GameManager] 들어온 골드가 현재 골드보다 큼");
             return;
         }
         playerGold += gold;
