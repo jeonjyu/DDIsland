@@ -89,8 +89,8 @@ public class UI_Playlist : MonoBehaviour
     {
         if(IsValidPlaylistName(titleChangeInputField.text))
         {
-            slotList[slotList.FindIndex(x => x.Playlist == data)].PlaylistSlotInit(titleChangeInputField.text, this);
             data.Name = titleChangeInputField.text;
+            slotList[slotList.FindIndex(x => x.Playlist == data)].PlaylistSlotInit(data, this);
             editPlaylist.SetEditInit(data);
         }
         else

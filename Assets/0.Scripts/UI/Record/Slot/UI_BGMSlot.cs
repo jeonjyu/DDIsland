@@ -124,6 +124,7 @@ public class UI_BGMSlot : UI_RecordSlot
         else
         {
             bgmList.PlayBGM(this);
+            DataManager.Instance.RecordDatabase.CurrentPlaylistId = 0;
         }
     }
 

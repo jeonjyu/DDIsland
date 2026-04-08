@@ -2545,7 +2545,7 @@ Camera:
   m_GameObject: {fileID: 538781003}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 1
+  m_ClearFlags: 2
   m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
@@ -2571,7 +2571,7 @@ Camera:
   far clip plane: 1000
   field of view: 60.000004
   orthographic: 1
-  orthographic size: 16
+  orthographic size: 11.6
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -2595,8 +2595,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 538781003}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.38144904, y: -0.39017552, z: 0.18194182, w: 0.81802016}
-  m_LocalPosition: {x: 25, y: 38, z: -20}
+  m_LocalRotation: {x: -0.39746544, y: 0.37225565, z: -0.1806538, w: -0.81903064}
+  m_LocalPosition: {x: 3.5, y: 16.597057, z: -8.46717}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5189,7 +5189,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   <InputManager>k__BackingField: {fileID: 1012693002}
   <StageController>k__BackingField: {fileID: 279707395}
-  <IslandWindow>k__BackingField: {fileID: 986866593}
   <WaterWindow>k__BackingField: {fileID: 8894656368522162759}
   playerGold: 0
 --- !u!4 &1012693001
@@ -8436,18 +8435,18 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1439341819}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1335256273}
   - {fileID: 1761207946}
-  m_Father: {fileID: 911225961441406770}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 960, y: 540}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1001 &1446348771
@@ -14618,7 +14617,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3486501861285032035}
-  - {fileID: 1439341820}
   - {fileID: 748895456}
   - {fileID: 5669495222384035313}
   - {fileID: 896730363589809788}
@@ -16663,3 +16661,4 @@ SceneRoots:
   - {fileID: 696029205}
   - {fileID: 1070290249}
   - {fileID: 1592829347}
+  - {fileID: 1439341820}

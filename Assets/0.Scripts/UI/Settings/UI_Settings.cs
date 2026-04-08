@@ -175,6 +175,10 @@ public class UI_Settings : MonoBehaviour
         if (isInitializing) return;
 
         PlayerPrefsDataManager.PlayDefaultRecord = playDefaultRecordToggle.isOn;
+        if(playDefaultRecordToggle.isOn)
+        {
+            DataManager.Instance.RecordDatabase.CurrentPlaylistId = 0;
+        }
     }
     #endregion
 
