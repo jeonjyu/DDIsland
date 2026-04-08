@@ -62,6 +62,7 @@ public class AquariumMgr : MonoBehaviour
     private CanvasGroup _spawnAreaCanvasGroup;
     private CanvasGroup _waterWindowCanvasGroup;
     private Coroutine _spawnCoroutine;
+    private Coroutine _changeThemeCoroutine;
     private bool _isChangingTheme = false;
 
     private Vector2 _lastScreenSize;
@@ -155,7 +156,8 @@ public class AquariumMgr : MonoBehaviour
 
         FishType nextType = _themes[_currentThemeIndex].type;
         switchThemeBtnImg.sprite = _themes[_currentThemeIndex].Icon;
-        StartCoroutine(ChangeTheme(nextType));
+        //StartCoroutine(ChangeTheme(nextType));
+        _changeThemeCoroutine = StartCoroutine(ChangeTheme(nextType)); // 코루틴 저장 
     }
 
     private IEnumerator ChangeTheme(FishType newType)
@@ -410,11 +412,26 @@ public class AquariumMgr : MonoBehaviour
     }
     #endregion
 
+    // 테마 변경 멈추기
+    public void StopThemeTransition()
+    {
+        // 진행 중인 테마 전환 코루틴도 강제 종료 
+        // 안 멈추면 ChangeTheme이 매 프레임 alpha를 덮어써서 편집모드 중에도 물고기/배경이 다시 보임
+        if (_changeThemeCoroutine != null)
+        {
+            StopCoroutine(_changeThemeCoroutine);
+            _changeThemeCoroutine = null;
+            _isChangingTheme = false;
+            if (_themeToggleButton != null) _themeToggleButton.interactable = true;
+        }
+    }
 
     // 물고기 숨기기 
     public void HideFish() 
     {
         if (_spawnCoroutine != null) StopCoroutine(_spawnCoroutine);
+        _spawnCoroutine = null;
+
         // 투명도 0 보이지 않게 
         var cg = _spawnArea.GetComponent<CanvasGroup>();
         if (cg == null) cg = _spawnArea.gameObject.AddComponent<CanvasGroup>();

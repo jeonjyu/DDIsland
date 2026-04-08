@@ -590,8 +590,11 @@ public class DecoEditModeManager : MonoBehaviour
                 gridPanel.DOAnchorPosY(gridOriginPos.y + gridMoveUp, animTime)
                     .SetEase(Ease.OutQuad);
             }
-            if (aquariumMgr != null) aquariumMgr.HideFish(); // 물고기 숨기기
-
+            if (aquariumMgr != null)
+            {
+                aquariumMgr.StopThemeTransition(); // 테마 전환 멈추기
+                aquariumMgr.HideFish(); // 물고기 숨기기
+            }
             if (lakeBackground != null) // 뒤에 호수도 같이 두트윈으로 띄어올리기 
             {
                 lakeBackground.DOAnchorPosY(lakeOriginPos.y + lakeBgMoveUp, animTime)
@@ -633,7 +636,11 @@ public class DecoEditModeManager : MonoBehaviour
                 if (PlacementMgr.Instance.CurrentState == PlacementState.View)
                     PlacementMgr.Instance.ToggleEditMode();
             }
-            if (aquariumMgr != null) aquariumMgr.HideFish(); // 물고기 숨기기
+            if (aquariumMgr != null)
+            {
+                aquariumMgr.StopThemeTransition(); // 테마 전환 멈추기
+                aquariumMgr.HideFish(); // 물고기 숨기기
+            }
             if (playerObject != null)
             {
                 foreach (var renderer in playerObject.GetComponentsInChildren<Renderer>(true))
@@ -756,7 +763,13 @@ public class DecoEditModeManager : MonoBehaviour
                     PlacementMgr.Instance.ToggleEditMode();
             }
             holdItemId = -1; // 나갈때 배치 대기 아이템 초기화 
-            if (aquariumMgr != null) aquariumMgr.ShowFish(); // 물고기 다시 보이기
+
+            if (aquariumMgr != null)
+            {
+                aquariumMgr.StopThemeTransition();
+                aquariumMgr.ShowFish(); // 물고기 다시 보이기
+            }
+            
             if (playerObject != null) // 곰 다시 보이기
             {
                 foreach (var renderer in playerObject.GetComponentsInChildren<Renderer>(true))
@@ -1144,7 +1157,8 @@ public class DecoEditModeManager : MonoBehaviour
               //  aquariumMgr.ResumeFish();
         }
     }
-    
+
+
     void SetMainUIActive(bool active)
     {
         //if (windowEdgeGroup != null)
@@ -1153,9 +1167,23 @@ public class DecoEditModeManager : MonoBehaviour
             mainMenuBtnGroup.SetActive(active);
         if (topMoneyBarUI != null)
             topMoneyBarUI.SetActive(active);
+        //if (waterLevelButton != null)
+        //    waterLevelButton.SetActive(active);
         if (waterLevelButton != null)
-            waterLevelButton.SetActive(active);
-
+        {
+            if (active)
+            {
+                // 편집모드 나갈 때: 호수 높이가 0일 때만 켜기
+                bool shouldShow = (waterWindow != null && waterWindow.Height <= 0);
+                waterLevelButton.SetActive(shouldShow);
+            }
+            else
+            {
+                // 편집모드 진입 시: 무조건 끄기
+                waterLevelButton.SetActive(false);
+            }
+        }
+     
         if (emojiController != null)
         {
             emojiController.isEditMode = !active;
