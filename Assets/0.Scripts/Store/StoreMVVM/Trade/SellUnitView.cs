@@ -63,10 +63,6 @@ public class SellUnitView : TradeUnitViewBase
         return strategy;
     }
 
-    // 버튼이 변경되어야 할 경우
-    // 아이템 보유 개수 최대일 경우 > 구매 유닛 버튼들 비활성화
-    // 구매시 : 플레이어 골드보다 총합 가격이 높을 경우 > max, + 버튼 비활성화
-    // 아이템 개수가 0일 경우 > - 버튼 비활성화
     public override void SetButton()
     {
         base.SetButton();
@@ -78,41 +74,38 @@ public class SellUnitView : TradeUnitViewBase
             viewModel = GetComponent<TradeUnitViewModelBase>();
         }
 
-        if (viewModel.Model.IsSaleable == false)
+        bool isItemCountAvailable = false;
+        bool isTradeable = false;
+        bool canIncrease = false;
+        bool canDecrease = false;
+
+        int unPlacedItemCount = DecoInventoryManager.Instance.GetInvenCount(viewModel.Model.ObjectId);
+        
+        if(!viewModel.Model.IsSaleable)
         {
-            //Debug.Log(this + " 판매 유닛 | 판매 불가능");
-            SetAllButtonAvailablity(false);
+            Debug.Log(this + " 판매 유닛 | 판매 불가능");
+
+            SetAllButtonAvailablity(isTradeable);
             return;
         }
 
-        // 거래 개수가 0일 경우 
-        // 보유하지 않은 아이템일 경우 
-        if (viewModel.TradeCount == 0)
+        if (!viewModel.IsGained)
         {
-            //Debug.Log(this + " 판매 유닛 | 거래 개수가 0");
+            Debug.Log(this + " 판매 유닛 | 미보유 아이템");
 
-            SetBtnInteractable(CountDecBtn, false);
-            SetBtnInteractable(tradeBtn, false);
+            SetAllButtonAvailablity(isTradeable);
             return;
         }
 
-        if (viewModel.ItemCount == 0 && viewModel.IsGained == false)
-        {
-            //Debug.Log(this + " 판매 유닛 | 보유하지 않은 아이템 " + viewModel.IsGained);
-            
-            SetAllButtonAvailablity(false);
-            return;
-        }
+        isItemCountAvailable = unPlacedItemCount >= viewModel.TradeCount;
+        isTradeable = viewModel.TradeCount > 0 && isItemCountAvailable;
+        canIncrease = unPlacedItemCount > viewModel.TradeCount;
+        canDecrease = viewModel.ItemCount > 0 && viewModel.TradeCount >= viewModel.ItemCount;
 
-        if (viewModel.TradeCount == viewModel.Model.ItemCount)
-        {
-            //Debug.Log(this + " 판매 유닛 | 보유한 아이템보다 더 많이 판매할 수 없음");
-
-            SetBtnInteractable(CountIncBtn, false);
-            SetBtnInteractable(CountMaxBtn, false);
-        }
-
- 
+        SetBtnInteractable(tradeBtn, isTradeable);
+        SetBtnInteractable(countDecBtn, canDecrease);
+        SetBtnInteractable(countIncBtn, canIncrease);
+        SetBtnInteractable(countMaxBtn, canIncrease); 
     }
 
 }

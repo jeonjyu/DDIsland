@@ -635,4 +635,32 @@ public class BuildingManager : MonoBehaviour
 
     }
     #endregion
+
+    // 섬에 배치된 아이템 갯수가 몇개인지 계산하는 헬퍼함수
+    public int GetPlacedCount(int itemId)
+    {
+        int count = 0;
+
+        // 자유물 카운트 
+        if (_allBuildings != null)
+        {
+            for (int i = 0; i < _allBuildings.Count; i++)
+            {
+                if (_allBuildings[i] != null && _allBuildings[i].GetItemId() == itemId)
+                    count++;
+            }
+        }
+
+        // 고정물 카운트
+        if (_locationBuildings != null)
+        {
+            for (int i = 0; i < _locationBuildings.Count; i++)
+            {
+                if (_locationBuildings[i] != null && _locationBuildings[i].CurrentItemID == itemId)
+                    count++;
+            }
+        }
+
+        return count;
+    }
 }

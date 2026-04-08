@@ -83,7 +83,7 @@ public abstract class TradeUnitViewBase : MonoBehaviour
     // TradeUnitViewModelBase의 TradeCount, ItemCount 변경시 실행
     private void UpdateTradeUnitUI(object sender, PropertyChangedEventArgs e)
     {
-        Debug.Log(e.PropertyName);
+        //Debug.Log(e.PropertyName);
         UpdateUI();
     }
 }
