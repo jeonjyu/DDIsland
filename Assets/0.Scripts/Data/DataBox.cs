@@ -107,6 +107,7 @@ public class Store_Data
     public List<int> _ownedRecipes = new(); // 소유한 레시피 ID
     public List<LakeInvenSlot> _inventory = new(); // 구매해서 현재 보유한 건물들
     public int _currentCostumeId;  // 현재 착용 중인 ID
+    public int _currentLakeThemeId;
 }
 [Serializable]
 public class Fishstoage_Data

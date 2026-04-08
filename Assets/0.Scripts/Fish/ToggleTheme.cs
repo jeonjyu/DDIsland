@@ -22,7 +22,7 @@ public class ToggleTheme : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
         string tableKey = isLake ? "MainMessageChangeSea" : "MainMessageChangeLake";
 
-        Debug.Log(tableKey + " 0");
+        Debug.Log(tableKey + " 0"); 
         Debug.Log(LocalizationManager.Instance.GetString(tableKey) + " 1");
 
         _tooltipText.text = LocalizationManager.Instance.GetString(tableKey);
