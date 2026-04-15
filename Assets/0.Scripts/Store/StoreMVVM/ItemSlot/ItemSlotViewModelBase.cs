@@ -81,7 +81,8 @@ public class ItemSlotViewModelBase : MonoBehaviour, INotifyPropertyChanged, IDra
 
     public void SetParentSR(ScrollRect scrollRect)
     {
-        _scrollRect = scrollRect;
+        if (_scrollRect != scrollRect)
+            _scrollRect = scrollRect;
     }
 
     public void OnBeginDrag(PointerEventData eventData) => _scrollRect.OnBeginDrag(eventData);
@@ -93,15 +94,7 @@ public class ItemSlotViewModelBase : MonoBehaviour, INotifyPropertyChanged, IDra
     {
         //Debug.Log(gameObject.name + " ItemSlotViewModelBase : SetModel " + model.ItemName);
         Model = model;
-        ItemId = model.ID;
     }
-
-    public void Reset()
-    {
-        Model = null;
-        ItemId = -1;
-    }
-
 
     public void SetPopupModel()
     {

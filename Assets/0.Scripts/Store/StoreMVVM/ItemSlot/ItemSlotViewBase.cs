@@ -50,7 +50,7 @@ public class ItemSlotViewBase<T> : MonoBehaviour, IStoreItemView, IPointerClickH
     {
         //Debug.Log("[ItemSlotViewBase] Init");
         modelData = viewModel.Model;
-        int itemID = viewModel.ItemId;
+        //int itemID = viewModel.ItemId;
 
         if (modelData is null)
         {

@@ -116,7 +116,23 @@ public class StoreListViewModel : MonoBehaviour, INotifyPropertyChanged
             itemViewmodel.SetModel(item);
             storeItemViewModels.Add(itemViewmodel);
             //Debug.Log("[ItemListViewModel] UpdateSlotList | 슬롯 " + ItemManager.Instance.displayDatas.IndexOf(item) + " " + item.ItemName);
+            StartCoroutine(RSCoroutine(itemViewmodel));
         }
+    }
+
+    private IEnumerator RSCoroutine(ItemSlotViewModelBase viewModel)
+    {
+        yield return null;
+
+        viewModel.SetParentSR(scrollRect);
+    }
+
+    private IEnumerator ResetSRPosition()
+    {
+        yield return null;
+
+        scrollRect.verticalNormalizedPosition = 1f;
+
     }
 
     // itemList 변경되면 그에 맞춰 초기화
