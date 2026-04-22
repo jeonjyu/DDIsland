@@ -2,7 +2,7 @@
 ## 프로젝트 소개
 
 <div align=center>
-<img width="648" height="384"  alt="둥둥 아일랜드 리드미 메인 이미지" src="https://github.com/user-attachments/assets/b87f9212-ad06-4361-9f90-67ebdc160ba9" />
+<img width="851" height="478"  alt="둥둥 아일랜드 리드미 메인 이미지" src="https://github.com/user-attachments/assets/b87f9212-ad06-4361-9f90-67ebdc160ba9" />
 
 <img src="https://img.shields.io/badge/unity-%23000000.svg?&style=for-the-badge&logo=unity&logoColor=white" /> <img src="https://img.shields.io/badge/firebase-%23FFCA28.svg?&style=for-the-badge&logo=firebase&logoColor=black" />  
 
